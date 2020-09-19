@@ -1,0 +1,17 @@
+# Project dependencies
+.cache
+*.pyc
+node_modules
+yarn-error.log
+
+/public
+# Build directory
+/build
+.DS_Store
+.sass-cache/
+_posts/
+_site/
+db.csv
+danpalmer.sql
+
+.mypy_cache
