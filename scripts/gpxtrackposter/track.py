@@ -15,6 +15,7 @@ import polyline
 from collections import namedtuple
 
 start_point = namedtuple("start_point", "lat lon")
+run_map = namedtuple("polyline", "summary_polyline")
 
 class Track:
 
@@ -33,7 +34,7 @@ class Track:
         self.run_id = 0
         self.start_latlng = []
 
-    def load_gpx(self, file_name: str):
+    def load_gpx(self, file_name):
         try:
             self.file_names = [os.path.basename(file_name)]
             # Handle empty gpx files
@@ -42,16 +43,11 @@ class Track:
                 raise TrackLoadError("Empty GPX file")
             with open(file_name, "r") as file:
                 self._load_gpx_data(mod_gpxpy.parse(file))
-        except TrackLoadError as e:
-            raise e
-        except mod_gpxpy.gpx.GPXXMLSyntaxException as e:
-            raise TrackLoadError("Failed to parse GPX.") from e
-        except PermissionError as e:
-            raise TrackLoadError("Cannot load GPX (bad permissions)") from e
-        except Exception as e:
-            raise TrackLoadError("Something went wrong when loading GPX.") from e
+        except:
+            print(f"Something went wrong when loading GPX. for file {self.file_names[0]}")
+            pass
 
-    def bbox(self) -> s2.LatLngRect:
+    def bbox(self):
         """Compute the smallest rectangle that contains the entire track (border box)."""
         bbox = s2.LatLngRect()
         for line in self.polylines:
@@ -94,7 +90,7 @@ class Track:
         self.average_heartrate = sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
         self.moving_dict = self._get_moving_data(gpx)
 
-    def append(self, other: "Track"):
+    def append(self, other):
         """Append other track to self."""
         self.end_time = other.end_time
         self.polylines.extend(other.polylines)
@@ -102,7 +98,7 @@ class Track:
         self.file_names.extend(other.file_names)
         self.special = self.special or other.special
 
-    def load_cache(self, cache_file_name: str):
+    def load_cache(self, cache_file_name):
         try:
             with open(cache_file_name) as data_file:
                 data = json.load(data_file)
@@ -130,7 +126,7 @@ class Track:
         except Exception as e:
             raise TrackLoadError("Failed to load track data from cache.") from e
 
-    def store_cache(self, cache_file_name: str):
+    def store_cache(self, cache_file_name):
         """Cache the current track"""
         dir_name = os.path.dirname(cache_file_name)
         if not os.path.isdir(dir_name):
@@ -177,9 +173,9 @@ class Track:
             "end_local": self.end_time_local.strftime("%Y-%m-%d %H:%M:%S"),
             "length": self.length,
             "average_heartrate": int(self.average_heartrate) if self.average_heartrate else None,
-            "polyline_str": self.polyline_str,
+            "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,
         }
         d.update(self.moving_dict)
-        
+        # return a nametuple that can use . to get attr
         return namedtuple('x', d.keys())(*d.values())

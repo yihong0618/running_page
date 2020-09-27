@@ -73,6 +73,7 @@ class TrackLoader:
         """Load tracks base_dir and return as a List of tracks"""
         file_names = [x for x in self._list_gpx_files(base_dir)]
         log.info(f"GPX files: {len(file_names)}")
+        print(len(file_names))
 
         tracks = [] 
 
