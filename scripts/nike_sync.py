@@ -311,7 +311,7 @@ def make_activities_json():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("refresh_token", help="API access token for nike.com")
+    parser.add_argument("refresh_token", help="API refresh access token for nike.com")
     options = parser.parse_args()
     run(options.refresh_token)
 

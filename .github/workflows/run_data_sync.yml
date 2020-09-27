@@ -10,7 +10,6 @@ on:
       - scripts/nike_sync.py
       - scripts/strava.py
       - scripts/gen_json.py
-      - scripts/gpxtrackposter/cli.py
       - requirements.txt
 
 jobs:
@@ -42,7 +41,7 @@ jobs:
 
       - name: Run sync script
         run: |
-          python scripts/nike_sync.py ${{ secrets.N_TOKEN }}
+          python scripts/nike_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }}
 
       - name: Make svg GitHub profile
         run: |
