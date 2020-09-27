@@ -1,30 +1,20 @@
 import time
 import datetime
-from typing import Any, Dict, List, Optional, Tuple
 
-from geopy import distance as geopy_distance  # type: ignore
 from geopy.geocoders import Nominatim
-import polyline  # type: ignore
 from sqlalchemy import (
     create_engine,
     Column,
-    DateTime,
     Float,
-    ForeignKey,
     Integer,
     Interval,
-    PickleType,
     String,
 )
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker, Session
-from stravalib.model import Activity as StravaActivity  # type: ignore
-
-from .valuerange import ValueRange
+from sqlalchemy.orm import sessionmaker, Session
 
 
 Base = declarative_base()
-
 
 # reverse the location (lan, lon) -> location detail
 g = Nominatim(user_agent="yihong0618")
@@ -62,8 +52,8 @@ class Activity(Base):
     average_speed =  Column(Float)
     streak = None
 
-    def to_dict(self) -> Dict:
-        out: Dict[str, Any] = {}
+    def to_dict(self):
+        out = {}
         for key in ACTIVITY_KEYS:
             attr = getattr(self, key)
             if isinstance(attr, (datetime.timedelta, datetime.datetime)):
@@ -105,6 +95,7 @@ def update_or_create_activity(session, run_activity):
             location_country=location_country,
             average_heartrate=run_activity.average_heartrate,
             average_speed=float(run_activity.average_speed),
+            summary_polyline = run_activity.map.summary_polyline
         )
         session.add(activity)
         created = True
@@ -116,16 +107,12 @@ def update_or_create_activity(session, run_activity):
         activity.type = run_activity.type
         activity.average_heartrate=run_activity.average_heartrate
         activity.average_speed=float(run_activity.average_speed)
-    try:
         activity.summary_polyline = run_activity.map.summary_polyline
-    # just for gpx use 
-    except:
-        activity.summary_polyline = run_activity.polyline_str
 
     return created
 
 
-def init_db(db_path: str) -> Session:
+def init_db(db_path):
     engine = create_engine(f"sqlite:///{db_path}", connect_args={"check_same_thread": False})
     Base.metadata.create_all(engine)
     session = sessionmaker(bind=engine)

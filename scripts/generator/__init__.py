@@ -1,5 +1,4 @@
 import datetime
-import json
 import time
 import sys
 
@@ -9,7 +8,7 @@ import stravalib  # type: ignore
 from sqlalchemy import func
 from gpxtrackposter import track_loader
 
-from .db import init_db, update_or_create_activity,Activity
+from .db import init_db, update_or_create_activity, Activity
 
 
 class Generator:
@@ -63,6 +62,7 @@ class Generator:
     def sync_from_gpx(self, gpx_dir, force=False):
         loader = track_loader.TrackLoader()
         tracks = loader.load_tracks(gpx_dir)
+        print(len(tracks))
         if not tracks:
             print("No tracks found.")
             return
