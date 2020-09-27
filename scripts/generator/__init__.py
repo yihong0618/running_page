@@ -12,14 +12,18 @@ from .db import init_db, update_or_create_activity, Activity
 
 
 class Generator:
-    def __init__(self, db_path, client_id, client_secret, refresh_token):
+    def __init__(self, db_path):
         self.client = stravalib.Client()
         self.session = init_db(db_path)
 
+        self.client_id = ""
+        self.client_secret = ""
+        self.refresh_token = ""
+
+    def set_strava_config(self, client_id, client_secret, refresh_token):
         self.client_id = client_id
         self.client_secret = client_secret
         self.refresh_token = refresh_token
-
 
     def check_access(self) -> None:
         now = datetime.datetime.fromtimestamp(time.time())
@@ -59,7 +63,7 @@ class Generator:
 
         self.session.commit()
 
-    def sync_from_gpx(self, gpx_dir, force=False):
+    def sync_from_gpx(self, gpx_dir):
         loader = track_loader.TrackLoader()
         tracks = loader.load_tracks(gpx_dir)
         print(len(tracks))

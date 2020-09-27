@@ -1,19 +1,19 @@
+import argparse
 import json
-import datetime
 import logging
 import os.path
-import sys
-import argparse
 import time
+from datetime import datetime
+from xml.etree import ElementTree
 
+import gpxpy.gpx
 import httpx
 
-BASE_URL = "https://api.nike.com/sport/v3/me"
-TOKEN_REFRESH_URL = "https://unite.nike.com/tokenRefresh"
-OUTPUT_DIR = "activities"
-NIKE_CLIENT_ID = "HlHa2Cje3ctlaOqnxvgZXNaAs7T9nAuH"
+from generator import Generator
+from config import (BASE_URL, GPX_FOLDER, JSON_FILE, NIKE_CLIENT_ID,
+                    OUTPUT_DIR, SQL_FILE, TOKEN_REFRESH_URL)
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nike_sync")
 
 
@@ -136,8 +136,190 @@ def sanitise_json(d):
     return d
 
 
+def get_to_generate_files():
+    file_names = os.listdir(GPX_FOLDER)
+    try:
+        last_time = max(int(i.split(".")[0]) for i in file_names)
+    except:
+        last_time = 0
+    return [OUTPUT_DIR + "/" + i for i in os.listdir(OUTPUT_DIR) if int(i.split(".")[0]) > last_time]
+
+
+def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rate_data):
+    """
+    Parses the latitude, longitude and elevation data to generate a GPX document
+    Args:
+        title: the title of the GXP document
+        latitude_data: A list of dictionaries containing latitude data
+        longitude_data: A list of dictionaries containing longitude data
+        elevation_data: A list of dictionaries containing elevation data
+    Returns:
+        gpx: The GPX XML document
+    """
+
+    gpx = gpxpy.gpx.GPX()
+    gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+    gpx_track = gpxpy.gpx.GPXTrack()
+    gpx_track.name = title
+    gpx.tracks.append(gpx_track)
+
+    # Create first segment in our GPX track:
+    gpx_segment = gpxpy.gpx.GPXTrackSegment()
+    gpx_track.segments.append(gpx_segment)
+
+    points_dict_list = []
+
+    def update_points(points, update_data, update_name):
+        """
+        Update the points dict list so that can easy create GPXTrackPoint
+        Args:
+            points: basic points list
+            update_data: attr to update points which is a list
+            update_name: attr name
+        Returns:
+            None (just update the points list)
+        """
+        counter = 0
+        for p in points:
+            while p["start_time"] >= update_data[counter]["end_epoch_ms"]:
+                if counter == len(update_data) - 1:
+                    break
+                p[update_name] = update_data[counter]["value"]
+                counter += 1
+
+    for lat, lon in zip(latitude_data, longitude_data):
+        if lat["start_epoch_ms"] != lon["start_epoch_ms"]:
+            raise Exception(f"\tThe latitude and longitude data is out of order")
+
+        points_dict_list.append(
+            {
+                "latitude": lat["value"],
+                "longitude": lon["value"],
+                "start_time": lat["start_epoch_ms"],
+                "time": datetime.utcfromtimestamp(lat["start_epoch_ms"] / 1000),
+            }
+        )
+
+    if elevation_data:
+        update_points(points_dict_list, elevation_data, "elevation")
+    if heart_rate_data:
+        update_points(points_dict_list, heart_rate_data, "heart_rate")
+
+    for p in points_dict_list:
+        # delete useless attr
+        del p["start_time"]
+        if p.get("heart_rate") is None:
+            point = gpxpy.gpx.GPXTrackPoint(**p)
+        else:
+            heart_rate_num = p.pop("heart_rate")
+            point = gpxpy.gpx.GPXTrackPoint(**p)
+            gpx_extension_hr = ElementTree.fromstring(
+                f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
+                <gpxtpx:hr>{heart_rate_num}</gpxtpx:hr>
+                </gpxtpx:TrackPointExtension>
+            """
+            )
+            point.extensions.append(gpx_extension_hr)
+        gpx_segment.points.append(point)
+
+    return gpx.to_xml()
+
+
+def parse_activity_data(activity):
+    """
+    Parses a NRC activity and returns GPX XML
+    Args:
+        activity: a json document for a NRC activity
+    Returns:
+        gpx: the GPX XML doc for the input activity
+    """
+
+    lat_index = None
+    lon_index = None
+    ascent_index = None
+    heart_rate_index = None
+    for i, metric in enumerate(activity["metrics"]):
+        if metric["type"] == "latitude":
+            lat_index = i
+        if metric["type"] == "longitude":
+            lon_index = i
+        if metric["type"] == "ascent":
+            ascent_index = i
+        if metric["type"] == "heart_rate":
+            heart_rate_index = i
+
+    if not any([lat_index, lon_index]):
+        return None
+
+    latitude_data = activity["metrics"][lat_index]["values"]
+    longitude_data = activity["metrics"][lon_index]["values"]
+    elevation_data = None
+    heart_rate_data = None
+    if ascent_index:
+        elevation_data = activity["metrics"][ascent_index]["values"]
+    if heart_rate_index:
+        heart_rate_data = activity["metrics"][heart_rate_index]["values"]
+
+    title = activity["tags"].get("com.nike.name")
+
+    gpx_doc = generate_gpx(
+        title, latitude_data, longitude_data, elevation_data, heart_rate_data
+    )
+    return gpx_doc
+
+
+def save_gpx(gpx_data, activity_id):
+    file_path = os.path.join(GPX_FOLDER, activity_id + ".gpx")
+    with open(file_path, "w") as f:
+        f.write(gpx_data)
+
+
+def make_new_gpxs(files):
+    # TODO refactor maybe we do not need to upload
+    if not files:
+        print("no files")
+        return
+    if not os.path.exists(GPX_FOLDER):
+        os.mkdir(GPX_FOLDER)
+    for file in files:
+        with open(file, "r") as f:
+            try:
+                json_data = json.loads(f.read())
+            except:
+                return
+        # ALL save name using utc if you want local please offset
+        gpx_name = str(json_data["end_epoch_ms"])
+        parsed_data = parse_activity_data(json_data)
+        if parsed_data:
+            save_gpx(parsed_data, gpx_name)
+
+
+def make_activities_json():
+    generator = Generator(SQL_FILE)
+    # if you want to update data change False to True
+    generator.sync_from_gpx(GPX_FOLDER)
+    # generator.sync()
+    activities_list = generator.load()
+    with open(JSON_FILE, "w") as f:
+
+        f.write("const activities = ")
+        json.dump(activities_list, f, indent=2)
+        f.write(";\n")
+        f.write("\n")
+        f.write("export {activities};\n")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("refresh_token", help="API access token for nike.com")
     options = parser.parse_args()
     run(options.refresh_token)
+
+    time.sleep(2)
+    files = get_to_generate_files()
+    make_new_gpxs(files)
+    # waiting for gpx
+    time.sleep(2)
+    make_activities_json()
+
+

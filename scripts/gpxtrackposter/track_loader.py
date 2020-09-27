@@ -21,7 +21,6 @@ log = logging.getLogger(__name__)
 
 def load_gpx_file(file_name):
     """Load an individual GPX file as a track by using Track.load_gpx()"""
-    log.info(f"Loading track {os.path.basename(file_name)}...")
     t = Track()
     t.load_gpx(file_name)
     return t
