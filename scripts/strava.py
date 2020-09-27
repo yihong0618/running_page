@@ -235,3 +235,4 @@ if __name__ == "__main__":
     # change here to manual
     files = get_to_generate_files(last_time)
     make_new_gpxs(files)
+
