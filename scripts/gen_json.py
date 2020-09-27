@@ -14,7 +14,7 @@ GPX_DIR  = "GPX_OUT"
 
 
 def run(client_id, client_secret, refresh_token):
-    generator = Generator(SQL_FILE, client_id, client_secret, refresh_token)
+    generator = Generator(SQL_FILE)
     # if you want to update data change False to True
     generator.sync_from_gpx(GPX_DIR, False)
     # generator.sync()
