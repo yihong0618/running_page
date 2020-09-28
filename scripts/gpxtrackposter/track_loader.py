@@ -9,12 +9,17 @@
 import hashlib
 import logging
 import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import shutil
 from typing import Dict, Generator, List
 import concurrent.futures
 from .exceptions import ParameterError, TrackLoadError
 from .track import Track
 from .year_range import YearRange
+
+from generator import init_db, Activity
 
 log = logging.getLogger(__name__)
 
@@ -103,11 +108,26 @@ class TrackLoader:
         # filter out tracks with length < min_length
         return [t for t in tracks if t.length >= self.min_length]
 
+    def load_tracks_from_db(self, sql_file):
+        session = init_db(sql_file)
+        activities = session.query(Activity).order_by(Activity.start_date_local)
+        tracks = []
+        for activate in activities:
+            t = Track()
+            t.load_from_db(activate)
+            tracks.append(t)
+        print(len(tracks))
+        tracks = self._filter_tracks(tracks)
+        print(len(tracks))
+        # merge tracks that took place within one hour
+        tracks = self._merge_tracks(tracks)
+        return [t for t in tracks if t.length >= self.min_length]
+
     def _filter_tracks(self, tracks):
         filtered_tracks = []
         for t in tracks:
             file_name = t.file_names[0]
-            if t.length == 0:
+            if int(t.length) == 0:
                 log.info(f"{file_name}: skipping empty track")
             elif not t.start_time_local:
                 log.info(f"{file_name}: skipping track without start time")

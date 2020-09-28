@@ -8,6 +8,7 @@ from gpxtrackposter import poster, track_loader
 from gpxtrackposter import grid_drawer, circular_drawer, heatmap_drawer
 from gpxtrackposter import github_drawer, calendar_drawer
 from gpxtrackposter.exceptions import ParameterError, PosterError
+from config import SQL_FILE
 
 
 __app_name__ = "create_poster"
@@ -176,6 +177,13 @@ def main():
         help="Use utc time or local time",
     )
 
+    args_parser.add_argument(
+        "--from-db",
+        dest="from_db",
+        action="store_true",
+        help="activities db file",
+    )
+
     for _, drawer in drawers.items():
         drawer.create_args(args_parser)
 
@@ -205,7 +213,10 @@ def main():
         print("Clearing cache...")
         loader.clear_cache()
 
-    tracks = loader.load_tracks(args.gpx_dir)
+    if args.from_db:
+        tracks = loader.load_tracks_from_db(SQL_FILE)
+    else:
+        tracks = loader.load_tracks(args.gpx_dir)
     if not tracks:
         if not args.clear_cache:
             print("No tracks found.")

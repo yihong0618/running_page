@@ -2,17 +2,22 @@ name: Run Data Sync
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 * * * *"
   push:
     branches:
       - master
     paths:
       - scripts/nike_sync.py
       - scripts/runtastic_sync.py
+      - scripts/strava_sync.py
+      - scripts/gen_svg.py
       - requirements.txt
 
 env:
-  RUN_TYPE: runtastic # support runtastic/strava/nike
+  RUN_TYPE: strava # support runtastic/strava/nike
+  ATHLETE: yihong0618
+  TITLE: Yihong0618 Running
+  TITLE_GRID: Over 10km Runs
 
 jobs:
   sync:
@@ -50,12 +55,16 @@ jobs:
         if: env.RUN_TYPE == 'runtastic'
         run: |
           python scripts/runtastic_sync.py ${{ secrets.RUNTASTIC_EMAIL }} ${{ secrets.RUNTASTIC_PASSWORD }}
+  
+      - name: Run sync Strava script
+        if: env.RUN_TYPE == 'strava'
+        run: |
+          python scripts/strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
 
       - name: Make svg GitHub profile
-        if: env.RUN_TYPE == 'runtastic' || env.RUN_TYPE == 'nike' # use gpx
         run: |
-          python scripts/gen_svg.py  --language zh_CN --gpx-dir ./GPX_OUT --title "Yihong0618 Running" --type github --athlete "yihong0618" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
-          python scripts/gen_svg.py  --language zh_CN --gpx-dir ./GPX_OUT --title "Over 10km Runs" --type grid --athlete "yihong0618"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+          python scripts/gen_svg.py --from-db --title ${{ env.TITLE }} --type github --athlete ${{ env.ATHLETE }} --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+          python scripts/gen_svg.py --from-db --title ${{ env.TITLE_GRID }} --type grid --athlete ${{ env.ATHLETE }}  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
 
       - name: Push new runs
         uses: github-actions-x/commit@v2.6
