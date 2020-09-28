@@ -1,5 +1,5 @@
-import json
 import argparse
+import json
 
 from config import JSON_FILE, SQL_FILE
 from generator import Generator

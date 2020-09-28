@@ -52,7 +52,9 @@ class Track:
     def load_from_db(self, activate):
         # use strava as file name
         self.file_names = [str(activate.run_id)]
-        start_time = datetime.datetime.strptime(activate.start_date_local, "%Y-%m-%d %H:%M:%S")
+        start_time = datetime.datetime.strptime(
+            activate.start_date_local, "%Y-%m-%d %H:%M:%S"
+        )
         self.start_time_local = start_time
         self.end_time = start_time + activate.elapsed_time
         self.length = float(activate.distance)
