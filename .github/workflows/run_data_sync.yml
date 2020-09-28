@@ -16,8 +16,8 @@ on:
 env:
   RUN_TYPE: strava # support runtastic/strava/nike
   ATHLETE: yihong0618
-  TITLE: Yihong0618 Running
-  TITLE_GRID: Over 10km Runs
+  TITLE: "Yihong0618 Running"
+  TITLE_GRID: "Over 10km Runs"
 
 jobs:
   sync:
