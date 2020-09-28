@@ -9,6 +9,7 @@ from xml.etree import ElementTree
 import gpxpy.gpx
 import httpx
 
+from utils import make_activities_file
 from generator import Generator
 from config import (BASE_URL, GPX_FOLDER, JSON_FILE, NIKE_CLIENT_ID,
                     OUTPUT_DIR, SQL_FILE, TOKEN_REFRESH_URL)
@@ -294,21 +295,6 @@ def make_new_gpxs(files):
             save_gpx(parsed_data, gpx_name)
 
 
-def make_activities_json():
-    generator = Generator(SQL_FILE)
-    # if you want to update data change False to True
-    generator.sync_from_gpx(GPX_FOLDER)
-    # generator.sync()
-    activities_list = generator.load()
-    with open(JSON_FILE, "w") as f:
-
-        f.write("const activities = ")
-        json.dump(activities_list, f, indent=2)
-        f.write(";\n")
-        f.write("\n")
-        f.write("export {activities};\n")
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("refresh_token", help="API refresh access token for nike.com")
@@ -320,6 +306,4 @@ if __name__ == "__main__":
     make_new_gpxs(files)
     # waiting for gpx
     time.sleep(2)
-    make_activities_json()
-
-
+    make_activities_file(SQL_FILE, GPX_FOLDER, JSON_FILE)
