@@ -214,9 +214,6 @@ const YearsStat = ({ runs, year, onClick }) => {
           {year}
           的数据
           <br />
-          希望能激励自己前行，不要停下来。这个展示也是我学习React的第一个项目，
-          希望自己有所成长。
-          <br />
         </p>
       </section>
       <hr color="red" />
