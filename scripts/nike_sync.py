@@ -9,15 +9,8 @@ from xml.etree import ElementTree
 import gpxpy.gpx
 import httpx
 
-from config import (
-    BASE_URL,
-    GPX_FOLDER,
-    JSON_FILE,
-    NIKE_CLIENT_ID,
-    OUTPUT_DIR,
-    SQL_FILE,
-    TOKEN_REFRESH_URL,
-)
+from config import (BASE_URL, GPX_FOLDER, JSON_FILE, NIKE_CLIENT_ID,
+                    OUTPUT_DIR, SQL_FILE, TOKEN_REFRESH_URL)
 from utils import make_activities_file
 
 # logging.basicConfig(level=logging.INFO)
