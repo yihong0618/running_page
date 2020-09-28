@@ -18,7 +18,6 @@ from config import (
     SQL_FILE,
     TOKEN_REFRESH_URL,
 )
-from generator import Generator
 from utils import make_activities_file
 
 # logging.basicConfig(level=logging.INFO)

@@ -1,18 +1,14 @@
 import json
-import os
 import argparse
 
 from config import JSON_FILE, SQL_FILE
 from generator import Generator
 
 
-GET_DIR = "activities"
-GPX_FOLDER = os.path.join(os.getcwd(), "GPX_OUT")
-
 def run_strava_sync(client_id, client_secret, refresh_token):
     generator = Generator(SQL_FILE)
     generator.set_strava_config(client_id, client_secret, refresh_token)
-    # if you want to update data change False to True
+    # if you want to refresh data change False to True
     generator.sync(False)
 
     activities_list = generator.load()
