@@ -57,6 +57,9 @@ python3(python) scripts/strava_sync.py ${client_id} ${client_id} ${refresch_toke
 ## server(recommend vercel)
 
 1. vercel 连接你的 GitHub repo
+![image](https://user-images.githubusercontent.com/15976103/94452465-2599b880-01e2-11eb-9538-582f0f46c421.png)
+2. import repo
+![image](https://user-images.githubusercontent.com/15976103/94452556-3f3b0000-01e2-11eb-97a2-3789c2d60766.png)
 2. 等待部署完毕
 3. 访问
 
