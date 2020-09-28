@@ -10,7 +10,7 @@ from generator import Generator
 
 JSON_FILE = "src/static/activities.js"
 SQL_FILE = "scripts/data.db"
-GPX_DIR  = "GPX_OUT"
+GPX_DIR = "GPX_OUT"
 
 
 def run(client_id, client_secret, refresh_token):
@@ -26,6 +26,7 @@ def run(client_id, client_secret, refresh_token):
         f.write(";\n")
         f.write("\n")
         f.write("export {activities};\n")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

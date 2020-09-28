@@ -52,6 +52,7 @@ jobs:
           python scripts/runtastic_sync.py ${{ secrets.RUNTASTIC_EMAIL }} ${{ secrets.RUNTASTIC_PASSWORD }}
 
       - name: Make svg GitHub profile
+        if: env.RUN_TYPE == 'runtastic' || env.RUN_TYPE == 'nike' # use gpx
         run: |
           python scripts/gen_svg.py  --language zh_CN --gpx-dir ./GPX_OUT --title "Yihong0618 Running" --type github --athlete "yihong0618" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
           python scripts/gen_svg.py  --language zh_CN --gpx-dir ./GPX_OUT --title "Over 10km Runs" --type grid --athlete "yihong0618"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime

@@ -28,7 +28,9 @@ class Generator:
     def check_access(self) -> None:
         now = datetime.datetime.fromtimestamp(time.time())
         response = self.client.refresh_access_token(
-            client_id=self.client_id, client_secret=self.client_secret, refresh_token=self.refresh_token,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            refresh_token=self.refresh_token,
         )
         # Update the authdata object
         self.access_token = response["access_token"]
@@ -79,7 +81,6 @@ class Generator:
             sys.stdout.flush()
 
         self.session.commit()
-            
 
     def load(self):
         activities = self.session.query(Activity).order_by(Activity.start_date_local)
@@ -90,7 +91,9 @@ class Generator:
         for activity in activities:
             # Determine running streak.
             if activity.type == "Run":
-                date = datetime.datetime.strptime(activity.start_date_local, "%Y-%m-%d %H:%M:%S").date()
+                date = datetime.datetime.strptime(
+                    activity.start_date_local, "%Y-%m-%d %H:%M:%S"
+                ).date()
                 if last_date is None:
                     streak = 1
                 elif date == last_date:

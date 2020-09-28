@@ -74,10 +74,10 @@ class TrackLoader:
         log.info(f"GPX files: {len(file_names)}")
         print(len(file_names))
 
-        tracks = [] 
+        tracks = []
 
         # load track from cache
-        cached_tracks = {} 
+        cached_tracks = {}
         # self.clear_cache()
         if self.cache_dir:
             log.info(f"Trying to load {len(file_names)} track(s) from cache...")
