@@ -13,13 +13,12 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import shutil
-from typing import Dict, Generator, List
 import concurrent.futures
 from .exceptions import ParameterError, TrackLoadError
 from .track import Track
 from .year_range import YearRange
 
-from generator import init_db, Activity
+from generator.db import init_db, Activity
 
 log = logging.getLogger(__name__)
 
