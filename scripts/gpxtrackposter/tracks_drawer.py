@@ -46,6 +46,4 @@ class TracksDrawer:
         if diff == 0:
             return color1
 
-        return interpolate_color(
-            color1, color2, (length - length_range.lower()) / diff
-        )
+        return interpolate_color(color1, color2, (length - length_range.lower()) / diff)

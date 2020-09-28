@@ -9,10 +9,17 @@ from xml.etree import ElementTree
 import gpxpy.gpx
 import httpx
 
-from utils import make_activities_file
+from config import (
+    BASE_URL,
+    GPX_FOLDER,
+    JSON_FILE,
+    NIKE_CLIENT_ID,
+    OUTPUT_DIR,
+    SQL_FILE,
+    TOKEN_REFRESH_URL,
+)
 from generator import Generator
-from config import (BASE_URL, GPX_FOLDER, JSON_FILE, NIKE_CLIENT_ID,
-                    OUTPUT_DIR, SQL_FILE, TOKEN_REFRESH_URL)
+from utils import make_activities_file
 
 # logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nike_sync")
@@ -29,7 +36,7 @@ class Nike:
                 "client_id": NIKE_CLIENT_ID,
                 "grant_type": "refresh_token",
             },
-            timeout=60
+            timeout=60,
         )
         response.raise_for_status()
 
@@ -143,7 +150,11 @@ def get_to_generate_files():
         last_time = max(int(i.split(".")[0]) for i in file_names)
     except:
         last_time = 0
-    return [OUTPUT_DIR + "/" + i for i in os.listdir(OUTPUT_DIR) if int(i.split(".")[0]) > last_time]
+    return [
+        OUTPUT_DIR + "/" + i
+        for i in os.listdir(OUTPUT_DIR)
+        if int(i.split(".")[0]) > last_time
+    ]
 
 
 def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rate_data):

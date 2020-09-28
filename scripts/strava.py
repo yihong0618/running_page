@@ -201,16 +201,20 @@ def make_new_gpxs(files):
             except JSONDecodeError:
                 return
         # ALL save name using utc if you want local please offset
-        gpx_name = str(datetime.utcfromtimestamp(int(json_data["start_epoch_ms"]) / 1000).strftime('%Y-%m-%d %H-%M-%S'))
+        gpx_name = str(
+            datetime.utcfromtimestamp(int(json_data["start_epoch_ms"]) / 1000).strftime(
+                "%Y-%m-%d %H-%M-%S"
+            )
+        )
         parsed_data = parse_activity_data(json_data)
         if parsed_data:
             save_gpx(parsed_data, gpx_name)
     gpx_files = sorted(os.listdir(GPX_FOLDER))
-    gpx_files = gpx_files[-len(files):]
+    gpx_files = gpx_files[-len(files) :]
     for f in gpx_files:
         upload_gpx(GPX_FOLDER + "/" + f)
         upload_gpx(os.path.join(GPX_FOLDER, f))
-        logger.info(f +" uploaded")
+        logger.info(f + " uploaded")
 
 
 if __name__ == "__main__":

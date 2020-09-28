@@ -17,8 +17,8 @@ from collections import namedtuple
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
-class Track:
 
+class Track:
     def __init__(self):
         self.file_names = []
         self.polylines = []
@@ -44,7 +44,9 @@ class Track:
             with open(file_name, "r") as file:
                 self._load_gpx_data(mod_gpxpy.parse(file))
         except:
-            print(f"Something went wrong when loading GPX. for file {self.file_names[0]}")
+            print(
+                f"Something went wrong when loading GPX. for file {self.file_names[0]}"
+            )
             pass
 
     def bbox(self):
@@ -59,7 +61,9 @@ class Track:
         self.start_time, self.end_time = gpx.get_time_bounds()
         # use timestamp as id
         self.run_id = int(datetime.datetime.timestamp(self.start_time) * 1000)
-        self.start_time_local, self.end_time_local = parse_datetime_to_local(self.start_time, self.end_time, gpx)
+        self.start_time_local, self.end_time_local = parse_datetime_to_local(
+            self.start_time, self.end_time, gpx
+        )
         if self.start_time is None:
             raise TrackLoadError("Track has no start time.")
         if self.end_time is None:
@@ -73,7 +77,13 @@ class Track:
         for t in gpx.tracks:
             for s in t.segments:
                 try:
-                    heart_rate_list.extend([int(p.extensions[0].getchildren()[0].text) for p in s.points if p.extensions])
+                    heart_rate_list.extend(
+                        [
+                            int(p.extensions[0].getchildren()[0].text)
+                            for p in s.points
+                            if p.extensions
+                        ]
+                    )
                 except:
                     pass
                 line = [
@@ -87,7 +97,9 @@ class Track:
         except:
             pass
         self.polyline_str = polyline.encode(polyline_container)
-        self.average_heartrate = sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
+        self.average_heartrate = (
+            sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
+        )
         self.moving_dict = self._get_moving_data(gpx)
 
     def append(self, other):
@@ -151,31 +163,35 @@ class Track:
                 },
                 json_file,
             )
-    
+
     @staticmethod
     def _get_moving_data(gpx):
         moving_data = gpx.get_moving_data()
         return {
             "distance": moving_data.moving_distance,
             "moving_time": datetime.timedelta(seconds=moving_data.moving_time),
-            "elapsed_time": datetime.timedelta(seconds=(moving_data.moving_time + moving_data.stopped_time)),
-            "average_speed": moving_data.moving_distance / moving_data.moving_time
+            "elapsed_time": datetime.timedelta(
+                seconds=(moving_data.moving_time + moving_data.stopped_time)
+            ),
+            "average_speed": moving_data.moving_distance / moving_data.moving_time,
         }
 
     def to_namedtuple(self):
         d = {
             "id": self.run_id,
-            "name": "run from gpx", # maybe change later
-            "type": "Run", # Run for now only support run for now maybe change later
+            "name": "run from gpx",  # maybe change later
+            "type": "Run",  # Run for now only support run for now maybe change later
             "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
             "start_date_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
             "end_local": self.end_time_local.strftime("%Y-%m-%d %H:%M:%S"),
             "length": self.length,
-            "average_heartrate": int(self.average_heartrate) if self.average_heartrate else None,
+            "average_heartrate": int(self.average_heartrate)
+            if self.average_heartrate
+            else None,
             "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,
         }
         d.update(self.moving_dict)
         # return a nametuple that can use . to get attr
-        return namedtuple('x', d.keys())(*d.values())
+        return namedtuple("x", d.keys())(*d.values())
