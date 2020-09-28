@@ -10,7 +10,7 @@ from gpxtrackposter import github_drawer, calendar_drawer
 from gpxtrackposter.exceptions import ParameterError, PosterError
 from config import SQL_FILE
 
-
+# from flopp great repo
 __app_name__ = "create_poster"
 __app_author__ = "flopp.net"
 
