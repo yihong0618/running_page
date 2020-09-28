@@ -42,12 +42,12 @@ jobs:
         if: steps.pip-cache.outputs.cache-hit != 'true'
 
       - name: Run sync Nike script
-        if: $ {{env.RUN_TYPE}} == 'nike'
+        if: env.RUN_TYPE == 'nike'
         run: |
           python scripts/nike_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }}
 
       - name: Run sync Runtastic script
-        if: $ {{env.RUN_TYPE}} == 'runtastic'
+        if: env.RUN_TYPE == 'runtastic'
         run: |
           python scripts/runtastic_sync.py ${{ secrets.RUNTASTIC_EMAIL }} ${{ secrets.RUNTASTIC_PASSWORD }}
 
