@@ -90,4 +90,4 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 ## 特别感谢
 
-@[floop](https://github.com/flopp)
+@[flopp](https://github.com/flopp)
