@@ -22,45 +22,13 @@ module.exports = {
               className: "header-link",
             },
           },
-          {
-            resolve: "gatsby-remark-images",
-            options: {
-              maxWidth: 600,
-              quality: 80,
-              withWebp: { quality: 80 },
-            },
-          },
         ],
-      },
-    },
-    {
-      resolve: "gatsby-source-filesystem",
-      options: {
-        name: "src",
-        path: `${__dirname}/posts`,
       },
     },
     {
       resolve: "gatsby-plugin-sass",
       options: {
         precision: 8,
-      },
-    },
-    "gatsby-transformer-yaml",
-    "gatsby-transformer-json",
-    {
-      resolve: "gatsby-source-filesystem",
-      options: {
-        name: "images",
-        path: `${__dirname}/posts/images`,
-      },
-    },
-    {
-      resolve: "gatsby-source-filesystem",
-      options: {
-        name: "static_images",
-        path: `${__dirname}/src/images`,
-        ignore: ["**/.(js|jsx|scss)"],
       },
     },
     {
@@ -73,7 +41,6 @@ module.exports = {
     },
     "gatsby-transformer-sharp",
     "gatsby-plugin-sharp",
-    //"gatsby-redirect-from",
     "gatsby-plugin-sitemap",
     {
       resolve: "gatsby-plugin-robots-txt",

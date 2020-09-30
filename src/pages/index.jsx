@@ -11,7 +11,7 @@ import {
   titleForShow, formatPace, scrollToMap, locationForRun, intComma, geoJsonForRuns, geoJsonForMap,
   titleForRun, filterAndSortRuns, sortDateFunc, sortDateFuncReverse, getBoundsForGeoData,
 } from '../utils/utils';
-import { MAPBOX_TOKEN } from '../utils/const';
+import { MAPBOX_TOKEN, IS_CHINESE } from '../utils/const';
 
 import styles from './running.module.scss';
 
@@ -343,11 +343,10 @@ const PeriodStat = () => {
 const RunMap = ({
   title, viewport, setViewport, changeYear, geoData,
 }) => {
-  const [lastWidth, setLastWidth] = useState(0);
   const addControlHandler = (event) => {
     const map = event && event.target;
     // set lauguage to Chinese if you use English please comment it
-    if (map) {
+    if (map && IS_CHINESE) {
       map.addControl(
         new MapboxLanguage({
           defaultLanguage: 'zh',
