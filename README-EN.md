@@ -92,6 +92,6 @@ My secret is as follows
 
 # Special thanks
 
-@[floop](https://github.com/flopp)
+@[flopp](https://github.com/flopp)
 
 Translated with www.DeepL.com/Translator (free version)

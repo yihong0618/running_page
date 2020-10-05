@@ -1,4 +1,4 @@
-# [打造个人跑步主页](https://yihong.run/running)
+# [打造个人跑步主页](https://yihong.run/running) [English](https://github.com/yihong0618/running_page/blob/master/README-EN.md)
 
 ## 特性
 
