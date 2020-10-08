@@ -134,9 +134,9 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
     python3(python) scripts/strava_sync.py ${client_id} ${client_id} ${refresch_token}
     ```
     其他资料参见
-    https://developers.strava.com/docs/getting-started 
-    https://github.com/barrald/strava-uploader
-    https://github.com/strava/go.strava
+    https://developers.strava.com/docs/getting-started   
+    https://github.com/barrald/strava-uploader   
+    https://github.com/strava/go.strava   
 
 ## server(recommend vercel)
 1. vercel 连接你的 GitHub repo
