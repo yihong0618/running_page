@@ -1,4 +1,5 @@
-# [打造个人跑步主页](https://yihong.run/running) [English](https://github.com/yihong0618/running_page/blob/master/README-EN.md)
+# [打造个人跑步主页](https://yihong.run/running) 
+简体中文 | [English](https://github.com/yihong0618/running_page/blob/master/README-EN.md)
 
 ## 特性
 
@@ -22,7 +23,6 @@ git clone https://github.com/yihong0618/running_page.git
 ## 安装及测试
     ```
     pip3 install -r requirements.txt
-    mkdir data
     yarn install
     yarn develop
     ```
@@ -30,8 +30,7 @@ git clone https://github.com/yihong0618/running_page.git
 
 
 ## 本地数据同步
-### 删除项目中的测试数据
-在根目录下执行
+删除项目中的测试数据，在根目录下执行
 ```bash
 rm scripts/data.db GPX_OUT/* activities/*
 ```
@@ -54,8 +53,8 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 ### Nike Run Club
 
 获取 Nike 的 refresh_token
-1. 登陆 [Nike](https://www.nike.com) 官网
-2. 在开发者 -> Application-> Storage -> https:unite.nike.com 中找到 refresh_token
+1. 登录 [Nike](https://www.nike.com) 官网
+2. In Developer -> Application-> Storage -> https:unite.nike.com 中找到 refresh_token
 
     ![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png)
 3. 在项目根目录下执行:
@@ -89,7 +88,7 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 1. 注册/登陆 [Strava](https://www.strava.com/) 账号
 2. 登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 
-3. 创建 My API Application   
+3. 创建 `My API Application`   
     输入下列信息：
     ![My API Application](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/strava_settings_api.png)
     创建成功：
@@ -105,13 +104,13 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
     ```
     http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f3471e6e&scope=read,activity:write,activity:read_all,profile:write,profile:read_all,read_all
     ```
-    code 数值为：
+    `code` 数值为：
     ```
     1dab37edd9970971fb502c9efdd087f4f3471e6
     ```
     ![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png)
 6. 使用 Client_id、Client_secret、Code 请求 refresch_token   
-    在 终端/iTerm 中执行：
+    在 `终端/iTerm` 中执行：
     ```
     curl -X POST https://www.strava.com/oauth/token \
     -F client_id=${Your Client ID} \
@@ -135,10 +134,10 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
     python3(python) scripts/strava_sync.py ${client_id} ${client_id} ${refresch_token}
     ```
     其他资料参见
-    1. https://developers.strava.com/docs/getting-started 
-    2. https://github.com/barrald/strava-uploader
-    3. https://github.com/strava/go.strava
- 
+    https://developers.strava.com/docs/getting-started 
+    https://github.com/barrald/strava-uploader
+    https://github.com/strava/go.strava
+
 ## server(recommend vercel)
 1. vercel 连接你的 GitHub repo
     ![image](https://user-images.githubusercontent.com/15976103/94452465-2599b880-01e2-11eb-9538-582f0f46c421.png)
@@ -162,7 +161,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 ## 我的展示
 ![image](https://user-images.githubusercontent.com/15976103/87566339-775b9800-c6f5-11ea-803f-6c2f69801ee4.png)
 
-## TODO
+# TODO
 
 - [ ] 完善这个文档
 - [ ] 支持佳明，佳明中国
@@ -172,6 +171,6 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [ ] 完善代码
 - [ ] 添加新功能
 
-## 特别感谢
+# 特别感谢
 
 @[flopp](https://github.com/flopp)
