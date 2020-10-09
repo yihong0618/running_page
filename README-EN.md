@@ -138,9 +138,9 @@ Replace ${your_id} in the link with `My API Application` Client ID
     python3(python) scripts/strava_sync.py ${client_id} ${client_id} ${refresch_token}
     ```
     References
-    https://developers.strava.com/docs/getting-started 
-    https://github.com/barrald/strava-uploader
-    https://github.com/strava/go.strava
+    https://developers.strava.com/docs/getting-started   
+    https://github.com/barrald/strava-uploader   
+    https://github.com/strava/go.strava   
 
 
 ## server(recommendation vercel)
