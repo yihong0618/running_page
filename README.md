@@ -167,9 +167,11 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [ ] 支持佳明，佳明中国
 - [ ] 支持悦跑圈
 - [ ] 支持 nike+strava, runtastic+strava
+- [ ] 尝试支持咕咚，小米运动
 - [ ] 支持英语
 - [ ] 完善代码
 - [ ] 添加新功能
+- [ ] i18n
 
 # 特别感谢
 
