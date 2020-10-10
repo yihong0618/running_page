@@ -142,6 +142,9 @@ def get_to_generate_files():
         last_time = max(int(i.split(".")[0]) for i in file_names)
     except:
         last_time = 0
+    if not os.listdir(OUTPUT_DIR):
+        print("There is no nike running data")
+        return 
     return [
         OUTPUT_DIR + "/" + i
         for i in os.listdir(OUTPUT_DIR)
