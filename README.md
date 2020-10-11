@@ -131,7 +131,7 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 7. 同步数据至 Strava   
 在项目根目录执行：
     ```python
-    python3(python) scripts/strava_sync.py ${client_id} ${client_id} ${refresch_token}
+    python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
     ```
     其他资料参见
     https://developers.strava.com/docs/getting-started   
