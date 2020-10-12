@@ -142,6 +142,9 @@ def get_to_generate_files():
         last_time = max(int(i.split(".")[0]) for i in file_names)
     except:
         last_time = 0
+    if not os.listdir(OUTPUT_DIR):
+        print("There is no nike running data")
+        return 
     return [
         OUTPUT_DIR + "/" + i
         for i in os.listdir(OUTPUT_DIR)
@@ -242,6 +245,9 @@ def parse_activity_data(activity):
     lon_index = None
     ascent_index = None
     heart_rate_index = None
+    if not activity.get("metrics"):
+        print(f"The activity {activity['id']} doesn't contain metrics information")
+        return
     for i, metric in enumerate(activity["metrics"]):
         if metric["type"] == "latitude":
             lat_index = i
