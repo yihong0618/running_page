@@ -135,7 +135,7 @@ Replace ${your_id} in the link with `My API Application` Client ID
 
 7. Sync `Strava` data 
     ```python
-    python3(python) scripts/strava_sync.py ${client_id} ${client_id} ${refresch_token}
+    python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
     ```
     References
     https://developers.strava.com/docs/getting-started   
