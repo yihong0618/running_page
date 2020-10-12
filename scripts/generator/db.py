@@ -69,48 +69,53 @@ class Activity(Base):
 
 def update_or_create_activity(session, run_activity):
     created = False
-    activity = session.query(Activity).filter_by(run_id=int(run_activity.id)).first()
-    if not activity:
-        start_point = run_activity.start_latlng
-        location_country = ""
-        if start_point:
-            try:
-                location_country = str(
-                    g.reverse(f"{start_point.lat}, {start_point.lon}")
-                )
-            # limit (only for the first time)
-            except:
-                print("+++++++limit+++++++")
-                time.sleep(60)
-                location_country = str(
-                    g.reverse(f"{start_point.lat}, {start_point.lon}")
-                )
+    try:
+        activity = session.query(Activity).filter_by(run_id=int(run_activity.id)).first()
+        if not activity:
+            start_point = run_activity.start_latlng
+            location_country = ""
+            if start_point:
+                try:
+                    location_country = str(
+                        g.reverse(f"{start_point.lat}, {start_point.lon}")
+                    )
+                # limit (only for the first time)
+                except:
+                    print("+++++++limit+++++++")
+                    time.sleep(60)
+                    location_country = str(
+                        g.reverse(f"{start_point.lat}, {start_point.lon}")
+                    )
 
-        activity = Activity(
-            run_id=run_activity.id,
-            name=run_activity.name,
-            distance=run_activity.distance,
-            moving_time=run_activity.moving_time,
-            elapsed_time=run_activity.elapsed_time,
-            type=run_activity.type,
-            start_date=run_activity.start_date,
-            start_date_local=run_activity.start_date_local,
-            location_country=location_country,
-            average_heartrate=run_activity.average_heartrate,
-            average_speed=float(run_activity.average_speed),
-            summary_polyline=run_activity.map.summary_polyline,
-        )
-        session.add(activity)
-        created = True
-    else:
-        activity.name = run_activity.name
-        activity.distance = float(run_activity.distance)
-        activity.moving_time = run_activity.moving_time
-        activity.elapsed_time = run_activity.elapsed_time
-        activity.type = run_activity.type
-        activity.average_heartrate = run_activity.average_heartrate
-        activity.average_speed = float(run_activity.average_speed)
-        activity.summary_polyline = run_activity.map.summary_polyline
+            activity = Activity(
+                run_id=run_activity.id,
+                name=run_activity.name,
+                distance=run_activity.distance,
+                moving_time=run_activity.moving_time,
+                elapsed_time=run_activity.elapsed_time,
+                type=run_activity.type,
+                start_date=run_activity.start_date,
+                start_date_local=run_activity.start_date_local,
+                location_country=location_country,
+                average_heartrate=run_activity.average_heartrate,
+                average_speed=float(run_activity.average_speed),
+                summary_polyline=run_activity.map.summary_polyline,
+            )
+            session.add(activity)
+            created = True
+        else:
+            activity.name = run_activity.name
+            activity.distance = float(run_activity.distance)
+            activity.moving_time = run_activity.moving_time
+            activity.elapsed_time = run_activity.elapsed_time
+            activity.type = run_activity.type
+            activity.average_heartrate = run_activity.average_heartrate
+            activity.average_speed = float(run_activity.average_speed)
+            activity.summary_polyline = run_activity.map.summary_polyline
+    except Exception as e:
+        print(f"something wrong with {run_activity.id}")
+        print(str(e))
+        pass
 
     return created
 
