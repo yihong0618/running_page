@@ -131,7 +131,7 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 7. 同步数据至 Strava   
 在项目根目录执行：
     ```python
-    python3(python) scripts/strava_sync.py ${client_id} ${client_id} ${refresch_token}
+    python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
     ```
     其他资料参见
     https://developers.strava.com/docs/getting-started   
@@ -167,9 +167,11 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [ ] 支持佳明，佳明中国
 - [ ] 支持悦跑圈
 - [ ] 支持 nike+strava, runtastic+strava
+- [ ] 尝试支持咕咚，小米运动
 - [ ] 支持英语
 - [ ] 完善代码
 - [ ] 添加新功能
+- [ ] i18n
 
 # 特别感谢
 
