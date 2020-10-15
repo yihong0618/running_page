@@ -14,6 +14,8 @@
 - Strava
 - Nike Run Club
 - Runtastic(Adidas Run)
+- Garmin
+- Garmin-cn
 
 ## 下载
 ```
@@ -40,7 +42,28 @@ rm scripts/data.db
 rm GPX_OUT/*
 rm activities/*
 ```
-## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava 数据
+## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn 数据
+
+### Garmin
+
+```python
+python3(python) scripts/garmin_sync.py ${your email} ${your password}
+```
+示例：
+```python
+python3(python) scripts/garmin_sync.py example@gmail.com example
+```
+
+### Garmin-CN(大陆用户请用这个)
+
+```python
+python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
+```
+示例：
+```python
+python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
+```
+
 ### Runtastic(Adidas Run)
 
 ```python
@@ -50,6 +73,7 @@ python3(python) scripts/runtastic_sync.py ${your email} ${your password}
 ```python
 python3(python) scripts/runtastic_sync.py example@gmail.com example
 ```
+
 ### Nike Run Club
 
 获取 Nike 的 refresh_token
@@ -68,20 +92,6 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
     ```
     ![example img](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/nike_sync_%20example.png)
 
-### Runtastic(Adidas Run)/Nike Run Club Data Analysis
-
-- 生成数据展示 SVG
-- 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
-
-    ```
-    python scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
-    ```
-
-    ```
-    python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
-    ```
-    更多展示效果参见：   
-    https://github.com/flopp/GpxTrackPoster
 
 ### Strava
 
@@ -136,7 +146,22 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
     其他资料参见
     https://developers.strava.com/docs/getting-started   
     https://github.com/barrald/strava-uploader   
-    https://github.com/strava/go.strava   
+    https://github.com/strava/go.strava
+
+### Total Data Analysis
+
+- 生成数据展示 SVG
+- 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
+
+    ```
+    python scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+    ```
+
+    ```
+    python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+    ```
+    更多展示效果参见：   
+    https://github.com/flopp/GpxTrackPoster
 
 ## server(recommend vercel)
 1. vercel 连接你的 GitHub repo
@@ -164,7 +189,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 # TODO
 
 - [ ] 完善这个文档
-- [ ] 支持佳明，佳明中国
+- [x] 支持佳明，佳明中国
 - [ ] 支持悦跑圈
 - [ ] 支持 nike+strava, runtastic+strava
 - [ ] 尝试支持咕咚，小米运动
