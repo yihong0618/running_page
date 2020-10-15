@@ -365,4 +365,5 @@ if __name__ == "__main__":
     for thread in threads:
         thread.join()
     print(f"cost {time.time()-start_time} s for gpx")
+    time.sleep(60) # waiting
     make_activities_file(SQL_FILE, GPX_FOLDER, JSON_FILE)
