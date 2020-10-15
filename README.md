@@ -8,7 +8,7 @@
 3. 支持 Vercel(推荐) 自动部署
 4. React Hooks
 5. Mapbox 进行地图展示
-6. Nike 及 Runtastic(Adidas Run)自动备份 gpx 数据，方便备份及上传到其它软件
+6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）自动备份 gpx 数据，方便备份及上传到其它软件
 
 ## 支持
 - Strava
