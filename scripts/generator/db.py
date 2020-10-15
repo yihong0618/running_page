@@ -17,7 +17,7 @@ from sqlalchemy.orm import sessionmaker, Session
 Base = declarative_base()
 
 # reverse the location (lan, lon) -> location detail
-g = Nominatim(user_agent="yihong0618")
+g = Nominatim(user_agent="yihonghaha")
 
 
 ACTIVITY_KEYS = [
