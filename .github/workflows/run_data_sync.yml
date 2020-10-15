@@ -2,7 +2,7 @@ name: Run Data Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 0 * * *"
   push:
     branches:
       - master
@@ -11,10 +11,11 @@ on:
       - scripts/runtastic_sync.py
       - scripts/strava_sync.py
       - scripts/gen_svg.py
+      - scripts/garmin_sync.py
       - requirements.txt
 
 env:
-  RUN_TYPE: strava # support runtastic/strava/nike/garmin/garmin_cn
+  RUN_TYPE: garmin_cn # support runtastic/strava/nike/garmin/garmin_cn
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   TITLE_GRID: Over 10km Runs
