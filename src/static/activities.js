@@ -29934,15 +29934,15 @@ const activities = [
   {
     "run_id": 1600864587000,
     "name": "run from gpx",
-    "distance": 3023.117703176311,
+    "distance": 3024.526416635335,
     "moving_time": "0:17:08",
     "type": "Run",
     "start_date": "2020-09-23 12:36:27",
     "start_date_local": "2020-09-23 20:36:27",
     "location_country": "\u5e7f\u8d24\u8def, \u51cc\u6c34\u8857\u9053, \u7518\u4e95\u5b50\u533a, \u5927\u8fde\u5e02, \u8fbd\u5b81\u7701, 116085, China \u4e2d\u56fd",
-    "summary_polyline": "kielF}htdVtPrLjZRpK{Jj@E`DtG`Av@lAnFz@G~J_GfDiE?o@iBwA]aA}Bg@cJwEoCsCiD{MiB{DsMeK",
-    "average_heartrate": 147.0,
-    "average_speed": 2.9407759758524423,
+    "summary_polyline": "kielF}htdVtPrLjZRpK}Jj@C`DrG`Ax@lApFz@I~J_GfDiE?m@iByA]aAkB]uJaFoCsCiD{MiB{DsMeK",
+    "average_heartrate": null,
+    "average_speed": 2.942146319684178,
     "streak": 132
   },
   {
@@ -30032,15 +30032,15 @@ const activities = [
   {
     "run_id": 1601118622000,
     "name": "run from gpx",
-    "distance": 5544.128612834648,
+    "distance": 5543.096182058776,
     "moving_time": "0:34:02",
     "type": "Run",
     "start_date": "2020-09-26 11:10:22",
     "start_date_local": "2020-09-26 19:10:22",
     "location_country": "\u5e7f\u8d24\u8def, \u51cc\u6c34\u8857\u9053, \u7518\u4e95\u5b50\u533a, \u5927\u8fde\u5e02, \u8fbd\u5b81\u7701, 116085, China \u4e2d\u56fd",
-    "summary_polyline": "sielF{htdVhPrLjNV^t^QtOb@rBhMcArL{ElGe@vDTrDfAdXpOvCyAvBK|@_AlFcMz@{Gq@mEkD{FiCkHuF{GmUaKmAwAuOqJgBeDaD}LqCqEmRsM",
+    "summary_polyline": "qielF{htdVfPrLjNV^t^QtOb@rBhMcAtL{E~Gc@vIzAdXpOvCyAvBK|@}@lFeMz@{Gq@mEkD{FkCkHsFyGmUcKoAwAsOqJ}@eAkE}OqCqEmRsM",
     "average_heartrate": null,
-    "average_speed": 2.7150482922794557,
+    "average_speed": 2.714542694446022,
     "streak": 135
   },
   {
