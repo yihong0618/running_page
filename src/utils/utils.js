@@ -119,8 +119,17 @@ const titleForRun = (run) => {
 const applyToArray = (func, array) => func.apply(Math, array);
 const getBoundsForGeoData = (geoData, totalLength) => {
   const { features } = geoData;
-  const points = features[0].geometry.coordinates;
-
+  let points;
+  // find first have data
+  for (let f of features) {
+    if (f.geometry.coordinates.length) {
+     points = f.geometry.coordinates;
+     break
+    }
+  }
+  if (!points) {
+    return {}
+  }
   // Calculate corner values of bounds
   const pointsLong = points.map((point) => point[0]);
   const pointsLat = points.map((point) => point[1]);
