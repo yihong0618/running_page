@@ -4,13 +4,12 @@ import json
 import os
 import zlib
 from collections import namedtuple
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import gpxpy
 import polyline
 import pytz
 import requests
-from requests.sessions import session
 
 from config import (GPX_FOLDER, JSON_FILE, NIKE_CLIENT_ID, OUTPUT_DIR,
                     SQL_FILE, TOKEN_REFRESH_URL)
@@ -30,7 +29,7 @@ def login(session, mobile, passowrd):
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
-    data =  {"mobile": mobile, "password": passowrd}
+    data = {"mobile": mobile, "password": passowrd}
     r = session.post(LOGIN_API, headers=headers, data=data)
     if r.ok:
         token = r.json()["data"]["token"]
@@ -59,10 +58,9 @@ def decode_runmap_data(text):
 
 
 def adjust_time(time, tz_name):
-    tz = pytz.timezone(tz_name)
-    time_local = time.astimezone(tz)
-    return time_local
-    
+    tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
+    return time + tc_offset
+
 
 def parse_raw_data_to_nametuple(run_data):
     run_data = run_data["data"]
@@ -82,24 +80,24 @@ def parse_raw_data_to_nametuple(run_data):
     end_local = adjust_time(end, tz_name)
     # 5898009e387e28303988f3b7_9223370441312156007_rn middle
     keep_id = run_data["id"].split("_")[1]
-
     d = {
         "id": int(keep_id),
         "name": "run from keep",
-        # future to support others workout now only for run 
+        # future to support others workout now only for run
         "type": "Run",
-        "start_date": start_date,
-        "end": end,
-        "start_date_local": start_date_local,
-        "end_local": end_local,
+        "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+        "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
+        "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
+        "end_local": datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
         "length": run_data["distance"],
         "average_heartrate": int(heart_rate) if heart_rate else None,
         "map": run_map(polyline_str),
         "start_latlng": start_latlng,
         "distance": run_data["distance"],
-        "moving_time": run_data["duration"],
-        "elapsed_time": run_data["duration"],
+        "moving_time": timedelta(seconds=run_data["duration"]),
+        "elapsed_time": timedelta(seconds=int((run_data["endTime"] - run_data["startTime"]) / 1000)),
         "average_speed": run_data["distance"] / run_data["duration"],
+        "location_country": str(run_data.get("region", ""))
     }
     return namedtuple("x", d.keys())(*d.values())
 
@@ -110,15 +108,18 @@ def get_all_keep_tracks(email, password):
     runs = get_to_download_runs_ids(s, headers)
     tracks = []
     for run in runs:
-        run_data = get_single_run_data(s, headers, run)
         print(f"parsing keep id {run}")
-        track = parse_raw_data_to_nametuple(run_data)
-        tracks.append(track)
+        try:
+            run_data = get_single_run_data(s, headers, run)
+            track = parse_raw_data_to_nametuple(run_data)
+            tracks.append(track)
+        except Exception as e:
+            print(f"Something wrong paring keep id {run}" + str(e))
     return tracks
 
 
 def run_keep_sync(email, password):
-    tracks =  get_all_keep_tracks(email, password)
+    tracks = get_all_keep_tracks(email, password)
     generator = Generator(SQL_FILE)
     # if you want to refresh data change False to True
     generator.sync_from_keep(tracks)
