@@ -166,11 +166,11 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
     ```
-    python scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+    python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
     ```
 
     ```
-    python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+    python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
     ```
     更多展示效果参见：   
     https://github.com/flopp/GpxTrackPoster
@@ -200,8 +200,9 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 # TODO
 
-- [ ] 完善这个文档
+- [x] 完善这个文档
 - [x] 支持佳明，佳明中国
+- [x] 支持 keep
 - [ ] 支持悦跑圈
 - [ ] 支持 nike+strava, runtastic+strava
 - [ ] 尝试支持咕咚，小米运动
