@@ -10,8 +10,14 @@ import polyline
 import pytz
 import requests
 
-from config import (GPX_FOLDER, JSON_FILE, NIKE_CLIENT_ID, OUTPUT_DIR,
-                    SQL_FILE, TOKEN_REFRESH_URL)
+from config import (
+    GPX_FOLDER,
+    JSON_FILE,
+    NIKE_CLIENT_ID,
+    OUTPUT_DIR,
+    SQL_FILE,
+    TOKEN_REFRESH_URL,
+)
 from generator import Generator
 
 start_point = namedtuple("start_point", "lat lon")
@@ -26,9 +32,9 @@ RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 
 def login(session, mobile, passowrd):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0',
-        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-        }
+        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+    }
     data = {"mobile": mobile, "password": passowrd}
     r = session.post(LOGIN_API, headers=headers, data=data)
     if r.ok:
@@ -48,7 +54,7 @@ def get_to_download_runs_ids(session, headers):
             last_date = r.json()["data"]["lastTimestamp"]
             since_time = datetime.utcfromtimestamp(last_date / 1000)
             print(f"pares keep ids data since {since_time}")
-            time.sleep(1)
+            time.sleep(1)  # spider rule
             if not last_date:
                 break
     return result
@@ -61,7 +67,7 @@ def get_single_run_data(session, headers, run_id):
 
 
 def decode_runmap_data(text):
-    run_points_data = zlib.decompress(base64.b64decode(text), 16+zlib.MAX_WBITS)
+    run_points_data = zlib.decompress(base64.b64decode(text), 16 + zlib.MAX_WBITS)
     run_points_data = json.loads(run_points_data)
     run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
     return run_points_data
@@ -105,9 +111,11 @@ def parse_raw_data_to_nametuple(run_data):
         "start_latlng": start_latlng,
         "distance": run_data["distance"],
         "moving_time": timedelta(seconds=run_data["duration"]),
-        "elapsed_time": timedelta(seconds=int((run_data["endTime"] - run_data["startTime"]) / 1000)),
+        "elapsed_time": timedelta(
+            seconds=int((run_data["endTime"] - run_data["startTime"]) / 1000)
+        ),
         "average_speed": run_data["distance"] / run_data["duration"],
-        "location_country": str(run_data.get("region", ""))
+        "location_country": str(run_data.get("region", "")),
     }
     return namedtuple("x", d.keys())(*d.values())
 
