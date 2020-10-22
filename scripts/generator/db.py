@@ -70,7 +70,9 @@ class Activity(Base):
 def update_or_create_activity(session, run_activity):
     created = False
     try:
-        activity = session.query(Activity).filter_by(run_id=int(run_activity.id)).first()
+        activity = (
+            session.query(Activity).filter_by(run_id=int(run_activity.id)).first()
+        )
         if not activity:
             start_point = run_activity.start_latlng
             location_country = getattr(run_activity, "location_country", "")

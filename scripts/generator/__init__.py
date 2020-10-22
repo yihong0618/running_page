@@ -131,4 +131,3 @@ class Generator:
             # pass the error
             print(f"something wrong with {str(e)}")
             return []
-

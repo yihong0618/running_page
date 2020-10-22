@@ -9,8 +9,15 @@ from xml.etree import ElementTree
 import gpxpy.gpx
 import httpx
 
-from config import (BASE_URL, GPX_FOLDER, JSON_FILE, NIKE_CLIENT_ID,
-                    OUTPUT_DIR, SQL_FILE, TOKEN_REFRESH_URL)
+from config import (
+    BASE_URL,
+    GPX_FOLDER,
+    JSON_FILE,
+    NIKE_CLIENT_ID,
+    OUTPUT_DIR,
+    SQL_FILE,
+    TOKEN_REFRESH_URL,
+)
 from utils import make_activities_file
 
 # logging.basicConfig(level=logging.INFO)
@@ -144,7 +151,7 @@ def get_to_generate_files():
         last_time = 0
     if not os.listdir(OUTPUT_DIR):
         print("There is no nike running data")
-        return 
+        return
     return [
         OUTPUT_DIR + "/" + i
         for i in os.listdir(OUTPUT_DIR)

@@ -13,7 +13,7 @@ const titleForShow = (run) => {
   if (run.name) {
     name = run.name;
   }
-  return `${name} ${date} ${distance} KM`;
+  return `${name} ${date} ${distance} KM ${!run.summary_polyline? "(no map data for this run)": ""}` ;
 };
 
 const formatPace = (d) => {
@@ -45,7 +45,8 @@ const locationForRun = (run) => {
       [province] = provinceMatch;
     }
     const l = location.split(',');
-    const countryMatch = l[l.length - 1].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
+    // or to handle keep location format
+    const countryMatch = l[l.length - 1].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/) || l[2].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
     if (countryMatch) {
       [country] = countryMatch;
     }
