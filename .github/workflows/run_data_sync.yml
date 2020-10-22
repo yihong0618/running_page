@@ -12,10 +12,11 @@ on:
       - scripts/strava_sync.py
       - scripts/gen_svg.py
       - scripts/garmin_sync.py
+      - scripts/keep_sync.py
       - requirements.txt
 
 env:
-  RUN_TYPE: garmin_cn # support runtastic/strava/nike/garmin/garmin_cn
+  RUN_TYPE: keep # support runtastic/strava/nike/garmin/garmin_cn/keep
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   TITLE_GRID: Over 10km Runs
@@ -57,6 +58,11 @@ jobs:
         run: |
           python scripts/runtastic_sync.py ${{ secrets.RUNTASTIC_EMAIL }} ${{ secrets.RUNTASTIC_PASSWORD }}
   
+      - name: Run sync Keep script
+        if: env.RUN_TYPE == 'keep'
+        run: |
+          python scripts/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }}
+
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'
         run: |
