@@ -1,12 +1,11 @@
 import argparse
 import base64
 import json
-import os
+import time
 import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-import gpxpy
 import polyline
 import pytz
 import requests
@@ -20,7 +19,8 @@ run_map = namedtuple("polyline", "summary_polyline")
 
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
-RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running"
+RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
+# RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 
 
@@ -38,10 +38,20 @@ def login(session, mobile, passowrd):
 
 
 def get_to_download_runs_ids(session, headers):
-    r = session.get(RUN_DATA_API, headers=headers)
-    if r.ok:
-        run_logs = r.json()["data"]["records"]
-        return [i["logs"][0]["stats"]["id"] for i in run_logs]
+    last_date = 0
+    result = []
+    while 1:
+        r = session.get(RUN_DATA_API.format(last_date=last_date), headers=headers)
+        if r.ok:
+            run_logs = r.json()["data"]["records"]
+            result.extend([i["logs"][0]["stats"]["id"] for i in run_logs])
+            last_date = r.json()["data"]["lastTimestamp"]
+            since_time = datetime.utcfromtimestamp(last_date / 1000)
+            print(f"pares keep ids data since {since_time}")
+            time.sleep(1)
+            if not last_date:
+                break
+    return result
 
 
 def get_single_run_data(session, headers, run_id):
