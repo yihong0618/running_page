@@ -68,7 +68,7 @@ def parse_raw_data_to_nametuple(run_data):
     if run_data.get("vendor").get("genre", "") == "KeepApp":
         raw_data_url = run_data.get("rawDataURL")
         r = requests.get(raw_data_url)
-        # string strart with `H4sIAAAAAAAA`
+        # string strart with `H4sIAAAAAAAA` --> decode and unzip
         run_points_data = decode_runmap_data(r.text)
     heart_rate = run_data["heartRate"].get("averageHeartRate", None)
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
@@ -102,10 +102,12 @@ def parse_raw_data_to_nametuple(run_data):
     return namedtuple("x", d.keys())(*d.values())
 
 
-def get_all_keep_tracks(email, password):
+def get_all_keep_tracks(email, password, old_tracks_ids):
     s = requests.Session()
     s, headers = login(s, email, password)
     runs = get_to_download_runs_ids(s, headers)
+    runs = [run for run in runs if run.split("_")[1] not in old_tracks_ids]
+    print(f"{len(runs)} new keep runs to generate")
     tracks = []
     for run in runs:
         print(f"parsing keep id {run}")
@@ -119,14 +121,13 @@ def get_all_keep_tracks(email, password):
 
 
 def run_keep_sync(email, password):
-    tracks = get_all_keep_tracks(email, password)
     generator = Generator(SQL_FILE)
-    # if you want to refresh data change False to True
-    generator.sync_from_keep(tracks)
+    old_tracks_ids = generator.get_old_tracks_ids()
+    new_tracks = get_all_keep_tracks(email, password, old_tracks_ids)
+    generator.sync_from_keep(new_tracks)
 
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
-
         f.write("const activities = ")
         json.dump(activities_list, f, indent=2)
         f.write(";\n")
