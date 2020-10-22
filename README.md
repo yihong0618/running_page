@@ -16,6 +16,7 @@
 - Runtastic(Adidas Run)
 - Garmin
 - Garmin-cn
+- Keep
 
 ## 下载
 ```
@@ -42,7 +43,18 @@ rm scripts/data.db
 rm GPX_OUT/*
 rm activities/*
 ```
-## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn 数据
+## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据
+
+### Keep
+
+确保自己的账号能用手机号 + 密码登陆 (不要忘记添加secret和更改自己的账号，在 GitHub Actions中)
+```python
+python3(python) scripts/keep_sync.py ${your mobile} ${your password}
+```
+示例：
+```python
+python3(python) scripts/keep_sync.py 13333xxxx example
+```
 
 ### Garmin
 
