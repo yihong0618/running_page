@@ -55,6 +55,15 @@ python3(python) scripts/keep_sync.py ${your mobile} ${your password}
 ```python
 python3(python) scripts/keep_sync.py 13333xxxx example
 ```
+注：我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx会加入到 GPX_OUT 中，方便上传到其它软件
+
+```python
+python3(python) scripts/keep_sync.py ${your mobile} ${your password} --with-gpx
+```
+示例：
+```python
+python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
+```
 
 ### Garmin
 
