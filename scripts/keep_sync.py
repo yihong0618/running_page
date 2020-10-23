@@ -94,7 +94,6 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
         if with_download_gpx:
            gpx_data = parse_points_to_gpx(run_points_data, start_time)
            if str(keep_id) not in old_gpx_ids:
-               print(keep_id)
                download_keep_gpx(gpx_data, str(keep_id))
         run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
     heart_rate = run_data["heartRate"].get("averageHeartRate", None)
