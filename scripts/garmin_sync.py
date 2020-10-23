@@ -346,8 +346,8 @@ def download_garmin_gpx(client, activity_id):
         gpx_data = client.download_activity(
             activity_id, dl_fmt=client.ActivityDownloadFormat.GPX
         )
-        output_file = f"{GPX_FOLDER}/{str(activity_id)}.gpx"
-        with open(output_file, "wb") as fb:
+        file_path = os.path.join(GPX_FOLDER, activity_id + ".gpx")
+        with open(file_path, "wb") as fb:
             fb.write(gpx_data)
     except:
         print(f"wrong id {activity_id}")

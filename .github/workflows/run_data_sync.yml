@@ -61,7 +61,7 @@ jobs:
       - name: Run sync Keep script
         if: env.RUN_TYPE == 'keep'
         run: |
-          python scripts/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }}
+          python scripts/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} --with-gpx
 
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'
