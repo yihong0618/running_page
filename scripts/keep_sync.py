@@ -86,7 +86,7 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
     keep_id = run_data["id"].split("_")[1]
 
     start_time = run_data["startTime"]
-    if run_data.get("vendor").get("genre", "") == "KeepApp":
+    if run_data.get("vendor").get("genre", "") == "KeepApp" and run_data.get("rawDataURL") != '':
         raw_data_url = run_data.get("rawDataURL")
         r = requests.get(raw_data_url)
         # string strart with `H4sIAAAAAAAA` --> decode and unzip
@@ -171,7 +171,7 @@ def parse_points_to_gpx(run_points_data, start_time):
             {
                 "latitude": point["latitude"],
                 "longitude": point["longitude"],
-                "elevation": point["verticalAccuracy"],
+                "elevation": point["verticalAccuracy"] if "verticalAccuracy" in point.keys() else None,
                 "time": datetime.utcfromtimestamp((point["timestamp"] * 100 + start_time) / 1000),
             }
         )
