@@ -1,5 +1,5 @@
 # [打造个人跑步主页](https://yihong.run/running) 
-简体中文 | [English](https://github.com/yihong0618/running_page/blob/master/README-EN.md)
+简体中文 | [English](README-EN.md)
 
 ## 特性
 
@@ -219,6 +219,11 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [ ] 完善代码
 - [ ] 添加新功能
 - [ ] i18n
+
+# 参与项目
+
+提交PR前:
+- 使用black对Python代码进行格式化
 
 # 特别感谢
 
