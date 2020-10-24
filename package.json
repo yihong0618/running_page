@@ -47,7 +47,7 @@
     "tachyons-sass": "^4.9.5",
     "webpack": "^4.43.0"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "data:clean": "rm scripts/data.db GPX_OUT/* activities/* src/static/activities.js",
@@ -66,6 +66,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yihong0618/blog"
+    "url": "https://github.com/yihong0618/running_page"
   }
 }
