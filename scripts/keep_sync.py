@@ -167,14 +167,14 @@ def parse_points_to_gpx(run_points_data, start_time):
     # future to support heart rate
     points_dict_list = []
     for point in run_points_data:
-        points_dict_list.append(
-            {
-                "latitude": point["latitude"],
-                "longitude": point["longitude"],
-                "elevation": point["verticalAccuracy"] if "verticalAccuracy" in point.keys() else None,
-                "time": datetime.utcfromtimestamp((point["timestamp"] * 100 + start_time) / 1000),
-            }
-        )
+        points_dict = {
+            "latitude": point["latitude"],
+            "longitude": point["longitude"],
+            "time": datetime.utcfromtimestamp((point["timestamp"] * 100 + start_time) / 1000),
+        }
+        if "verticalAccuracy" in point:
+            points_dict["elevation"] = point["verticalAccuracy"]
+        points_dict_list.append(points_dict)
     gpx = gpxpy.gpx.GPX()
     gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
     gpx_track = gpxpy.gpx.GPXTrack()
