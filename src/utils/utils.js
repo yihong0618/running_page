@@ -34,7 +34,7 @@ const scrollToMap = () => {
 const locationForRun = (run) => {
   const location = run.location_country;
   let [city, province, country] = ['', '', ''];
-  if (location && location != "None") {
+  if (location) {
     // Only for Chinese now
     const cityMatch = location.match(/[\u4e00-\u9fa5]*市/);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]*省/);
@@ -46,7 +46,10 @@ const locationForRun = (run) => {
     }
     const l = location.split(',');
     // or to handle keep location format
-    const countryMatch = l[l.length - 1].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/) || l[2].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
+    let countryMatch = l[l.length - 1].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
+    if (!countryMatch && l.length >= 3) {
+      countryMatch = l[2].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
+    }
     if (countryMatch) {
       [country] = countryMatch;
     }
