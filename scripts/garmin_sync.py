@@ -12,7 +12,7 @@ import re
 import sys
 import traceback
 import asyncio
-import aiohttp
+import httpx
 import aiofiles
 
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, config
@@ -47,7 +47,7 @@ class Garmin:
         """
         self.email = email
         self.password = password
-        self.req = aiohttp.ClientSession()
+        self.req = httpx.AsyncClient(timeout=httpx.Timeout(60.0))
         self.URL_DICT = (
             GARMIN_CN_URL_DICT
             if auth_domain and str(auth_domain).upper() == "CN"
@@ -97,17 +97,17 @@ class Garmin:
         }
 
         try:
-            async with self.req.post(
+            response = await self.req.post(
                 self.URL_DICT.get("SIGNIN_URL"),
                 headers=self.headers,
                 params=params,
                 data=data,
-            ) as response:
-                if response.status == 429:
-                    raise GarminConnectTooManyRequestsError("Too many requests")
-                response.raise_for_status()
-                logger.debug("Login response code %s", response.status)
-                text = await response.text()
+            )
+            if response.status_code == 429:
+                raise GarminConnectTooManyRequestsError("Too many requests")
+            response.raise_for_status()
+            logger.debug("Login response code %s", response.status_code)
+            text = response.text
         except Exception as err:
             raise GarminConnectConnectionError("Error connecting") from err
 
@@ -119,10 +119,10 @@ class Garmin:
 
         response_url = re.sub(r"\\", "", response_url.group(1))
         try:
-            async with self.req.get(response_url) as response:
-                if response.status == 429:
-                    raise GarminConnectTooManyRequestsError("Too many requests")
-                response.raise_for_status()
+            response = await self.req.get(response_url)
+            if response.status_code == 429:
+                raise GarminConnectTooManyRequestsError("Too many requests")
+            response.raise_for_status()
         except Exception as err:
             raise GarminConnectConnectionError("Error connecting") from err
 
@@ -131,12 +131,12 @@ class Garmin:
         Fetch and return data
         """
         try:
-            async with self.req.get(url, headers=self.headers) as response:
-                if response.status == 429:
-                    raise GarminConnectTooManyRequestsError("Too many requests")
-                logger.debug(f"fetch_data got response code {response.status}")
-                response.raise_for_status()
-                return await response.json()
+            response = await self.req.get(url, headers=self.headers)
+            if response.status_code == 429:
+                raise GarminConnectTooManyRequestsError("Too many requests")
+            logger.debug(f"fetch_data got response code {response.status_code}")
+            response.raise_for_status()
+            return response.json()
         except Exception as err:
             if retrying:
                 logger.debug(
@@ -161,10 +161,10 @@ class Garmin:
 
     async def download_activity(self, activity_id):
         url = f"{self.modern_url}/proxy/download-service/export/gpx/activity/{activity_id}"
-        logger.debug(f"Download activity from {url}")
-        async with self.req.get(url, headers=self.headers) as response:
-            response.raise_for_status()
-            return await response.read()
+        logger.info(f"Download activity from {url}")
+        response = await self.req.get(url, headers=self.headers)
+        response.raise_for_status()
+        return response.read()
 
 
 class GarminConnectHttpError(Exception):
@@ -265,7 +265,7 @@ if __name__ == "__main__":
 
         start_time = time.time()
         await gather_with_concurrency(
-            5, [download_garmin_gpx(client, id) for id in to_generate_garmin_ids]
+            10, [download_garmin_gpx(client, id) for id in to_generate_garmin_ids]
         )
         print(f"Download finished. Elapsed {time.time()-start_time} seconds")
 
