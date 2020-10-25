@@ -17,7 +17,7 @@
 3. 支持 Vercel(推荐) 自动部署
 4. React Hooks
 5. Mapbox 进行地图展示
-6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）自动备份 gpx 数据，方便备份及上传到其它软件
+6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及Keep, 自动备份 gpx 数据，方便备份及上传到其它软件
 
 ## 支持
 - Strava
@@ -225,9 +225,11 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [ ] 支持 nike+strava, runtastic+strava
 - [ ] 尝试支持咕咚，小米运动
 - [ ] 支持英语
-- [ ] 完善代码
+- [x] 完善代码
 - [ ] 添加新功能
 - [ ] i18n
+- [ ] 清理整个项目
+- [ ] 完善前端代码
 
 # 参与项目
 
