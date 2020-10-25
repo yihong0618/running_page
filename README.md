@@ -1,6 +1,15 @@
 # [打造个人跑步主页](https://yihong.run/running) 
 简体中文 | [English](README-EN.md)
 
+## [大家的跑步主页展示](https://github.com/yihong0618/running_page/issues/12)
+
+| Runner | page | App |
+| ------- | ------- | ------- |
+| [shaonianche](https://github.com/shaonianche) | https://run.duangfei.org | Nike |
+| [yihong0618](https://github.com/yihong0618) | https://yihong.run/running | Nike |
+| [superleeyom](https://github.com/superleeyom) | https://running.leeyom.top | Keep |
+| [geekplux](https://github.com/geekplux) | https://activities.geekplux.com | Nike |
+
 ## 特性
 
 1. GitHub Actions 管理自动同步跑步进程及自动生成新的页面
