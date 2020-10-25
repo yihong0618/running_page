@@ -14,10 +14,11 @@ TOKEN_REFRESH_URL = "https://unite.nike.com/tokenRefresh"
 NIKE_CLIENT_ID = "HlHa2Cje3ctlaOqnxvgZXNaAs7T9nAuH"
 
 try:
-    with open('config.yaml') as f:
+    with open("config.yaml") as f:
         _config = yaml.safe_load(f)
 except:
     _config = {}
+
 
 def config(*keys):
     def safeget(dct, *keys):
@@ -27,4 +28,5 @@ def config(*keys):
             except KeyError:
                 return None
         return dct
+
     return safeget(_config, *keys)
