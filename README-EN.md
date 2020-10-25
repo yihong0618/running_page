@@ -176,6 +176,11 @@ My secret is as follows
 - [ ] Refine the code
 - [ ] add new features
 
+# Contribution
+
+Before submitting PR:
+- Format Python code with Black
+
 # Special thanks
 
 @[flopp](https://github.com/flopp)

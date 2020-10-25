@@ -50,6 +50,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "data:clean": "rm scripts/data.db GPX_OUT/* activities/* src/static/activities.js",
+    "data:download:garmin": "python3 scripts/garmin_sync.py",
+    "data:analysis": "python3 scripts/gen_svg.py --from-db --type github --output assets/github.svg",
     "build": "gatsby build",
     "develop": "gatsby develop",
     "serve": "gatsby serve",
