@@ -86,15 +86,18 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
     keep_id = run_data["id"].split("_")[1]
 
     start_time = run_data["startTime"]
-    if run_data.get("vendor").get("genre", "") == "KeepApp" and run_data.get("rawDataURL") != '':
+    if (
+        run_data.get("vendor").get("genre", "") == "KeepApp"
+        and run_data.get("rawDataURL") != ""
+    ):
         raw_data_url = run_data.get("rawDataURL")
         r = requests.get(raw_data_url)
         # string strart with `H4sIAAAAAAAA` --> decode and unzip
         run_points_data = decode_runmap_data(r.text)
         if with_download_gpx:
-           gpx_data = parse_points_to_gpx(run_points_data, start_time)
-           if str(keep_id) not in old_gpx_ids:
-               download_keep_gpx(gpx_data, str(keep_id))
+            gpx_data = parse_points_to_gpx(run_points_data, start_time)
+            if str(keep_id) not in old_gpx_ids:
+                download_keep_gpx(gpx_data, str(keep_id))
         run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
     heart_rate = run_data["heartRate"].get("averageHeartRate", None)
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
@@ -141,7 +144,9 @@ def get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx=False
         print(f"parsing keep id {run}")
         try:
             run_data = get_single_run_data(s, headers, run)
-            track = parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx)
+            track = parse_raw_data_to_nametuple(
+                run_data, old_gpx_ids, with_download_gpx
+            )
             tracks.append(track)
         except Exception as e:
             print(f"Something wrong paring keep id {run}" + str(e))
@@ -170,7 +175,9 @@ def parse_points_to_gpx(run_points_data, start_time):
         points_dict = {
             "latitude": point["latitude"],
             "longitude": point["longitude"],
-            "time": datetime.utcfromtimestamp((point["timestamp"] * 100 + start_time) / 1000),
+            "time": datetime.utcfromtimestamp(
+                (point["timestamp"] * 100 + start_time) / 1000
+            ),
         }
         if "verticalAccuracy" in point:
             points_dict["elevation"] = point["verticalAccuracy"]
@@ -178,7 +185,7 @@ def parse_points_to_gpx(run_points_data, start_time):
     gpx = gpxpy.gpx.GPX()
     gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
     gpx_track = gpxpy.gpx.GPXTrack()
-    gpx_track.name = "gpx from keep" 
+    gpx_track.name = "gpx from keep"
     gpx.tracks.append(gpx_track)
 
     # Create first segment in our GPX track:
