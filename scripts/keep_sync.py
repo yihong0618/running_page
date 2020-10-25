@@ -132,6 +132,8 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
 
 
 def get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx=False):
+    if with_download_gpx and not os.path.exists(GPX_FOLDER):
+        os.mkdir(GPX_FOLDER)
     s = requests.Session()
     s, headers = login(s, email, password)
     runs = get_to_download_runs_ids(s, headers)
