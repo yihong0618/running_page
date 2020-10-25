@@ -9,6 +9,7 @@
 | [yihong0618](https://github.com/yihong0618) | https://yihong.run/running | Nike |
 | [superleeyom](https://github.com/superleeyom) | https://running.leeyom.top | Keep |
 | [geekplux](https://github.com/geekplux) | https://activities.geekplux.com | Nike |
+| [guanlan](https://github.com/guanlan) | https://grun.vercel.app/ | Strava |
 
 ## 特性
 
