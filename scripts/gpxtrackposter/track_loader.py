@@ -107,9 +107,12 @@ class TrackLoader:
         # filter out tracks with length < min_length
         return [t for t in tracks if t.length >= self.min_length]
 
-    def load_tracks_from_db(self, sql_file):
+    def load_tracks_from_db(self, sql_file, is_grid=False):
         session = init_db(sql_file)
-        activities = session.query(Activity).order_by(Activity.start_date_local)
+        if is_grid:
+            activities = session.query(Activity).filter(Activity.summary_polyline != "").order_by(Activity.start_date_local)
+        else:
+            activities = session.query(Activity).order_by(Activity.start_date_local)
         tracks = []
         for activate in activities:
             t = Track()
