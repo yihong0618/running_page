@@ -215,7 +215,7 @@ async def download_garmin_gpx(client, activity_id):
 async def get_activity_id_list(client, start=0):
     activities = await client.get_activities(start, 100)
     if len(activities) > 0:
-        ids = list(map(lambda a: a.get("activityId"), activities))
+        ids = list(map(lambda a: str(a.get("activityId", "")), activities))
         logger.debug(f"Activity IDs: {ids}")
         return ids + await get_activity_id_list(client, start + 100)
     else:
@@ -252,6 +252,10 @@ if __name__ == "__main__":
         print("Missing argument nor valid configuration file")
         sys.exit(1)
 
+    # make gpx dir
+    if not os.path.exists(GPX_FOLDER):
+        os.mkdir(GPX_FOLDER)
+
     async def download_new_activities():
         client = Garmin(email, password, auth_domain)
         await client.login()
@@ -268,7 +272,8 @@ if __name__ == "__main__":
             10, [download_garmin_gpx(client, id) for id in to_generate_garmin_ids]
         )
         print(f"Download finished. Elapsed {time.time()-start_time} seconds")
-
         make_activities_file(SQL_FILE, GPX_FOLDER, JSON_FILE)
 
-    asyncio.run(download_new_activities())
+    loop = asyncio.get_event_loop()
+    future = asyncio.ensure_future(download_new_activities())
+    loop.run_until_complete(future)
