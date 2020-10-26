@@ -22,8 +22,8 @@
 
 ## 支持
 - **[Strava](#strava)**
-- **[Nike Run Club](Nike Run Club)**
-- **[Runtastic(Adidas Run)](#Runtastic(Adidas Run))**
+- **[Nike Run Club](#NikeRunClub)**
+- **[Runtastic(Adidas Run)](#Runtastic(AdidasRun))**
 - **[Garmin](#Garmin)**
 - **[Garmin-cn](#Garmin-CN(大陆用户请用这个))**
 - **[Keep](#Keep)**
@@ -107,22 +107,26 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 
 ### Nike Run Club
 
+<details>
+<summary>获取 Nike Run Club 数据</summary>
+
 获取 Nike 的 refresh_token
 1. 登录 [Nike](https://www.nike.com) 官网
 2. In Developer -> Application-> Storage -> https:unite.nike.com 中找到 refresh_token
 
-    ![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png)
+![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png)
 3. 在项目根目录下执行:
 
-    ```python
-    python3(python) scripts/nike_sync.py ${nike refresh_token}
-    ```
-    示例：
-    ```python
-    python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
-    ```
-    ![example img](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/nike_sync_%20example.png)
+```python
+python3(python) scripts/nike_sync.py ${nike refresh_token}
+```
+示例：
+```python
+python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
+```
+![example img](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/nike_sync_%20example.png)
 
+</details>
 
 ### Strava
 
