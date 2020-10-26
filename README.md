@@ -21,12 +21,12 @@
 6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及Keep, 自动备份 gpx 数据，方便备份及上传到其它软件
 
 ## 支持
-- Strava
-- Nike Run Club
-- Runtastic(Adidas Run)
-- Garmin
-- Garmin-cn
-- Keep
+- **[Strava](#strava)**
+- **[Nike Run Club](Nike Run Club)**
+- **[Runtastic(Adidas Run)](#Runtastic(Adidas Run))**
+- **[Garmin](#Garmin)**
+- **[Garmin-cn](#Garmin-CN(大陆用户请用这个))**
+- **[Keep](#Keep)**
 
 ## 下载
 ```
@@ -34,11 +34,11 @@ git clone https://github.com/yihong0618/running_page.git
 ```
 
 ## 安装及测试
-    ```
-    pip3 install -r requirements.txt
-    yarn install
-    yarn develop
-    ```
+```
+pip3 install -r requirements.txt
+yarn install
+yarn develop
+```
 访问 http://localhost:8000/ 查看
 
 
@@ -126,79 +126,84 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 
 ### Strava
 
+<details>
+<summary>获取 Strava 数据</summary>
+
 1. 注册/登陆 [Strava](https://www.strava.com/) 账号
 2. 登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 
 3. 创建 `My API Application`   
-    输入下列信息：
-    ![My API Application](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/strava_settings_api.png)
-    创建成功：
-    ![](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/created_successfully_1.png)
+输入下列信息：
+![My API Application](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/strava_settings_api.png)
+创建成功：
+![](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/created_successfully_1.png)
 4. 使用以下链接请求所有权限   
 将 ${your_id} 替换为 My API Application 中的 Client ID 后访问完整链接
-    ```
-    https://www.strava.com/oauth/authorize?client_id=${your_id}&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=read_all,profile:read_all,activity:read_all,profile:write,activity:write
-    ```
-    ![get_all_permissions](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_all_permissions.png)
+```
+https://www.strava.com/oauth/authorize?client_id=${your_id}&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=read_all,profile:read_all,activity:read_all,profile:write,activity:write
+```
+![get_all_permissions](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_all_permissions.png)
 5. 提取授权后返回链接中的 code 值   
-    例如：
-    ```
-    http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f3471e6e&scope=read,activity:write,activity:read_all,profile:write,profile:read_all,read_all
-    ```
-    `code` 数值为：
-    ```
-    1dab37edd9970971fb502c9efdd087f4f3471e6
-    ```
-    ![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png)
+例如：
+```
+http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f3471e6e&scope=read,activity:write,activity:read_all,profile:write,profile:read_all,read_all
+```
+`code` 数值为：
+```
+1dab37edd9970971fb502c9efdd087f4f3471e6
+```
+![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png)
 6. 使用 Client_id、Client_secret、Code 请求 refresch_token   
-    在 `终端/iTerm` 中执行：
-    ```
-    curl -X POST https://www.strava.com/oauth/token \
-    -F client_id=${Your Client ID} \
-    -F client_secret=${Your Client Secret} \
-    -F code=${Your Code} \
-    -F grant_type=authorization_code
-    ```
-    示例：
-    ```
-    curl -X POST https://www.strava.com/oauth/token \
-    -F client_id=12345 \
-    -F client_secret=b21******d0bfb377998ed1ac3b0 \
-    -F code=d09******b58abface48003 \
-    -F grant_type=authorization_code
-    ```
-    ![get_refresch_token](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_refresch_token.png)
+在 `终端/iTerm` 中执行：
+```
+curl -X POST https://www.strava.com/oauth/token \
+-F client_id=${Your Client ID} \
+-F client_secret=${Your Client Secret} \
+-F code=${Your Code} \
+-F grant_type=authorization_code
+```
+示例：
+```
+curl -X POST https://www.strava.com/oauth/token \
+-F client_id=12345 \
+-F client_secret=b21******d0bfb377998ed1ac3b0 \
+-F code=d09******b58abface48003 \
+-F grant_type=authorization_code
+```
+![get_refresch_token](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_refresch_token.png)
 
 7. 同步数据至 Strava   
 在项目根目录执行：
-    ```python
-    python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
-    ```
-    其他资料参见
-    https://developers.strava.com/docs/getting-started   
-    https://github.com/barrald/strava-uploader   
-    https://github.com/strava/go.strava
+```python
+python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
+```
+其他资料参见   
+https://developers.strava.com/docs/getting-started   
+https://github.com/barrald/strava-uploader   
+https://github.com/strava/go.strava
+
+</details>
 
 ### Total Data Analysis
 
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
-    ```
-    python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
-    ```
+```
+python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+```
 
+```
+python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
     ```
-    python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
-    ```
-    更多展示效果参见：   
-    https://github.com/flopp/GpxTrackPoster
+更多展示效果参见：   
+https://github.com/flopp/GpxTrackPoster
 
 ## server(recommend vercel)
 1. vercel 连接你的 GitHub repo
-    ![image](https://user-images.githubusercontent.com/15976103/94452465-2599b880-01e2-11eb-9538-582f0f46c421.png)
+![image](https://user-images.githubusercontent.com/15976103/94452465-2599b880-01e2-11eb-9538-582f0f46c421.png)
 2. import repo
-    ![image](https://user-images.githubusercontent.com/15976103/94452556-3f3b0000-01e2-11eb-97a2-3789c2d60766.png)
+![image](https://user-images.githubusercontent.com/15976103/94452556-3f3b0000-01e2-11eb-97a2-3789c2d60766.png)
 2. 等待部署完毕
 3. 访问
 
@@ -206,13 +211,13 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
 需要做如下步骤
 1. 更改成你的app type 及info
-    ![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
+![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
 2. 在repo Settings > Secrets 中增加你的secret(只添加你需要的即可)
-    ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
+![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
 我的secret如下
-    ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
+![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
 3. 添加你的[GitHub secret](https://github.com/settings/tokens)并和项目中的 GitHub secret同名
-    ![image](https://user-images.githubusercontent.com/15976103/94450721-2f222100-01e0-11eb-94a7-ef1f06fc0a59.png)
+![image](https://user-images.githubusercontent.com/15976103/94450721-2f222100-01e0-11eb-94a7-ef1f06fc0a59.png)
 
 ## 我的展示
 ![image](https://user-images.githubusercontent.com/15976103/87566339-775b9800-c6f5-11ea-803f-6c2f69801ee4.png)
