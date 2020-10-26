@@ -199,7 +199,7 @@ python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type g
 
 ```
 python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
-    ```
+```
 更多展示效果参见：   
 https://github.com/flopp/GpxTrackPoster
 
