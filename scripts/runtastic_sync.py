@@ -23,7 +23,7 @@ def run_sync_command(email, password, output=GPX_FOLDER, last_time=0):
 def get_last_time():
     try:
         file_names = os.listdir(GPX_FOLDER)
-        last_time = max(int(i.split(".")[0]) for i in file_names)
+        last_time = max(int(i.split(".")[0]) for i in file_names if not i.startswith("."))
     except:
         last_time = 0
     return last_time

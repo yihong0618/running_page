@@ -221,6 +221,8 @@ class TrackLoader:
         if not os.path.isdir(base_dir):
             raise ParameterError(f"Not a directory: {base_dir}")
         for name in os.listdir(base_dir):
+            if name.startswith("."):
+                continue
             path_name = os.path.join(base_dir, name)
             if name.endswith(".gpx") and os.path.isfile(path_name):
                 yield path_name
