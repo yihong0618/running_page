@@ -312,6 +312,8 @@ def make_new_gpxs(files):
 
 
 if __name__ == "__main__":
+    if not os.path.exists(OUTPUT_DIR):
+        os.mkdir(OUTPUT_DIR)
     parser = argparse.ArgumentParser()
     parser.add_argument("refresh_token", help="API refresh access token for nike.com")
     options = parser.parse_args()
