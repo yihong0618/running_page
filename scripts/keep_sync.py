@@ -141,7 +141,7 @@ def get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx=False
     print(f"{len(runs)} new keep runs to generate")
     tracks = []
     old_gpx_ids = os.listdir(GPX_FOLDER)
-    old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids]
+    old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
     for run in runs:
         print(f"parsing keep id {run}")
         try:

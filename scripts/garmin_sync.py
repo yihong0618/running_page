@@ -262,7 +262,7 @@ if __name__ == "__main__":
 
         # because I don't find a para for after time, so I use garmin-id as filename
         # to find new run to generage
-        downloaded_ids = [i.split(".")[0] for i in os.listdir(GPX_FOLDER)]
+        downloaded_ids = [i.split(".")[0] for i in os.listdir(GPX_FOLDER) if not i.startswith(".")]
         activity_ids = await get_activity_id_list(client)
         to_generate_garmin_ids = list(set(activity_ids) - set(downloaded_ids))
         print(f"{len(to_generate_garmin_ids)} new activities to be downloaded")
