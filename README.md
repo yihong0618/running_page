@@ -238,7 +238,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 完善代码
 - [ ] 添加新功能
 - [ ] i18n
-- [ ] 清理整个项目
+- [x] 清理整个项目
 - [ ] 完善前端代码
 
 # 参与项目
@@ -249,3 +249,4 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 # 特别感谢
 
 @[flopp](https://github.com/flopp)
+@[shaonianche](https://github.com/shaonianche)
