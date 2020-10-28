@@ -31,7 +31,6 @@ class TracksDrawer:
         self, length_range: ValueRange, length: float, is_special: bool = False
     ) -> str:
         assert length_range.is_valid()
-        assert length_range.contains(length)
 
         color1 = (
             self.poster.colors["special"] if is_special else self.poster.colors["track"]
