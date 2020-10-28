@@ -19,6 +19,7 @@
 4. React Hooks
 5. Mapbox 进行地图展示
 6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及Keep, 自动备份 gpx 数据，方便备份及上传到其它软件
+7. 缩放地图有彩蛋
 
 ## 支持
 - **[Strava](#strava)**
@@ -53,6 +54,7 @@ rm scripts/data.db
 rm GPX_OUT/*
 rm activities/*
 ```
+## 建议有能力的同学更改下 [Mapbox token](https://www.mapbox.com/)
 ## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据
 
 ### Keep
@@ -193,6 +195,7 @@ https://github.com/strava/go.strava
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
+注: 感兴趣的同学可以改下方参数
 ```
 python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
