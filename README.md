@@ -10,6 +10,7 @@
 | [superleeyom](https://github.com/superleeyom) | https://running.leeyom.top | Keep |
 | [geekplux](https://github.com/geekplux) | https://activities.geekplux.com | Nike |
 | [guanlan](https://github.com/guanlan) | https://grun.vercel.app/ | Strava |
+| [tuzimoe](https://github.com/tuzimoe) | https://run.tuzi.moe/ | Nike |
 
 ## 特性
 
