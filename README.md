@@ -54,7 +54,7 @@ rm scripts/data.db
 rm GPX_OUT/*
 rm activities/*
 ```
-## 建议有能力的同学更改下 [Mapbox token](https://www.mapbox.com/)
+## 建议有能力的同学改成自己的 [Mapbox token](https://www.mapbox.com/)
 ## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据
 
 ### Keep
