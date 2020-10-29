@@ -2,6 +2,18 @@
 
 [简体中文](https://github.com/yihong0618/running_page/blob/master/README.md) | English
 
+## [Runner's Page Show](https://github.com/yihong0618/running_page/issues/12)
+
+| Runner | page | App |
+| ------- | ------- | ------- |
+| [shaonianche](https://github.com/shaonianche) | https://run.duangfei.org | Nike |
+| [yihong0618](https://github.com/yihong0618) | https://yihong.run/running | Nike |
+| [superleeyom](https://github.com/superleeyom) | https://running.leeyom.top | Keep |
+| [geekplux](https://github.com/geekplux) | https://activities.geekplux.com | Nike |
+| [guanlan](https://github.com/guanlan) | https://grun.vercel.app/ | Strava |
+| [tuzimoe](https://github.com/tuzimoe) | https://run.tuzi.moe/ | Nike |
+
+
 ## Features
 
 1. GitHub Actions manages automatic synchronization of runs and generation of new pages.
@@ -43,7 +55,28 @@ rm GPX_OUT/*
 rm activities/*
 ```
 
-## Download your Runtastic(Adidas Run)/Nike Run Club/Strava data
+## Download your Garmin/Garmin-CN/Runtastic(Adidas Run)/Nike Run Club/Strava data
+
+### Garmin
+
+```python
+python3(python) scripts/garmin_sync.py ${your email} ${your password}
+```
+example：
+```python
+python3(python) scripts/garmin_sync.py example@gmail.com example
+```
+
+### Garmin-CN(China)
+
+```python
+python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
+```
+example：
+```python
+python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
+```
+
 ### Runtastic(Adidas Run)
 
 ```python
@@ -169,7 +202,7 @@ My secret is as follows
 # TODO
 
 - [ ] Complete this document.
-- [ ] Support Garmin, Garmin China
+- [x] Support Garmin, Garmin China
 - [ ] Support the Joy Runner
 - [ ] support for nike+strava, runtastic+strava
 - [ ] Support English
@@ -184,5 +217,5 @@ Before submitting PR:
 # Special thanks
 
 @[flopp](https://github.com/flopp)
+@[shaonianche](https://github.com/shaonianche)
 
-Translated with www.DeepL.com/Translator (free version)
