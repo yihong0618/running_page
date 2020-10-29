@@ -20,7 +20,15 @@
 4. React Hooks
 5. Mapbox 进行地图展示
 6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及Keep, 自动备份 gpx 数据，方便备份及上传到其它软件
-7. 缩放地图有彩蛋
+7. 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里 （建议本地同步，之后 actions 选择正在用的 app）
+8. 缩放地图有彩蛋
+
+<details>
+<summary>地图彩蛋</summary>
+
+![image](https://user-images.githubusercontent.com/15976103/95644909-a31bcd80-0aec-11eb-9270-869b0a94f59f.png)
+
+</details>
 
 ## 支持
 - **[Strava](#strava)**
@@ -55,7 +63,8 @@ rm scripts/data.db
 rm GPX_OUT/*
 rm activities/*
 ```
-## 建议有能力的同学改成自己的 [Mapbox token](https://www.mapbox.com/)
+## 建议有能力的同学把代码中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
+
 ## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据
 
 ### Keep
@@ -196,7 +205,7 @@ https://github.com/strava/go.strava
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
-注: 感兴趣的同学可以改下方参数
+注: 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km展示为 special-color1 20km 以上展示为special-color2, --min-distance 10.0用来筛选 10km 以上的)
 ```
 python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
@@ -236,6 +245,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 支持佳明，佳明中国
 - [x] 支持 keep
 - [ ] 支持悦跑圈
+- [ ] 支持苹果自带运动
 - [ ] 支持 nike+strava, runtastic+strava
 - [ ] 尝试支持咕咚，小米运动
 - [ ] 支持英语
@@ -244,8 +254,11 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [ ] i18n
 - [x] 清理整个项目
 - [ ] 完善前端代码
+- [ ] better actions
 
 # 参与项目
+
+任何 issues pr 均欢迎
 
 提交PR前:
 - 使用black对Python代码进行格式化
