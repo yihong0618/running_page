@@ -9,7 +9,7 @@ on:
       - master
 
 env:
-  RUN_TYPE: keep # support runtastic/strava/nike/garmin/garmin_cn/keep, Please change it to your own
+  RUN_TYPE: nike # support runtastic/strava/nike/garmin/garmin_cn/keep, Please change it to your own
   ATHLETE: SunShinenny
   TITLE: SunShinenny Running
   TITLE_GRID: Over 10km Runs
@@ -46,30 +46,10 @@ jobs:
         run: |
           python scripts/nike_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }}
 
-      - name: Run sync Runtastic script
-        if: env.RUN_TYPE == 'runtastic'
-        run: |
-          python scripts/runtastic_sync.py ${{ secrets.RUNTASTIC_EMAIL }} ${{ secrets.RUNTASTIC_PASSWORD }}
-  
       - name: Run sync Keep script
         if: env.RUN_TYPE == 'keep'
         run: |
           python scripts/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} --with-gpx
-
-      - name: Run sync Strava script
-        if: env.RUN_TYPE == 'strava'
-        run: |
-          python scripts/strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
-
-      - name: Run sync Garmin script
-        if: env.RUN_TYPE == 'garmin'
-        run: |
-          python scripts/garmin_sync.py ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
-
-      - name: Run sync Garmin CN script
-        if: env.RUN_TYPE == 'garmin_cn'
-        run: |
-          python scripts/garmin_sync.py ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
   
       - name: Make svg GitHub profile
         run: |
