@@ -17,6 +17,7 @@ const titleForShow = (run) => {
 };
 
 const formatPace = (d) => {
+  if (Number.isNaN(d)) return '0';
   const pace = (1000.0 / 60.0) * (1.0 / d);
   const minutes = Math.floor(pace);
   const seconds = Math.floor((pace - minutes) * 60.0);
@@ -61,7 +62,7 @@ const locationForRun = (run) => {
   return { country, province, city };
 };
 
-const intComma = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const intComma = (x = '') => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 const pathForRun = (run) => {
   try {
