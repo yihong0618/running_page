@@ -2238,6 +2238,20 @@ const activities = [
     "average_heartrate": 159.1,
     "average_speed": 3.376,
     "streak": 10
+  },
+  {
+    "run_id": 4258550424,
+    "name": "\u665a\u95f4\u8dd1\u6b65",
+    "distance": 1683.2,
+    "moving_time": "0:10:05",
+    "type": "Run",
+    "start_date": "2020-10-29 13:16:30+00:00",
+    "start_date_local": "2020-10-29 21:16:30",
+    "location_country": "\u9ad8\u80fd\u8857, \u51cc\u6c34\u8857\u9053, \u7518\u4e95\u5b50\u533a, \u5927\u8fde\u5e02, \u8fbd\u5b81\u7701, 116026, China \u4e2d\u56fd",
+    "summary_polyline": "ujelFgktdVZkAFW?[Lq@NSPMDWPk@D[d@qAd@}B\\g@JY^_@VcABq@RkANs@Hu@Pk@NQPm@LQNu@Zk@NMAYH]LQNo@f@wAVgAJQRERHjBhAn@XRDAVd@ZV@f@PPGFTCXOj@KTMn@MN[bBOl@SNCTMfB[vBKVCVg@~B?XUl@WfA]z@Op@WzBa@fB@TU`BQl@Un@MP]bB",
+    "average_heartrate": 149.3,
+    "average_speed": 2.782,
+    "streak": 11
   }
 ];
 
