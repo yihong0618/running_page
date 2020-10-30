@@ -20,7 +20,7 @@
 3. 支持 Vercel(推荐) 自动部署
 4. React Hooks
 5. Mapbox 进行地图展示
-6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及Keep, 自动备份 gpx 数据，方便备份及上传到其它软件
+6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep, 自动备份 gpx 数据，方便备份及上传到其它软件
 7. 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里 （建议本地同步，之后 actions 选择正在用的 app）
 8. 缩放地图有彩蛋
 
@@ -225,7 +225,8 @@ https://github.com/flopp/GpxTrackPoster
 2. 等待部署完毕
 3. 访问
 
-## GitHub Actions 
+## GitHub Actions (Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。)
+
 Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
 需要做如下步骤
 1. 更改成你的app type 及info
@@ -247,7 +248,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 支持 keep
 - [ ] 支持悦跑圈
 - [ ] 支持苹果自带运动
-- [ ] 支持 nike+strava, runtastic+strava
+- [ ] 支持 nike + strava, runtastic + strava
 - [ ] 尝试支持咕咚，小米运动
 - [ ] 支持英语
 - [x] 完善代码
@@ -259,12 +260,14 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 # 参与项目
 
-任何 issues pr 均欢迎
+- 任何 Issues PR 均欢迎
+- 可以提交 PR share 自己的 Running page 在 README 中
 
 提交PR前:
-- 使用black对Python代码进行格式化
+- 使用 black 对 Python 代码进行格式化
 
 # 特别感谢
 
 @[flopp](https://github.com/flopp)
 @[shaonianche](https://github.com/shaonianche)
+@[geekplux](https://github.com/geekplux)
