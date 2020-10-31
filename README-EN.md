@@ -10,9 +10,9 @@
 | [yihong0618](https://github.com/yihong0618) | https://yihong.run/running | Nike |
 | [superleeyom](https://github.com/superleeyom) | https://running.leeyom.top | Keep |
 | [geekplux](https://github.com/geekplux) | https://activities.geekplux.com | Nike |
-| [guanlan](https://github.com/guanlan) | https://grun.vercel.app/ | Strava |
-| [tuzimoe](https://github.com/tuzimoe) | https://run.tuzi.moe/ | Nike |
-| [ben-29](https://github.com/ben-29) | https://running.ben29.xyz/ | Strava 
+| [guanlan](https://github.com/guanlan) | https://grun.vercel.app | Strava |
+| [tuzimoe](https://github.com/tuzimoe) | https://run.tuzi.moe | Nike |
+| [ben_29](https://github.com/ben-29) | https://running.ben29.xyz | Strava 
 
 
 ## Features
