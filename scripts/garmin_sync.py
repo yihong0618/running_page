@@ -216,7 +216,7 @@ async def get_activity_id_list(client, start=0):
     activities = await client.get_activities(start, 100)
     if len(activities) > 0:
         ids = list(map(lambda a: str(a.get("activityId", "")), activities))
-        logger.debug(f"Activity IDs: {ids}")
+        print(f"Activity IDs: {ids}")
         return ids + await get_activity_id_list(client, start + 100)
     else:
         return []
