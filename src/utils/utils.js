@@ -37,7 +37,7 @@ const locationForRun = (run) => {
   let [city, province, country] = ['', '', ''];
   if (location) {
     // Only for Chinese now
-    const cityMatch = location.match(/[\u4e00-\u9fa5]*市/);
+    const cityMatch = location.match(/[\u4e00-\u9fa5]*(市|自治州)/);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]*(省|自治区)/);
     if (cityMatch) {
       [city] = cityMatch;
