@@ -79,20 +79,26 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 
 <details>
 <summary>获取您的 Keep 数据</summary>
+
 确保自己的账号能用手机号 + 密码登陆 (不要忘记添加secret和更改自己的账号，在 GitHub Actions中)
+
 ```python
 python3(python) scripts/keep_sync.py ${your mobile} ${your password}
 ```
+
 示例：
 ```python
 python3(python) scripts/keep_sync.py 13333xxxx example
 ```
-注：我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx会加入到 GPX_OUT 中，方便上传到其它软件
+
+> 注：我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
 python3(python) scripts/keep_sync.py ${your mobile} ${your password} --with-gpx
 ```
+
 示例：
+
 ```python
 python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 ```
@@ -102,6 +108,7 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 <details>
 <summary>获取您的 Garmin 数据</summary>
+
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
 ```
@@ -115,6 +122,7 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 
 <details>
 <summary>获取您的 Garmin-CN 数据</summary>
+
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
 ```
