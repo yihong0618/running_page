@@ -1,3 +1,5 @@
+![image](https://user-images.githubusercontent.com/15976103/87566339-775b9800-c6f5-11ea-803f-6c2f69801ee4.png)
+
 # [打造个人跑步主页](https://yihong.run/running) 
 简体中文 | [English](README-EN.md)
 
@@ -21,11 +23,11 @@
 4. React Hooks
 5. Mapbox 进行地图展示
 6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep, 自动备份 gpx 数据，方便备份及上传到其它软件
-7. 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里 （建议本地同步，之后 actions 选择正在用的 app）
-8. 缩放地图有彩蛋
+
+> 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里 （建议本地同步，之后 actions 选择正在用的 app）
 
 <details>
-<summary>地图彩蛋</summary>
+<summary>缩放地图彩蛋</summary>
 
 ![image](https://user-images.githubusercontent.com/15976103/95644909-a31bcd80-0aec-11eb-9270-869b0a94f59f.png)
 
@@ -64,12 +66,19 @@ rm scripts/data.db
 rm GPX_OUT/*
 rm activities/*
 ```
-## 建议有能力的同学把代码中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
+## 替换 `src/utils/utils.js` 文件中的 Mapbox token
+>建议有能力的同学把代码中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
+
+```javascript
+const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+```
 
 ## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据
 
 ### Keep
 
+<details>
+<summary>获取您的 Keep 数据</summary>
 确保自己的账号能用手机号 + 密码登陆 (不要忘记添加secret和更改自己的账号，在 GitHub Actions中)
 ```python
 python3(python) scripts/keep_sync.py ${your mobile} ${your password}
@@ -87,9 +96,12 @@ python3(python) scripts/keep_sync.py ${your mobile} ${your password} --with-gpx
 ```python
 python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 ```
+</details>
 
 ### Garmin
 
+<details>
+<summary>获取您的 Garmin 数据</summary>
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
 ```
@@ -97,9 +109,12 @@ python3(python) scripts/garmin_sync.py ${your email} ${your password}
 ```python
 python3(python) scripts/garmin_sync.py example@gmail.com example
 ```
+</details>
 
 ### Garmin-CN(大陆用户请用这个)
 
+<details>
+<summary>获取您的 Garmin-CN 数据</summary>
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
 ```
@@ -107,8 +122,12 @@ python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
 ```python
 python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
 ```
+</details>
 
 ### Runtastic(Adidas Run)
+
+<details>
+<summary>获取您的 Runtastic(Adidas Run) 数据</summary>
 
 ```python
 python3(python) scripts/runtastic_sync.py ${your email} ${your password}
@@ -117,6 +136,7 @@ python3(python) scripts/runtastic_sync.py ${your email} ${your password}
 ```python
 python3(python) scripts/runtastic_sync.py example@gmail.com example
 ```
+</details>
 
 ### Nike Run Club
 
@@ -203,6 +223,8 @@ https://github.com/strava/go.strava
 
 ### Total Data Analysis
 
+<details>
+<summary>生成数据展示</summary>
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
@@ -217,15 +239,24 @@ python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --t
 更多展示效果参见：   
 https://github.com/flopp/GpxTrackPoster
 
+</details>
+
 ## server(recommend vercel)
+
+<details>
+<summary>使用 vercel 部署</summary>
 1. vercel 连接你的 GitHub repo
 ![image](https://user-images.githubusercontent.com/15976103/94452465-2599b880-01e2-11eb-9538-582f0f46c421.png)
 2. import repo
 ![image](https://user-images.githubusercontent.com/15976103/94452556-3f3b0000-01e2-11eb-97a2-3789c2d60766.png)
 2. 等待部署完毕
 3. 访问
+</details>
 
 ## GitHub Actions (Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。)
+
+<details>
+<summary>修改 GitHub Actions Token</summary>
 
 Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
 需要做如下步骤
@@ -238,8 +269,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 3. 添加你的[GitHub secret](https://github.com/settings/tokens)并和项目中的 GitHub secret同名
 ![image](https://user-images.githubusercontent.com/15976103/94450721-2f222100-01e0-11eb-94a7-ef1f06fc0a59.png)
 
-## 我的展示
-![image](https://user-images.githubusercontent.com/15976103/87566339-775b9800-c6f5-11ea-803f-6c2f69801ee4.png)
+</details>
 
 # TODO
 
@@ -260,14 +290,13 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 # 参与项目
 
-- 任何 Issues PR 均欢迎
-- 可以提交 PR share 自己的 Running page 在 README 中
+- 任何 Issues PR 均欢迎。
+- 可以提交 PR share 自己的 Running page 在 README 中。
 
 提交PR前:
-- 使用 black 对 Python 代码进行格式化
+- 使用 black 对 Python 代码进行格式化。
 
 # 特别感谢
-
 @[flopp](https://github.com/flopp)
 @[shaonianche](https://github.com/shaonianche)
 @[geekplux](https://github.com/geekplux)
