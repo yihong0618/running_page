@@ -233,10 +233,11 @@ https://github.com/strava/go.strava
 
 <details>
 <summary>生成数据展示</summary>
+
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
-注: 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km展示为 special-color1 20km 以上展示为special-color2, --min-distance 10.0用来筛选 10km 以上的)
+> 注: 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km展示为 special-color1 20km 以上展示为special-color2, --min-distance 10.0用来筛选 10km 以上的)
 ```
 python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
