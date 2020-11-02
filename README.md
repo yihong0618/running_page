@@ -66,7 +66,7 @@ rm scripts/data.db
 rm GPX_OUT/*
 rm activities/*
 ```
-## 替换 `src/utils/utils.js` 文件中的 Mapbox token
+## 替换 `src/utils/const.js` 文件中的 Mapbox token
 >建议有能力的同学把代码中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
 
 ```javascript
