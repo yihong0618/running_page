@@ -164,7 +164,7 @@ const filterAndSortRuns = (activities, year, sortFunc) => {
 };
 
 const sortDateFunc = (a, b) => new Date(b.start_date_local.replace(' ', 'T')) - new Date(a.start_date_local.replace(' ', 'T'));
-const sortDateFuncReverse = (a, b) => new Date(a.start_date_local.replace(' ', 'T')) - new Date(b.start_date_local.replace(' ', 'T'));
+const sortDateFuncReverse = (a, b) => sortDateFunc(b, a);
 
 export {
   titleForShow, formatPace, scrollToMap, locationForRun, intComma, pathForRun, geoJsonForRuns, geoJsonForMap, titleForRun, filterYearRuns, filterAndSortRuns, sortDateFunc, sortDateFuncReverse, getBoundsForGeoData,
