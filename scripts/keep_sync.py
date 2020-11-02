@@ -99,7 +99,9 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
             if str(keep_id) not in old_gpx_ids:
                 download_keep_gpx(gpx_data, str(keep_id))
         run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
-    heart_rate = run_data["heartRate"].get("averageHeartRate", None)
+    heart_rate = None    
+    if run_data["heartRate"] :   
+        heart_rate = run_data["heartRate"].get("averageHeartRate", None)
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
     start_latlng = start_point(*run_points_data[0]) if run_points_data else None
     start_date = datetime.utcfromtimestamp(start_time / 1000)
@@ -145,6 +147,7 @@ def get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx=False
     for run in runs:
         print(f"parsing keep id {run}")
         try:
+            print(s)
             run_data = get_single_run_data(s, headers, run)
             track = parse_raw_data_to_nametuple(
                 run_data, old_gpx_ids, with_download_gpx
