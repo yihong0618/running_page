@@ -215,7 +215,7 @@ def main():
 
     if args.from_db:
         # for svg from db here if you want gpx please do not use --from-db
-        tracks = loader.load_tracks_from_db(SQL_FILE, args.type=="grid")
+        tracks = loader.load_tracks_from_db(SQL_FILE, args.type == "grid")
     else:
         tracks = loader.load_tracks(args.gpx_dir)
     if not tracks:

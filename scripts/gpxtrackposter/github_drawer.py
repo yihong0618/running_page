@@ -55,7 +55,20 @@ class GithubDrawer(TracksDrawer):
                 # support windows or others doesn't support locale Name, by Hard code
             except Exception as e:
                 print(str(e))
-                month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                month_names = [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                ]
             km_or_mi = "mi"
             if self.poster.units == "metric":
                 km_or_mi = "km"
