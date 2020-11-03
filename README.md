@@ -14,6 +14,7 @@
 | [guanlan](https://github.com/guanlan) | https://grun.vercel.app | Strava |
 | [tuzimoe](https://github.com/tuzimoe) | https://run.tuzi.moe | Nike |
 | [ben_29](https://github.com/ben-29) | https://running.ben29.xyz | Strava |
+| [kcllf](https://github.com/kcllf) | https://running-tau.vercel.app | Garmin-cn |
 
 ## 特性
 
