@@ -21,6 +21,8 @@ from utils import make_activities_file
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+
+TIME_OUT = httpx.Timeout(240.0, connect=360.0)
 GARMIN_COM_URL_DICT = {
     "BASE_URL": "https://connect.garmin.com",
     "SSO_URL_ORIGIN": "https://sso.garmin.com",
@@ -47,7 +49,7 @@ class Garmin:
         """
         self.email = email
         self.password = password
-        self.req = httpx.AsyncClient(timeout=httpx.Timeout(60.0))
+        self.req = httpx.AsyncClient(timeout=TIME_OUT)
         self.URL_DICT = (
             GARMIN_CN_URL_DICT
             if auth_domain and str(auth_domain).upper() == "CN"
@@ -216,7 +218,7 @@ async def get_activity_id_list(client, start=0):
     activities = await client.get_activities(start, 100)
     if len(activities) > 0:
         ids = list(map(lambda a: str(a.get("activityId", "")), activities))
-        print(f"Activity IDs: {ids}")
+        print(f"Syncing Activity IDs")
         return ids + await get_activity_id_list(client, start + 100)
     else:
         return []
@@ -262,7 +264,9 @@ if __name__ == "__main__":
 
         # because I don't find a para for after time, so I use garmin-id as filename
         # to find new run to generage
-        downloaded_ids = [i.split(".")[0] for i in os.listdir(GPX_FOLDER) if not i.startswith(".")]
+        downloaded_ids = [
+            i.split(".")[0] for i in os.listdir(GPX_FOLDER) if not i.startswith(".")
+        ]
         activity_ids = await get_activity_id_list(client)
         to_generate_garmin_ids = list(set(activity_ids) - set(downloaded_ids))
         print(f"{len(to_generate_garmin_ids)} new activities to be downloaded")
