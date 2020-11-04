@@ -164,7 +164,7 @@ export default () => {
           <div className="w-100">
             <h1 className="f1 fw9 i">Running</h1>
           </div>
-          {viewport.zoom <= 3 ? <LocationStat runs={activities} location="a" onClick={changeYear} /> : <YearsStat runs={activities} year={year} onClick={changeYear} />}
+          {viewport.zoom <= 3 && IS_CHINESE ? <LocationStat runs={activities} location="a" onClick={changeYear} /> : <YearsStat runs={activities} year={year} onClick={changeYear} />}
           <div className="fl w-100 w-70-l">
             <RunMap
               runs={runs}
@@ -210,7 +210,7 @@ const YearsStat = ({ runs, year, onClick }) => {
     <div className="fl w-100 w-30-l pb5 pr5-l">
       <section className="pb4" style={{ paddingBottom: '0rem' }}>
         <p>
-          我用 App 记录自己跑步{yearsArr.length-1}年有余，下面列表展示的是
+          我用 App 记录自己跑步{yearsArr.length}年了，下面列表展示的是
           {year}
           的数据
           <br />
@@ -363,7 +363,7 @@ const RunMap = ({
   filterProvinces.unshift('in', 'name');
 
   const isBigMap = (viewport.zoom <= 3);
-  if (isBigMap) {
+  if (isBigMap && IS_CHINESE) {
     geoData = geoJsonForMap();
   }
 
