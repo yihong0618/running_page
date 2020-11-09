@@ -81,7 +81,7 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 <details>
 <summary>获取您的 Keep 数据</summary>
 
-确保自己的账号能用手机号 + 密码登陆 (不要忘记添加secret和更改自己的账号，在 GitHub Actions中)
+确保自己的账号能用手机号 + 密码登陆 (不要忘记添加secret和更改自己的账号，在 GitHub Actions中), 注: 海外手机号需要换成国内 +86 的手机号
 
 ```python
 python3(python) scripts/keep_sync.py ${your mobile} ${your password}
@@ -312,6 +312,6 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - 使用 black 对 Python 代码进行格式化。
 
 # 特别感谢
-@[flopp](https://github.com/flopp)
-@[shaonianche](https://github.com/shaonianche)
-@[geekplux](https://github.com/geekplux)
+- @[flopp](https://github.com/flopp)
+- @[shaonianche](https://github.com/shaonianche)
+- @[geekplux](https://github.com/geekplux)

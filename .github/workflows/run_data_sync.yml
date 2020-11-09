@@ -17,10 +17,12 @@ on:
       - requirements.txt
 
 env:
-  RUN_TYPE: pass # support runtastic/strava/nike/garmin/garmin_cn/keep, Please change the 'pass' it to your own
+  RUN_TYPE: keep # support runtastic/strava/nike/garmin/garmin_cn/keep, Please change the 'pass' it to your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   TITLE_GRID: Over 10km Runs
+  GITHUB_NAME: yihong0618
+  GITHUB_EMAIL: zouzou0208@gmail.com
 
 jobs:
   sync:
@@ -92,5 +94,5 @@ jobs:
           commit-message: "Add new runs"
           files: activities src/static/ scripts/ assets/ GPX_OUT/
           rebase: 'true'
-          name: yihong0618
-          email: zouzou0208@gmail.com
+          name: ${{ env.GITHUB_NAME }}
+          email: ${{ env.GITHUB_EMAIL }}

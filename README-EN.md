@@ -15,7 +15,9 @@
 | [geekplux](https://github.com/geekplux) | https://activities.geekplux.com | Nike |
 | [guanlan](https://github.com/guanlan) | https://grun.vercel.app | Strava |
 | [tuzimoe](https://github.com/tuzimoe) | https://run.tuzi.moe | Nike |
-| [ben_29](https://github.com/ben-29) | https://running.ben29.xyz | Strava 
+| [ben_29](https://github.com/ben-29) | https://running.ben29.xyz | Strava |
+| [kcllf](https://github.com/kcllf) | https://running-tau.vercel.app | Garmin-cn |
+
 
 
 ## Features
@@ -276,7 +278,7 @@ Before submitting PR:
 
 # Special thanks
 
-@[flopp](https://github.com/flopp)
-@[shaonianche](https://github.com/shaonianche)
-@[geekplux](https://github.com/geekplux)
+- @[flopp](https://github.com/flopp)
+- @[shaonianche](https://github.com/shaonianche)
+- @[geekplux](https://github.com/geekplux)
 
