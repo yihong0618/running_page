@@ -116,11 +116,10 @@ export default () => {
       if (i >= runsNum) {
         clearInterval(id);
       }
-      // deep copy
       const tempRuns = runs.slice(0, i);
       setGeoData(geoJsonForRuns(tempRuns));
       i += sliceNume;
-    }, 1);
+    }, 100);
     setIntervalId(id);
   }, [year]);
 
