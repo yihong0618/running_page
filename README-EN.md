@@ -5,6 +5,13 @@
 
 [简体中文](https://github.com/yihong0618/running_page/blob/master/README.md) | English
 
+<details>
+<summary>GIF SHOW</summary>
+
+![running_page](https://user-images.githubusercontent.com/15976103/98808834-c02f1d80-2457-11eb-9a7c-70e91faa5e30.gif)
+
+</details>
+
 ## [Runner's Page Show](https://github.com/yihong0618/running_page/issues/12)
 
 | Runner | page | App |
