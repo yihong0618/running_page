@@ -3,6 +3,13 @@
 # [打造个人跑步主页](https://yihong.run/running) 
 简体中文 | [English](README-EN.md)
 
+<details>
+<summary>GIF 展示</summary>
+
+![running_page](https://user-images.githubusercontent.com/15976103/98808834-c02f1d80-2457-11eb-9a7c-70e91faa5e30.gif)
+
+</details>
+
 ## [大家的跑步主页展示](https://github.com/yihong0618/running_page/issues/12)
 
 | Runner | page | App |
