@@ -158,7 +158,7 @@ class Garmin:
         """
         Fetch available activities
         """
-        url = f"{self.modern_url}/proxy/activitylist-service/activities/search/activities?start={start}&limit={limit}"
+        url = f"{self.modern_url}/proxy/activitylist-service/activities/search/activities?start={start}&limit={limit}&activityType=running"
         return await self.fetch_data(url)
 
     async def download_activity(self, activity_id):
