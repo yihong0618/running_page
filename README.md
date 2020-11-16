@@ -85,7 +85,7 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 
 
 
-## Download your `Garmin`/`Garmin-CN`/`Runtastic(Adidas Run)`/`Nike Run Club`/`Strava` data
+## Download your running data
 
 ### Garmin
 
