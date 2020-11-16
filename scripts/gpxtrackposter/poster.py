@@ -103,12 +103,23 @@ class Poster:
     def draw(self, drawer, output):
         """Set the Poster's drawer and draw the tracks."""
         self.tracks_drawer = drawer
-        d = svgwrite.Drawing(output, (f"{self.width}mm", f"{self.height}mm"))
-        d.viewbox(0, 0, self.width, self.height)
-        d.add(d.rect((0, 0), (self.width, self.height), fill=self.colors["background"]))
-        self.__draw_header(d)
-        self.__draw_footer(d)
-        self.__draw_tracks(d, XY(self.width - 20, self.height - 30 - 30), XY(10, 30))
+        height = self.height
+        width = self.width
+        if self.drawer_type == "plain":
+            height = height - 100
+            self.colors["background"] = "#1a1a1a"
+            self.colors["track"] = "red"
+            self.colors["special"] = "yellow"
+            self.colors["text"] = "#e1ed5e"
+        d = svgwrite.Drawing(output, (f"{width}mm", f"{height}mm"))
+        d.viewbox(0, 0, self.width, height)
+        d.add(d.rect((0, 0), (width, height), fill=self.colors["background"]))
+        if not self.drawer_type == "plain":
+            self.__draw_header(d)
+            self.__draw_footer(d)
+            self.__draw_tracks(d, XY(width - 20, height - 30 - 30), XY(10, 30))
+        else:
+            self.__draw_tracks(d, XY(width - 20, height), XY(10, 0))
         d.save()
 
     def m2u(self, m):
