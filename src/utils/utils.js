@@ -1,7 +1,7 @@
 import * as mapboxPolyline from '@mapbox/polyline';
 import { WebMercatorViewport } from 'react-map-gl';
 import { chinaGeojson } from '../static/run_countries';
-import { MUNICIPALITY_CITIES_ARR } from './const';
+import { MUNICIPALITY_CITIES_ARR, RUN_TITLES } from './const';
 
 const titleForShow = (run) => {
   const date = run.start_date_local.slice(0, 11);
@@ -13,7 +13,7 @@ const titleForShow = (run) => {
   if (run.name) {
     name = run.name;
   }
-  return `${name} ${date} ${distance} KM ${!run.summary_polyline? "(no map data for this run)": ""}` ;
+  return `${name} ${date} ${distance} KM ${!run.summary_polyline ? '(No map data for this run)' : ''}`;
 };
 
 const formatPace = (d) => {
@@ -101,24 +101,24 @@ const titleForRun = (run) => {
   const runDistance = run.distance / 1000;
   const runHour = +run.start_date_local.slice(11, 13);
   if (runDistance > 20 && runDistance < 40) {
-    return '跑了个半马';
+    return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
   }
   if (runDistance >= 40) {
-    return '跑了个全马';
+    return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
   }
   if (runHour >= 0 && runHour <= 8) {
-    return '清晨跑步';
+    return RUN_TITLES.MORNING_RUN_TITLE;
   }
   if (runHour > 8 && runHour <= 12) {
-    return '上午跑步';
+    return RUN_TITLES.LUNCH_RUN_TITLE;
   }
   if (runHour > 12 && runHour <= 18) {
-    return '午后跑步';
+    return RUN_TITLES.AFTERNOON_RUN_TITLE;
   }
   if (runHour > 18 && runHour <= 21) {
-    return '傍晚跑步';
+    return RUN_TITLES.EVENING_RUN_TITLE;
   }
-  return '夜晚跑步';
+  return RUN_TITLES.NIGHT_RUN_TITLE;
 };
 
 const applyToArray = (func, array) => func.apply(Math, array);
@@ -126,14 +126,14 @@ const getBoundsForGeoData = (geoData, totalLength) => {
   const { features } = geoData;
   let points;
   // find first have data
-  for (let f of features) {
+  for (const f of features) {
     if (f.geometry.coordinates.length) {
-     points = f.geometry.coordinates;
-     break
+      points = f.geometry.coordinates;
+      break;
     }
   }
   if (!points) {
-    return {}
+    return {};
   }
   // Calculate corner values of bounds
   const pointsLong = points.map((point) => point[0]);
@@ -158,7 +158,7 @@ const filterYearRuns = ((run, year) => run.start_date_local.slice(0, 4) === year
 const filterAndSortRuns = (activities, year, sortFunc) => {
   let s = activities;
   if (year !== 'Total') {
-     s = activities.filter((run) => filterYearRuns(run, year));
+    s = activities.filter((run) => filterYearRuns(run, year));
   }
   return s.sort(sortFunc);
 };

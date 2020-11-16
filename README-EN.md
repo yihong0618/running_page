@@ -39,7 +39,6 @@
 > automatically backup gpx data for easy backup and uploading to other software.
 
 
-
 ## Support
 
 - **[Strava](#strava)**
@@ -78,9 +77,12 @@ rm activities/*
 
 > Suggested changes to your own [Mapbox token](https://www.mapbox.com/)
 
+
 ```javascript
 const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
+
+### If you use English please change `IS_CHINESE = false` in `src/utils/const.js`
 
 ## Download your Garmin/Garmin-CN/Runtastic(Adidas Run)/Nike Run Club/Strava data
 
@@ -272,13 +274,16 @@ My secret is as follows
 
 - [ ] Complete this document.
 - [x] Support Garmin, Garmin China
-- [ ] Support the Joy Runner
+- [ ] Support the JoyRun
 - [ ] support for nike+strava, runtastic+strava
 - [ ] Support English
 - [ ] Refine the code
 - [ ] add new features
 
 # Contribution
+
+- Any Issues PR welcome.
+- You can PR share your Running page in README I will merge it.
 
 Before submitting PR:
 - Format Python code with Black
@@ -288,4 +293,3 @@ Before submitting PR:
 - @[flopp](https://github.com/flopp)
 - @[shaonianche](https://github.com/shaonianche)
 - @[geekplux](https://github.com/geekplux)
-
