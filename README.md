@@ -41,11 +41,11 @@
 
 ## Support
 
+- **[Garmin](#garmin)**
+- **[Garmin-CN](#garmin-cnchina)**
+- **[Runtastic(Adidas Run)](#runtasticadidas-run))**
+- **[Nike Run Club](#nike-run-club)**
 - **[Strava](#strava)**
-- **[Nike Run Club](#NikeRunClub)**
-- **[Runtastic(Adidas Run)](#Runtastic(AdidasRun))**
-- **[Garmin](#Garmin)**
-- **[Garmin-cn](#Garmin-CN(China))**
 
 ## Download
 Clone or fork the repo.
@@ -75,21 +75,23 @@ rm activities/*
 
 ### Modifying Mapbox token in `src/utils/const.js`
 
-> Suggested changes to your own [Mapbox token](https://www.mapbox.com/)
+> If you use English please change `IS_CHINESE = false` in `src/utils/const.js`
 
+> Suggested changes to your own [Mapbox token](https://www.mapbox.com/)
 
 ```javascript
 const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
 
-### If you use English please change `IS_CHINESE = false` in `src/utils/const.js`
 
-## Download your Garmin/Garmin-CN/Runtastic(Adidas Run)/Nike Run Club/Strava data
+
+## Download your `Garmin`/`Garmin-CN`/`Runtastic(Adidas Run)`/`Nike Run Club`/`Strava` data
 
 ### Garmin
 
 <details>
-<summary>Get your Garmin data</summary>
+<summary>Get your <code>Garmin</code> data</summary>
+<br>
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
@@ -104,7 +106,8 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 ### Garmin-CN(China)
 
 <details>
-<summary>Get your Garmin-CN data</summary>
+<summary>Get your <code>Garmin-CN</code> data</summary>
+<br>
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
@@ -118,7 +121,9 @@ python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
 ### Runtastic(Adidas Run)
 
 <details>
-<summary>Get your `Runtastic` data</summary>
+<summary>Get your <code>Runtastic</code> data</summary>
+  
+<br>
 
 ```python
 python3(python) scripts/runtastic_sync.py ${your email} ${your password}
@@ -133,11 +138,15 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 ### Nike Run Club
 
 <details>
-<summary>Get your `Nike Run Club` data</summary>
+<summary>Get your <code>Nike Run Club</code> data</summary>
+
+<br>
 
 Get Nike's `refresh_token`
 1. Login [Nike](https://www.nike.com) website
 2. In Develop -> Application-> Storage -> https:unite.nike.com look for `refresh_token`
+
+<br>
 
 ![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png)
 
@@ -157,6 +166,7 @@ python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
 
 <details>
 <summary> Running data display </summary>
+<br>
 
 - Generate SVG data display
 - Display of results：[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
@@ -181,25 +191,33 @@ https://github.com/flopp/GpxTrackPoster
 ### Strava
 
 <details>
-<summary> Get your `Strava` data </summary>
+<summary> Get your <code>Strava</code> data </summary>
+<br>
 
 1. Sign in/Sign up [Strava](https://www.strava.com/) account
 2. Open after successful Signin [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 
-3. Create `My API Application`   
-Enter the following information：
+3. Create `My API Application`: Enter the following information
+
+<br>
+
 ![My API Application](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/strava_settings_api.png)
 Created successfully：
+
+<br>
+
 ![](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/created_successfully_1.png)
 
-4. Use the link below to request all permissions   
-Replace ${your_id} in the link with `My API Application` Client ID 
+4. Use the link below to request all permissions: Replace `${your_id}` in the link with `My API Application` Client ID 
 ```
 https://www.strava.com/oauth/authorize?client_id=${your_id}&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=read_all,profile:read_all,activity:read_all,profile:write,activity:write
 ```
 ![get_all_permissions](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_all_permissions.png)
 
 5. Get the `code` value in the link   
+
+<br>
+
 example：
 ```
 http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f3471e6e&scope=read,activity:write,activity:read_all,profile:write,profile:read_all,read_all
@@ -210,9 +228,7 @@ http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f347
 ```
 ![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png)
 
-6. Use `Client_id`、`Client_secret`、`Code` get `refresch_token`   
-    
-Execute in `Terminal/iTerm`:
+6. Use `Client_id`、`Client_secret`、`Code` get `refresch_token`: Execute in `Terminal/iTerm`
 ```
 curl -X POST https://www.strava.com/oauth/token \
 -F client_id=${Your Client ID} \
@@ -244,12 +260,20 @@ https://github.com/strava/go.strava
 ## server(recommendation vercel)
 
 <details>
-<summary> Use vercel deploy </summary>
+<summary> Use <code>vercel</code> deploy </summary>
+<br>
 
 1. vercel connects to your GitHub repo.
+
+<br>
+
 ![image](https://user-images.githubusercontent.com/15976103/94452465-2599b880-01e2-11eb-9538-582f0f46c421.png)
 2. import repo
+
+<br>
+
 ![image](https://user-images.githubusercontent.com/15976103/94452556-3f3b0000-01e2-11eb-97a2-3789c2d60766.png)
+
 2. Awaiting completion of deployment
 3. Visits
 
@@ -257,20 +281,31 @@ https://github.com/strava/go.strava
 
 ## GitHub Actions 
 
-
-
 <details>
-<summary> Modifying information in `GitHub Actions`  </summary>
+<summary> Modifying information in <code>GitHub Actions</code>  </summary>
+<br>
 
 Actions [source code](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
 The following steps need to be taken
 1. change to your app type and info
+
+<br>
+
 ![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
 Add your secret in repo Settings > Secrets (add only the ones you need).
+
+<br>
+
 ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
 My secret is as follows
+
+<br>
+
 ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
 3. add your [GitHub secret](https://github.com/settings/tokens) and have the same name as the GitHub secret in your project.
+
+<br>
+
 ![image](https://user-images.githubusercontent.com/15976103/94450721-2f222100-01e0-11eb-94a7-ef1f06fc0a59.png)
 
 </details>
