@@ -46,6 +46,7 @@
 - **[Runtastic(Adidas Run)](#runtasticadidas-run))**
 - **[Nike Run Club](#nike-run-club)**
 - **[Strava](#strava)**
+- **[GPX](#GPX)**
 
 ## Download
 Clone or fork the repo.
@@ -76,6 +77,19 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 
 
 ## Download your running data
+
+
+### GPX
+
+<details>
+<summary>Make your <code>GPX</code> data</summary>
+<br>
+
+Copy all your gpx files to GPX_OUT or new gpx files
+```python
+python3(python) scripts/gpx_sync.py
+```
+</details>
 
 ### Garmin
 

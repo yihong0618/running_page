@@ -5,8 +5,8 @@ import os
 import sys
 
 from gpxtrackposter import poster, track_loader
-from gpxtrackposter import grid_drawer, circular_drawer, heatmap_drawer
-from gpxtrackposter import github_drawer, calendar_drawer
+from gpxtrackposter import grid_drawer, circular_drawer
+from gpxtrackposter import github_drawer
 from gpxtrackposter.exceptions import ParameterError, PosterError
 from config import SQL_FILE
 
@@ -21,8 +21,6 @@ def main():
     p = poster.Poster()
     drawers = {
         "grid": grid_drawer.GridDrawer(p),
-        "calendar": calendar_drawer.CalendarDrawer(p),
-        "heatmap": heatmap_drawer.HeatmapDrawer(p),
         "circular": circular_drawer.CircularDrawer(p),
         "github": github_drawer.GithubDrawer(p),
     }
@@ -215,7 +213,7 @@ def main():
 
     if args.from_db:
         # for svg from db here if you want gpx please do not use --from-db
-        # args.type == "grid" means have polyline data or not 
+        # args.type == "grid" means have polyline data or not
         tracks = loader.load_tracks_from_db(SQL_FILE, args.type == "grid")
     else:
         tracks = loader.load_tracks(args.gpx_dir)
@@ -224,9 +222,12 @@ def main():
             print("No tracks found.")
         return
 
-    print(
-        f"Creating poster of type {args.type} with {len(tracks)} tracks and storing it in file {args.output}..."
-    )
+    is_circular = args.type == "circular"
+
+    if not is_circular:
+        print(
+            f"Creating poster of type {args.type} with {len(tracks)} tracks and storing it in file {args.output}..."
+        )
     p.set_language(args.language)
     p.athlete = args.athlete
     if args.title:
@@ -249,7 +250,6 @@ def main():
     }
     p.units = args.units
     p.set_tracks(tracks)
-    is_circular = args.type == "circular"
     # circular not add footer and header
     p.drawer_type = "plain" if is_circular else "title"
     if args.type == "github":
