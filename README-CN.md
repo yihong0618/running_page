@@ -62,18 +62,6 @@ yarn develop
 ```
 访问 http://localhost:8000/ 查看
 
-
-## 本地数据同步
-删除项目中的测试数据，在根目录下执行
-```bash
-rm scripts/data.db GPX_OUT/* activities/*
-```
-或者
-```bash
-rm scripts/data.db
-rm GPX_OUT/*
-rm activities/*
-```
 ## 替换 `src/utils/const.js` 文件中的 Mapbox token
 >建议有能力的同学把代码中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
 
@@ -305,17 +293,14 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 完善这个文档
 - [x] 支持佳明，佳明中国
 - [x] 支持 keep
-- [ ] 支持悦跑圈
 - [ ] 支持苹果自带运动
 - [ ] 支持 nike + strava, runtastic + strava
 - [ ] 尝试支持咕咚，小米运动
-- [ ] 支持英语
+- [x] 支持英语
 - [x] 完善代码
-- [ ] 添加新功能
-- [ ] i18n
 - [x] 清理整个项目
 - [ ] 完善前端代码
-- [ ] better actions
+- [x] better actions
 
 # 参与项目
 
@@ -326,6 +311,6 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - 使用 black 对 Python 代码进行格式化。
 
 # 特别感谢
-- @[flopp](https://github.com/flopp)
-- @[shaonianche](https://github.com/shaonianche)
-- @[geekplux](https://github.com/geekplux)
+- @[flopp](https://github.com/flopp) 特别棒的项目 [GpxTrackPoster](https://github.com/flopp/GpxTrackPoster)
+- @[shaonianche](https://github.com/shaonianche) icon 设计及文档
+- @[geekplux](https://github.com/geekplux) 帮助及鼓励 
