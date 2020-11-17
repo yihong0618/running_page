@@ -82,4 +82,4 @@ class YearRange:
         return 1 + self.to_year - self.from_year
 
     def all(self):
-        return list(range(int(self.from_year), int(self.to_year)+1))
+        return list(range(int(self.from_year), int(self.to_year) + 1))

@@ -14,11 +14,12 @@ on:
       - scripts/gen_svg.py
       - scripts/garmin_sync.py
       - scripts/keep_sync.py
+      - scripts/gpx_sync.py
       - requirements.txt
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support runtastic/strava/nike/garmin/garmin_cn/keep, Please change the 'pass' it to your own
+  RUN_TYPE: pass # support runtastic/strava/nike/garmin/garmin_cn/keep/only_gpx, Please change the 'pass' it to your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   TITLE_GRID: Over 10km Runs
@@ -81,6 +82,11 @@ jobs:
         if: env.RUN_TYPE == 'garmin_cn'
         run: |
           python scripts/garmin_sync.py ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
+
+      - name: Run sync Only GPX script
+        if: env.RUN_TYPE == 'only_gpx'
+        run: |
+          python scripts/gpx_sync.py
 
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'

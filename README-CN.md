@@ -48,6 +48,7 @@
 - **[Garmin](#Garmin)**
 - **[Garmin-cn](#Garmin-CN(大陆用户请用这个))**
 - **[Keep](#Keep)**
+- **[GPX](#GPX)**
 
 ## 下载
 ```
@@ -72,6 +73,19 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 ### 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.js`
 
 ## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据
+
+
+### GPX
+
+<details>
+<summary>Make your <code>GPX</code> data</summary>
+<br>
+
+把其它软件生成的 gpx files 拷贝到 GPX_OUT 之后运行
+```python
+python3(python) scripts/gpx_sync.py
+```
+</details>
 
 ### Keep
 
