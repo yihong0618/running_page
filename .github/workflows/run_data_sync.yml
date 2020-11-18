@@ -14,10 +14,12 @@ on:
       - scripts/gen_svg.py
       - scripts/garmin_sync.py
       - scripts/keep_sync.py
+      - scripts/gpx_sync.py
       - requirements.txt
 
 env:
-  RUN_TYPE: pass # support runtastic/strava/nike/garmin/garmin_cn/keep, Please change the 'pass' it to your own
+  # please change to your own config.
+  RUN_TYPE: pass # support runtastic/strava/nike/garmin/garmin_cn/keep/only_gpx, Please change the 'pass' it to your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   TITLE_GRID: Over 10km Runs
@@ -81,11 +83,17 @@ jobs:
         run: |
           python scripts/garmin_sync.py ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
 
+      - name: Run sync Only GPX script
+        if: env.RUN_TYPE == 'only_gpx'
+        run: |
+          python scripts/gpx_sync.py
+
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
         run: |
           python scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
           python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+          python scripts/gen_svg.py --from-db --type circular --use-localtime
 
       - name: Push new runs
         uses: github-actions-x/commit@v2.6

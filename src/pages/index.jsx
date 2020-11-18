@@ -13,7 +13,7 @@ import {
   titleForShow, formatPace, scrollToMap, locationForRun, intComma, geoJsonForRuns, geoJsonForMap,
   titleForRun, filterAndSortRuns, sortDateFunc, sortDateFuncReverse, getBoundsForGeoData,
 } from '../utils/utils';
-import { MAPBOX_TOKEN, IS_CHINESE } from '../utils/const';
+import { MAPBOX_TOKEN, IS_CHINESE, INFO_MESSAGE } from '../utils/const';
 
 import styles from './running.module.scss';
 
@@ -58,6 +58,19 @@ const totalActivitiesLength = activities.length;
 let thisYear = '';
 if (yearsArr) {
   [thisYear] = yearsArr;
+}
+
+// Hooks
+const useHover = () => {
+  const [hovered, setHovered] = useState();
+  const [timer, setTimer] = useState();
+  
+  const eventHandlers = {
+    onMouseOver() {setTimer(setTimeout(()=>setHovered(true), 700)); },
+    onMouseOut() { clearTimeout(timer);setHovered(false); }
+  };
+  
+  return [hovered, eventHandlers];
 }
 
 // Page
@@ -227,11 +240,7 @@ const YearsStat = ({ runs, year, onClick }) => {
     <div className="fl w-100 w-30-l pb5 pr5-l">
       <section className="pb4" style={{ paddingBottom: '0rem' }}>
         <p>
-          我用 App 记录自己跑步
-          {yearsArr.length}
-          年了，下面列表展示的是
-          {year}
-          的数据
+          {INFO_MESSAGE(yearsArr.length, year)}
           <br />
         </p>
       </section>
@@ -265,6 +274,14 @@ const LocationStat = ({ runs, onClick }) => (
 );
 
 const YearStat = ({ runs, year, onClick }) => {
+  // for hover
+  const [hovered, eventHandlers] = useHover();
+  // lazy Component
+  const YearSVG = React.lazy(() =>
+    import(`../../assets/year_${year}.svg`)
+    .catch(() => ({ default: () => <div></div> }))
+  );
+
   if (yearsArr.includes(year)) {
     runs = runs.filter((run) => run.start_date_local.slice(0, 4) === year);
   }
@@ -297,9 +314,9 @@ const YearStat = ({ runs, year, onClick }) => {
     0,
   );
   return (
-    <div style={{ cursor: 'pointer' }} onClick={() => onClick(year)}>
+    <div style={{ cursor: 'pointer' }} onClick={() => onClick(year)} {...eventHandlers}>
       <section>
-        <Stat value={year} description=" 跑步旅程" />
+        <Stat value={year} description=" Journey" />
         <Stat value={runs.length} description=" Runs" />
         <Stat value={sumDistance} description=" KM" />
         <Stat value={avgPace} description=" Avg Pace" />
@@ -312,11 +329,13 @@ const YearStat = ({ runs, year, onClick }) => {
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
         )}
       </section>
+      {hovered && <React.Suspense fallback={'loading...'}><YearSVG className={styles.yearSVG} /></React.Suspense>}
       <hr color="red" />
     </div>
   );
 };
 
+// only support China for now
 const LocationSummary = () => (
   <div style={{ cursor: 'pointer' }}>
     <section>
@@ -329,6 +348,7 @@ const LocationSummary = () => (
   </div>
 );
 
+// only support China for now
 const CitiesStat = () => {
   const citiesArr = Object.entries(cities);
   citiesArr.sort((a, b) => b[1] - a[1]);
