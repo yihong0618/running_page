@@ -16,7 +16,7 @@ const activities = [
   {
     "run_id": 1584347633000,
     "name": "run from gpx",
-    "distance": 1143.528018894618,
+    "distance": 1143.5280188946183,
     "moving_time": "0:08:22",
     "type": "Run",
     "start_date": "2020-03-16 08:33:53",
@@ -24,7 +24,7 @@ const activities = [
     "location_country": "\u4e4d\u6d66\u8def\u6865, \u9ec4\u6d66\u533a, \u4e0a\u6d77\u5e02, \u9ec4\u6d66\u533a, 2000080, China \u4e2d\u56fd",
     "summary_polyline": "owu}DucndV_@}@Wp@u@VgDkAYi@_@uEz@e@c@aCF{A_AEs@o@eAZu@i@?oAbAgB{AyBqBuAcAjCaBDcBe@gC^",
     "average_heartrate": 144.0,
-    "average_speed": 2.277944260746251,
+    "average_speed": 2.2779442607462514,
     "streak": 2
   },
   {
@@ -72,7 +72,7 @@ const activities = [
   {
     "run_id": 1585036225000,
     "name": "run from gpx",
-    "distance": 3651.2147138956275,
+    "distance": 3651.214713895627,
     "moving_time": "0:29:53",
     "type": "Run",
     "start_date": "2020-03-24 07:50:25",
@@ -422,7 +422,7 @@ const activities = [
   {
     "run_id": 1590047382000,
     "name": "run from gpx",
-    "distance": 3869.2582596432917,
+    "distance": 3869.258259643292,
     "moving_time": "0:30:01",
     "type": "Run",
     "start_date": "2020-05-21 07:49:42",
@@ -646,7 +646,7 @@ const activities = [
   {
     "run_id": 1592472138000,
     "name": "run from gpx",
-    "distance": 4764.180121370921,
+    "distance": 4764.18012137092,
     "moving_time": "0:37:14",
     "type": "Run",
     "start_date": "2020-06-18 09:22:18",
@@ -654,7 +654,7 @@ const activities = [
     "location_country": "\u970d\u5c71\u8def, \u4e0a\u6d77\u5e02, \u6768\u6d66\u533a, 200082, China \u4e2d\u56fd",
     "summary_polyline": "qzw}D_bsdVeEnF|ByBbADBh@mDzE|D~E\\pAcF~FzC|CbAjHEzAn@bAyJtFC~An@d@lAtD_HdDSpAtAx@j@`C~Cu@bCwAzCArE~NiGlEkBb@{BpByChGt@XtBeG`DaB`@j@~GmEZC~CrGz@L|@oAsDiGvAeAZP|ApFHrBtBfIo@k@HaAiAgH_CoHh@sAgAoB",
     "average_heartrate": 132.0,
-    "average_speed": 2.1325783891543963,
+    "average_speed": 2.1325783891543955,
     "streak": 1
   },
   {
@@ -1192,7 +1192,7 @@ const activities = [
   {
     "run_id": 1597662398000,
     "name": "run from gpx",
-    "distance": 7277.5013409612375,
+    "distance": 7277.501340961237,
     "moving_time": "0:52:06",
     "type": "Run",
     "start_date": "2020-08-17 11:06:38",
@@ -1200,7 +1200,7 @@ const activities = [
     "location_country": "Decathlon, \u8346\u5dde\u8def, \u4e0a\u6d77\u5e02, \u6768\u6d66\u533a, 200082, China \u4e2d\u56fd",
     "summary_polyline": "_gy}DkcsdVvEmI}ALdPuAhIMlRwD}@oCsC{DsDuJcNgVyB_JwDtAyD}ICcAoC{EB_AsFhDuDkIyCvAy@hAm@WRi@`J}FqBaCwImVgMuUGy@cF_FqCeHcFmHPo@kFcEcByBgAiDaDt@mD|BoC^mGfHyJpE_I|GoTzMeJ|G{AJiCpBmBd@gJA",
     "average_heartrate": 128.0,
-    "average_speed": 2.3280554513631597,
+    "average_speed": 2.3280554513631593,
     "streak": 7
   },
   {
@@ -1682,7 +1682,7 @@ const activities = [
   {
     "run_id": 1603620011000,
     "name": "run from gpx",
-    "distance": 7526.531120411522,
+    "distance": 7526.531120411521,
     "moving_time": "1:01:10",
     "type": "Run",
     "start_date": "2020-10-25 10:00:11",
