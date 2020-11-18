@@ -142,8 +142,7 @@ class Garmin:
         except Exception as err:
             if retrying:
                 logger.debug(
-                    "Exception occurred during data retrieval, relogin without effect: %s"
-                    % err
+                    "Exception occurred during data retrieval, relogin without effect: %s" % err
                 )
                 raise GarminConnectConnectionError("Error connecting") from err
             else:
@@ -216,7 +215,7 @@ async def download_garmin_gpx(client, activity_id):
 
 async def get_activity_id_list(client, start=0):
     activities = await client.get_activities(start, 100)
-    if len(activities) > 0:
+    if activities and len(activities) > 0:
         ids = list(map(lambda a: str(a.get("activityId", "")), activities))
         print(f"Syncing Activity IDs")
         return ids + await get_activity_id_list(client, start + 100)
@@ -247,9 +246,7 @@ if __name__ == "__main__":
     options = parser.parse_args()
     email = options.email or config("sync", "garmin", "email")
     password = options.password or config("sync", "garmin", "password")
-    auth_domain = (
-        "CN" if options.is_cn else config("sync", "garmin", "authentication_domain")
-    )
+    auth_domain = "CN" if options.is_cn else config("sync", "garmin", "authentication_domain")
     if email == None or password == None:
         print("Missing argument nor valid configuration file")
         sys.exit(1)
@@ -264,9 +261,7 @@ if __name__ == "__main__":
 
         # because I don't find a para for after time, so I use garmin-id as filename
         # to find new run to generage
-        downloaded_ids = [
-            i.split(".")[0] for i in os.listdir(GPX_FOLDER) if not i.startswith(".")
-        ]
+        downloaded_ids = [i.split(".")[0] for i in os.listdir(GPX_FOLDER) if not i.startswith(".")]
         activity_ids = await get_activity_id_list(client)
         to_generate_garmin_ids = list(set(activity_ids) - set(downloaded_ids))
         print(f"{len(to_generate_garmin_ids)} new activities to be downloaded")
