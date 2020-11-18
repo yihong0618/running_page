@@ -3,7 +3,7 @@ name: Run Data Sync
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
   push:
     branches:
       - master
@@ -19,12 +19,12 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support runtastic/strava/nike/garmin/garmin_cn/keep/only_gpx, Please change the 'pass' it to your own
-  ATHLETE: yihong0618
-  TITLE: Yihong0618 Running
-  TITLE_GRID: Over 10km Runs
-  GITHUB_NAME: yihong0618
-  GITHUB_EMAIL: zouzou0208@gmail.com
+  RUN_TYPE: garmin_cn # support runtastic/strava/nike/garmin/garmin_cn/keep/only_gpx, Please change the 'pass' it to your own
+  ATHLETE: Liang
+  TITLE: Liang Running
+  TITLE_GRID: Over 5km Runs
+  GITHUB_NAME: liangch
+  GITHUB_EMAIL: lc@liangchen.net
 
 jobs:
   sync:
@@ -99,7 +99,7 @@ jobs:
         uses: github-actions-x/commit@v2.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Add new runs"
+          commit-message: 'Add new runs'
           files: activities src/static/ scripts/ assets/ GPX_OUT/
           rebase: 'true'
           name: ${{ env.GITHUB_NAME }}
