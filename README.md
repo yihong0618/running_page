@@ -25,6 +25,7 @@
 | [ben_29](https://github.com/ben-29) | https://running.ben29.xyz | Strava |
 | [kcllf](https://github.com/kcllf) | https://running-tau.vercel.app | Garmin-cn |
 | [mq](https://github.com/MQ-0707) | https://running-iota.vercel.app | Keep |
+| [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app/ | Keep |
 
 ## Features
 
