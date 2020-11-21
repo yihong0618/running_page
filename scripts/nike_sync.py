@@ -147,13 +147,15 @@ def sanitise_json(d):
 def get_to_generate_files():
     file_names = os.listdir(GPX_FOLDER)
     try:
-        last_time = max(int(i.split(".")[0]) for i in file_names if not i.startswith("."))
+        last_time = max(
+            int(i.split(".")[0]) for i in file_names if not i.startswith(".")
+        )
     except:
         last_time = 0
     return [
         OUTPUT_DIR + "/" + i
         for i in os.listdir(OUTPUT_DIR)
-        if not i.startswith(".") and int(i.split(".")[0]) > last_time 
+        if not i.startswith(".") and int(i.split(".")[0]) > last_time
     ]
 
 
