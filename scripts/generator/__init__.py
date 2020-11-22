@@ -3,8 +3,8 @@ import time
 import sys
 
 
-import arrow  # type: ignore
-import stravalib  # type: ignore
+import arrow
+import stravalib
 from sqlalchemy import func
 from gpxtrackposter import track_loader
 

@@ -310,7 +310,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 支持佳明，佳明中国
 - [x] 支持 keep
 - [ ] 支持苹果自带运动
-- [ ] 支持 nike + strava, runtastic + strava
+- [x] 支持 nike + strava
 - [ ] 尝试支持咕咚，小米运动
 - [x] 支持英语
 - [x] 完善代码

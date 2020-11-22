@@ -88,7 +88,7 @@ def update_or_create_activity(session, run_activity):
                 # limit (only for the first time)
                 except:
                     print("+++++++limit+++++++")
-                    time.sleep(10)
+                    time.sleep(2)
                     try:
                         location_country = str(
                             g.reverse(f"{start_point.lat}, {start_point.lon}")
