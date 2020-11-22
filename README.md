@@ -318,7 +318,7 @@ My secret is as follows
 
 - [ ] Complete this document.
 - [x] Support Garmin, Garmin China
-- [ ] support for nike+strava, runtastic+strava
+- [x] support for nike+strava
 - [x] Support English
 - [ ] Refine the code
 - [x] add new features

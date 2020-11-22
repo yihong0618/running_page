@@ -9,6 +9,7 @@ on:
       - master
     paths:
       - scripts/nike_sync.py
+      - scripts/nike_to_strava_sync.py
       - scripts/runtastic_sync.py
       - scripts/strava_sync.py
       - scripts/gen_svg.py
@@ -58,6 +59,11 @@ jobs:
         run: |
           python scripts/nike_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }}
 
+      - name: Run sync Nike to Strava(Run with nike data backup and show with strava)
+        if: env.RUN_TYPE == 'nike_to_strava'
+        run: |
+          python scripts/nike_to_strava_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
+  
       - name: Run sync Runtastic script
         if: env.RUN_TYPE == 'runtastic'
         run: |

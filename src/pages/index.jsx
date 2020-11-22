@@ -64,14 +64,14 @@ if (yearsArr) {
 const useHover = () => {
   const [hovered, setHovered] = useState();
   const [timer, setTimer] = useState();
-  
+
   const eventHandlers = {
-    onMouseOver() {setTimer(setTimeout(()=>setHovered(true), 700)); },
-    onMouseOut() { clearTimeout(timer);setHovered(false); }
+    onMouseOver() { setTimer(setTimeout(() => setHovered(true), 700)); },
+    onMouseOut() { clearTimeout(timer); setHovered(false); },
   };
-  
+
   return [hovered, eventHandlers];
-}
+};
 
 // Page
 export default () => {
@@ -160,7 +160,7 @@ export default () => {
         // do not add the event next time
         // maybe a better way?
         if (runLocate) {
-          rect.onclick = () => locateActivity(runLocate);
+          rect.addEventListener('click', () => locateActivity(runLocate), false);
         }
       }
     });
@@ -181,7 +181,7 @@ export default () => {
       // do not add the event next time
       // maybe a better way?
       if (run) {
-        polyline.onclick = () => locateActivity(run);
+        polyline.addEventListener('click', () => locateActivity(run), false);
       }
     });
   }, [year]);
@@ -277,10 +277,8 @@ const YearStat = ({ runs, year, onClick }) => {
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component
-  const YearSVG = React.lazy(() =>
-    import(`../../assets/year_${year}.svg`)
-    .catch(() => ({ default: () => <div></div> }))
-  );
+  const YearSVG = React.lazy(() => import(`../../assets/year_${year}.svg`)
+    .catch(() => ({ default: () => <div /> })));
 
   if (yearsArr.includes(year)) {
     runs = runs.filter((run) => run.start_date_local.slice(0, 4) === year);
@@ -329,7 +327,7 @@ const YearStat = ({ runs, year, onClick }) => {
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
         )}
       </section>
-      {hovered && <React.Suspense fallback={'loading...'}><YearSVG className={styles.yearSVG} /></React.Suspense>}
+      {hovered && <React.Suspense fallback="loading..."><YearSVG className={styles.yearSVG} /></React.Suspense>}
       <hr color="red" />
     </div>
   );
