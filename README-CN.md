@@ -51,6 +51,7 @@
 - **[Garmin-cn](#Garmin-CN(大陆用户请用这个))**
 - **[Keep](#Keep)**
 - **[GPX](#GPX)**
+- **[Nike+Strava(Using NRC Run, Strava backup data)](#Nike+Strava)**
 
 ## 下载
 ```
@@ -241,6 +242,24 @@ https://developers.strava.com/docs/getting-started
 https://github.com/barrald/strava-uploader   
 https://github.com/strava/go.strava
 
+</details>
+
+### Nike+Strava
+
+<details>
+<summary>Get your <code>Nike Run Club</code> data and upload to strava</summary>
+
+<br>
+
+1. 完成 nike 和 strava 的步骤
+2. 在项目根目录下执行::
+```python
+python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresch_token} 
+```
+示例：
+```python
+python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
+```
 </details>
 
 ### Total Data Analysis
