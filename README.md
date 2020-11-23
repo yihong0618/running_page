@@ -43,11 +43,11 @@
 
 - **[Garmin](#garmin)**
 - **[Garmin-CN](#garmin-cnchina)**
-- **[Runtastic(Adidas Run)](#runtasticadidas-run))**
+- **[Runtastic(Adidas Run)](#runtasticadidas-run)**
 - **[Nike Run Club](#nike-run-club)**
 - **[Strava](#strava)**
 - **[GPX](#GPX)**
-- **[Nike+Strava(Using NRC Run, Strava backup data)](#Nike+Strava)**
+- **[Nike_to_Strava(Using NRC Run, Strava backup data)](#Nike_to_Strava)**
 
 ## Download
 Clone or fork the repo.
@@ -236,7 +236,7 @@ https://github.com/strava/go.strava
 
 </details>
 
-### Nike+Strava
+### Nike_to_Strava
 
 <details>
 <summary>Get your <code>Nike Run Club</code> data and upload to strava</summary>
