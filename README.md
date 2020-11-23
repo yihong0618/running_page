@@ -47,6 +47,7 @@
 - **[Nike Run Club](#nike-run-club)**
 - **[Strava](#strava)**
 - **[GPX](#GPX)**
+- **[Nike+Strava(Using NRC Run, Strava backup data)](#Nike+Strava)**
 
 ## Download
 Clone or fork the repo.
@@ -233,6 +234,24 @@ https://developers.strava.com/docs/getting-started
 https://github.com/barrald/strava-uploader   
 https://github.com/strava/go.strava   
 
+</details>
+
+### Nike+Strava
+
+<details>
+<summary>Get your <code>Nike Run Club</code> data and upload to strava</summary>
+
+<br>
+
+1. follow the nike and strava steps
+2. Execute in the root directory:
+```python
+python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresch_token} 
+```
+example：
+```python
+python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
+```
 </details>
 
 ### Total Data Analysis
