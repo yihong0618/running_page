@@ -27,6 +27,10 @@
 | [mq](https://github.com/MQ-0707) | https://running-iota.vercel.app | Keep |
 | [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app/ | Keep |
 
+## How it works
+
+![image](https://user-images.githubusercontent.com/15976103/100430000-28753480-30d1-11eb-8b4e-258a67038d74.png)
+
 ## Features
 
 1. GitHub Actions manages automatic synchronization of runs and generation of new pages.
