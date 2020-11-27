@@ -25,6 +25,10 @@
 | [mq](https://github.com/MQ-0707) | https://running-iota.vercel.app | Keep |
 | [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app/ | Keep |
 
+## 它是怎么工作的
+
+![image](https://user-images.githubusercontent.com/15976103/100430000-28753480-30d1-11eb-8b4e-258a67038d74.png)
+
 ## 特性
 
 1. GitHub Actions 管理自动同步跑步进程及自动生成新的页面
