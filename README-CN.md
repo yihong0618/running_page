@@ -66,7 +66,7 @@ git clone https://github.com/yihong0618/running_page.git
 ```
 pip3 install -r requirements.txt
 yarn install
-yarn develop
+yarn develop -H 0.0.0.0
 ```
 访问 http://localhost:8000/ 查看
 
