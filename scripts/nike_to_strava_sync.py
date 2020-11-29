@@ -71,8 +71,9 @@ if __name__ == "__main__":
     files = get_to_generate_files(last_time)
     new_gpx_files = make_new_gpxs(files)
     time.sleep(5)  # just wait
-    for f in new_gpx_files:
-        upload_gpx(client, f)
+    if new_gpx_files:
+        for f in new_gpx_files:
+            upload_gpx(client, f)
 
     run_strava_sync(
         options.client_id, options.client_secret, options.strava_refresh_token
