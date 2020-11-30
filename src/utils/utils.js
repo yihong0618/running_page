@@ -122,7 +122,7 @@ const titleForRun = (run) => {
 };
 
 const applyToArray = (func, array) => func.apply(Math, array);
-const getBoundsForGeoData = (geoData, totalLength) => {
+const getBoundsForGeoData = (geoData) => {
   const { features } = geoData;
   let points;
   // find first have data
@@ -147,9 +147,6 @@ const getBoundsForGeoData = (geoData, totalLength) => {
   let { longitude, latitude, zoom } = viewport;
   if (features.length > 1) {
     zoom = 11.5;
-  }
-  if (features.length === totalLength) {
-    zoom = 5;
   }
   return { longitude, latitude, zoom };
 };
