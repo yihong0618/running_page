@@ -82,7 +82,7 @@ export default () => {
     geoJsonForRuns(runs),
   );
   // for auto zoom
-  const bounds = getBoundsForGeoData(geoData, totalActivitiesLength);
+  const bounds = getBoundsForGeoData(geoData);
   const [intervalId, setIntervalId] = useState();
 
   const [viewport, setViewport] = useState({
