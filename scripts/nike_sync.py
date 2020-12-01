@@ -147,13 +147,15 @@ def sanitise_json(d):
 def get_to_generate_files():
     file_names = os.listdir(GPX_FOLDER)
     try:
-        last_time = max(int(i.split(".")[0]) for i in file_names if not i.startswith("."))
+        last_time = max(
+            int(i.split(".")[0]) for i in file_names if not i.startswith(".")
+        )
     except:
         last_time = 0
     return [
         OUTPUT_DIR + "/" + i
         for i in os.listdir(OUTPUT_DIR)
-        if not i.startswith(".") and int(i.split(".")[0]) > last_time 
+        if not i.startswith(".") and int(i.split(".")[0]) > last_time
     ]
 
 
@@ -296,6 +298,7 @@ def make_new_gpxs(files):
         return
     if not os.path.exists(GPX_FOLDER):
         os.mkdir(GPX_FOLDER)
+    gpx_files = []
     for file in files:
         with open(file, "r") as f:
             try:
@@ -304,9 +307,11 @@ def make_new_gpxs(files):
                 return
         # ALL save name using utc if you want local please offset
         gpx_name = str(json_data["end_epoch_ms"])
+        gpx_files.append(os.path.join(GPX_FOLDER, str(gpx_name) + ".gpx"))
         parsed_data = parse_activity_data(json_data)
         if parsed_data:
             save_gpx(parsed_data, gpx_name)
+    return gpx_files
 
 
 if __name__ == "__main__":

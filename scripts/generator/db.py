@@ -1,23 +1,27 @@
-import time
 import datetime
+import random
+import string
+import time
 
 from geopy.geocoders import Nominatim
-from sqlalchemy import (
-    create_engine,
-    Column,
-    Float,
-    Integer,
-    Interval,
-    String,
-)
+from sqlalchemy import Column, Float, Integer, Interval, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
-
+from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 
+import random
+import string
+
+
+# random user name 8 letters
+def randomword():
+    letters = string.ascii_lowercase
+    return "".join(random.choice(letters) for i in range(8))
+
+
 # reverse the location (lan, lon) -> location detail
-g = Nominatim(user_agent="yihonghaha")
+g = Nominatim(user_agent=randomword())
 
 
 ACTIVITY_KEYS = [
@@ -84,7 +88,7 @@ def update_or_create_activity(session, run_activity):
                 # limit (only for the first time)
                 except:
                     print("+++++++limit+++++++")
-                    time.sleep(10)
+                    time.sleep(2)
                     try:
                         location_country = str(
                             g.reverse(f"{start_point.lat}, {start_point.lon}")

@@ -10,7 +10,6 @@ const NotFoundPage = () => (
       <a className="moon-gray b" href="mailto:zouzou0208@gmail.com">
           zouzou0208@gmail.com
       </a>
-      .
     </p>
   </Layout>
 );

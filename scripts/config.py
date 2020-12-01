@@ -4,7 +4,6 @@ import yaml
 GET_DIR = "activities"
 OUTPUT_DIR = "activities"
 GPX_FOLDER = os.path.join(os.getcwd(), "GPX_OUT")
-GPX_TEST = os.path.join(os.getcwd(), "GPX_TEST")
 SQL_FILE = "scripts/data.db"
 JSON_FILE = "src/static/activities.js"
 

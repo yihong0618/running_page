@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import ReactMapGL, { Source, Layer } from 'react-map-gl';
+import ReactMapGL, { Source, Layer, Marker } from 'react-map-gl';
 
 import Layout from '../components/layout';
 import { activities } from '../static/activities';
 import GitHubSvg from '../../assets/github.svg';
 import GridSvg from '../../assets/grid.svg';
+import StartSvg from '../../assets/start.svg';
+import EndSvg from '../../assets/end.svg';
 import {
   titleForShow, formatPace, scrollToMap, locationForRun, intComma, geoJsonForRuns, geoJsonForMap,
   titleForRun, filterAndSortRuns, sortDateFunc, sortDateFuncReverse, getBoundsForGeoData,
 } from '../utils/utils';
-import { MAPBOX_TOKEN, IS_CHINESE } from '../utils/const';
+import { MAPBOX_TOKEN, IS_CHINESE, INFO_MESSAGE } from '../utils/const';
 
 import styles from './running.module.scss';
 
@@ -58,6 +60,19 @@ if (yearsArr) {
   [thisYear] = yearsArr;
 }
 
+// Hooks
+const useHover = () => {
+  const [hovered, setHovered] = useState();
+  const [timer, setTimer] = useState();
+
+  const eventHandlers = {
+    onMouseOver() { setTimer(setTimeout(() => setHovered(true), 700)); },
+    onMouseOut() { clearTimeout(timer); setHovered(false); },
+  };
+
+  return [hovered, eventHandlers];
+};
+
 // Page
 export default () => {
   const [year, setYear] = useState(thisYear);
@@ -67,7 +82,8 @@ export default () => {
     geoJsonForRuns(runs),
   );
   // for auto zoom
-  const bounds = getBoundsForGeoData(geoData, totalActivitiesLength);
+  const bounds = getBoundsForGeoData(geoData);
+  const [intervalId, setIntervalId] = useState();
 
   const [viewport, setViewport] = useState({
     width: '100%',
@@ -86,11 +102,14 @@ export default () => {
       });
     }
     setTitle(`${y} Running Heatmap`);
+    clearInterval(intervalId);
   };
 
   const locateActivity = (run) => {
     setGeoData(geoJsonForRuns([run]));
     setTitle(titleForShow(run));
+    clearInterval(intervalId);
+    scrollToMap();
   };
 
   useEffect(() => {
@@ -99,11 +118,22 @@ export default () => {
       height: 400,
       ...bounds,
     });
-    scrollToMap();
   }, [geoData]);
 
   useEffect(() => {
-    setGeoData(geoJsonForRuns(runs));
+    const runsNum = runs.length;
+    // maybe change 20 ?
+    const sliceNume = runsNum >= 20 ? runsNum / 20 : 1;
+    let i = sliceNume;
+    const id = setInterval(() => {
+      if (i >= runsNum) {
+        clearInterval(id);
+      }
+      const tempRuns = runs.slice(0, i);
+      setGeoData(geoJsonForRuns(tempRuns));
+      i += sliceNume;
+    }, 100);
+    setIntervalId(id);
   }, [year]);
 
   // TODO refactor
@@ -130,7 +160,7 @@ export default () => {
         // do not add the event next time
         // maybe a better way?
         if (runLocate) {
-          rect.onclick = () => locateActivity(runLocate);
+          rect.addEventListener('click', () => locateActivity(runLocate), false);
         }
       }
     });
@@ -151,7 +181,7 @@ export default () => {
       // do not add the event next time
       // maybe a better way?
       if (run) {
-        polyline.onclick = () => locateActivity(run);
+        polyline.addEventListener('click', () => locateActivity(run), false);
       }
     });
   }, [year]);
@@ -164,7 +194,7 @@ export default () => {
           <div className="w-100">
             <h1 className="f1 fw9 i">Running</h1>
           </div>
-          {viewport.zoom <= 3 ? <LocationStat runs={activities} location="a" onClick={changeYear} /> : <YearsStat runs={activities} year={year} onClick={changeYear} />}
+          {viewport.zoom <= 3 && IS_CHINESE ? <LocationStat runs={activities} location="a" onClick={changeYear} /> : <YearsStat runs={activities} year={year} onClick={changeYear} />}
           <div className="fl w-100 w-70-l">
             <RunMap
               runs={runs}
@@ -210,9 +240,7 @@ const YearsStat = ({ runs, year, onClick }) => {
     <div className="fl w-100 w-30-l pb5 pr5-l">
       <section className="pb4" style={{ paddingBottom: '0rem' }}>
         <p>
-          我用 App 记录自己跑步{yearsArr.length-1}年有余，下面列表展示的是
-          {year}
-          的数据
+          {INFO_MESSAGE(yearsArr.length, year)}
           <br />
         </p>
       </section>
@@ -246,6 +274,12 @@ const LocationStat = ({ runs, onClick }) => (
 );
 
 const YearStat = ({ runs, year, onClick }) => {
+  // for hover
+  const [hovered, eventHandlers] = useHover();
+  // lazy Component
+  const YearSVG = React.lazy(() => import(`../../assets/year_${year}.svg`)
+    .catch(() => ({ default: () => <div /> })));
+
   if (yearsArr.includes(year)) {
     runs = runs.filter((run) => run.start_date_local.slice(0, 4) === year);
   }
@@ -278,9 +312,9 @@ const YearStat = ({ runs, year, onClick }) => {
     0,
   );
   return (
-    <div style={{ cursor: 'pointer' }} onClick={() => onClick(year)}>
+    <div style={{ cursor: 'pointer' }} onClick={() => onClick(year)} {...eventHandlers}>
       <section>
-        <Stat value={year} description=" 跑步旅程" />
+        <Stat value={year} description=" Journey" />
         <Stat value={runs.length} description=" Runs" />
         <Stat value={sumDistance} description=" KM" />
         <Stat value={avgPace} description=" Avg Pace" />
@@ -293,11 +327,13 @@ const YearStat = ({ runs, year, onClick }) => {
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
         )}
       </section>
+      {hovered && <React.Suspense fallback="loading..."><YearSVG className={styles.yearSVG} /></React.Suspense>}
       <hr color="red" />
     </div>
   );
 };
 
+// only support China for now
 const LocationSummary = () => (
   <div style={{ cursor: 'pointer' }}>
     <section>
@@ -310,6 +346,7 @@ const LocationSummary = () => (
   </div>
 );
 
+// only support China for now
 const CitiesStat = () => {
   const citiesArr = Object.entries(cities);
   citiesArr.sort((a, b) => b[1] - a[1]);
@@ -363,8 +400,19 @@ const RunMap = ({
   filterProvinces.unshift('in', 'name');
 
   const isBigMap = (viewport.zoom <= 3);
-  if (isBigMap) {
+  if (isBigMap && IS_CHINESE) {
     geoData = geoJsonForMap();
+  }
+
+  const isSingleRun = geoData.features.length === 1 && geoData.features[0].geometry.coordinates.length;
+  let startLon; let
+    startLat;
+  let endLon; let
+    endLat;
+  if (isSingleRun) {
+    const points = geoData.features[0].geometry.coordinates;
+    [startLon, startLat] = points[0];
+    [endLon, endLat] = points[points.length - 1];
   }
 
   return (
@@ -398,8 +446,30 @@ const RunMap = ({
           }}
         />
       </Source>
+      {isSingleRun
+      && <RunMarker startLat={startLat} startLon={startLon} endLat={endLat} endLon={endLon} /> }
       <span className={styles.runTitle}>{title}</span>
     </ReactMapGL>
+  );
+};
+
+const RunMarker = ({
+  startLon, startLat, endLon, endLat,
+}) => {
+  const size = 20;
+  return (
+    <div>
+      <Marker key="maker_start" longitude={startLon} latitude={startLat}>
+        <div style={{ transform: `translate(${-size / 2}px,${-size}px)` }}>
+          <StartSvg className={styles.locationSVG} />
+        </div>
+      </Marker>
+      <Marker key="maker_end" longitude={endLon} latitude={endLat}>
+        <div style={{ transform: `translate(${-size / 2}px,${-size}px)` }}>
+          <EndSvg className={styles.locationSVG} />
+        </div>
+      </Marker>
+    </div>
   );
 };
 
@@ -414,7 +484,7 @@ const RunMapButtons = ({ changeYear }) => {
     const elements = document.getElementsByClassName(styles.button);
     if (index !== elementIndex) {
       elements[index].style.color = 'white';
-    };
+    }
     setIndex(elementIndex);
   };
   return (
@@ -440,7 +510,7 @@ const RunMapButtons = ({ changeYear }) => {
 };
 
 const RunTable = ({
-  runs, year, locateActivity, setActivity
+  runs, year, locateActivity, setActivity,
 }) => {
   const [runIndex, setRunIndex] = useState(-1);
   const [sortFuncInfo, setSortFuncInfo] = useState('');
