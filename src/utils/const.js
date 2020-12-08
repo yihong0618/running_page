@@ -50,3 +50,7 @@ export const NAVS = [
   { text: 'Blog', link: 'https://github.com/yihong0618/running_page' },
   { text: 'About', link: 'https://github.com/yihong0618/running_page' },
 ];
+
+const nike = 'rgb(224,237,94)';
+export const MAIN_COLOR = nike;
+export const PROVINCE_FILL_COLOR = '#47b8e0';
