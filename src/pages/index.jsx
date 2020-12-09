@@ -13,7 +13,13 @@ import {
   titleForShow, formatPace, scrollToMap, locationForRun, intComma, geoJsonForRuns, geoJsonForMap,
   titleForRun, filterAndSortRuns, sortDateFunc, sortDateFuncReverse, getBoundsForGeoData,
 } from '../utils/utils';
-import { MAPBOX_TOKEN, IS_CHINESE, INFO_MESSAGE } from '../utils/const';
+import {
+  MAPBOX_TOKEN,
+  IS_CHINESE,
+  INFO_MESSAGE,
+  MAIN_COLOR,
+  PROVINCE_FILL_COLOR,
+} from '../utils/const';
 
 import styles from './running.module.scss';
 
@@ -429,7 +435,7 @@ const RunMap = ({
           id="prvince"
           type="fill"
           paint={{
-            'fill-color': '#47b8e0',
+            'fill-color': PROVINCE_FILL_COLOR,
           }}
           filter={filterProvinces}
         />
@@ -437,7 +443,7 @@ const RunMap = ({
           id="runs2"
           type="line"
           paint={{
-            'line-color': 'rgb(224,237,94)',
+            'line-color': MAIN_COLOR,
             'line-width': isBigMap ? 1 : 2,
           }}
           layout={{
@@ -479,7 +485,7 @@ const RunMapButtons = ({ changeYear }) => {
   const [index, setIndex] = useState(0);
   const handleClick = (e, year) => {
     const elementIndex = yearsButtons.indexOf(year);
-    e.target.style.color = 'rgb(224,237,94)';
+    e.target.style.color = MAIN_COLOR;
 
     const elements = document.getElementsByClassName(styles.button);
     if (index !== elementIndex) {
@@ -493,7 +499,7 @@ const RunMapButtons = ({ changeYear }) => {
         {yearsButtons.map((year) => (
           <li
             key={`${year}button`}
-            style={{ color: year === thisYear ? 'rgb(224,237,94)' : 'white' }}
+            style={{ color: year === thisYear ? MAIN_COLOR : 'white' }}
             year={year}
             onClick={(e) => {
               changeYear(year);
@@ -535,7 +541,7 @@ const RunTable = ({
     const f = sortFuncMap.get(e.target.innerHTML);
     if (runIndex !== -1) {
       const el = document.getElementsByClassName(styles.runRow);
-      el[runIndex].style.color = 'rgb(224,237,94)';
+      el[runIndex].style.color = MAIN_COLOR;
     }
     setActivity(filterAndSortRuns(runs, year, f));
   };
@@ -585,7 +591,7 @@ const RunRow = ({
 
     const elements = document.getElementsByClassName(styles.runRow);
     if (runIndex !== -1 && elementIndex !== runIndex) {
-      elements[runIndex].style.color = 'rgb(224,237,94)';
+      elements[runIndex].style.color = MAIN_COLOR;
     }
     setRunIndex(elementIndex);
   };

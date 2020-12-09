@@ -1,9 +1,10 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { Helmet } from "react-helmet";
-import { StaticQuery, graphql } from "gatsby";
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
+import { StaticQuery, graphql } from 'gatsby';
+import Header from './header';
 
-import "../styles/index.scss";
+import '../styles/index.scss';
 
 const Layout = ({ children }) => (
   <StaticQuery
@@ -23,14 +24,15 @@ const Layout = ({ children }) => (
           title={data.site.siteMetadata.title}
           meta={[
             {
-              name: "description",
+              name: 'description',
               content: data.site.siteMetadata.description,
             },
-            { name: "keywords", content: "running" },
+            { name: 'keywords', content: 'running' },
           ]}
         >
           <html lang="en" />
         </Helmet>
+        <Header siteTitle={data.site.siteMetadata.title} />
         <div className="pa3 pa5-l">{children}</div>
       </Fragment>
     )}
