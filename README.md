@@ -26,6 +26,7 @@
 | [kcllf](https://github.com/kcllf) | https://running-tau.vercel.app | Garmin-cn |
 | [mq](https://github.com/MQ-0707) | https://running-iota.vercel.app | Keep |
 | [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app/ | Keep |
+| [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
 
 ## How it works
 
