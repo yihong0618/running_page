@@ -120,11 +120,14 @@ class Track:
         """Append other track to self."""
         self.end_time = other.end_time
         self.length += other.length
-        self.moving_dict['distance'] += other.moving_dict['distance']
-        self.moving_dict['moving_time'] += other.moving_dict['moving_time']
-        self.moving_dict['elapsed_time'] += other.moving_dict['elapsed_time']
+        self.moving_dict["distance"] += other.moving_dict["distance"]
+        self.moving_dict["moving_time"] += other.moving_dict["moving_time"]
+        self.moving_dict["elapsed_time"] += other.moving_dict["elapsed_time"]
         self.polylines[0].extend(other.polylines[0])
-        polyline_container = [[math.degrees(p.lat().radians), math.degrees(p.lng().radians)] for p in self.polylines[0]]
+        polyline_container = [
+            [math.degrees(p.lat().radians), math.degrees(p.lng().radians)]
+            for p in self.polylines[0]
+        ]
         self.polyline_str = polyline.encode(polyline_container)
         self.file_names.extend(other.file_names)
         self.special = self.special or other.special
