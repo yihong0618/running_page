@@ -13,7 +13,6 @@ from .exceptions import TrackLoadError
 from .utils import parse_datetime_to_local
 import polyline
 from collections import namedtuple
-import math
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
@@ -124,11 +123,7 @@ class Track:
         self.moving_dict["moving_time"] += other.moving_dict["moving_time"]
         self.moving_dict["elapsed_time"] += other.moving_dict["elapsed_time"]
         self.polylines[0].extend(other.polylines[0])
-        polyline_container = [
-            [math.degrees(p.lat().radians), math.degrees(p.lng().radians)]
-            for p in self.polylines[0]
-        ]
-        self.polyline_str = polyline.encode(polyline_container)
+        self.polyline_str = polyline.encode(self.polylines[0])
         self.file_names.extend(other.file_names)
         self.special = self.special or other.special
 
