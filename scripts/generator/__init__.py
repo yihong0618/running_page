@@ -82,11 +82,11 @@ class Generator:
 
         self.session.commit()
 
-    def sync_from_keep(self, keep_tracks):
-        if not keep_tracks:
+    def sync_from_app(self, app_tracks):
+        if not app_tracks:
             print("No tracks found.")
             return
-        for t in keep_tracks:
+        for t in app_tracks:
             created = update_or_create_activity(self.session, t)
             if created:
                 sys.stdout.write("+")
