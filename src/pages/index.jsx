@@ -13,7 +13,13 @@ import {
   titleForShow, formatPace, scrollToMap, locationForRun, intComma, geoJsonForRuns, geoJsonForMap,
   titleForRun, filterAndSortRuns, sortDateFunc, sortDateFuncReverse, getBoundsForGeoData,
 } from '../utils/utils';
-import { MAPBOX_TOKEN, IS_CHINESE, INFO_MESSAGE } from '../utils/const';
+import {
+  MAPBOX_TOKEN,
+  IS_CHINESE,
+  INFO_MESSAGE,
+  MAIN_COLOR,
+  PROVINCE_FILL_COLOR,
+} from '../utils/const';
 
 import styles from './running.module.scss';
 
@@ -64,14 +70,14 @@ if (yearsArr) {
 const useHover = () => {
   const [hovered, setHovered] = useState();
   const [timer, setTimer] = useState();
-  
+
   const eventHandlers = {
-    onMouseOver() {setTimer(setTimeout(()=>setHovered(true), 700)); },
-    onMouseOut() { clearTimeout(timer);setHovered(false); }
+    onMouseOver() { setTimer(setTimeout(() => setHovered(true), 700)); },
+    onMouseOut() { clearTimeout(timer); setHovered(false); },
   };
-  
+
   return [hovered, eventHandlers];
-}
+};
 
 // Page
 export default () => {
@@ -82,7 +88,7 @@ export default () => {
     geoJsonForRuns(runs),
   );
   // for auto zoom
-  const bounds = getBoundsForGeoData(geoData, totalActivitiesLength);
+  const bounds = getBoundsForGeoData(geoData);
   const [intervalId, setIntervalId] = useState();
 
   const [viewport, setViewport] = useState({
@@ -160,7 +166,7 @@ export default () => {
         // do not add the event next time
         // maybe a better way?
         if (runLocate) {
-          rect.onclick = () => locateActivity(runLocate);
+          rect.addEventListener('click', () => locateActivity(runLocate), false);
         }
       }
     });
@@ -181,7 +187,7 @@ export default () => {
       // do not add the event next time
       // maybe a better way?
       if (run) {
-        polyline.onclick = () => locateActivity(run);
+        polyline.addEventListener('click', () => locateActivity(run), false);
       }
     });
   }, [year]);
@@ -277,10 +283,8 @@ const YearStat = ({ runs, year, onClick }) => {
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component
-  const YearSVG = React.lazy(() =>
-    import(`../../assets/year_${year}.svg`)
-    .catch(() => ({ default: () => <div></div> }))
-  );
+  const YearSVG = React.lazy(() => import(`../../assets/year_${year}.svg`)
+    .catch(() => ({ default: () => <div /> })));
 
   if (yearsArr.includes(year)) {
     runs = runs.filter((run) => run.start_date_local.slice(0, 4) === year);
@@ -329,7 +333,7 @@ const YearStat = ({ runs, year, onClick }) => {
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
         )}
       </section>
-      {hovered && <React.Suspense fallback={'loading...'}><YearSVG className={styles.yearSVG} /></React.Suspense>}
+      {hovered && <React.Suspense fallback="loading..."><YearSVG className={styles.yearSVG} /></React.Suspense>}
       <hr color="red" />
     </div>
   );
@@ -431,7 +435,7 @@ const RunMap = ({
           id="prvince"
           type="fill"
           paint={{
-            'fill-color': '#47b8e0',
+            'fill-color': PROVINCE_FILL_COLOR,
           }}
           filter={filterProvinces}
         />
@@ -439,7 +443,7 @@ const RunMap = ({
           id="runs2"
           type="line"
           paint={{
-            'line-color': 'rgb(224,237,94)',
+            'line-color': MAIN_COLOR,
             'line-width': isBigMap ? 1 : 2,
           }}
           layout={{
@@ -481,7 +485,7 @@ const RunMapButtons = ({ changeYear }) => {
   const [index, setIndex] = useState(0);
   const handleClick = (e, year) => {
     const elementIndex = yearsButtons.indexOf(year);
-    e.target.style.color = 'rgb(224,237,94)';
+    e.target.style.color = MAIN_COLOR;
 
     const elements = document.getElementsByClassName(styles.button);
     if (index !== elementIndex) {
@@ -495,7 +499,7 @@ const RunMapButtons = ({ changeYear }) => {
         {yearsButtons.map((year) => (
           <li
             key={`${year}button`}
-            style={{ color: year === thisYear ? 'rgb(224,237,94)' : 'white' }}
+            style={{ color: year === thisYear ? MAIN_COLOR : 'white' }}
             year={year}
             onClick={(e) => {
               changeYear(year);
@@ -537,7 +541,7 @@ const RunTable = ({
     const f = sortFuncMap.get(e.target.innerHTML);
     if (runIndex !== -1) {
       const el = document.getElementsByClassName(styles.runRow);
-      el[runIndex].style.color = 'rgb(224,237,94)';
+      el[runIndex].style.color = MAIN_COLOR;
     }
     setActivity(filterAndSortRuns(runs, year, f));
   };
@@ -587,7 +591,7 @@ const RunRow = ({
 
     const elements = document.getElementsByClassName(styles.runRow);
     if (runIndex !== -1 && elementIndex !== runIndex) {
-      elements[runIndex].style.color = 'rgb(224,237,94)';
+      elements[runIndex].style.color = MAIN_COLOR;
     }
     setRunIndex(elementIndex);
   };

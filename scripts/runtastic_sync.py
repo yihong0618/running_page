@@ -261,10 +261,16 @@ async def get_to_sync_sessions(from_time):
             BASE_URL + SYNC_URL, data=json.dumps(sync_data), headers=HEADERS
         )
     sessions_data = r.json()
+
     for session in sessions_data.get("sessions", []):
-        if session.get("deletedAt"):
+        # comment by yihong0618 this is for only run type sportTypeId in [1, 14] are running for now
+        # sportTypeId in [3, 4, 15, 22] are Biking
+        # sportTypeId in [18] are Swimming
+        # sportTypeId in [2, 7, 19] are Walking
+        # this may be refine when issue #54 resolved
+        # if you want to diy please change here
+        if session.get("deletedAt") or session.get("sportTypeId") not in ["1", "14"]:
             continue
-        # print(session.get("id"))
         rids.append(session.get("id"))
     date = datetime.datetime.utcfromtimestamp(int(sessions_data["syncedUntil"]) / 1000)
     print(f"Parse sessions rids since {str(date)[:10]} data")
@@ -274,7 +280,7 @@ async def get_to_sync_sessions(from_time):
 
 
 async def run(email, password, from_time, output=GPX_FILE_DIR):
-    # chunk async tasks for every 100
+    # chunk async tasks for every 50
     asyncio_semaphore = asyncio.BoundedSemaphore(50)
     await _login(email, password)
     rids = await get_to_sync_sessions(from_time)
