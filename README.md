@@ -18,7 +18,7 @@
 | ------- | ------- | ------- |
 | [shaonianche](https://github.com/shaonianche) | https://run.duangfei.org | Nike |
 | [yihong0618](https://github.com/yihong0618) | https://yihong.run/running | Nike |
-| [superleeyom](https://github.com/superleeyom) | https://running.leeyom.top | Keep |
+| [superleeyom](https://github.com/superleeyom) | https://running.leeyom.top | Nike |
 | [geekplux](https://github.com/geekplux) | https://activities.geekplux.com | Nike |
 | [guanlan](https://github.com/guanlan) | https://grun.vercel.app | Strava |
 | [tuzimoe](https://github.com/tuzimoe) | https://run.tuzi.moe | Nike |
@@ -133,7 +133,7 @@ python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
 
 <details>
 <summary>Get your <code>Runtastic</code> data</summary>
-  
+
 <br>
 
 ```python
