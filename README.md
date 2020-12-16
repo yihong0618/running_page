@@ -27,6 +27,7 @@
 | [mq](https://github.com/MQ-0707) | https://running-iota.vercel.app | Keep |
 | [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app/ | Keep |
 | [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
+| [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top/ | Keep |
 
 ## How it works
 
