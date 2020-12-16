@@ -134,7 +134,7 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 确保自己的账号能用手机号 + 验证码登陆
 
-点击获取验证码
+点击获取验证码 **不要在手机输入验证码，拿到验证码就好，用这个验证码放到下方命令中**
 
 ![image](https://user-images.githubusercontent.com/15976103/102352588-e3af3000-3fe2-11eb-8131-14946b0262eb.png)
 ![image](https://user-images.githubusercontent.com/15976103/102352596-e873e400-3fe2-11eb-86b9-baa264a3f1cc.png)
