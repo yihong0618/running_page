@@ -130,7 +130,9 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 ### JoyRun（悦跑圈）
 
 <details>
-<summary>获取您的悦跑圈验证码</summary>
+<summary>获取您的悦跑圈数据</summary>
+
+获取登陆验证码：
 
 确保自己的账号能用手机号 + 验证码登陆
 
