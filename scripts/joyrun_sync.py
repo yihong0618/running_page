@@ -252,6 +252,10 @@ class Joyrun:
         heart_rate = None
         if heart_rate_list:
             heart_rate = int(sum(heart_rate_list) / len(heart_rate_list))
+            # fix #66
+            if heart_rate < 0:
+                heart_rate = None
+            
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
         start_latlng = start_point(*run_points_data[0]) if run_points_data else None
         start_date = datetime.utcfromtimestamp(start_time)
