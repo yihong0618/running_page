@@ -98,6 +98,9 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
     heart_rate = None
     if run_data["heartRate"]:
         heart_rate = run_data["heartRate"].get("averageHeartRate", None)
+        # fix #66
+        if heart_rate and heart_rate < 0:
+            heart_rate = None
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
     start_latlng = start_point(*run_points_data[0]) if run_points_data else None
     start_date = datetime.utcfromtimestamp(start_time / 1000)
