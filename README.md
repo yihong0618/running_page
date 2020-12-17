@@ -83,7 +83,7 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 
 
 
-## Download your running data
+## Download your running data and do not forget to [generate svg in `total` page](#Total-Data-Analysis).
 
 
 ### GPX

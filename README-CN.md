@@ -29,7 +29,7 @@
 
 ## 它是怎么工作的
 
-![image](https://user-images.githubusercontent.com/15976103/100430000-28753480-30d1-11eb-8b4e-258a67038d74.png)
+![image](https://user-images.githubusercontent.com/15976103/102441412-2f9ebb00-405d-11eb-9dc7-1a8951748895.png)
 
 ## 特性
 
@@ -82,7 +82,7 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 
 ### 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.js`
 
-## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据
+## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据, [别忘了在 `total` 页面生成可视化SVG](#Total-Data-Analysis).
 
 
 ### GPX
