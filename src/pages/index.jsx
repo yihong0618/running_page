@@ -3,18 +3,17 @@ import { Helmet } from 'react-helmet';
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import ReactMapGL, { Source, Layer, Marker } from 'react-map-gl';
 
-import Layout from '../components/layout';
+import Layout from 'src/components/layout';
 import SVGStat from 'src/components/SVGStat';
+import YearsStat from 'src/components/YearsStat';
 import { activities } from '../static/activities';
 import StartSvg from '../../assets/start.svg';
 import EndSvg from '../../assets/end.svg';
-import useHover from '../hooks/useHover';
 import {
   titleForShow,
   formatPace,
   scrollToMap,
   locationForRun,
-  intComma,
   geoJsonForRuns,
   geoJsonForMap,
   titleForRun,
@@ -29,7 +28,6 @@ import {
 import {
   MAPBOX_TOKEN,
   IS_CHINESE,
-  INFO_MESSAGE,
   MAIN_COLOR,
   PROVINCE_FILL_COLOR,
 } from '../utils/const';
@@ -230,7 +228,12 @@ export default () => {
               changeTitle={changeTitle}
             />
           ) : (
-            <YearsStat runs={activities} year={year} onClick={changeYear} />
+            <YearsStat
+              yearsArr={yearsArr}
+              runs={activities}
+              year={year}
+              onClick={changeYear}
+            />
           )}
           <div className="fl w-100 w-70-l">
             <RunMap
@@ -261,31 +264,6 @@ export default () => {
   );
 };
 
-// Child components
-const YearsStat = ({ runs, year, onClick }) => {
-  // make sure the year click on front
-  let yearsArrayUpdate = yearsArr.slice();
-  yearsArrayUpdate = yearsArrayUpdate.filter((x) => x !== year);
-  yearsArrayUpdate.unshift(year);
-
-  // for short solution need to refactor
-  return (
-    <div className="fl w-100 w-30-l pb5 pr5-l">
-      <section className="pb4" style={{ paddingBottom: '0rem' }}>
-        <p>
-          {INFO_MESSAGE(yearsArr.length, year)}
-          <br />
-        </p>
-      </section>
-      <hr color="red" />
-      {yearsArrayUpdate.map((year) => (
-        <YearStat key={year} runs={runs} year={year} onClick={onClick} />
-      ))}
-      <YearStat key="Total" runs={runs} year="Total" onClick={onClick} />
-    </div>
-  );
-};
-
 const LocationStat = ({ runs, changeYear, changeCity, changeTitle }) => (
   <div className="fl w-100 w-30-l pb5 pr5-l">
     <section className="pb4" style={{ paddingBottom: '0rem' }}>
@@ -305,77 +283,6 @@ const LocationStat = ({ runs, changeYear, changeCity, changeTitle }) => (
     <YearStat key="Total" runs={runs} year="Total" onClick={changeYear} />
   </div>
 );
-
-const YearStat = ({ runs, year, onClick }) => {
-  // for hover
-  const [hovered, eventHandlers] = useHover();
-  // lazy Component
-  const YearSVG = React.lazy(() =>
-    import(`../../assets/year_${year}.svg`).catch(() => ({
-      default: () => <div />,
-    }))
-  );
-
-  if (yearsArr.includes(year)) {
-    runs = runs.filter((run) => run.start_date_local.slice(0, 4) === year);
-  }
-  let sumDistance = 0;
-  let streak = 0;
-  let pace = 0;
-  let paceNullCount = 0;
-  let heartRate = 0;
-  let heartRateNullCount = 0;
-  runs.forEach((run) => {
-    sumDistance += run.distance || 0;
-    if (run.average_speed) {
-      pace += run.average_speed;
-    } else {
-      paceNullCount++;
-    }
-    if (run.average_heartrate) {
-      heartRate += run.average_heartrate;
-    } else {
-      heartRateNullCount++;
-    }
-    if (run.streak) {
-      streak = Math.max(streak, run.streak);
-    }
-  });
-  sumDistance = (sumDistance / 1000.0).toFixed(1);
-  const avgPace = formatPace(pace / (runs.length - paceNullCount));
-  const hasHeartRate = !(heartRate === 0);
-  const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
-    0
-  );
-  return (
-    <div
-      style={{ cursor: 'pointer' }}
-      onClick={() => onClick(year)}
-      {...eventHandlers}
-    >
-      <section>
-        <Stat value={year} description=" Journey" />
-        <Stat value={runs.length} description=" Runs" />
-        <Stat value={sumDistance} description=" KM" />
-        <Stat value={avgPace} description=" Avg Pace" />
-        <Stat
-          value={`${streak} day`}
-          description=" Streak"
-          className="mb0 pb0"
-        />
-        {hasHeartRate && (
-          <Stat value={avgHeartRate} description=" Avg Heart Rate" />
-        )}
-      </section>
-      {hovered && (
-        <React.Suspense fallback="loading...">
-          <YearSVG className={styles.yearSVG} />
-        </React.Suspense>
-      )}
-      <hr color="red" />
-    </div>
-  );
-};
 
 // only support China for now
 const LocationSummary = () => (
@@ -687,10 +594,3 @@ const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
     </tr>
   );
 };
-
-const Stat = ({ value, description, className, citySize, onClick }) => (
-  <div className={`${className} pb2 w-100`} onClick={onClick}>
-    <span className={`f${citySize || 1} fw9 i`}>{intComma(value)}</span>
-    <span className="f3 fw6 i">{description}</span>
-  </div>
-);
