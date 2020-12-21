@@ -4,14 +4,27 @@ import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import ReactMapGL, { Source, Layer, Marker } from 'react-map-gl';
 
 import Layout from '../components/layout';
+import SVGStat from 'src/components/SVGStat';
 import { activities } from '../static/activities';
-import GitHubSvg from '../../assets/github.svg';
-import GridSvg from '../../assets/grid.svg';
 import StartSvg from '../../assets/start.svg';
 import EndSvg from '../../assets/end.svg';
+import useHover from '../hooks/useHover';
 import {
-  titleForShow, formatPace, scrollToMap, locationForRun, intComma, geoJsonForRuns, geoJsonForMap,
-  titleForRun, filterCityRuns, filterYearRuns, filterTitleRuns, filterAndSortRuns, sortDateFunc, sortDateFuncReverse, getBoundsForGeoData,
+  titleForShow,
+  formatPace,
+  scrollToMap,
+  locationForRun,
+  intComma,
+  geoJsonForRuns,
+  geoJsonForMap,
+  titleForRun,
+  filterCityRuns,
+  filterYearRuns,
+  filterTitleRuns,
+  filterAndSortRuns,
+  sortDateFunc,
+  sortDateFuncReverse,
+  getBoundsForGeoData,
 } from '../utils/utils';
 import {
   MAPBOX_TOKEN,
@@ -32,29 +45,29 @@ let yearsArr = [];
 // generate base attr
 ((runs) => {
   const locationsList = [];
-  runs.forEach(
-    (run) => {
-      const location = locationForRun(run);
-      const periodName = titleForRun(run);
-      if (periodName) {
-        runPeriod[periodName] = runPeriod[periodName] === undefined ? 1 : runPeriod[periodName] + 1;
-      }
-      locationsList.push(location);
-      const { city, province, country } = location;
-      // drop only one char city
-      if (city.length > 1) {
-        cities[city] = (cities[city] === undefined ? run.distance : cities[city] + run.distance);
-      }
-      if (province) {
-        provinces.push(province);
-      }
-      if (country) {
-        countries.push(country);
-      }
-      const y = run.start_date_local.slice(0, 4);
-      yearsArr.push(y);
-    },
-  );
+  runs.forEach((run) => {
+    const location = locationForRun(run);
+    const periodName = titleForRun(run);
+    if (periodName) {
+      runPeriod[periodName] =
+        runPeriod[periodName] === undefined ? 1 : runPeriod[periodName] + 1;
+    }
+    locationsList.push(location);
+    const { city, province, country } = location;
+    // drop only one char city
+    if (city.length > 1) {
+      cities[city] =
+        cities[city] === undefined ? run.distance : cities[city] + run.distance;
+    }
+    if (province) {
+      provinces.push(province);
+    }
+    if (country) {
+      countries.push(country);
+    }
+    const y = run.start_date_local.slice(0, 4);
+    yearsArr.push(y);
+  });
   yearsArr = [...new Set(yearsArr)].sort().reverse();
   provinces = [...new Set(provinces)];
   countries = [...new Set(countries)];
@@ -66,28 +79,15 @@ if (yearsArr) {
   [thisYear] = yearsArr;
 }
 
-// Hooks
-const useHover = () => {
-  const [hovered, setHovered] = useState();
-  const [timer, setTimer] = useState();
-
-  const eventHandlers = {
-    onMouseOver() { setTimer(setTimeout(() => setHovered(true), 700)); },
-    onMouseOut() { clearTimeout(timer); setHovered(false); },
-  };
-
-  return [hovered, eventHandlers];
-};
-
 // Page
 export default () => {
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
-  const [runs, setActivity] = useState(filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc));
-  const [title, setTitle] = useState('');
-  const [geoData, setGeoData] = useState(
-    geoJsonForRuns(runs),
+  const [runs, setActivity] = useState(
+    filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc)
   );
+  const [title, setTitle] = useState('');
+  const [geoData, setGeoData] = useState(geoJsonForRuns(runs));
   // for auto zoom
   const bounds = getBoundsForGeoData(geoData);
   const [intervalId, setIntervalId] = useState();
@@ -174,14 +174,18 @@ export default () => {
         const runDate = rect.innerHTML;
         // ingnore the error
         const [runName] = runDate.match(/\d{4}-\d{1,2}-\d{1,2}/) || [];
-        const runLocate = runs.filter(
-          (r) => r.start_date_local.slice(0, 10) === runName,
-        ).sort((a, b) => b.distance - a.distance)[0];
+        const runLocate = runs
+          .filter((r) => r.start_date_local.slice(0, 10) === runName)
+          .sort((a, b) => b.distance - a.distance)[0];
 
         // do not add the event next time
         // maybe a better way?
         if (runLocate) {
-          rect.addEventListener('click', () => locateActivity(runLocate), false);
+          rect.addEventListener(
+            'click',
+            () => locateActivity(runLocate),
+            false
+          );
         }
       }
     });
@@ -194,10 +198,12 @@ export default () => {
       // not run has no click event
       const runDate = polyline.innerHTML;
       // `${+thisYear + 1}` ==> 2021
-      const [runName] = runDate.match(/\d{4}-\d{1,2}-\d{1,2}/) || [`${+thisYear + 1}`];
-      const run = runs.filter(
-        (r) => r.start_date_local.slice(0, 10) === runName,
-      ).sort((a, b) => b.distance - a.distance)[0];
+      const [runName] = runDate.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
+        `${+thisYear + 1}`,
+      ];
+      const run = runs
+        .filter((r) => r.start_date_local.slice(0, 10) === runName)
+        .sort((a, b) => b.distance - a.distance)[0];
 
       // do not add the event next time
       // maybe a better way?
@@ -215,7 +221,17 @@ export default () => {
           <div className="w-100">
             <h1 className="f1 fw9 i">Running</h1>
           </div>
-          {viewport.zoom <= 3 && IS_CHINESE ? <LocationStat runs={activities} location="location" changeYear={changeYear} changeCity={changeCity} changeTitle={changeTitle} /> : <YearsStat runs={activities} year={year} onClick={changeYear} />}
+          {viewport.zoom <= 3 && IS_CHINESE ? (
+            <LocationStat
+              runs={activities}
+              location="location"
+              changeYear={changeYear}
+              changeCity={changeCity}
+              changeTitle={changeTitle}
+            />
+          ) : (
+            <YearsStat runs={activities} year={year} onClick={changeYear} />
+          )}
           <div className="fl w-100 w-70-l">
             <RunMap
               runs={runs}
@@ -226,30 +242,24 @@ export default () => {
               setViewport={setViewport}
               changeYear={changeYear}
             />
-            {year === 'Total' ? <SVGStat />
-              : (
-                <RunTable
-                  runs={runs}
-                  year={year}
-                  locateActivity={locateActivity}
-                  setActivity={setActivity}
-                  runIndex={runIndex}
-                  setRunIndex={setRunIndex}
-                />
-              )}
+            {year === 'Total' ? (
+              <SVGStat />
+            ) : (
+              <RunTable
+                runs={runs}
+                year={year}
+                locateActivity={locateActivity}
+                setActivity={setActivity}
+                runIndex={runIndex}
+                setRunIndex={setRunIndex}
+              />
+            )}
           </div>
         </div>
       </Layout>
     </>
   );
 };
-
-const SVGStat = () => (
-  <div>
-    <GitHubSvg className={styles.runSVG} />
-    <GridSvg className={styles.runSVG} />
-  </div>
-);
 
 // Child components
 const YearsStat = ({ runs, year, onClick }) => {
@@ -276,9 +286,7 @@ const YearsStat = ({ runs, year, onClick }) => {
   );
 };
 
-const LocationStat = ({
-  runs, changeYear, changeCity, changeTitle,
-}) => (
+const LocationStat = ({ runs, changeYear, changeCity, changeTitle }) => (
   <div className="fl w-100 w-30-l pb5 pr5-l">
     <section className="pb4" style={{ paddingBottom: '0rem' }}>
       <p>
@@ -302,8 +310,11 @@ const YearStat = ({ runs, year, onClick }) => {
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component
-  const YearSVG = React.lazy(() => import(`../../assets/year_${year}.svg`)
-    .catch(() => ({ default: () => <div /> })));
+  const YearSVG = React.lazy(() =>
+    import(`../../assets/year_${year}.svg`).catch(() => ({
+      default: () => <div />,
+    }))
+  );
 
   if (yearsArr.includes(year)) {
     runs = runs.filter((run) => run.start_date_local.slice(0, 4) === year);
@@ -334,10 +345,14 @@ const YearStat = ({ runs, year, onClick }) => {
   const avgPace = formatPace(pace / (runs.length - paceNullCount));
   const hasHeartRate = !(heartRate === 0);
   const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
-    0,
+    0
   );
   return (
-    <div style={{ cursor: 'pointer' }} onClick={() => onClick(year)} {...eventHandlers}>
+    <div
+      style={{ cursor: 'pointer' }}
+      onClick={() => onClick(year)}
+      {...eventHandlers}
+    >
       <section>
         <Stat value={year} description=" Journey" />
         <Stat value={runs.length} description=" Runs" />
@@ -352,7 +367,11 @@ const YearStat = ({ runs, year, onClick }) => {
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
         )}
       </section>
-      {hovered && <React.Suspense fallback="loading..."><YearSVG className={styles.yearSVG} /></React.Suspense>}
+      {hovered && (
+        <React.Suspense fallback="loading...">
+          <YearSVG className={styles.yearSVG} />
+        </React.Suspense>
+      )}
       <hr color="red" />
     </div>
   );
@@ -379,7 +398,13 @@ const CitiesStat = ({ onClick }) => {
     <div style={{ cursor: 'pointer' }}>
       <section>
         {citiesArr.map(([city, distance]) => (
-          <Stat key={city} value={city} description={` ${(distance / 1000).toFixed(0)} KM`} citySize={3} onClick={() => onClick(city)} />
+          <Stat
+            key={city}
+            value={city}
+            description={` ${(distance / 1000).toFixed(0)} KM`}
+            citySize={3}
+            onClick={() => onClick(city)}
+          />
         ))}
       </section>
       <hr color="red" />
@@ -394,7 +419,13 @@ const PeriodStat = ({ onClick }) => {
     <div style={{ cursor: 'pointer' }}>
       <section>
         {periodArr.map(([period, times]) => (
-          <Stat key={period} value={period} description={` ${times} Runs`} citySize={3} onClick={() => onClick(period)} />
+          <Stat
+            key={period}
+            value={period}
+            description={` ${times} Runs`}
+            citySize={3}
+            onClick={() => onClick(period)}
+          />
         ))}
       </section>
       <hr color="red" />
@@ -402,9 +433,7 @@ const PeriodStat = ({ onClick }) => {
   );
 };
 
-const RunMap = ({
-  title, viewport, setViewport, changeYear, geoData,
-}) => {
+const RunMap = ({ title, viewport, setViewport, changeYear, geoData }) => {
   const addControlHandler = (event) => {
     const map = event && event.target;
     // set lauguage to Chinese if you use English please comment it
@@ -412,7 +441,7 @@ const RunMap = ({
       map.addControl(
         new MapboxLanguage({
           defaultLanguage: 'zh',
-        }),
+        })
       );
       map.setLayoutProperty('country-label-lg', 'text-field', [
         'get',
@@ -424,16 +453,18 @@ const RunMap = ({
   // for geojson format
   filterProvinces.unshift('in', 'name');
 
-  const isBigMap = (viewport.zoom <= 3);
+  const isBigMap = viewport.zoom <= 3;
   if (isBigMap && IS_CHINESE) {
     geoData = geoJsonForMap();
   }
 
-  const isSingleRun = geoData.features.length === 1 && geoData.features[0].geometry.coordinates.length;
-  let startLon; let
-    startLat;
-  let endLon; let
-    endLat;
+  const isSingleRun =
+    geoData.features.length === 1 &&
+    geoData.features[0].geometry.coordinates.length;
+  let startLon;
+  let startLat;
+  let endLon;
+  let endLat;
   if (isSingleRun) {
     const points = geoData.features[0].geometry.coordinates;
     [startLon, startLat] = points[0];
@@ -471,26 +502,40 @@ const RunMap = ({
           }}
         />
       </Source>
-      {isSingleRun
-      && <RunMarker startLat={startLat} startLon={startLon} endLat={endLat} endLon={endLon} /> }
+      {isSingleRun && (
+        <RunMarker
+          startLat={startLat}
+          startLon={startLon}
+          endLat={endLat}
+          endLon={endLon}
+        />
+      )}
       <span className={styles.runTitle}>{title}</span>
     </ReactMapGL>
   );
 };
 
-const RunMarker = ({
-  startLon, startLat, endLon, endLat,
-}) => {
+const RunMarker = ({ startLon, startLat, endLon, endLat }) => {
   const size = 20;
   return (
     <div>
       <Marker key="maker_start" longitude={startLon} latitude={startLat}>
-        <div style={{ transform: `translate(${-size / 2}px,${-size}px)`, maxWidth: '25px' }}>
+        <div
+          style={{
+            transform: `translate(${-size / 2}px,${-size}px)`,
+            maxWidth: '25px',
+          }}
+        >
           <StartSvg className={styles.locationSVG} />
         </div>
       </Marker>
       <Marker key="maker_end" longitude={endLon} latitude={endLat}>
-        <div style={{ transform: `translate(${-size / 2}px,${-size}px)`, maxWidth: '25px' }}>
+        <div
+          style={{
+            transform: `translate(${-size / 2}px,${-size}px)`,
+            maxWidth: '25px',
+          }}
+        >
           <EndSvg className={styles.locationSVG} />
         </div>
       </Marker>
@@ -535,14 +580,27 @@ const RunMapButtons = ({ changeYear }) => {
 };
 
 const RunTable = ({
-  runs, year, locateActivity, setActivity, runIndex, setRunIndex,
+  runs,
+  year,
+  locateActivity,
+  setActivity,
+  runIndex,
+  setRunIndex,
 }) => {
   const [sortFuncInfo, setSortFuncInfo] = useState('');
   // TODO refactor?
-  const sortKMFunc = (a, b) => (sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance);
-  const sortPaceFunc = (a, b) => (sortFuncInfo === 'Pace' ? a.average_speed - b.average_speed : b.average_speed - a.average_speed);
-  const sortBPMFunc = (a, b) => (sortFuncInfo === 'BPM' ? a.average_heartrate - b.average_heartrate : b.average_heartrate - a.average_heartrate);
-  const sortDateFuncClick = sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
+  const sortKMFunc = (a, b) =>
+    sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance;
+  const sortPaceFunc = (a, b) =>
+    sortFuncInfo === 'Pace'
+      ? a.average_speed - b.average_speed
+      : b.average_speed - a.average_speed;
+  const sortBPMFunc = (a, b) =>
+    sortFuncInfo === 'BPM'
+      ? a.average_heartrate - b.average_heartrate
+      : b.average_heartrate - a.average_heartrate;
+  const sortDateFuncClick =
+    sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
   const sortFuncMap = new Map([
     ['KM', sortKMFunc],
     ['Pace', sortPaceFunc],
@@ -592,9 +650,7 @@ const RunTable = ({
   );
 };
 
-const RunRow = ({
-  runs, run, locateActivity, runIndex, setRunIndex,
-}) => {
+const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
   const distance = (run.distance / 1000.0).toFixed(1);
   const pace = run.average_speed;
 
@@ -632,9 +688,7 @@ const RunRow = ({
   );
 };
 
-const Stat = ({
-  value, description, className, citySize, onClick,
-}) => (
+const Stat = ({ value, description, className, citySize, onClick }) => (
   <div className={`${className} pb2 w-100`} onClick={onClick}>
     <span className={`f${citySize || 1} fw9 i`}>{intComma(value)}</span>
     <span className="f3 fw6 i">{description}</span>
