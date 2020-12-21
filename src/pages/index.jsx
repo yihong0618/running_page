@@ -6,6 +6,7 @@ import ReactMapGL, { Source, Layer, Marker } from 'react-map-gl';
 import Layout from 'src/components/layout';
 import SVGStat from 'src/components/SVGStat';
 import YearsStat from 'src/components/YearsStat';
+import Stat from 'src/components/Stat';
 import { activities } from '../static/activities';
 import StartSvg from '../../assets/start.svg';
 import EndSvg from '../../assets/end.svg';
@@ -536,7 +537,7 @@ const RunTable = ({
           <tr>
             <th />
             {Array.from(sortFuncMap.keys()).map((k) => (
-              <th onClick={(e) => handleClick(e)}>{k}</th>
+              <th key={k} onClick={(e) => handleClick(e)}>{k}</th>
             ))}
           </tr>
         </thead>
