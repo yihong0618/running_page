@@ -6,7 +6,7 @@ import ReactMapGL, { Source, Layer, Marker } from 'react-map-gl';
 import Layout from 'src/components/layout';
 import SVGStat from 'src/components/SVGStat';
 import YearsStat from 'src/components/YearsStat';
-import Stat from 'src/components/Stat';
+import LocationStat from 'src/components/LocationStat';
 import { activities } from '../static/activities';
 import StartSvg from '../../assets/start.svg';
 import EndSvg from '../../assets/end.svg';
@@ -223,6 +223,11 @@ export default () => {
           {viewport.zoom <= 3 && IS_CHINESE ? (
             <LocationStat
               runs={activities}
+              yearsArr={yearsArr}
+              countries={countries}
+              provinces={provinces}
+              runPeriod={runPeriod}
+              cities={cities}
               location="location"
               changeYear={changeYear}
               changeCity={changeCity}
@@ -265,81 +270,7 @@ export default () => {
   );
 };
 
-const LocationStat = ({ runs, changeYear, changeCity, changeTitle }) => (
-  <div className="fl w-100 w-30-l pb5 pr5-l">
-    <section className="pb4" style={{ paddingBottom: '0rem' }}>
-      <p>
-        我跑过了一些地方，希望随着时间的推移，地图点亮的地方越来越多.
-        <br />
-        不要停下来，不要停下奔跑的脚步.
-        <br />
-        <br />
-        Yesterday you said tomorrow.
-      </p>
-    </section>
-    <hr color="red" />
-    <LocationSummary key="locationsSummary" />
-    <CitiesStat onClick={changeCity} />
-    <PeriodStat onClick={changeTitle} />
-    <YearStat key="Total" runs={runs} year="Total" onClick={changeYear} />
-  </div>
-);
 
-// only support China for now
-const LocationSummary = () => (
-  <div style={{ cursor: 'pointer' }}>
-    <section>
-      <Stat value={`${yearsArr.length}`} description=" 年里我跑过" />
-      <Stat value={countries.length} description=" 个国家" />
-      <Stat value={provinces.length} description=" 个省份" />
-      <Stat value={Object.keys(cities).length} description=" 个城市" />
-    </section>
-    <hr color="red" />
-  </div>
-);
-
-// only support China for now
-const CitiesStat = ({ onClick }) => {
-  const citiesArr = Object.entries(cities);
-  citiesArr.sort((a, b) => b[1] - a[1]);
-  return (
-    <div style={{ cursor: 'pointer' }}>
-      <section>
-        {citiesArr.map(([city, distance]) => (
-          <Stat
-            key={city}
-            value={city}
-            description={` ${(distance / 1000).toFixed(0)} KM`}
-            citySize={3}
-            onClick={() => onClick(city)}
-          />
-        ))}
-      </section>
-      <hr color="red" />
-    </div>
-  );
-};
-
-const PeriodStat = ({ onClick }) => {
-  const periodArr = Object.entries(runPeriod);
-  periodArr.sort((a, b) => b[1] - a[1]);
-  return (
-    <div style={{ cursor: 'pointer' }}>
-      <section>
-        {periodArr.map(([period, times]) => (
-          <Stat
-            key={period}
-            value={period}
-            description={` ${times} Runs`}
-            citySize={3}
-            onClick={() => onClick(period)}
-          />
-        ))}
-      </section>
-      <hr color="red" />
-    </div>
-  );
-};
 
 const RunMap = ({ title, viewport, setViewport, changeYear, geoData }) => {
   const addControlHandler = (event) => {
@@ -537,7 +468,9 @@ const RunTable = ({
           <tr>
             <th />
             {Array.from(sortFuncMap.keys()).map((k) => (
-              <th key={k} onClick={(e) => handleClick(e)}>{k}</th>
+              <th key={k} onClick={(e) => handleClick(e)}>
+                {k}
+              </th>
             ))}
           </tr>
         </thead>
