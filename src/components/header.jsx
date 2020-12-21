@@ -25,8 +25,9 @@ const Header = ({ siteTitle }) => {
         )}
         {NAVS && (
           <div className="dib w-75 v-mid tr">
-            {NAVS.map((n) => (
+            {NAVS.map((n, i) => (
               <a
+                key={i}
                 href={n.link}
                 className="light-gray link dim f6 f5-l mr3 mr4-l"
               >
