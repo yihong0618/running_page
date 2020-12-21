@@ -485,12 +485,12 @@ const RunMarker = ({
   return (
     <div>
       <Marker key="maker_start" longitude={startLon} latitude={startLat}>
-        <div style={{ transform: `translate(${-size / 2}px,${-size}px)` }}>
+        <div style={{ transform: `translate(${-size / 2}px,${-size}px)`, maxWidth: '25px' }}>
           <StartSvg className={styles.locationSVG} />
         </div>
       </Marker>
       <Marker key="maker_end" longitude={endLon} latitude={endLat}>
-        <div style={{ transform: `translate(${-size / 2}px,${-size}px)` }}>
+        <div style={{ transform: `translate(${-size / 2}px,${-size}px)`, maxWidth: '25px' }}>
           <EndSvg className={styles.locationSVG} />
         </div>
       </Marker>
