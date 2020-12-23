@@ -28,6 +28,7 @@
 | [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app/ | Keep |
 | [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
 | [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top/ | Keep |
+| [zstone12](https://github.com/zstone12) | https://running-page.zstone12.vercel.app/ | Keep |
 
 ## How it works
 
