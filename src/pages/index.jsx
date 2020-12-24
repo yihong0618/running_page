@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import ReactMapGL, { Source, Layer, Marker } from 'react-map-gl';
-
 import Layout from 'src/components/layout';
 import SVGStat from 'src/components/SVGStat';
 import YearsStat from 'src/components/YearsStat';
 import LocationStat from 'src/components/LocationStat';
 import RunTable from 'src/components/RunTable';
+import RunMap from 'src/components/RunMap';
 import { activities } from '../static/activities';
-import StartSvg from '../../assets/start.svg';
-import EndSvg from '../../assets/end.svg';
 import {
   titleForShow,
   scrollToMap,
   locationForRun,
   geoJsonForRuns,
-  geoJsonForMap,
   titleForRun,
   filterCityRuns,
   filterYearRuns,
@@ -24,14 +19,7 @@ import {
   sortDateFunc,
   getBoundsForGeoData,
 } from '../utils/utils';
-import {
-  MAPBOX_TOKEN,
-  IS_CHINESE,
-  MAIN_COLOR,
-  PROVINCE_FILL_COLOR,
-} from '../utils/const';
-
-import styles from './running.module.scss';
+import { IS_CHINESE } from '../utils/const';
 
 const cities = {};
 const runPeriod = {};
@@ -246,6 +234,9 @@ export default () => {
             geoData={geoData}
             setViewport={setViewport}
             changeYear={changeYear}
+            yearsArr={yearsArr}
+            thisYear={thisYear}
+            provinces={provinces}
           />
           {year === 'Total' ? (
             <SVGStat />
@@ -264,150 +255,3 @@ export default () => {
     </Layout>
   );
 };
-
-const RunMap = ({ title, viewport, setViewport, changeYear, geoData }) => {
-  const addControlHandler = (event) => {
-    const map = event && event.target;
-    // set lauguage to Chinese if you use English please comment it
-    if (map && IS_CHINESE) {
-      map.addControl(
-        new MapboxLanguage({
-          defaultLanguage: 'zh',
-        })
-      );
-      map.setLayoutProperty('country-label-lg', 'text-field', [
-        'get',
-        'name_zh',
-      ]);
-    }
-  };
-  const filterProvinces = provinces.slice();
-  // for geojson format
-  filterProvinces.unshift('in', 'name');
-
-  const isBigMap = viewport.zoom <= 3;
-  if (isBigMap && IS_CHINESE) {
-    geoData = geoJsonForMap();
-  }
-
-  const isSingleRun =
-    geoData.features.length === 1 &&
-    geoData.features[0].geometry.coordinates.length;
-  let startLon;
-  let startLat;
-  let endLon;
-  let endLat;
-  if (isSingleRun) {
-    const points = geoData.features[0].geometry.coordinates;
-    [startLon, startLat] = points[0];
-    [endLon, endLat] = points[points.length - 1];
-  }
-
-  return (
-    <ReactMapGL
-      {...viewport}
-      mapStyle="mapbox://styles/mapbox/dark-v9"
-      onViewportChange={setViewport}
-      onLoad={addControlHandler}
-      mapboxApiAccessToken={MAPBOX_TOKEN}
-    >
-      <RunMapButtons changeYear={changeYear} />
-      <Source id="data" type="geojson" data={geoData}>
-        <Layer
-          id="prvince"
-          type="fill"
-          paint={{
-            'fill-color': PROVINCE_FILL_COLOR,
-          }}
-          filter={filterProvinces}
-        />
-        <Layer
-          id="runs2"
-          type="line"
-          paint={{
-            'line-color': MAIN_COLOR,
-            'line-width': isBigMap ? 1 : 2,
-          }}
-          layout={{
-            'line-join': 'round',
-            'line-cap': 'round',
-          }}
-        />
-      </Source>
-      {isSingleRun && (
-        <RunMarker
-          startLat={startLat}
-          startLon={startLon}
-          endLat={endLat}
-          endLon={endLon}
-        />
-      )}
-      <span className={styles.runTitle}>{title}</span>
-    </ReactMapGL>
-  );
-};
-
-const RunMarker = ({ startLon, startLat, endLon, endLat }) => {
-  const size = 20;
-  return (
-    <div>
-      <Marker key="maker_start" longitude={startLon} latitude={startLat}>
-        <div
-          style={{
-            transform: `translate(${-size / 2}px,${-size}px)`,
-            maxWidth: '25px',
-          }}
-        >
-          <StartSvg className={styles.locationSVG} />
-        </div>
-      </Marker>
-      <Marker key="maker_end" longitude={endLon} latitude={endLat}>
-        <div
-          style={{
-            transform: `translate(${-size / 2}px,${-size}px)`,
-            maxWidth: '25px',
-          }}
-        >
-          <EndSvg className={styles.locationSVG} />
-        </div>
-      </Marker>
-    </div>
-  );
-};
-
-const RunMapButtons = ({ changeYear }) => {
-  const yearsButtons = yearsArr.slice();
-  yearsButtons.push('Total');
-  const [index, setIndex] = useState(0);
-  const handleClick = (e, year) => {
-    const elementIndex = yearsButtons.indexOf(year);
-    e.target.style.color = MAIN_COLOR;
-
-    const elements = document.getElementsByClassName(styles.button);
-    if (index !== elementIndex) {
-      elements[index].style.color = 'white';
-    }
-    setIndex(elementIndex);
-  };
-  return (
-    <div>
-      <ul className={styles.buttons}>
-        {yearsButtons.map((year) => (
-          <li
-            key={`${year}button`}
-            style={{ color: year === thisYear ? MAIN_COLOR : 'white' }}
-            year={year}
-            onClick={(e) => {
-              changeYear(year);
-              handleClick(e, year);
-            }}
-            className={styles.button}
-          >
-            {year}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
