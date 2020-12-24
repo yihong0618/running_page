@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { StaticQuery, graphql } from 'gatsby';
-import Header from './header';
-
-import '../styles/index.scss';
+import Header from '../header';
+import 'src/styles/index.scss';
+import styles from './style.module.scss';
 
 const Layout = ({ children }) => (
   <StaticQuery
@@ -19,7 +19,7 @@ const Layout = ({ children }) => (
       }
     `}
     render={(data) => (
-      <Fragment>
+      <>
         <Helmet
           title={data.site.siteMetadata.title}
           meta={[
@@ -29,12 +29,13 @@ const Layout = ({ children }) => (
             },
             { name: 'keywords', content: 'running' },
           ]}
+          bodyAttributes={{ class: styles.body }}
         >
           <html lang="en" />
         </Helmet>
         <Header siteTitle={data.site.siteMetadata.title} />
         <div className="pa3 pa5-l">{children}</div>
-      </Fragment>
+      </>
     )}
   />
 );

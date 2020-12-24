@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import ReactMapGL, { Source, Layer, Marker } from 'react-map-gl';
 
@@ -71,7 +70,7 @@ let yearsArr = [];
   provinces = [...new Set(provinces)];
   countries = [...new Set(countries)];
 })(activities);
-const totalActivitiesLength = activities.length;
+// const totalActivitiesLength = activities.length;
 
 let thisYear = '';
 if (yearsArr) {
@@ -213,64 +212,59 @@ export default () => {
   }, [year]);
 
   return (
-    <>
-      <Helmet bodyAttributes={{ class: styles.body }} />
-      <Layout>
-        <div className="mb5">
-          <div className="w-100">
-            <h1 className="f1 fw9 i">Running</h1>
-          </div>
-          {viewport.zoom <= 3 && IS_CHINESE ? (
-            <LocationStat
-              runs={activities}
-              yearsArr={yearsArr}
-              countries={countries}
-              provinces={provinces}
-              runPeriod={runPeriod}
-              cities={cities}
-              location="location"
-              changeYear={changeYear}
-              changeCity={changeCity}
-              changeTitle={changeTitle}
-            />
+    <Layout>
+      <div className="mb5">
+        <div className="w-100">
+          <h1 className="f1 fw9 i">Running</h1>
+        </div>
+        {viewport.zoom <= 3 && IS_CHINESE ? (
+          <LocationStat
+            runs={activities}
+            yearsArr={yearsArr}
+            countries={countries}
+            provinces={provinces}
+            runPeriod={runPeriod}
+            cities={cities}
+            location="location"
+            changeYear={changeYear}
+            changeCity={changeCity}
+            changeTitle={changeTitle}
+          />
+        ) : (
+          <YearsStat
+            yearsArr={yearsArr}
+            runs={activities}
+            year={year}
+            onClick={changeYear}
+          />
+        )}
+        <div className="fl w-100 w-70-l">
+          <RunMap
+            runs={runs}
+            year={year}
+            title={title}
+            viewport={viewport}
+            geoData={geoData}
+            setViewport={setViewport}
+            changeYear={changeYear}
+          />
+          {year === 'Total' ? (
+            <SVGStat />
           ) : (
-            <YearsStat
-              yearsArr={yearsArr}
-              runs={activities}
-              year={year}
-              onClick={changeYear}
-            />
-          )}
-          <div className="fl w-100 w-70-l">
-            <RunMap
+            <RunTable
               runs={runs}
               year={year}
-              title={title}
-              viewport={viewport}
-              geoData={geoData}
-              setViewport={setViewport}
-              changeYear={changeYear}
+              locateActivity={locateActivity}
+              setActivity={setActivity}
+              runIndex={runIndex}
+              setRunIndex={setRunIndex}
             />
-            {year === 'Total' ? (
-              <SVGStat />
-            ) : (
-              <RunTable
-                runs={runs}
-                year={year}
-                locateActivity={locateActivity}
-                setActivity={setActivity}
-                runIndex={runIndex}
-                setRunIndex={setRunIndex}
-              />
-            )}
-          </div>
+          )}
         </div>
-      </Layout>
-    </>
+      </div>
+    </Layout>
   );
 };
-
-
 
 const RunMap = ({ title, viewport, setViewport, changeYear, geoData }) => {
   const addControlHandler = (event) => {
