@@ -6,12 +6,12 @@ import Layout from 'src/components/layout';
 import SVGStat from 'src/components/SVGStat';
 import YearsStat from 'src/components/YearsStat';
 import LocationStat from 'src/components/LocationStat';
+import RunTable from 'src/components/RunTable';
 import { activities } from '../static/activities';
 import StartSvg from '../../assets/start.svg';
 import EndSvg from '../../assets/end.svg';
 import {
   titleForShow,
-  formatPace,
   scrollToMap,
   locationForRun,
   geoJsonForRuns,
@@ -22,7 +22,6 @@ import {
   filterTitleRuns,
   filterAndSortRuns,
   sortDateFunc,
-  sortDateFuncReverse,
   getBoundsForGeoData,
 } from '../utils/utils';
 import {
@@ -412,113 +411,3 @@ const RunMapButtons = ({ changeYear }) => {
   );
 };
 
-const RunTable = ({
-  runs,
-  year,
-  locateActivity,
-  setActivity,
-  runIndex,
-  setRunIndex,
-}) => {
-  const [sortFuncInfo, setSortFuncInfo] = useState('');
-  // TODO refactor?
-  const sortKMFunc = (a, b) =>
-    sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance;
-  const sortPaceFunc = (a, b) =>
-    sortFuncInfo === 'Pace'
-      ? a.average_speed - b.average_speed
-      : b.average_speed - a.average_speed;
-  const sortBPMFunc = (a, b) =>
-    sortFuncInfo === 'BPM'
-      ? a.average_heartrate - b.average_heartrate
-      : b.average_heartrate - a.average_heartrate;
-  const sortDateFuncClick =
-    sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
-  const sortFuncMap = new Map([
-    ['KM', sortKMFunc],
-    ['Pace', sortPaceFunc],
-    ['BPM', sortBPMFunc],
-    ['Date', sortDateFuncClick],
-  ]);
-  const handleClick = (e) => {
-    const funcName = e.target.innerHTML;
-    if (sortFuncInfo === funcName) {
-      setSortFuncInfo('');
-    } else {
-      setSortFuncInfo(funcName);
-    }
-    const f = sortFuncMap.get(e.target.innerHTML);
-    if (runIndex !== -1) {
-      const el = document.getElementsByClassName(styles.runRow);
-      el[runIndex].style.color = MAIN_COLOR;
-    }
-    setActivity(runs.sort(f));
-  };
-
-  return (
-    <div className={styles.tableContainer}>
-      <table className={styles.runTable} cellSpacing="0" cellPadding="0">
-        <thead>
-          <tr>
-            <th />
-            {Array.from(sortFuncMap.keys()).map((k) => (
-              <th key={k} onClick={(e) => handleClick(e)}>
-                {k}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {runs.map((run) => (
-            <RunRow
-              runs={runs}
-              run={run}
-              key={run.run_id}
-              locateActivity={locateActivity}
-              runIndex={runIndex}
-              setRunIndex={setRunIndex}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
-  const distance = (run.distance / 1000.0).toFixed(1);
-  const pace = run.average_speed;
-
-  const paceParts = pace ? formatPace(pace) : null;
-
-  const heartRate = run.average_heartrate;
-
-  // change click color
-  const handleClick = (e, runs, run) => {
-    const elementIndex = runs.indexOf(run);
-    e.target.parentElement.style.color = 'red';
-
-    const elements = document.getElementsByClassName(styles.runRow);
-    if (runIndex !== -1 && elementIndex !== runIndex) {
-      elements[runIndex].style.color = MAIN_COLOR;
-    }
-    setRunIndex(elementIndex);
-  };
-
-  return (
-    <tr
-      className={styles.runRow}
-      key={run.start_date_local}
-      onClick={(e) => {
-        handleClick(e, runs, run);
-        locateActivity(run);
-      }}
-    >
-      <td>{titleForRun(run)}</td>
-      <td>{distance}</td>
-      {pace && <td>{paceParts}</td>}
-      <td>{heartRate && heartRate.toFixed(0)}</td>
-      <td className={styles.runDate}>{run.start_date_local}</td>
-    </tr>
-  );
-};
