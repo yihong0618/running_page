@@ -6605,6 +6605,11 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
+gatsby-alias-imports@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/gatsby-alias-imports/-/gatsby-alias-imports-1.0.6.tgz#1836b223b60e874dfa7a6a69813545ab0f7c3cea"
+  integrity sha512-v8RdbmSFenNxaifo118utlfdxqvJbBWv7Ygfb0kQm2ZLrW1meu8ARjx3gAZExfSwFmMhyyiUltOvQSVDy0Jrsw==
+
 gatsby-cli@^2.16.2:
   version "2.16.2"
   resolved "https://registry.yarnpkg.com/gatsby-cli/-/gatsby-cli-2.16.2.tgz#cb56057c074f783115875bfcd38db407a54c5ae4"
