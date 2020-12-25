@@ -5,7 +5,6 @@ import CitiesStat from './CitiesStat';
 import PeriodStat from './PeriodStat';
 
 const LocationStat = ({
-  runs,
   changeYear,
   changeCity,
   changeTitle,
@@ -38,7 +37,6 @@ const LocationStat = ({
     <PeriodStat onClick={changeTitle} runPeriod={runPeriod} />
     <YearStat
       key="Total"
-      runs={runs}
       year="Total"
       onClick={changeYear}
       yearsArr={yearsArr}

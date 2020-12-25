@@ -208,7 +208,6 @@ export default () => {
         </div>
         {viewport.zoom <= 3 && IS_CHINESE ? (
           <LocationStat
-            runs={activities}
             yearsArr={yearsArr}
             countries={countries}
             provinces={provinces}
@@ -222,7 +221,6 @@ export default () => {
         ) : (
           <YearsStat
             yearsArr={yearsArr}
-            runs={activities}
             year={year}
             onClick={changeYear}
           />
