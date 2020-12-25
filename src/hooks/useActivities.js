@@ -28,46 +28,40 @@ const useActivities = () => {
   const activities = allActivitiesJson.nodes;
   const cities = {};
   const runPeriod = {};
-  let provinces = [];
-  let countries = [];
-  let years = [];
+  const provinces = new Set();
+  const countries = new Set();
+  let years = new Set();
   let thisYear = '';
 
   activities.forEach((run) => {
     const location = locationForRun(run);
+
     const periodName = titleForRun(run);
     if (periodName) {
-      runPeriod[periodName] =
-        runPeriod[periodName] === undefined ? 1 : runPeriod[periodName] + 1;
+      runPeriod[periodName] = runPeriod[periodName]
+        ? runPeriod[periodName] + 1
+        : 1;
     }
+
     const { city, province, country } = location;
     // drop only one char city
     if (city.length > 1) {
-      cities[city] =
-        cities[city] === undefined ? run.distance : cities[city] + run.distance;
+      cities[city] = cities[city] ? cities[city] + run.distance : run.distance;
     }
-    if (province) {
-      provinces.push(province);
-    }
-    if (country) {
-      countries.push(country);
-    }
-    const y = run.start_date_local.slice(0, 4);
-    years.push(y);
+    if (province) provinces.add(province);
+    if (country) countries.add(country);
+    const year = run.start_date_local.slice(0, 4);
+    years.add(year);
   });
-  years = [...new Set(years)].sort().reverse();
-  provinces = [...new Set(provinces)];
-  countries = [...new Set(countries)];
 
-  if (years) {
-    [thisYear] = years;
-  }
+  years = [...years].sort().reverse();
+  if (years) [thisYear] = years; // set current year as first one of years array
 
   return {
     activities,
     years,
-    provinces,
-    countries,
+    countries: [...countries],
+    provinces: [...provinces],
     cities,
     runPeriod,
     thisYear,
