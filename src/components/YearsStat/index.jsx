@@ -2,7 +2,7 @@ import React from 'react';
 import { INFO_MESSAGE } from 'src/utils/const';
 import YearStat from 'src/components/YearStat';
 
-const YearsStat = ({ runs, year, onClick, yearsArr }) => {
+const YearsStat = ({ year, onClick, yearsArr }) => {
   // make sure the year click on front
   let yearsArrayUpdate = yearsArr.slice();
   yearsArrayUpdate = yearsArrayUpdate.filter((x) => x !== year);
@@ -22,7 +22,6 @@ const YearsStat = ({ runs, year, onClick, yearsArr }) => {
         <YearStat
           yearsArr={yearsArr}
           key={year}
-          runs={runs}
           year={year}
           onClick={onClick}
         />
@@ -30,7 +29,6 @@ const YearsStat = ({ runs, year, onClick, yearsArr }) => {
       <YearStat
         yearsArr={yearsArr}
         key="Total"
-        runs={runs}
         year="Total"
         onClick={onClick}
       />

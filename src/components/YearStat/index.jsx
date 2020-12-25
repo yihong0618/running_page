@@ -2,9 +2,11 @@ import React from 'react';
 import useHover from 'src/hooks/useHover';
 import Stat from 'src/components/Stat';
 import { formatPace } from 'src/utils/utils';
+import useActivities from 'src/hooks/useActivities';
 import styles from './style.module.scss';
 
-const YearStat = ({ yearsArr, runs, year, onClick }) => {
+const YearStat = ({ yearsArr, year, onClick }) => {
+  let runs = useActivities();
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component
