@@ -7,6 +7,13 @@ module.exports = {
     description: 'Personal site and blog',
   },
   plugins: [
+    'gatsby-transformer-json',
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        path: './src/static/',
+      },
+    },
     'gatsby-plugin-root-import',
     'gatsby-plugin-react-helmet',
     {

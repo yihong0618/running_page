@@ -5,7 +5,7 @@ import YearsStat from 'src/components/YearsStat';
 import LocationStat from 'src/components/LocationStat';
 import RunTable from 'src/components/RunTable';
 import RunMap from 'src/components/RunMap';
-import { activities } from '../static/activities';
+import useActivities from 'src/hooks/useActivities';
 import {
   titleForShow,
   scrollToMap,
@@ -21,51 +21,53 @@ import {
 } from '../utils/utils';
 import { IS_CHINESE } from '../utils/const';
 
-const cities = {};
-const runPeriod = {};
-let provinces = [];
-let countries = [];
-let yearsArr = [];
-
-// generate base attr
-((runs) => {
-  const locationsList = [];
-  runs.forEach((run) => {
-    const location = locationForRun(run);
-    const periodName = titleForRun(run);
-    if (periodName) {
-      runPeriod[periodName] =
-        runPeriod[periodName] === undefined ? 1 : runPeriod[periodName] + 1;
-    }
-    locationsList.push(location);
-    const { city, province, country } = location;
-    // drop only one char city
-    if (city.length > 1) {
-      cities[city] =
-        cities[city] === undefined ? run.distance : cities[city] + run.distance;
-    }
-    if (province) {
-      provinces.push(province);
-    }
-    if (country) {
-      countries.push(country);
-    }
-    const y = run.start_date_local.slice(0, 4);
-    yearsArr.push(y);
-  });
-  yearsArr = [...new Set(yearsArr)].sort().reverse();
-  provinces = [...new Set(provinces)];
-  countries = [...new Set(countries)];
-})(activities);
-// const totalActivitiesLength = activities.length;
-
-let thisYear = '';
-if (yearsArr) {
-  [thisYear] = yearsArr;
-}
-
-// Page
 export default () => {
+  const activities = useActivities();
+  const cities = {};
+  const runPeriod = {};
+  let provinces = [];
+  let countries = [];
+  let yearsArr = [];
+
+  // generate base attr
+  ((runs) => {
+    const locationsList = [];
+    runs.forEach((run) => {
+      const location = locationForRun(run);
+      const periodName = titleForRun(run);
+      if (periodName) {
+        runPeriod[periodName] =
+          runPeriod[periodName] === undefined ? 1 : runPeriod[periodName] + 1;
+      }
+      locationsList.push(location);
+      const { city, province, country } = location;
+      // drop only one char city
+      if (city.length > 1) {
+        cities[city] =
+          cities[city] === undefined
+            ? run.distance
+            : cities[city] + run.distance;
+      }
+      if (province) {
+        provinces.push(province);
+      }
+      if (country) {
+        countries.push(country);
+      }
+      const y = run.start_date_local.slice(0, 4);
+      yearsArr.push(y);
+    });
+    yearsArr = [...new Set(yearsArr)].sort().reverse();
+    provinces = [...new Set(provinces)];
+    countries = [...new Set(countries)];
+  })(activities);
+  // const totalActivitiesLength = activities.length;
+
+  let thisYear = '';
+  if (yearsArr) {
+    [thisYear] = yearsArr;
+  }
+
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [runs, setActivity] = useState(
