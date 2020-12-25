@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import useSiteMetadata from 'src/hooks/useSiteMetadata';
-import Header from '../Header';
+import Header from 'src/components/Header';
 import 'src/styles/index.scss';
 import styles from './style.module.scss';
 
