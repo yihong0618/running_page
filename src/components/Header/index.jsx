@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { AVATAR, NAVS } from '../utils/const';
+import { AVATAR, NAVS } from 'src/utils/const';
 
 const Header = ({ siteTitle }) => {
   if (!AVATAR && !NAVS) return null;

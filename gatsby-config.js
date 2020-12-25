@@ -14,7 +14,12 @@ module.exports = {
         path: './src/static/',
       },
     },
-    'gatsby-plugin-root-import',
+    {
+      resolve: 'gatsby-alias-imports',
+      options: {
+        rootFolder: './',
+      },
+    },
     'gatsby-plugin-react-helmet',
     {
       resolve: 'gatsby-transformer-remark',
