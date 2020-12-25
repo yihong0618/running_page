@@ -9,64 +9,18 @@ import useActivities from 'src/hooks/useActivities';
 import {
   titleForShow,
   scrollToMap,
-  locationForRun,
   geoJsonForRuns,
-  titleForRun,
   filterCityRuns,
   filterYearRuns,
   filterTitleRuns,
   filterAndSortRuns,
   sortDateFunc,
   getBoundsForGeoData,
-} from '../utils/utils';
-import { IS_CHINESE } from '../utils/const';
+} from 'src/utils/utils';
+import { IS_CHINESE } from 'src/utils/const';
 
 export default () => {
-  const activities = useActivities();
-  const cities = {};
-  const runPeriod = {};
-  let provinces = [];
-  let countries = [];
-  let yearsArr = [];
-
-  // generate base attr
-  ((runs) => {
-    const locationsList = [];
-    runs.forEach((run) => {
-      const location = locationForRun(run);
-      const periodName = titleForRun(run);
-      if (periodName) {
-        runPeriod[periodName] =
-          runPeriod[periodName] === undefined ? 1 : runPeriod[periodName] + 1;
-      }
-      locationsList.push(location);
-      const { city, province, country } = location;
-      // drop only one char city
-      if (city.length > 1) {
-        cities[city] =
-          cities[city] === undefined
-            ? run.distance
-            : cities[city] + run.distance;
-      }
-      if (province) {
-        provinces.push(province);
-      }
-      if (country) {
-        countries.push(country);
-      }
-      const y = run.start_date_local.slice(0, 4);
-      yearsArr.push(y);
-    });
-    yearsArr = [...new Set(yearsArr)].sort().reverse();
-    provinces = [...new Set(provinces)];
-    countries = [...new Set(countries)];
-  })(activities);
-  // const totalActivitiesLength = activities.length;
-
-  let thisYear = '';
-  if (yearsArr) {
-    [thisYear] = yearsArr;
-  }
+  const { activities, thisYear } = useActivities();
 
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
@@ -208,22 +162,12 @@ export default () => {
         </div>
         {viewport.zoom <= 3 && IS_CHINESE ? (
           <LocationStat
-            yearsArr={yearsArr}
-            countries={countries}
-            provinces={provinces}
-            runPeriod={runPeriod}
-            cities={cities}
-            location="location"
             changeYear={changeYear}
             changeCity={changeCity}
             changeTitle={changeTitle}
           />
         ) : (
-          <YearsStat
-            yearsArr={yearsArr}
-            year={year}
-            onClick={changeYear}
-          />
+          <YearsStat year={year} onClick={changeYear} />
         )}
         <div className="fl w-100 w-70-l">
           <RunMap

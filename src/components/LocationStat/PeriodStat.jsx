@@ -1,7 +1,10 @@
 import React from 'react';
 import Stat from 'src/components/Stat';
+import useActivities from 'src/hooks/useActivities';
 
-const PeriodStat = ({ onClick, runPeriod }) => {
+const PeriodStat = ({ onClick }) => {
+  const { runPeriod } = useActivities();
+
   const periodArr = Object.entries(runPeriod);
   periodArr.sort((a, b) => b[1] - a[1]);
   return (
