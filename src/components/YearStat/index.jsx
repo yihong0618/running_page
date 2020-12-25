@@ -5,8 +5,8 @@ import { formatPace } from 'src/utils/utils';
 import useActivities from 'src/hooks/useActivities';
 import styles from './style.module.scss';
 
-const YearStat = ({ yearsArr, year, onClick }) => {
-  let runs = useActivities();
+const YearStat = ({ year, onClick }) => {
+  let { activities: runs, years } = useActivities();
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component
@@ -16,7 +16,7 @@ const YearStat = ({ yearsArr, year, onClick }) => {
     }))
   );
 
-  if (yearsArr.includes(year)) {
+  if (years.includes(year)) {
     runs = runs.filter((run) => run.start_date_local.slice(0, 4) === year);
   }
   let sumDistance = 0;

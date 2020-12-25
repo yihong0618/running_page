@@ -1,19 +1,10 @@
 import React from 'react';
-import LocationSummary from './LocationSummary';
 import YearStat from 'src/components/YearStat';
+import LocationSummary from './LocationSummary';
 import CitiesStat from './CitiesStat';
 import PeriodStat from './PeriodStat';
 
-const LocationStat = ({
-  changeYear,
-  changeCity,
-  changeTitle,
-  yearsArr,
-  countries,
-  provinces,
-  cities,
-  runPeriod,
-}) => (
+const LocationStat = ({ changeYear, changeCity, changeTitle }) => (
   <div className="fl w-100 w-30-l pb5 pr5-l">
     <section className="pb4" style={{ paddingBottom: '0rem' }}>
       <p>
@@ -26,21 +17,10 @@ const LocationStat = ({
       </p>
     </section>
     <hr color="red" />
-    <LocationSummary
-      key="locationsSummary"
-      yearsArr={yearsArr}
-      countries={countries}
-      provinces={provinces}
-      cities={cities}
-    />
-    <CitiesStat onClick={changeCity} cities={cities} />
-    <PeriodStat onClick={changeTitle} runPeriod={runPeriod} />
-    <YearStat
-      key="Total"
-      year="Total"
-      onClick={changeYear}
-      yearsArr={yearsArr}
-    />
+    <LocationSummary />
+    <CitiesStat onClick={changeCity} />
+    <PeriodStat onClick={changeTitle} />
+    <YearStat year="Total" onClick={changeYear} />
   </div>
 );
 

@@ -1,8 +1,11 @@
 import React from 'react';
 import Stat from 'src/components/Stat';
+import useActivities from 'src/hooks/useActivities';
 
 // only support China for now
-const CitiesStat = ({ onClick, cities }) => {
+const CitiesStat = ({ onClick }) => {
+  const { cities } = useActivities();
+
   const citiesArr = Object.entries(cities);
   citiesArr.sort((a, b) => b[1] - a[1]);
   return (
