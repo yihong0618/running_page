@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { MAIN_COLOR } from 'src/utils/const';
+import useActivities from 'src/hooks/useActivities';
 import styles from './style.module.scss';
 
-const RunMapButtons = ({ changeYear, yearsArr, thisYear }) => {
-  const yearsButtons = yearsArr.slice();
+const RunMapButtons = ({ changeYear, thisYear }) => {
+  const { years } = useActivities();
+  const yearsButtons = years.slice();
   yearsButtons.push('Total');
   const [index, setIndex] = useState(0);
   const handleClick = (e, year) => {
