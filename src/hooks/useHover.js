@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-// Hooks
 const useHover = () => {
   const [hovered, setHovered] = useState();
   const [timer, setTimer] = useState();
