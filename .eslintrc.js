@@ -3,9 +3,7 @@ module.exports = {
     browser: true,
     es6: true,
   },
-  extends: [
-    'airbnb',
-  ],
+  extends: ['airbnb'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
@@ -13,23 +11,24 @@ module.exports = {
   parser: 'babel-eslint',
   parserOptions: {
     sourceType: 'module',
-    allowImportExportEverywhere: true
+    allowImportExportEverywhere: true,
   },
-  plugins: [
-    'react',
-  ],
-  "rules": {
-    "indent": [
-      "error",
+  plugins: ['react'],
+  rules: {
+    indent: [
+      'error',
       2,
       {
-        "ignoredNodes": [
-          "TemplateLiteral"
-        ]
-      }
+        ignoredNodes: ['TemplateLiteral'],
+      },
     ],
-    "template-curly-spacing": [
-      "off"
-    ]
+    'template-curly-spacing': ['off'],
+    'import/no-unresolved': [
+      2,
+      {
+        ignore: ['src'],
+        caseSensitive: false,
+      },
+    ],
   },
 };

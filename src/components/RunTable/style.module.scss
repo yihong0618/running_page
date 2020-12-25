@@ -1,0 +1,43 @@
+@import '../../styles/variables.scss';
+
+.runTable {
+  width: 100%;
+  min-width: 700px;
+
+  margin: 2rem 0 5rem 0;
+
+  thead {
+    color: $light;
+    text-align: right;
+
+    th {
+      padding: 0.5rem;
+    }
+  }
+}
+
+.runRow {
+  td {
+    padding: 0.5rem;
+    border: 0;
+    text-align: right;
+
+    &:first-child {
+      text-align: left;
+    }
+  }
+
+  &:hover {
+    background-color: lighten($dark, 3%);
+  }
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.runDate {
+  color: $light;
+}
+

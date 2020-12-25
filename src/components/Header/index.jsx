@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { AVATAR, NAVS } from '../utils/const';
+import { AVATAR, NAVS } from 'src/utils/const';
 
 const Header = ({ siteTitle }) => {
   if (!AVATAR && !NAVS) return null;
@@ -25,8 +25,9 @@ const Header = ({ siteTitle }) => {
         )}
         {NAVS && (
           <div className="dib w-75 v-mid tr">
-            {NAVS.map((n) => (
+            {NAVS.map((n, i) => (
               <a
+                key={i}
                 href={n.link}
                 className="light-gray link dim f6 f5-l mr3 mr4-l"
               >
