@@ -7,6 +7,7 @@ import {
   MAIN_COLOR,
   PROVINCE_FILL_COLOR,
 } from 'src/utils/const';
+import useActivities from 'src/hooks/useActivities';
 import RunMapButtons from './RunMapButtons';
 import RunMarker from './RunMaker';
 import styles from './style.module.scss';
@@ -17,10 +18,9 @@ const RunMap = ({
   setViewport,
   changeYear,
   geoData,
-  yearsArr,
   thisYear,
-  provinces,
 }) => {
+  const { provinces } = useActivities();
   const addControlHandler = (event) => {
     const map = event && event.target;
     // set lauguage to Chinese if you use English please comment it
@@ -66,11 +66,7 @@ const RunMap = ({
       onLoad={addControlHandler}
       mapboxApiAccessToken={MAPBOX_TOKEN}
     >
-      <RunMapButtons
-        changeYear={changeYear}
-        yearsArr={yearsArr}
-        thisYear={thisYear}
-      />
+      <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
           id="prvince"

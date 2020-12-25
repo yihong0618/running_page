@@ -21,7 +21,6 @@ import { IS_CHINESE } from 'src/utils/const';
 
 export default () => {
   const { activities, thisYear } = useActivities();
-
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [runs, setActivity] = useState(
@@ -178,9 +177,7 @@ export default () => {
             geoData={geoData}
             setViewport={setViewport}
             changeYear={changeYear}
-            yearsArr={yearsArr}
             thisYear={thisYear}
-            provinces={provinces}
           />
           {year === 'Total' ? (
             <SVGStat />
