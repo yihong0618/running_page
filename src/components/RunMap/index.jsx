@@ -7,6 +7,7 @@ import {
   MAIN_COLOR,
   PROVINCE_FILL_COLOR,
 } from 'src/utils/const';
+import {geoJsonForMap} from 'src/utils/utils'
 import useActivities from 'src/hooks/useActivities';
 import RunMapButtons from './RunMapButtons';
 import RunMarker from './RunMaker';
