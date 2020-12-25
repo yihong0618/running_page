@@ -1,33 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { useStaticQuery, graphql } from 'gatsby';
+import useSiteMetadata from 'src/hooks/useSiteMetadata';
 import Header from '../Header';
 import 'src/styles/index.scss';
 import styles from './style.module.scss';
 
 const Layout = ({ children }) => {
-  const data = useStaticQuery(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            title
-            description
-          }
-        }
-      }
-    `
-  );
+  const { title, description } = useSiteMetadata();
 
   return (
     <>
       <Helmet
-        title={data.site.siteMetadata.title}
+        title={title}
         meta={[
           {
             name: 'description',
-            content: data.site.siteMetadata.description,
+            content: description,
           },
           { name: 'keywords', content: 'running' },
         ]}
@@ -35,7 +24,7 @@ const Layout = ({ children }) => {
       >
         <html lang="en" />
       </Helmet>
-      <Header siteTitle={data.site.siteMetadata.title} />
+      <Header siteTitle={title} />
       <div className="pa3 pa5-l">{children}</div>
     </>
   );
