@@ -344,8 +344,4 @@ if __name__ == "__main__":
     generator.sync_from_app(tracks)
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
-        f.write("const activities = ")
-        json.dump(activities_list, f, indent=2)
-        f.write(";\n")
-        f.write("\n")
-        f.write("export {activities};\n")
+        json.dump(activities_list, f)

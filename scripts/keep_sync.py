@@ -205,11 +205,7 @@ def run_keep_sync(email, password, with_download_gpx=False):
 
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
-        f.write("const activities = ")
-        json.dump(activities_list, f, indent=2)
-        f.write(";\n")
-        f.write("\n")
-        f.write("export {activities};\n")
+        json.dump(activities_list, f)
 
 
 if __name__ == "__main__":
