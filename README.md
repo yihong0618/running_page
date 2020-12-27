@@ -30,6 +30,7 @@
 | [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top/ | Keep |
 | [zstone12](https://github.com/zstone12) | https://running-page.zstone12.vercel.app/ | Keep |
 | [Lax](https://github.com/Lax) | https://running-lax.vercel.app/ | Keep |
+| [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app/ | Nike |
 
 ## How it works
 
