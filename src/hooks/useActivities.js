@@ -14,6 +14,7 @@ const useActivities = () => {
             moving_time
             type
             average_speed
+            average_heartrate
             location_country
             start_date
             start_date_local
