@@ -31,7 +31,7 @@
 | [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app/ | Nike |
 ## 它是怎么工作的
 
-![image](https://user-images.githubusercontent.com/15976103/102441412-2f9ebb00-405d-11eb-9dc7-1a8951748895.png)
+![image](https://user-images.githubusercontent.com/15976103/103496454-4294f600-4e79-11eb-9bd6-8eea7a07ddff.png)
 
 ## 特性
 
