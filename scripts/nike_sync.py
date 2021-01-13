@@ -250,7 +250,7 @@ def parse_activity_data(activity):
 
     lat_index = None
     lon_index = None
-    ascent_index = None
+    elevation_index = None
     heart_rate_index = None
     if not activity.get("metrics"):
         print(f"The activity {activity['id']} doesn't contain metrics information")
@@ -260,8 +260,8 @@ def parse_activity_data(activity):
             lat_index = i
         if metric["type"] == "longitude":
             lon_index = i
-        if metric["type"] == "ascent":
-            ascent_index = i
+        if metric["type"] == "elevation":
+            elevation_index = i
         if metric["type"] == "heart_rate":
             heart_rate_index = i
 
@@ -272,8 +272,8 @@ def parse_activity_data(activity):
     longitude_data = activity["metrics"][lon_index]["values"]
     elevation_data = None
     heart_rate_data = None
-    if ascent_index:
-        elevation_data = activity["metrics"][ascent_index]["values"]
+    if elevation_index:
+        elevation_data = activity["metrics"][elevation_index]["values"]
     if heart_rate_index:
         heart_rate_data = activity["metrics"][heart_rate_index]["values"]
 
