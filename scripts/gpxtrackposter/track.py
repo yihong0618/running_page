@@ -120,6 +120,7 @@ class Track:
         """Append other track to self."""
         self.end_time = other.end_time
         self.length += other.length
+        # TODO maybe a better way
         try:
             self.moving_dict["distance"] += other.moving_dict["distance"]
             self.moving_dict["moving_time"] += other.moving_dict["moving_time"]
