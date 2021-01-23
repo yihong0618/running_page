@@ -25,9 +25,9 @@ start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
 davinci = "0"
-did = "24-00000000-03e1-7dd7-0033-c5870033c587"
+did = "24-00000000-03e1-7dd7-0033-c5870033c588"
 key = bytes("ecc140ad6e1e12f7d972af04add2c7ee", 'UTF-8')
-user_agent = "CodoonSport(8.10.0 1180;Android 10;Sony J9110)"
+user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
 
 
 # now its the same like keep_sync but we want the code can run in single file
@@ -77,23 +77,19 @@ class CodoonAuth:
             davinci=davinci,
             did=did,
             path=path,
-            body=json.dumps(body).replace(' ', ''),
-            # body=json.dumps(body),
+            body=json.dumps(body),
             query=query,
             timestamp=str(timestamp),
         )
         print("pre_string " + pre_string)
-        # pre_string = 'Authorization=Bearer 0243e92f984e2ce81b1e4e04bb5005b1&Davinci=0&Did=24-00000000-03e1-7dd7-0033-c5870033c587&Timestamp=1610956528|path=/api/get_old_route_log|body={"limit":500,"page":1,"user_id":"fef1a5e9-daac-4af4-bac5-b78d887a4a08"}|'
-        return make_digest(pre_string)
+        return make_digest(pre_string).replace('-', '+').replace('_', '/')
 
 
     def __call__(self, r):
         params = self.params.copy()
         timestamp = int(time.time())
-        timestamp = 1611396246
 
         sign = self.__get_signature(self.token, r.path_url, self.params, timestamp=timestamp)
-        print('sign ' + sign)
 
         r.headers["timestamp"] = timestamp
         r.headers["authorization"] = "Bearer " + self.token
@@ -103,16 +99,8 @@ class CodoonAuth:
                 r.url, params={"signature": sign, "timestamp": params["timestamp"]}
             )
         elif r.method == "POST":
-            # params["signature"] = sign
-            # r.prepare_body(data=None, files=None, json=json.dumps(params).replace(" ", ""))
-            r.prepare_body(data=json.dumps(params).replace(" ", ""), files=None, json=None)
+            r.body = json.dumps(params)
             r.headers["content-type"] = 'application/json; charset=utf-8'
-            r.headers["content-length"] = r.headers["Content-Length"]
-            del r.headers["Content-Length"]
-            del r.headers["Accept"]
-            del r.headers["Connection"]
-            del r.headers["accept-encoding"]
-        print(r.headers)
         return r
 
 
@@ -181,9 +169,9 @@ class Codoon:
             data=payload,
             auth=self.auth.reload(payload),
         )
-        print(r.headers)
         print(r)
         print(r.headers)
+        print("json: " + str(r.json()))
         if not r.ok:
             raise Exception("get runs records error")
         return [i["fid"] for i in r.json()["datas"]]
