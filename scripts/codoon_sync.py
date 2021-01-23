@@ -8,23 +8,26 @@ import os
 import time
 from collections import namedtuple
 from datetime import datetime, timedelta
-from hashlib import md5
 from urllib.parse import quote
 
 import gpxpy
 import polyline
 import pytz
 import requests
+import hashlib
+import hmac
+import base64
 
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE
 from generator import Generator
 
-get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
 davinci = "0"
-did = "24-00000000-03e1-7dd7-0033-c5870033c588"
+did = "24-00000000-03e1-7dd7-0033-c5870033c587"
+key = bytes("ecc140ad6e1e12f7d972af04add2c7ee", 'UTF-8')
+user_agent = "CodoonSport(8.10.0 1180;Android 10;Sony J9110)"
 
 
 # now its the same like keep_sync but we want the code can run in single file
@@ -32,6 +35,17 @@ did = "24-00000000-03e1-7dd7-0033-c5870033c588"
 def adjust_time(time, tz_name):
     tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
     return time + tc_offset
+
+# decrypt from libencrypt.so Java_com_codoon_jni_JNIUtils_encryptHttpSignature
+def make_digest(message):
+    message = bytes(message, 'UTF-8')
+
+    digester = hmac.new(key, message, hashlib.sha1)
+    signature1 = digester.digest()
+
+    signature2 = base64.urlsafe_b64encode(signature1)
+
+    return str(signature2, 'UTF-8')
 
 
 def download_joyrun_gpx(gpx_data, joyrun_id):
@@ -57,36 +71,48 @@ class CodoonAuth:
         return self
 
     @classmethod
-    def __get_signature(cls, token, path, body, timestamp):
-        pre_string = "Authorization=Bearer {token}&Davinci={davinci}&Did={did}&Timestamp={timestamp}|path={path}|body={body}".format(
+    def __get_signature(cls, token="", path="", body="", query="", timestamp=""):
+        pre_string = "Authorization=Bearer {token}&Davinci={davinci}&Did={did}&Timestamp={timestamp}|path={path}|body={body}|{query}".format(
             token=token,
             davinci=davinci,
             did=did,
             path=path,
-            body=body,
-            # params_string="".join(
-            #     "".join((k, str(v))) for k, v in sorted(params.items())
-            # ),
+            body=json.dumps(body).replace(' ', ''),
+            # body=json.dumps(body),
+            query=query,
             timestamp=str(timestamp),
         )
-        print("pre_string "+ pre_string)
-        return get_md5_data(pre_string)
+        print("pre_string " + pre_string)
+        # pre_string = 'Authorization=Bearer 0243e92f984e2ce81b1e4e04bb5005b1&Davinci=0&Did=24-00000000-03e1-7dd7-0033-c5870033c587&Timestamp=1610956528|path=/api/get_old_route_log|body={"limit":500,"page":1,"user_id":"fef1a5e9-daac-4af4-bac5-b78d887a4a08"}|'
+        return make_digest(pre_string)
 
 
     def __call__(self, r):
         params = self.params.copy()
-        params["timestamp"] = int(time.time())
-        params["authorizetion"] = "Bearer " + self.token
+        timestamp = int(time.time())
+        timestamp = 1611396246
 
-        sign = self.__get_signature(self.token, "api/get_old_route_log", self.params, params["timestamp"])
+        sign = self.__get_signature(self.token, r.path_url, self.params, timestamp=timestamp)
+        print('sign ' + sign)
 
+        r.headers["timestamp"] = timestamp
+        r.headers["authorization"] = "Bearer " + self.token
+        r.headers["signature"] = sign
         if r.method == "GET":
             r.prepare_url(
                 r.url, params={"signature": sign, "timestamp": params["timestamp"]}
             )
         elif r.method == "POST":
-            params["signature"] = sign
-            r.prepare_body(data=params, files=None)
+            # params["signature"] = sign
+            # r.prepare_body(data=None, files=None, json=json.dumps(params).replace(" ", ""))
+            r.prepare_body(data=json.dumps(params).replace(" ", ""), files=None, json=None)
+            r.headers["content-type"] = 'application/json; charset=utf-8'
+            r.headers["content-length"] = r.headers["Content-Length"]
+            del r.headers["Content-Length"]
+            del r.headers["Accept"]
+            del r.headers["Connection"]
+            del r.headers["accept-encoding"]
+        print(r.headers)
         return r
 
 
@@ -114,15 +140,15 @@ class Codoon:
     @property
     def base_headers(self):
         return {
-            "accept-language": "gzip",
-            "host": "api.codoon.com",
-            "cache-control": "max-age=0",
+            "accept-encoding": "gzip",
+            # "host": "api.codoon.com",
+            # "cache-control": "max-age=0",
         }
 
     @property
     def device_info_headers(self):
         return {
-            "user-agent": "CodoonSport(8.10.0 1180;Android 10;Sony J9110)",
+            "user-agent": user_agent,
             "did": did,
             "davinci": davinci,
         }
@@ -144,16 +170,20 @@ class Codoon:
 
     def get_runs_records_ids(self, userId="", page=1):
         payload = {
-            "limit": 500,
-            "page": page,
+            # "limit": 500,
+            # "page": page,
+            "log_id": 205420830,
             "user_id": userId
         }
         r = self.session.post(
-            f"{self.base_url}/api/get_old_route_log",
+            # f"{self.base_url}/api/get_old_route_log",
+            f"{self.base_url}/api/get_new_route_log",
             data=payload,
             auth=self.auth.reload(payload),
         )
+        print(r.headers)
         print(r)
+        print(r.headers)
         if not r.ok:
             raise Exception("get runs records error")
         return [i["fid"] for i in r.json()["datas"]]
