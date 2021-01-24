@@ -24,10 +24,13 @@ from generator import Generator
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
+base_url = "https://api.codoon.com"
 davinci = "0"
 did = "24-00000000-03e1-7dd7-0033-c5870033c588"
 key = bytes("ecc140ad6e1e12f7d972af04add2c7ee", 'UTF-8')
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
+basic_auth = 'MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY='
+client_id = '099cce28c05f6c39ad5e04e51ed60704'
 
 
 # now its the same like keep_sync but we want the code can run in single file
@@ -36,6 +39,7 @@ def adjust_time(time, tz_name):
     tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
     return time + tc_offset
 
+
 # decrypt from libencrypt.so Java_com_codoon_jni_JNIUtils_encryptHttpSignature
 def make_digest(message):
     message = bytes(message, 'UTF-8')
@@ -43,7 +47,7 @@ def make_digest(message):
     digester = hmac.new(key, message, hashlib.sha1)
     signature1 = digester.digest()
 
-    signature2 = base64.urlsafe_b64encode(signature1)
+    signature2 = base64.b64encode(signature1)
 
     return str(signature2, 'UTF-8')
 
@@ -71,48 +75,56 @@ class CodoonAuth:
         return self
 
     @classmethod
-    def __get_signature(cls, token="", path="", body="", query="", timestamp=""):
-        pre_string = "Authorization=Bearer {token}&Davinci={davinci}&Did={did}&Timestamp={timestamp}|path={path}|body={body}|{query}".format(
+    def __get_signature(cls, token="", path="", body=None, timestamp=""):
+        arr = path.split("?")
+        path = arr[0]
+        query = arr[1] if len(arr) > 1 else ""
+        body_str = ''
+        if body is not None:
+            body_str = json.dumps(body)
+
+        pre_string = "Authorization={token}&Davinci={davinci}&Did={did}&Timestamp={timestamp}|path={path}|body={body}|{query}".format(
             token=token,
             davinci=davinci,
             did=did,
             path=path,
-            body=json.dumps(body),
+            body=body_str,
             query=query,
             timestamp=str(timestamp),
         )
         print("pre_string " + pre_string)
-        return make_digest(pre_string).replace('-', '+').replace('_', '/')
+        return make_digest(pre_string)
 
 
     def __call__(self, r):
         params = self.params.copy()
-        timestamp = int(time.time())
 
-        sign = self.__get_signature(self.token, r.path_url, self.params, timestamp=timestamp)
-
-        r.headers["timestamp"] = timestamp
-        r.headers["authorization"] = "Bearer " + self.token
-        r.headers["signature"] = sign
+        sign = ""
         if r.method == "GET":
-            r.prepare_url(
-                r.url, params={"signature": sign, "timestamp": params["timestamp"]}
-            )
+            timestamp = 0
+            r.headers["authorization"] = "Basic " + basic_auth
+            r.headers["timestamp"] = timestamp
+            sign = self.__get_signature(r.headers["authorization"], r.path_url, timestamp=timestamp)
         elif r.method == "POST":
+            timestamp = int(time.time())
+            r.headers["authorization"] = "Bearer " + self.token
+            r.headers["timestamp"] = timestamp
+            sign = self.__get_signature(r.headers["authorization"], r.path_url, body=params, timestamp=timestamp)
             r.body = json.dumps(params)
             r.headers["content-type"] = 'application/json; charset=utf-8'
+
+        print('sign= ', sign)
+        r.headers["signature"] = sign
         return r
 
 
 class Codoon:
 
-    base_url = "https://api.codoon.com"
-
-    def __init__(self, mobile="", password="", token="", userId=""):
+    def __init__(self, mobile="", password="", token="", user_id=""):
         self.mobile = mobile
         self.password = password
         self.token = token
-        self.userId = userId
+        self.user_id = user_id
 
         self.session = requests.Session()
 
@@ -122,15 +134,13 @@ class Codoon:
         self.auth = CodoonAuth(self.token)
 
     @classmethod
-    def from_auth_token(cls, token, userId):
-        return cls(token=token, userId=userId)
+    def from_auth_token(cls, token, user_id):
+        return cls(token=token, user_id=user_id)
 
     @property
     def base_headers(self):
         return {
             "accept-encoding": "gzip",
-            # "host": "api.codoon.com",
-            # "cache-control": "max-age=0",
         }
 
     @property
@@ -143,18 +153,22 @@ class Codoon:
 
     def login_by_phone(self):
         params = {
-            "phoneNumber": self.user_name,
-            "identifyingCode": self.identifying_code,
+            "client_id": client_id,
+            "email": self.mobile,
+            "grant_type": "password",
+            "password": self.password,
+            "scope": "user",
         }
         r = self.session.get(
-            f"{self.base_url}//user/login/phonecode",
+            f"{base_url}/token",
             params=params,
             auth=self.auth.reload(params),
         )
+        print(r.json())
         login_data = r.json()
-        # self.sid = login_data["data"]["sid"]
-        # self.uid = login_data["data"]["user"]["uid"]
-        # print(f"your uid and sid are {str(self.uid)} {str(self.sid)}")
+        self.auth = login_data["access_token"]
+        self.user_id = login_data["user_id"]
+        print(f"your auth token and user_id are {str(self.auth)} {str(self.user_id)}")
 
     def get_runs_records_ids(self, userId="", page=1):
         payload = {
@@ -165,7 +179,7 @@ class Codoon:
         }
         r = self.session.post(
             # f"{self.base_url}/api/get_old_route_log",
-            f"{self.base_url}/api/get_new_route_log",
+            f"{base_url}/api/get_new_route_log",
             data=payload,
             auth=self.auth.reload(payload),
         )
@@ -297,7 +311,7 @@ class Codoon:
         return namedtuple("x", d.keys())(*d.values())
 
     def get_old_tracks(self, old_tracks_ids, with_gpx=False):
-        run_ids = self.get_runs_records_ids(self.userId, 1)
+        run_ids = self.get_runs_records_ids(self.user_id, 1)
         old_tracks_ids = [int(i) for i in old_tracks_ids if i.isdigit()]
 
         old_gpx_ids = os.listdir(GPX_FOLDER)
@@ -313,8 +327,8 @@ class Codoon:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("mobile_or_token", help="codoon phone number or token")
-    parser.add_argument("password_or_userId", help="codoon password or userId")
+    parser.add_argument("mobile_or_token", help="codoon phone number or auth token")
+    parser.add_argument("password_or_user_id", help="codoon password or user_id")
     parser.add_argument(
         "--with-gpx",
         dest="with_gpx",
@@ -331,12 +345,12 @@ if __name__ == "__main__":
     if options.from_auth_token:
         j = Codoon.from_auth_token(
             token=str(options.mobile_or_token),
-            userId=str(options.password_or_userId),
+            user_id=str(options.password_or_user_id),
         )
     else:
         j = Codoon(
             mobile=str(options.mobile_or_token),
-            password=str(options.password_or_userId),
+            password=str(options.password_or_user_id),
         )
         j.login_by_phone()
 
