@@ -26,7 +26,9 @@ davinci = "0"
 did = "24-00000000-03e1-7dd7-0033-c5870033c588"
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
 basic_auth = 'MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY='
-client_id = '099cce28c05f6c39ad5e04e51ed60704'
+refresh_auth = 'ZGMwMzlmMDdlMDAzZGEwMjkzOGE1YmM0NjA1YjVhY2M6NWVhYmVlMDgyYWZhYzE3ZmY5N2UwZjMzYjZhYWY2NmQ='
+# client_id = '099cce28c05f6c39ad5e04e51ed60704'
+client_id = 'dc039f07e003da02938a5bc4605b5acc'
 
 
 TYPE_DICT = {
@@ -47,6 +49,15 @@ def make_signature(message):
     return str(signature2, 'UTF-8')
 
 
+def device_info_headers():
+    return {
+        "accept-encoding": "gzip",
+        "user-agent": user_agent,
+        "did": did,
+        "davinci": davinci,
+    }
+
+
 def download_codoon_gpx(gpx_data, log_id):
     try:
         print(f"downloading codoon {str(log_id)} gpx")
@@ -59,9 +70,26 @@ def download_codoon_gpx(gpx_data, log_id):
 
 
 class CodoonAuth:
-    def __init__(self, token=""):
+    def __init__(self, refresh_token=None):
         self.params = {}
-        self.token = token
+        self.refresh_token = refresh_token
+
+
+        self.token = refresh_auth
+        if refresh_token:
+            session = requests.Session()
+            session.headers.update(device_info_headers())
+            query = "client_id={client_id}&grant_type=refresh_token&refresh_token={refresh_token}&scope=user%2Csports".format(
+                client_id=client_id,
+                refresh_token=refresh_token,
+            )
+            r = session.post(
+                f"{base_url}/token?"+query,
+                data=query,
+                auth=self.reload(query),
+            )
+            print(r)
+            print(r.json())
 
     def reload(self, params={}, token=""):
         self.params = params
@@ -74,8 +102,8 @@ class CodoonAuth:
         arr = path.split("?")
         path = arr[0]
         query = arr[1] if len(arr) > 1 else ""
-        body_str = ''
-        if body is not None:
+        body_str = body if body else ''
+        if body is not None and not isinstance(body, str):
             body_str = json.dumps(body)
 
         pre_string = "Authorization={token}&Davinci={davinci}&Did={did}&Timestamp={timestamp}|path={path}|body={body}|{query}".format(
@@ -87,13 +115,29 @@ class CodoonAuth:
             query=query,
             timestamp=str(timestamp),
         )
-        # print("pre_string " + pre_string)
+        print("pre_string " + pre_string)
         return make_signature(pre_string)
 
     def __call__(self, r):
-        params = self.params.copy()
+        params = self.params
+        body = params
+        if not isinstance(self.params, str):
+            params = self.params.copy()
+            body = json.dumps(params)
 
         sign = ""
+        if "refresh_token" in params:
+            timestamp = int(time.time())
+            timestamp = 1611503193
+            r.headers["authorization"] = "Basic " + refresh_auth
+            r.headers["timestamp"] = timestamp
+            sign = self.__get_signature(r.headers["authorization"], r.path_url, body=params, timestamp=timestamp)
+            r.body = body
+            r.headers["content-type"] = 'application/x-www-form-urlencode; charset=utf-8'
+            print('sign= ', sign)
+            r.headers["signature"] = sign
+            return r
+
         if r.method == "GET":
             timestamp = 0
             r.headers["authorization"] = "Basic " + basic_auth
@@ -103,48 +147,33 @@ class CodoonAuth:
             timestamp = int(time.time())
             r.headers["authorization"] = "Bearer " + self.token
             r.headers["timestamp"] = timestamp
-            sign = self.__get_signature(r.headers["authorization"], r.path_url, body=params, timestamp=timestamp)
-
-            r.body = json.dumps(params)
+            sign = self.__get_signature(r.headers["authorization"], r.path_url, body=body, timestamp=timestamp)
+            r.body = body
             r.headers["content-type"] = 'application/json; charset=utf-8'
 
-        # print('sign= ', sign)
+        print('sign= ', sign)
         r.headers["signature"] = sign
         return r
 
 
 class Codoon:
 
-    def __init__(self, mobile="", password="", token="", user_id=""):
+    def __init__(self, mobile="", password="", refresh_token=None, user_id=""):
         self.mobile = mobile
         self.password = password
-        self.token = token
+        self.refresh_token = refresh_token
         self.user_id = user_id
 
         self.session = requests.Session()
 
-        self.session.headers.update(self.base_headers)
-        self.session.headers.update(self.device_info_headers)
+        self.session.headers.update(device_info_headers())
 
-        self.auth = CodoonAuth(self.token)
+        self.auth = CodoonAuth(self.refresh_token)
+        self.auth.token = self.auth.token
 
     @classmethod
-    def from_auth_token(cls, token, user_id):
-        return cls(token=token, user_id=user_id)
-
-    @property
-    def base_headers(self):
-        return {
-            "accept-encoding": "gzip",
-        }
-
-    @property
-    def device_info_headers(self):
-        return {
-            "user-agent": user_agent,
-            "did": did,
-            "davinci": davinci,
-        }
+    def from_auth_token(cls, refresh_token, user_id):
+        return cls(refresh_token=refresh_token, user_id=user_id)
 
     def login_by_phone(self):
         params = {
@@ -159,12 +188,13 @@ class Codoon:
             params=params,
             auth=self.auth.reload(params),
         )
-        # print(r.json())
+        print(r.json())
         login_data = r.json()
+        self.refresh_token = login_data["refresh_token"]
         self.token = login_data["access_token"]
         self.user_id = login_data["user_id"]
         self.auth.reload(token=self.token)
-        print(f"your auth token and user_id are {str(self.token)} {str(self.user_id)}")
+        print(f"your refresh_token and user_id are {str(self.refresh_token)} {str(self.user_id)}")
 
     def get_runs_records(self, page=1):
         payload = {
@@ -320,7 +350,7 @@ class Codoon:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("mobile_or_token", help="codoon phone number or auth token")
+    parser.add_argument("mobile_or_token", help="codoon phone number or refresh token")
     parser.add_argument("password_or_user_id", help="codoon password or user_id")
     parser.add_argument(
         "--with-gpx",
@@ -330,14 +360,14 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--from-auth-token",
-        dest="from_auth_token",
+        dest="from_refresh_token",
         action="store_true",
         help="from authorization token for download data",
     )
     options = parser.parse_args()
-    if options.from_auth_token:
+    if options.from_refresh_token:
         j = Codoon.from_auth_token(
-            token=str(options.mobile_or_token),
+            refresh_token=str(options.mobile_or_token),
             user_id=str(options.password_or_user_id),
         )
     else:
