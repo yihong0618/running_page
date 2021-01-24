@@ -1,4 +1,3 @@
-# some code from https://github.com/iascchen/VisHealth great thanks
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -8,11 +7,9 @@ import os
 import time
 from collections import namedtuple
 from datetime import datetime, timedelta
-from urllib.parse import quote
 
 import gpxpy
 import polyline
-import pytz
 import requests
 import hashlib
 import hmac
@@ -27,39 +24,37 @@ run_map = namedtuple("polyline", "summary_polyline")
 base_url = "https://api.codoon.com"
 davinci = "0"
 did = "24-00000000-03e1-7dd7-0033-c5870033c588"
-key = bytes("ecc140ad6e1e12f7d972af04add2c7ee", 'UTF-8')
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
 basic_auth = 'MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY='
 client_id = '099cce28c05f6c39ad5e04e51ed60704'
 
 
-# now its the same like keep_sync but we want the code can run in single file
-# by copy so maybe refactor later
-def adjust_time(time, tz_name):
-    tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
-    return time + tc_offset
+TYPE_DICT = {
+    0: "Hike",
+    1: "Run",
+    2: "Ride",
+}
 
 
 # decrypt from libencrypt.so Java_com_codoon_jni_JNIUtils_encryptHttpSignature
-def make_digest(message):
+# sha1 -> base64
+def make_signature(message):
+    key = bytes("ecc140ad6e1e12f7d972af04add2c7ee", 'UTF-8')
     message = bytes(message, 'UTF-8')
-
     digester = hmac.new(key, message, hashlib.sha1)
     signature1 = digester.digest()
-
     signature2 = base64.b64encode(signature1)
-
     return str(signature2, 'UTF-8')
 
 
-def download_joyrun_gpx(gpx_data, joyrun_id):
+def download_codoon_gpx(gpx_data, log_id):
     try:
-        print(f"downloading joyrun_id {str(joyrun_id)} gpx")
-        file_path = os.path.join(GPX_FOLDER, str(joyrun_id) + ".gpx")
+        print(f"downloading codoon {str(log_id)} gpx")
+        file_path = os.path.join(GPX_FOLDER, str(log_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
     except:
-        print(f"wrong id {joyrun_id}")
+        print(f"wrong id {log_id}")
         pass
 
 
@@ -92,9 +87,8 @@ class CodoonAuth:
             query=query,
             timestamp=str(timestamp),
         )
-        print("pre_string " + pre_string)
-        return make_digest(pre_string)
-
+        # print("pre_string " + pre_string)
+        return make_signature(pre_string)
 
     def __call__(self, r):
         params = self.params.copy()
@@ -110,10 +104,11 @@ class CodoonAuth:
             r.headers["authorization"] = "Bearer " + self.token
             r.headers["timestamp"] = timestamp
             sign = self.__get_signature(r.headers["authorization"], r.path_url, body=params, timestamp=timestamp)
+
             r.body = json.dumps(params)
             r.headers["content-type"] = 'application/json; charset=utf-8'
 
-        print('sign= ', sign)
+        # print('sign= ', sign)
         r.headers["signature"] = sign
         return r
 
@@ -164,40 +159,41 @@ class Codoon:
             params=params,
             auth=self.auth.reload(params),
         )
-        print(r.json())
+        # print(r.json())
         login_data = r.json()
-        self.auth = login_data["access_token"]
+        self.token = login_data["access_token"]
         self.user_id = login_data["user_id"]
-        print(f"your auth token and user_id are {str(self.auth)} {str(self.user_id)}")
+        self.auth.reload(token=self.token)
+        print(f"your auth token and user_id are {str(self.token)} {str(self.user_id)}")
 
-    def get_runs_records_ids(self, userId="", page=1):
+    def get_runs_records(self, page=1):
         payload = {
-            # "limit": 500,
-            # "page": page,
-            "log_id": 205420830,
-            "user_id": userId
+            "limit": 500,
+            "page": page,
+            "user_id": self.user_id
         }
         r = self.session.post(
-            # f"{self.base_url}/api/get_old_route_log",
-            f"{base_url}/api/get_new_route_log",
+            f"{base_url}/api/get_old_route_log",
             data=payload,
             auth=self.auth.reload(payload),
         )
-        print(r)
-        print(r.headers)
-        print("json: " + str(r.json()))
         if not r.ok:
+            print(r)
+            print(r.json())
             raise Exception("get runs records error")
-        return [i["fid"] for i in r.json()["datas"]]
+
+        # print(r.json())
+        runs = r.json()["data"]["log_list"]
+        if r.json()["data"]["has_more"] == "true":
+            return runs + self.get_runs_records(page + 1)
+        return runs
 
     @staticmethod
-    def parse_content_to_ponits(content):
-        if not content:
+    def parse_latlng(points):
+        if not points:
             return []
         try:
-            # eval is bad but easy maybe change it later
-            points = eval(content.replace("-", ","))
-            points = [[p[0] / 1000000, p[1] / 1000000] for p in points]
+            points = [[p["latitude"], p["longitude"]] for p in points]
         except Exception as e:
             print(str(e))
             points = []
@@ -208,25 +204,29 @@ class Codoon:
         # TODO for now kind of same as `keep` maybe refactor later
         points_dict_list = []
         i = 0
+        start_timestamp = datetime.fromisoformat(start_time).timestamp()
+        end_timestamp = datetime.fromisoformat(end_time).timestamp()
         for point in run_points_data[:-1]:
             points_dict = {
-                "latitude": point[0],
-                "longitude": point[1],
-                "time": datetime.utcfromtimestamp(start_time + interval * i),
+                "latitude": point["latitude"],
+                "longitude": point["longitude"],
+                "elevation": point["elevation"],
+                "time": datetime.utcfromtimestamp(start_timestamp + interval * i),
             }
             i += 1
             points_dict_list.append(points_dict)
         points_dict_list.append(
             {
-                "latitude": run_points_data[-1][0],
-                "longitude": run_points_data[-1][1],
-                "time": datetime.utcfromtimestamp(end_time),
+                "latitude": run_points_data[-1]["latitude"],
+                "longitude": run_points_data[-1]["longitude"],
+                "elevation": run_points_data[-1]["elevation"],
+                "time": datetime.utcfromtimestamp(end_timestamp),
             }
         )
         gpx = gpxpy.gpx.GPX()
         gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
         gpx_track = gpxpy.gpx.GPXTrack()
-        gpx_track.name = "gpx from keep"
+        gpx_track.name = "gpx from codoon"
         gpx.tracks.append(gpx_track)
 
         # Create first segment in our GPX track:
@@ -238,89 +238,82 @@ class Codoon:
 
         return gpx.to_xml()
 
-    def get_single_run_record(self, fid):
+    def get_single_run_record(self, route_id):
         payload = {
-            "fid": fid,
-            "wgs": 1,
+            "route_id": route_id,
         }
         r = self.session.post(
-            f"{self.base_url}/Run/GetInfo.aspx",
+            f"{base_url}/api/get_single_log",
             data=payload,
             auth=self.auth.reload(payload),
         )
+        # print(r)
         data = r.json()
+        # print(json.dumps(data))
         return data
 
-    def parse_raw_data_to_nametuple(self, run_data, old_gpx_ids, with_gpx=False):
-        run_data = run_data["runrecord"]
-        joyrun_id = run_data["fid"]
+    def parse_raw_data_to_namedtuple(self, run_data, old_gpx_ids, with_gpx=False):
+        run_data = run_data["data"]
+        # print(run_data)
+        log_id = run_data["id"]
 
-        start_time = run_data["starttime"]
-        end_time = run_data["endtime"]
-        run_points_data = self.parse_content_to_ponits(run_data["content"])
+        start_time = run_data["start_time"]
+        end_time = run_data["end_time"]
+        run_points_data = run_data["points"] if "points" in run_data else None
+
+        latlng_data = self.parse_latlng(run_points_data)
         if with_gpx:
             # pass the track no points
-            if run_points_data:
+            if str(log_id) not in old_gpx_ids and run_points_data:
                 gpx_data = self.parse_points_to_gpx(
                     run_points_data, start_time, end_time
                 )
-                download_joyrun_gpx(gpx_data, str(joyrun_id))
-        heart_rate_list = eval(run_data["heartrate"]) if run_data["heartrate"] else None
+                download_codoon_gpx(gpx_data, str(log_id))
         heart_rate = None
-        if heart_rate_list:
-            heart_rate = int(sum(heart_rate_list) / len(heart_rate_list))
-            # fix #66
-            if heart_rate < 0:
-                heart_rate = None
 
-        polyline_str = polyline.encode(run_points_data) if run_points_data else ""
-        start_latlng = start_point(*run_points_data[0]) if run_points_data else None
-        start_date = datetime.utcfromtimestamp(start_time)
-        start_date_local = adjust_time(start_date, "Asia/Shanghai")
-        end = datetime.utcfromtimestamp(end_time)
-        # only for China now
-        end_local = adjust_time(end, "Asia/Shanghai")
+        polyline_str = polyline.encode(latlng_data) if latlng_data else ""
+        start_latlng = start_point(*latlng_data[0]) if latlng_data else None
+        start_date = datetime.fromisoformat(start_time)
+        end_date = datetime.fromisoformat(end_time)
         location_country = None
-        # joyrun location is kind of fucking strage, so I decide not use it, if you want use it, uncomment this two lines
-        # if run_data["city"] or run_data["province"]:
-        #     location_country = str(run_data["city"]) + " " + str(run_data["province"])
+        sport_type = run_data["sports_type"]
+        cast_type = TYPE_DICT[sport_type] if sport_type in TYPE_DICT else sport_type
         d = {
-            "id": int(joyrun_id),
-            "name": "run from joyrun",
-            # future to support others workout now only for run
-            "type": "Run",
+            "id": log_id,
+            "name": str(cast_type) + " from codoon",
+            "type": cast_type,
             "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
-            "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
+            "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
             "start_date_local": datetime.strftime(
-                start_date_local, "%Y-%m-%d %H:%M:%S"
+                start_date, "%Y-%m-%d %H:%M:%S"
             ),
-            "end_local": datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
-            "length": run_data["meter"],
+            "end_local": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
+            "length": run_data["total_length"],
             "average_heartrate": heart_rate,
             "map": run_map(polyline_str),
             "start_latlng": start_latlng,
-            "distance": run_data["meter"],
-            "moving_time": timedelta(seconds=run_data["second"]),
+            "distance": run_data["total_length"],
+            "moving_time": timedelta(seconds=run_data["total_time"]),
             "elapsed_time": timedelta(
-                seconds=int((run_data["endtime"] - run_data["starttime"]))
+                seconds=int((end_date.timestamp() - start_date.timestamp()))
             ),
-            "average_speed": run_data["meter"] / run_data["second"],
+            "average_speed": run_data["total_length"] / run_data["total_time"],
             "location_country": location_country,
-            "source": "Joyrun",
+            "source": "Codoon",
         }
         return namedtuple("x", d.keys())(*d.values())
 
-    def get_old_tracks(self, old_tracks_ids, with_gpx=False):
-        run_ids = self.get_runs_records_ids(self.user_id, 1)
-        old_tracks_ids = [int(i) for i in old_tracks_ids if i.isdigit()]
+    def get_old_tracks(self, old_ids, with_gpx=False):
+        run_records = self.get_runs_records()
 
         old_gpx_ids = os.listdir(GPX_FOLDER)
         old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
-        new_run_ids = list(set(run_ids) - set(old_tracks_ids))
+        new_run_routes = [i for i in run_records if str(i["log_id"]) not in old_ids]
         tracks = []
-        for i in new_run_ids:
-            run_data = self.get_single_run_record(i)
-            track = self.parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_gpx)
+        for i in new_run_routes:
+            run_data = self.get_single_run_record(i["route_id"])
+            run_data["data"]["id"] = i["log_id"]
+            track = self.parse_raw_data_to_namedtuple(run_data, old_gpx_ids, with_gpx)
             tracks.append(track)
         return tracks
 
@@ -357,7 +350,8 @@ if __name__ == "__main__":
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
     tracks = j.get_old_tracks(old_tracks_ids, options.with_gpx)
-    # generator.sync_from_app(tracks)
-    # activities_list = generator.load()
-    # with open(JSON_FILE, "w") as f:
-    #     json.dump(activities_list, f)
+
+    generator.sync_from_app(tracks)
+    activities_list = generator.load()
+    with open(JSON_FILE, "w") as f:
+        json.dump(activities_list, f, indent=2)
