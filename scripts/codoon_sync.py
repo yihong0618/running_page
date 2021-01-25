@@ -14,6 +14,7 @@ import requests
 import hashlib
 import hmac
 import base64
+import urllib.parse
 
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE
 from generator import Generator
@@ -26,9 +27,7 @@ davinci = "0"
 did = "24-00000000-03e1-7dd7-0033-c5870033c588"
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
 basic_auth = 'MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY='
-refresh_auth = 'ZGMwMzlmMDdlMDAzZGEwMjkzOGE1YmM0NjA1YjVhY2M6NWVhYmVlMDgyYWZhYzE3ZmY5N2UwZjMzYjZhYWY2NmQ='
-# client_id = '099cce28c05f6c39ad5e04e51ed60704'
-client_id = 'dc039f07e003da02938a5bc4605b5acc'
+client_id = '099cce28c05f6c39ad5e04e51ed60704'
 
 
 TYPE_DICT = {
@@ -73,9 +72,8 @@ class CodoonAuth:
     def __init__(self, refresh_token=None):
         self.params = {}
         self.refresh_token = refresh_token
+        self.token = ""
 
-
-        self.token = refresh_auth
         if refresh_token:
             session = requests.Session()
             session.headers.update(device_info_headers())
@@ -88,8 +86,12 @@ class CodoonAuth:
                 data=query,
                 auth=self.reload(query),
             )
-            print(r)
-            print(r.json())
+            if not r.ok:
+                print(r)
+                print(r.json())
+                raise Exception("refresh_token expired")
+
+            self.token = r.json()["access_token"]
 
     def reload(self, params={}, token=""):
         self.params = params
@@ -105,6 +107,8 @@ class CodoonAuth:
         body_str = body if body else ''
         if body is not None and not isinstance(body, str):
             body_str = json.dumps(body)
+        if query != "":
+            query = urllib.parse.unquote(query)
 
         pre_string = "Authorization={token}&Davinci={davinci}&Did={did}&Timestamp={timestamp}|path={path}|body={body}|{query}".format(
             token=token,
@@ -115,7 +119,7 @@ class CodoonAuth:
             query=query,
             timestamp=str(timestamp),
         )
-        print("pre_string " + pre_string)
+        # print("pre_string " + pre_string)
         return make_signature(pre_string)
 
     def __call__(self, r):
@@ -126,18 +130,6 @@ class CodoonAuth:
             body = json.dumps(params)
 
         sign = ""
-        if "refresh_token" in params:
-            timestamp = int(time.time())
-            timestamp = 1611503193
-            r.headers["authorization"] = "Basic " + refresh_auth
-            r.headers["timestamp"] = timestamp
-            sign = self.__get_signature(r.headers["authorization"], r.path_url, body=params, timestamp=timestamp)
-            r.body = body
-            r.headers["content-type"] = 'application/x-www-form-urlencode; charset=utf-8'
-            print('sign= ', sign)
-            r.headers["signature"] = sign
-            return r
-
         if r.method == "GET":
             timestamp = 0
             r.headers["authorization"] = "Basic " + basic_auth
@@ -145,13 +137,17 @@ class CodoonAuth:
             sign = self.__get_signature(r.headers["authorization"], r.path_url, timestamp=timestamp)
         elif r.method == "POST":
             timestamp = int(time.time())
-            r.headers["authorization"] = "Bearer " + self.token
             r.headers["timestamp"] = timestamp
+            if "refresh_token" in params:
+                r.headers["authorization"] = "Basic " + basic_auth
+                r.headers["content-type"] = 'application/x-www-form-urlencode; charset=utf-8'
+            else:
+                r.headers["authorization"] = "Bearer " + self.token
+                r.headers["content-type"] = 'application/json; charset=utf-8'
             sign = self.__get_signature(r.headers["authorization"], r.path_url, body=body, timestamp=timestamp)
             r.body = body
-            r.headers["content-type"] = 'application/json; charset=utf-8'
 
-        print('sign= ', sign)
+        # print('sign= ', sign)
         r.headers["signature"] = sign
         return r
 
@@ -277,7 +273,10 @@ class Codoon:
             data=payload,
             auth=self.auth.reload(payload),
         )
-        # print(r)
+        if not r.ok:
+            print(r)
+            print(r.json())
+            raise Exception("get runs records error")
         data = r.json()
         # print(json.dumps(data))
         return data
