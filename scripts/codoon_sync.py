@@ -29,8 +29,8 @@ did = "24-00000000-03e1-7dd7-0033-c5870033c588"
 # fixed params
 base_url = "https://api.codoon.com"
 davinci = "0"
-basic_auth = 'MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY='
-client_id = '099cce28c05f6c39ad5e04e51ed60704'
+basic_auth = "MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY="
+client_id = "099cce28c05f6c39ad5e04e51ed60704"
 
 
 TYPE_DICT = {
@@ -43,12 +43,12 @@ TYPE_DICT = {
 # decrypt from libencrypt.so Java_com_codoon_jni_JNIUtils_encryptHttpSignature
 # sha1 -> base64
 def make_signature(message):
-    key = bytes("ecc140ad6e1e12f7d972af04add2c7ee", 'UTF-8')
-    message = bytes(message, 'UTF-8')
+    key = bytes("ecc140ad6e1e12f7d972af04add2c7ee", "UTF-8")
+    message = bytes(message, "UTF-8")
     digester = hmac.new(key, message, hashlib.sha1)
     signature1 = digester.digest()
     signature2 = base64.b64encode(signature1)
-    return str(signature2, 'UTF-8')
+    return str(signature2, "UTF-8")
 
 
 def device_info_headers():
@@ -85,7 +85,7 @@ class CodoonAuth:
                 refresh_token=refresh_token,
             )
             r = session.post(
-                f"{base_url}/token?"+query,
+                f"{base_url}/token?" + query,
                 data=query,
                 auth=self.reload(query),
             )
@@ -107,7 +107,7 @@ class CodoonAuth:
         arr = path.split("?")
         path = arr[0]
         query = arr[1] if len(arr) > 1 else ""
-        body_str = body if body else ''
+        body_str = body if body else ""
         if body is not None and not isinstance(body, str):
             body_str = json.dumps(body)
         if query != "":
@@ -122,7 +122,6 @@ class CodoonAuth:
             query=query,
             timestamp=str(timestamp),
         )
-        # print("pre_string " + pre_string)
         return make_signature(pre_string)
 
     def __call__(self, r):
@@ -137,26 +136,28 @@ class CodoonAuth:
             timestamp = 0
             r.headers["authorization"] = "Basic " + basic_auth
             r.headers["timestamp"] = timestamp
-            sign = self.__get_signature(r.headers["authorization"], r.path_url, timestamp=timestamp)
+            sign = self.__get_signature(
+                r.headers["authorization"], r.path_url, timestamp=timestamp
+            )
         elif r.method == "POST":
             timestamp = int(time.time())
             r.headers["timestamp"] = timestamp
             if "refresh_token" in params:
                 r.headers["authorization"] = "Basic " + basic_auth
-                r.headers["content-type"] = 'application/x-www-form-urlencode; charset=utf-8'
+                r.headers["content-type"] = "application/x-www-form-urlencode; charset=utf-8"
             else:
                 r.headers["authorization"] = "Bearer " + self.token
-                r.headers["content-type"] = 'application/json; charset=utf-8'
-            sign = self.__get_signature(r.headers["authorization"], r.path_url, body=body, timestamp=timestamp)
+                r.headers["content-type"] = "application/json; charset=utf-8"
+            sign = self.__get_signature(
+                r.headers["authorization"], r.path_url, body=body, timestamp=timestamp
+            )
             r.body = body
 
-        # print('sign= ', sign)
         r.headers["signature"] = sign
         return r
 
 
 class Codoon:
-
     def __init__(self, mobile="", password="", refresh_token=None, user_id=""):
         self.mobile = mobile
         self.password = password
@@ -187,20 +188,17 @@ class Codoon:
             params=params,
             auth=self.auth.reload(params),
         )
-        # print(r.json())
         login_data = r.json()
         self.refresh_token = login_data["refresh_token"]
         self.token = login_data["access_token"]
         self.user_id = login_data["user_id"]
         self.auth.reload(token=self.token)
-        print(f"your refresh_token and user_id are {str(self.refresh_token)} {str(self.user_id)}")
+        print(
+            f"your refresh_token and user_id are {str(self.refresh_token)} {str(self.user_id)}"
+        )
 
     def get_runs_records(self, page=1):
-        payload = {
-            "limit": 500,
-            "page": page,
-            "user_id": self.user_id
-        }
+        payload = {"limit": 500, "page": page, "user_id": self.user_id}
         r = self.session.post(
             f"{base_url}/api/get_old_route_log",
             data=payload,
@@ -211,7 +209,6 @@ class Codoon:
             print(r.json())
             raise Exception("get runs records error")
 
-        # print(r.json())
         runs = r.json()["data"]["log_list"]
         if r.json()["data"]["has_more"] == "true":
             return runs + self.get_runs_records(page + 1)
@@ -281,12 +278,10 @@ class Codoon:
             print(r.json())
             raise Exception("get runs records error")
         data = r.json()
-        # print(json.dumps(data))
         return data
 
     def parse_raw_data_to_namedtuple(self, run_data, old_gpx_ids, with_gpx=False):
         run_data = run_data["data"]
-        # print(run_data)
         log_id = run_data["id"]
 
         start_time = run_data["start_time"]
@@ -316,9 +311,7 @@ class Codoon:
             "type": cast_type,
             "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
             "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
-            "start_date_local": datetime.strftime(
-                start_date, "%Y-%m-%d %H:%M:%S"
-            ),
+            "start_date_local": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
             "end_local": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
             "length": run_data["total_length"],
             "average_heartrate": heart_rate,
