@@ -84,10 +84,39 @@ Open your browser and visit http://localhost:8000/
 const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
 
+## Custom your page
 
+### avatar
+
+Modify `export const AVATAR =
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU';` Replace it with the link to the image you want.
+
+### NAVS
+
+Change `NAVS` in `src/utils/const.js` to the link you want, just like:
+
+```javascript
+export const NAVS = [
+  { text: 'Blog', link: 'https://yihong.run/running' },
+  { text: 'About', link: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md' },
+];
+```
+
+You can also add multiple links, just like the above.
+
+### Title and site link
+
+Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
+
+```javascript
+siteMetadata: {
+  title: 'Running page',
+  siteUrl: 'https://yihong.run',
+  description: 'Personal site and blog',
+},
+```
 
 ## Download your running data and do not forget to [generate svg in `total` page](#Total-Data-Analysis).
-
 
 ### GPX
 
