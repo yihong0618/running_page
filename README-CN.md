@@ -457,7 +457,8 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 支持 keep
 - [ ] 支持苹果自带运动
 - [x] 支持 nike + strava
-- [ ] 尝试支持咕咚，小米运动
+- [x] 支持咕咚
+- [ ] 尝试支持小米运动
 - [x] 支持英语
 - [x] 完善代码
 - [x] 清理整个项目
