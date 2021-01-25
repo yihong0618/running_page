@@ -59,7 +59,7 @@
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#Keep)**
 - **[悦跑圈](#joyrun悦跑圈)** (因悦跑圈限制单个设备原因，无法自动化)
-- **[咕咚](#Codoon)** (因咕咚限制单个设备原因，无法自动化)
+- **[咕咚](#codoon咕咚)** (因咕咚限制单个设备原因，无法自动化)
 - **[GPX](#GPX)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 
