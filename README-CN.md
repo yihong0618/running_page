@@ -42,7 +42,7 @@
 5. Mapbox 进行地图展示
 6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep, 自动备份 gpx 数据，方便备份及上传到其它软件
 
-> 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里 （建议本地同步，之后 actions 选择正在用的 app）
+> 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里（建议本地同步，之后 actions 选择正在用的 app）
 
 <details>
 <summary>缩放地图彩蛋</summary>
@@ -53,14 +53,14 @@
 
 ## 支持
 - **[Strava](#strava)**
-- **[Nike Run Club](#NikeRunClub)**
-- **[Runtastic(Adidas Run)](#Runtastic(AdidasRun))**
+- **[Nike Run Club](#nike-run-club)**
+- **[Runtastic(Adidas Run)](#runtasticadidas-run)**
 - **[Garmin](#Garmin)**
-- **[Garmin-cn](#Garmin-CN(大陆用户请用这个))**
+- **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#Keep)**
-- **[悦跑圈](#Joyrun)** (因悦跑圈限制单个设备原因，无法自动化)
+- **[悦跑圈](#joyrun悦跑圈)** (因悦跑圈限制单个设备原因，无法自动化)
 - **[GPX](#GPX)**
-- **[Nike+Strava(Using NRC Run, Strava backup data)](#Nike+Strava)**
+- **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 
 ## 下载
 ```
@@ -84,8 +84,39 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 
 ### 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.js`
 
-## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据, [别忘了在 `total` 页面生成可视化SVG](#Total-Data-Analysis).
+## 一些个性化选项
 
+### 左上角的头像
+
+修改 `src/utils/const.js` 里的 `export const AVATAR =
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU';` 换成你想要的图片的链接。
+
+### 右上角默认的 Blog 和 About
+
+修改 `src/utils/const.js` 里的 `NAVS`，换成你想要的链接，如：
+
+```javascript
+export const NAVS = [
+  { text: 'Blog', link: 'https://yihong.run/running' },
+  { text: 'About', link: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md' },
+];
+```
+
+你也可以自行添加多个链接，照葫芦画瓢即可。
+
+### 页面标题与网站链接
+
+在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
+
+```javascript
+siteMetadata: {
+  title: 'Running page',
+  siteUrl: 'https://yihong.run',
+  description: 'Personal site and blog',
+},
+```
+
+## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据, [别忘了在 `total` 页面生成可视化 SVG](#Total-Data-Analysis).
 
 ### GPX
 
@@ -104,7 +135,7 @@ python3(python) scripts/gpx_sync.py
 <details>
 <summary>获取您的 Keep 数据</summary>
 
-确保自己的账号能用手机号 + 密码登陆 (不要忘记添加secret和更改自己的账号，在 GitHub Actions中), 注: 海外手机号需要换成国内 +86 的手机号
+确保自己的账号能用手机号 + 密码登陆 (不要忘记添加 secret 和更改自己的账号，在 GitHub Actions 中), 注: 海外手机号需要换成国内 +86 的手机号
 
 ```python
 python3(python) scripts/keep_sync.py ${your mobile} ${your password}
@@ -115,7 +146,7 @@ python3(python) scripts/keep_sync.py ${your mobile} ${your password}
 python3(python) scripts/keep_sync.py 13333xxxx example
 ```
 
-> 注：我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx会加入到 GPX_OUT 中，方便上传到其它软件
+> 注：我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
 python3(python) scripts/keep_sync.py ${your mobile} ${your password} --with-gpx
@@ -151,7 +182,7 @@ python3(python) scripts/joyrun_sync.py ${your mobile} ${your 验证码}
 python3(python) scripts/joyrun_sync.py 13333xxxx xxxx
 ```
 
-> 注：我增加了 joyrun 可以导出 gpx 功能, 执行如下命令，导出的 gpx会加入到 GPX_OUT 中，方便上传到其它软件
+> 注：我增加了 joyrun 可以导出 gpx 功能, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
 python3(python) scripts/joyrun_sync.py ${your mobile} ${your 验证码} --with-gpx
@@ -189,7 +220,7 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 ```
 </details>
 
-### Garmin-CN(大陆用户请用这个)
+### Garmin-CN (大陆用户请用这个)
 
 <details>
 <summary>获取您的 Garmin-CN 数据</summary>
@@ -326,7 +357,7 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
-> 注: 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km展示为 special-color1 20km 以上展示为special-color2, --min-distance 10.0用来筛选 10km 以上的)
+> 注: 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为 special-color2, --min-distance 10.0用来筛选 10km 以上的)
 ```
 python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
@@ -368,13 +399,13 @@ https://github.com/flopp/GpxTrackPoster
 
 Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
 需要做如下步骤
-1. 更改成你的app type 及info
+1. 更改成你的 app type 及info
 ![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
-2. 在repo Settings > Secrets 中增加你的secret(只添加你需要的即可)
+2. 在 repo Settings > Secrets 中增加你的 secret (只添加你需要的即可)
 ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
-我的secret如下
+我的 secret 如下
 ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
-3. 添加你的[GitHub secret](https://github.com/settings/tokens)并和项目中的 GitHub secret同名
+3. 添加你的 [GitHub secret](https://github.com/settings/tokens)并和项目中的 GitHub secret 同名
 ![image](https://user-images.githubusercontent.com/15976103/94450721-2f222100-01e0-11eb-94a7-ef1f06fc0a59.png)
 
 </details>
