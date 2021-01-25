@@ -53,14 +53,14 @@
 
 ## 支持
 - **[Strava](#strava)**
-- **[Nike Run Club](#NikeRunClub)**
-- **[Runtastic(Adidas Run)](#Runtastic(AdidasRun))**
+- **[Nike Run Club](#nike-run-club)**
+- **[Runtastic(Adidas Run)](#runtasticadidas-run)**
 - **[Garmin](#Garmin)**
-- **[Garmin-cn](#Garmin-CN(大陆用户请用这个))**
+- **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#Keep)**
-- **[悦跑圈](#Joyrun)** (因悦跑圈限制单个设备原因，无法自动化)
+- **[悦跑圈](#joyrun悦跑圈)** (因悦跑圈限制单个设备原因，无法自动化)
 - **[GPX](#GPX)**
-- **[Nike+Strava(Using NRC Run, Strava backup data)](#Nike+Strava)**
+- **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 
 ## 下载
 ```
