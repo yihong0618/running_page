@@ -22,10 +22,13 @@ from generator import Generator
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
+# device info
+user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
+did = "24-00000000-03e1-7dd7-0033-c5870033c588"
+
+# fixed params
 base_url = "https://api.codoon.com"
 davinci = "0"
-did = "24-00000000-03e1-7dd7-0033-c5870033c588"
-user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
 basic_auth = 'MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY='
 client_id = '099cce28c05f6c39ad5e04e51ed60704'
 
@@ -184,7 +187,7 @@ class Codoon:
             params=params,
             auth=self.auth.reload(params),
         )
-        print(r.json())
+        # print(r.json())
         login_data = r.json()
         self.refresh_token = login_data["refresh_token"]
         self.token = login_data["access_token"]
