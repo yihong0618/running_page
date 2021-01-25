@@ -478,3 +478,4 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - @[flopp](https://github.com/flopp) 特别棒的项目 [GpxTrackPoster](https://github.com/flopp/GpxTrackPoster)
 - @[shaonianche](https://github.com/shaonianche) icon 设计及文档
 - @[geekplux](https://github.com/geekplux) 帮助及鼓励, 重构了前端代码，学到了不少~
+- @[ben-29](https://github.com/ben-29) 搞定了咕咚，和我一起搞定了悦跑圈，太厉害了。
