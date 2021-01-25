@@ -80,10 +80,7 @@ class CodoonAuth:
         if refresh_token:
             session = requests.Session()
             session.headers.update(device_info_headers())
-            query = "client_id={client_id}&grant_type=refresh_token&refresh_token={refresh_token}&scope=user%2Csports".format(
-                client_id=client_id,
-                refresh_token=refresh_token,
-            )
+            query = f"client_id={client_id}&grant_type=refresh_token&refresh_token={refresh_token}&scope=user%2Csports"
             r = session.post(
                 f"{base_url}/token?" + query,
                 data=query,
@@ -112,15 +109,7 @@ class CodoonAuth:
         if query != "":
             query = urllib.parse.unquote(query)
 
-        pre_string = "Authorization={token}&Davinci={davinci}&Did={did}&Timestamp={timestamp}|path={path}|body={body}|{query}".format(
-            token=token,
-            davinci=davinci,
-            did=did,
-            path=path,
-            body=body_str,
-            query=query,
-            timestamp=str(timestamp),
-        )
+        pre_string = f"Authorization={token}&Davinci={davinci}&Did={did}&Timestamp={str(timestamp)}|path={path}|body={body_str}|{query}"
         return make_signature(pre_string)
 
     def __call__(self, r):
