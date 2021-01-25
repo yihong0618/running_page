@@ -32,7 +32,7 @@ davinci = "0"
 basic_auth = "MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY="
 client_id = "099cce28c05f6c39ad5e04e51ed60704"
 
-
+# for future use
 TYPE_DICT = {
     0: "Hike",
     1: "Run",
@@ -90,7 +90,6 @@ class CodoonAuth:
                 auth=self.reload(query),
             )
             if not r.ok:
-                print(r)
                 print(r.json())
                 raise Exception("refresh_token expired")
 
@@ -205,7 +204,6 @@ class Codoon:
             auth=self.auth.reload(payload),
         )
         if not r.ok:
-            print(r)
             print(r.json())
             raise Exception("get runs records error")
 
@@ -225,13 +223,12 @@ class Codoon:
             points = []
         return points
 
-    @staticmethod
-    def parse_points_to_gpx(run_points_data, start_time, end_time, interval=5):
+    def parse_points_to_gpx(self, run_points_data, start_time, end_time, interval=5):
         # TODO for now kind of same as `keep` maybe refactor later
         points_dict_list = []
         i = 0
-        start_timestamp = datetime.fromisoformat(start_time).timestamp()
-        end_timestamp = datetime.fromisoformat(end_time).timestamp()
+        start_timestamp = self._gt(start_time).timestamp()
+        end_timestamp = self._gt(end_time).timestamp()
         for point in run_points_data[:-1]:
             points_dict = {
                 "latitude": point["latitude"],
@@ -280,11 +277,18 @@ class Codoon:
         data = r.json()
         return data
 
+    @staticmethod
+    def _gt(dt_str):
+        dt, _, us = dt_str.partition(".")
+        return datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S")
+
     def parse_raw_data_to_namedtuple(self, run_data, old_gpx_ids, with_gpx=False):
         run_data = run_data["data"]
         log_id = run_data["id"]
 
-        start_time = run_data["start_time"]
+        start_time = run_data.get("start_time")
+        if not start_time:
+            return
         end_time = run_data["end_time"]
         run_points_data = run_data["points"] if "points" in run_data else None
 
@@ -300,10 +304,13 @@ class Codoon:
 
         polyline_str = polyline.encode(latlng_data) if latlng_data else ""
         start_latlng = start_point(*latlng_data[0]) if latlng_data else None
-        start_date = datetime.fromisoformat(start_time)
-        end_date = datetime.fromisoformat(end_time)
+        start_date = self._gt(start_time)
+        end_date = self._gt(end_time)
         location_country = None
         sport_type = run_data["sports_type"]
+        # only support run now, if you want all type comments these two lines
+        if sport_type != 1:
+            return
         cast_type = TYPE_DICT[sport_type] if sport_type in TYPE_DICT else sport_type
         d = {
             "id": log_id,
@@ -339,7 +346,8 @@ class Codoon:
             run_data = self.get_single_run_record(i["route_id"])
             run_data["data"]["id"] = i["log_id"]
             track = self.parse_raw_data_to_namedtuple(run_data, old_gpx_ids, with_gpx)
-            tracks.append(track)
+            if track:
+                tracks.append(track)
         return tracks
 
 
