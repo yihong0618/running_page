@@ -59,6 +59,7 @@
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#Keep)**
 - **[悦跑圈](#joyrun悦跑圈)** (因悦跑圈限制单个设备原因，无法自动化)
+- **[咕咚](#codoon咕咚)** (因咕咚限制单个设备原因，无法自动化)
 - **[GPX](#GPX)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 
@@ -191,7 +192,7 @@ python3(python) scripts/joyrun_sync.py ${your mobile} ${your 验证码} --with-g
 示例：
 
 ```python
-python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
+python3(python) scripts/joyrun_sync.py 13333xxxx example --with-gpx
 ```
 
 > 注：因为验证码有过期时间，我增加了 cookie uid sid 登陆的方式， uid 及 sid 在您登陆过程中会在控制台打印出来
@@ -202,6 +203,45 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 ```python
 python3(python) scripts/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx --from-uid-sid --with-gpx
+```
+
+</details>
+
+
+### Codoon（咕咚）
+
+<details>
+<summary>获取您的咕咚数据</summary>
+
+```python
+python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password}
+```
+
+示例：
+```python
+python3(python) scripts/codoon_sync.py 13333xxxx xxxx
+```
+
+> 注：我增加了 Codoon 可以导出 gpx 功能, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
+
+```python
+python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password} --with-gpx
+```
+
+示例：
+
+```python
+python3(python) scripts/codoon_sync.py 13333xxxx xxxx --with-gpx
+```
+
+> 注：因为登录token有过期时间限制，我增加了 refresh_token&user_id 登陆的方式， refresh_token 及 user_id 在您登陆过程中会在控制台打印出来
+
+![image](https://user-images.githubusercontent.com/6956444/105690972-9efaab00-5f37-11eb-905c-65a198ad2300.png)
+
+示例：
+
+```python
+python3(python) scripts/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth-token
 ```
 
 </details>
@@ -417,7 +457,8 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 支持 keep
 - [ ] 支持苹果自带运动
 - [x] 支持 nike + strava
-- [ ] 尝试支持咕咚，小米运动
+- [x] 支持咕咚
+- [ ] 尝试支持小米运动
 - [x] 支持英语
 - [x] 完善代码
 - [x] 清理整个项目
