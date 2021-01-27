@@ -10,7 +10,7 @@ class PosterError(Exception):
 
 
 class TrackLoadError(PosterError):
-    "Something went wrong when loading a track file"
+    "Something went wrong when loading a track file, we just ignore this file and continue"
     pass
 
 
