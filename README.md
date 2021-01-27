@@ -25,12 +25,13 @@
 | [ben_29](https://github.com/ben-29) | https://running.ben29.xyz | Strava |
 | [kcllf](https://github.com/kcllf) | https://running-tau.vercel.app | Garmin-cn |
 | [mq](https://github.com/MQ-0707) | https://running-iota.vercel.app | Keep |
-| [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app/ | Keep |
+| [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app | Keep |
 | [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
-| [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top/ | Keep |
+| [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top | Keep |
 | [zstone12](https://github.com/zstone12) | https://running-page.zstone12.vercel.app/ | Keep |
 | [Lax](https://github.com/Lax) | https://running-lax.vercel.app/ | Keep |
-| [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app/ | Nike |
+| [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app | Nike |
+| [wh1994](https://github.com/wh1994) | https://run4life.fun | Garmin |
 
 ## How it works
 
