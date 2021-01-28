@@ -44,7 +44,7 @@
 3. Support for Vercel (recommended) automated deployment
 4. React Hooks
 5. Mapbox for map display
-6. Nike and Runtastic (Adidas Run) 
+6. Supports most sports apps such as nike strava...
 
 > automatically backup gpx data for easy backup and uploading to other software.
 
