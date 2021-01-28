@@ -197,7 +197,7 @@ class Codoon:
             raise Exception("get runs records error")
 
         runs = r.json()["data"]["log_list"]
-        if r.json()["data"]["has_more"] == "true":
+        if r.json()["data"]["has_more"]:
             return runs + self.get_runs_records(page + 1)
         return runs
 
