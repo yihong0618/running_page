@@ -32,12 +32,15 @@ davinci = "0"
 basic_auth = "MDk5Y2NlMjhjMDVmNmMzOWFkNWUwNGU1MWVkNjA3MDQ6YzM5ZDNmYmVhMWU4NWJlY2VlNDFjMTk5N2FjZjBlMzY="
 client_id = "099cce28c05f6c39ad5e04e51ed60704"
 
-# for future use
+# for multi sports
 TYPE_DICT = {
     0: "Hike",
     1: "Run",
     2: "Ride",
 }
+
+# only for running sports, if you want others, please change the True to False
+IS_ONLY_RUN = True
 
 
 # decrypt from libencrypt.so Java_com_codoon_jni_JNIUtils_encryptHttpSignature
@@ -132,7 +135,9 @@ class CodoonAuth:
             r.headers["timestamp"] = timestamp
             if "refresh_token" in params:
                 r.headers["authorization"] = "Basic " + basic_auth
-                r.headers["content-type"] = "application/x-www-form-urlencode; charset=utf-8"
+                r.headers[
+                    "content-type"
+                ] = "application/x-www-form-urlencode; charset=utf-8"
             else:
                 r.headers["authorization"] = "Bearer " + self.token
                 r.headers["content-type"] = "application/json; charset=utf-8"
@@ -197,6 +202,9 @@ class Codoon:
             raise Exception("get runs records error")
 
         runs = r.json()["data"]["log_list"]
+        if IS_ONLY_RUN:
+            runs = [run for run in runs if run["sports_type"] == 1]
+        print(f"{len(runs)} runs to parse")
         if r.json()["data"]["has_more"]:
             return runs + self.get_runs_records(page + 1)
         return runs
@@ -251,6 +259,7 @@ class Codoon:
         return gpx.to_xml()
 
     def get_single_run_record(self, route_id):
+        print(f"Get single run for codoon id {route_id}")
         payload = {
             "route_id": route_id,
         }
@@ -261,7 +270,6 @@ class Codoon:
         )
         if not r.ok:
             print(r)
-            print(r.json())
             raise Exception("get runs records error")
         data = r.json()
         return data
@@ -298,7 +306,7 @@ class Codoon:
         location_country = None
         sport_type = run_data["sports_type"]
         # only support run now, if you want all type comments these two lines
-        if sport_type != 1:
+        if IS_ONLY_RUN and sport_type != 1:
             return
         cast_type = TYPE_DICT[sport_type] if sport_type in TYPE_DICT else sport_type
         d = {
