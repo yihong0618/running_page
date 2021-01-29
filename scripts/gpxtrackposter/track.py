@@ -134,7 +134,9 @@ class Track:
             self.file_names.extend(other.file_names)
             self.special = self.special or other.special
         except:
-            print(f"something wrong append this {self.end_time},in files {str(self.file_names)}")
+            print(
+                f"something wrong append this {self.end_time},in files {str(self.file_names)}"
+            )
             pass
 
     def load_cache(self, cache_file_name):
