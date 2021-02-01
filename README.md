@@ -41,7 +41,7 @@
 
 1. GitHub Actions manages automatic synchronization of runs and generation of new pages.
 2. Gatsby-generated static pages, fast
-3. Support for Vercel (recommended) automated deployment
+3. Support for Vercel (recommended) and GitHub Pages automated deployment
 4. React Hooks
 5. Mapbox for map display
 6. Supports most sports apps such as nike strava...
