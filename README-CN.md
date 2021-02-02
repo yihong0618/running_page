@@ -27,7 +27,7 @@
 | [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
 | [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top/ | Keep |
 | [zstone12](https://github.com/zstone12) | https://running-page.zstone12.vercel.app | Keep |
-| [Lax](https://github.com/Lax) | https://running-lax.vercel.app | Keep |
+| [Lax](https://github.com/Lax) | https://lax.github.io/running_page/ | Keep |
 | [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app | Nike |
 | [wh1994](https://github.com/wh1994) | https://run4life.fun | Garmin |
 ## 它是怎么工作的
@@ -38,7 +38,7 @@
 
 1. GitHub Actions 管理自动同步跑步进程及自动生成新的页面
 2. Gatsby 生成的静态网页，速度快
-3. 支持 Vercel(推荐) 自动部署
+3. 支持 Vercel(推荐) 和 GitHub Pages 自动部署
 4. React Hooks
 5. Mapbox 进行地图展示
 6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep 等, 自动备份 gpx 数据，方便备份及上传到其它软件

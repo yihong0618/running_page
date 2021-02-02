@@ -29,7 +29,7 @@
 | [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
 | [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top | Keep |
 | [zstone12](https://github.com/zstone12) | https://running-page.zstone12.vercel.app/ | Keep |
-| [Lax](https://github.com/Lax) | https://running-lax.vercel.app/ | Keep |
+| [Lax](https://github.com/Lax) | https://lax.github.io/running_page/ | Keep |
 | [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app | Nike |
 | [wh1994](https://github.com/wh1994) | https://run4life.fun | Garmin |
 
@@ -41,7 +41,7 @@
 
 1. GitHub Actions manages automatic synchronization of runs and generation of new pages.
 2. Gatsby-generated static pages, fast
-3. Support for Vercel (recommended) automated deployment
+3. Support for Vercel (recommended) and GitHub Pages automated deployment
 4. React Hooks
 5. Mapbox for map display
 6. Supports most sports apps such as nike strava...
