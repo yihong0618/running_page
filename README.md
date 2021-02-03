@@ -341,6 +341,18 @@ https://github.com/flopp/GpxTrackPoster
 
 </details>
 
+<details>
+<summary> Deploy to GitHub Pages </summary>
+
+1. If you are using a custom domain for GitHub Pages, open [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml), change `fqdn` value to the domain name of your site.
+
+2. (*Skip this step if you're **NOT** using a custom domain*) Modify `gatsby-config.js`, change `pathPrefix` value to the root path. If the repository name is `running_page`, the value will be `/running_page`.
+
+3. Go to repository's `Actions -> Workflows -> All Workflows`, choose `Publish GitHub Pages` from the left panel, click `Run workflow`. Make sure the workflow runs without errors, and `gh-pages` branch is created.
+
+4. Go to repository's `Settings -> GitHub Pages -> Source`, choose `Branch: gh-pages`, click `Save`.
+</details>
+
 ## GitHub Actions 
 
 <details>
