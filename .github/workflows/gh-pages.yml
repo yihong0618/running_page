@@ -5,6 +5,20 @@ on:
   # Triggers the workflow on push events but only for the master branch
   push:
     branches: [ master ]
+    paths:
+      - .github/workflows/gh-pages.yml
+      - package.json
+      - yarn.lock
+      - gatsby-config.js
+      - gatsby-node.js
+      - assets/*.svg
+      - src/**.js
+      - src/**.jsx
+      - src/**.scss
+      - src/**.json
+
+  schedule:
+    - cron: "5 0 * * *"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
