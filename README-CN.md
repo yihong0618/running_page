@@ -27,7 +27,7 @@
 | [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
 | [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top/ | Keep |
 | [zstone12](https://github.com/zstone12) | https://running-page.zstone12.vercel.app | Keep |
-| [Lax](https://github.com/Lax) | https://lax.github.io/running_page/ | Keep |
+| [Lax](https://github.com/Lax) | https://lax.github.io/running/ | Keep |
 | [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app | Nike |
 | [wh1994](https://github.com/wh1994) | https://run4life.fun | Garmin |
 ## 它是怎么工作的
@@ -431,6 +431,18 @@ https://github.com/flopp/GpxTrackPoster
 
 2. 等待部署完毕
 3. 访问
+</details>
+
+<details>
+<summary> 部署到 GitHub Pages </summary>
+
+1. 配置 GitHub Action。如需使用自定义域名，可以修改 [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml) 中的 `fqdn`（默认已注释掉）
+
+2. 修改 `gatsby-config.js`，更新 `pathPrefix`。【如果使用自定义域名，可跳过这一步】
+
+3. 在项目的 `Actions -> Workflows -> All Workflows` 中选择 Publish GitHub Pages，点击 `Run workflow`
+
+4. 在项目的 `Settings -> GitHub Pages -> Source` 部分，选择 `Branch: gh-pages` 并点击 `Save`。
 </details>
 
 ## GitHub Actions (Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。)
