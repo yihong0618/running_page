@@ -29,7 +29,7 @@
 | [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
 | [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top | Keep |
 | [zstone12](https://github.com/zstone12) | https://running-page.zstone12.vercel.app/ | Keep |
-| [Lax](https://github.com/Lax) | https://lax.github.io/running_page/ | Keep |
+| [Lax](https://github.com/Lax) | https://lax.github.io/running/ | Keep |
 | [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app | Nike |
 | [wh1994](https://github.com/wh1994) | https://run4life.fun | Garmin |
 
@@ -339,6 +339,18 @@ https://github.com/flopp/GpxTrackPoster
 2. Awaiting completion of deployment
 3. Visits
 
+</details>
+
+<details>
+<summary> Deploy to GitHub Pages </summary>
+
+1. If you are using a custom domain for GitHub Pages, open [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml), change `fqdn` value to the domain name of your site.
+
+2. (*Skip this step if you're **NOT** using a custom domain*) Modify `gatsby-config.js`, change `pathPrefix` value to the root path. If the repository name is `running_page`, the value will be `/running_page`.
+
+3. Go to repository's `Actions -> Workflows -> All Workflows`, choose `Publish GitHub Pages` from the left panel, click `Run workflow`. Make sure the workflow runs without errors, and `gh-pages` branch is created.
+
+4. Go to repository's `Settings -> GitHub Pages -> Source`, choose `Branch: gh-pages`, click `Save`.
 </details>
 
 ## GitHub Actions 
