@@ -48,7 +48,8 @@ def get_to_download_runs_ids(session, headers):
         r = session.get(RUN_DATA_API.format(last_date=last_date), headers=headers)
         if r.ok:
             run_logs = r.json()["data"]["records"]
-            result.extend([i["logs"][0]["stats"]["id"] for i in run_logs])
+            for i in run_logs:
+                result.extend(j["stats"]["id"] for j in i["logs"])
             last_date = r.json()["data"]["lastTimestamp"]
             since_time = datetime.utcfromtimestamp(last_date / 1000)
             print(f"pares keep ids data since {since_time}")
