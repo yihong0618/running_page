@@ -25,11 +25,12 @@
 | [mq](https://github.com/MQ-0707) | https://running-iota.vercel.app | Keep |
 | [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app | Keep |
 | [yvetterowe](https://github.com/yvetterowe) | https://run.haoluo.io | Strava |
-| [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top/ | Keep |
+| [love-exercise](https://github.com/KaiOrange) | https://run.kai666666.top | Keep |
 | [zstone12](https://github.com/zstone12) | https://running-page.zstone12.vercel.app | Keep |
-| [Lax](https://github.com/Lax) | https://lax.github.io/running/ | Keep |
+| [Lax](https://github.com/Lax) | https://lax.github.io/running | Keep |
 | [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app | Nike |
 | [wh1994](https://github.com/wh1994) | https://run4life.fun | Garmin |
+| [liuyihui](https://github.com/YiHui-Liu) | https://run.foolishfox.cn | Keep |
 ## 它是怎么工作的
 
 ![image](https://user-images.githubusercontent.com/15976103/105784027-e1ad9900-5fb2-11eb-9479-372be21482f1.png)
