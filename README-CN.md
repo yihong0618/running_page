@@ -295,9 +295,9 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 <details>
 <summary>获取 Nike Run Club 数据</summary>
 
-获取 Nike 的 refresh_token
+获取 Nike 的 clientId和refresh_token
 1. 登录 [Nike](https://www.nike.com) 官网
-2. In Developer -> Application-> Storage -> https:unite.nike.com 中找到 refresh_token
+2. In Developer -> Application-> Storage -> https:unite.nike.com 中找到 clientId和refresh_token 更改NIKE_CLIENT_ID (在scripts/config.py)为获取clientId值
 
 ![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png)
 3. 在项目根目录下执行:

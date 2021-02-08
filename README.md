@@ -187,9 +187,10 @@ python3(python) scripts/runtastic_sync.py example@gmail.com example
 
 <br>
 
-Get Nike's `refresh_token`
+Get Nike's `clientId` and `refresh_token`
 1. Login [Nike](https://www.nike.com) website
-2. In Develop -> Application-> Storage -> https:unite.nike.com look for `refresh_token`
+2. In Develop -> Application-> Storage -> https:unite.nike.com look for `clientId` and `refresh_token`,change NIKE_CLIENT_ID (in scripts/config.py) to your own clientId value
+
 
 <br>
 
