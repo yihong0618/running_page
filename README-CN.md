@@ -31,6 +31,8 @@
 | [lusuzi](https://github.com/lusuzi) | https://running.lusuzi.vercel.app | Nike |
 | [wh1994](https://github.com/wh1994) | https://run4life.fun | Garmin |
 | [liuyihui](https://github.com/YiHui-Liu) | https://run.foolishfox.cn | Keep |
+| [FrankSun](https://github.com/hi-franksun) | https://hi-franksun.github.io/running_page/ | Nike |
+
 ## 它是怎么工作的
 
 ![image](https://user-images.githubusercontent.com/15976103/105784027-e1ad9900-5fb2-11eb-9479-372be21482f1.png)
