@@ -62,7 +62,12 @@ const locationForRun = (run) => {
   return { country, province, city };
 };
 
-const intComma = (x = '') => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const intComma = (x = '') => {
+  if (x.toString().length <= 5) {
+    return x;
+  }
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
 
 const pathForRun = (run) => {
   try {
