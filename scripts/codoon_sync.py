@@ -220,29 +220,17 @@ class Codoon:
             points = []
         return points
 
-    def parse_points_to_gpx(self, run_points_data, start_time, end_time, interval=5):
+    def parse_points_to_gpx(self, run_points_data):
         # TODO for now kind of same as `keep` maybe refactor later
         points_dict_list = []
-        i = 0
-        start_timestamp = self._gt(start_time).timestamp()
-        end_timestamp = self._gt(end_time).timestamp()
         for point in run_points_data[:-1]:
             points_dict = {
                 "latitude": point["latitude"],
                 "longitude": point["longitude"],
                 "elevation": point["elevation"],
-                "time": datetime.utcfromtimestamp(start_timestamp + interval * i),
+                "time": datetime.strptime(point["time_stamp"], "%Y-%m-%dT%H:%M:%S"),
             }
-            i += 1
             points_dict_list.append(points_dict)
-        points_dict_list.append(
-            {
-                "latitude": run_points_data[-1]["latitude"],
-                "longitude": run_points_data[-1]["longitude"],
-                "elevation": run_points_data[-1]["elevation"],
-                "time": datetime.utcfromtimestamp(end_timestamp),
-            }
-        )
         gpx = gpxpy.gpx.GPX()
         gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
         gpx_track = gpxpy.gpx.GPXTrack()
@@ -255,7 +243,6 @@ class Codoon:
         for p in points_dict_list:
             point = gpxpy.gpx.GPXTrackPoint(**p)
             gpx_segment.points.append(point)
-
         return gpx.to_xml()
 
     def get_single_run_record(self, route_id):
@@ -293,9 +280,7 @@ class Codoon:
         if with_gpx:
             # pass the track no points
             if str(log_id) not in old_gpx_ids and run_points_data:
-                gpx_data = self.parse_points_to_gpx(
-                    run_points_data, start_time, end_time
-                )
+                gpx_data = self.parse_points_to_gpx(run_points_data)
                 download_codoon_gpx(gpx_data, str(log_id))
         heart_rate = None
 
