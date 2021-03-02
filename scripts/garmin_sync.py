@@ -37,7 +37,8 @@ GARMIN_CN_URL_DICT = {
     "BASE_URL": "https://connect.garmin.cn",
     "SSO_URL_ORIGIN": "https://sso.garmin.com",
     "SSO_URL": "https://sso.garmin.cn/sso",
-    "MODERN_URL": "https://connect.garmin.cn/modern",
+    # "MODERN_URL": "https://connect.garmin.cn/modern",
+    "MODERN_URL": "https://connect.garmin.cn",
     "SIGNIN_URL": "https://sso.garmin.cn/sso/signin",
     "CSS_URL": "https://static.garmincdn.cn/cn.garmin.connect/ui/css/gauth-custom-v1.2-min.css",
 }
