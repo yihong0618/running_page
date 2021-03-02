@@ -26,7 +26,6 @@ class Generator:
         self.refresh_token = refresh_token
 
     def check_access(self) -> None:
-        now = datetime.datetime.fromtimestamp(time.time())
         response = self.client.refresh_access_token(
             client_id=self.client_id,
             client_secret=self.client_secret,
