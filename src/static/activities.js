@@ -12082,6 +12082,20 @@ const activities = [
     "streak": 1
   },
   {
+    "run_id": 9223370459152662107,
+    "name": "run from keep",
+    "distance": 5760.0,
+    "moving_time": "0:31:35",
+    "type": "Run",
+    "start_date": "2019-12-30 10:03:32",
+    "start_date_local": "2019-12-30 18:03:32",
+    "location_country": "{'latitude': 31.20145751953125, 'longitude': 121.65985894097223, 'country': '\u4e2d\u56fd', 'nationCode': '156', 'province': '\u4e0a\u6d77\u5e02', 'city': '\u4e0a\u6d77\u5e02', 'cityCode': '021'}",
+    "summary_polyline": "",
+    "average_heartrate": null,
+    "average_speed": 3.0395778364116093,
+    "streak": 1
+  },
+  {
     "run_id": 9223370459152638807,
     "name": "run from keep",
     "distance": 2364.0,
@@ -14431,6 +14445,34 @@ const activities = [
     "summary_polyline": "",
     "average_heartrate": null,
     "average_speed": 2.9968462942895244,
+    "streak": 2
+  },
+  {
+    "run_id": 9223370422162602407,
+    "name": "run from keep",
+    "distance": 4130.0,
+    "moving_time": "0:19:18",
+    "type": "Run",
+    "start_date": "2021-03-02 13:16:42",
+    "start_date_local": "2021-03-02 21:16:42",
+    "location_country": "{'latitude': 39.909603118896484, 'longitude': 116.39722442626953, 'country': '\u4e2d\u56fd', 'nationCode': '156', 'province': '\u5317\u4eac\u5e02', 'city': '\u5317\u4eac\u5e02', 'cityCode': '010'}",
+    "summary_polyline": "",
+    "average_heartrate": null,
+    "average_speed": 3.5664939550949915,
+    "streak": 1
+  },
+  {
+    "run_id": 9223370422127265207,
+    "name": "run from keep",
+    "distance": 5235.86572265625,
+    "moving_time": "0:26:44",
+    "type": "Run",
+    "start_date": "2021-03-02 22:58:31",
+    "start_date_local": "2021-03-03 06:58:31",
+    "location_country": "{'latitude': 31.15743064880371, 'longitude': 121.11351013183594, 'country': '\u4e2d\u56fd', 'nationCode': '156', 'province': '\u4e0a\u6d77\u5e02', 'city': '\u4e0a\u6d77\u5e02', 'cityCode': '021'}",
+    "summary_polyline": "",
+    "average_heartrate": 165.0,
+    "average_speed": 3.264255438064994,
     "streak": 2
   }
 ];
