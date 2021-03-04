@@ -70,7 +70,7 @@ if __name__ == "__main__":
     last_time = get_last_time(client)
     files = get_to_generate_files(last_time)
     new_gpx_files = make_new_gpxs(files)
-    time.sleep(5)  # just wait
+    time.sleep(10)  # just wait
     if new_gpx_files:
         for f in new_gpx_files:
             upload_gpx(client, f)
