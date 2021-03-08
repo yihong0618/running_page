@@ -24,7 +24,9 @@ class GithubDrawer(TracksDrawer):
         year_length_style = f"font-size:{110 * 3.0 / 80.0}px; font-family:Arial;"
         month_names_style = f"font-size:2.5px; font-family:Arial"
         total_length_year_dict = self.poster.total_length_year_dict
-        for year in range(self.poster.years.from_year, self.poster.years.to_year + 1):
+        for year in range(self.poster.years.from_year, self.poster.years.to_year + 1)[
+            ::-1
+        ]:
             start_date_weekday, _ = calendar.monthrange(year, 1)
             github_rect_first_day = datetime.date(year, 1, 1)
             # Github profile the first day start from the last Monday of the last year or the first Monday of this year
