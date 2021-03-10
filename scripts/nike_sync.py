@@ -307,9 +307,9 @@ def make_new_gpxs(files):
                 return
         # ALL save name using utc if you want local please offset
         gpx_name = str(json_data["end_epoch_ms"])
-        gpx_files.append(os.path.join(GPX_FOLDER, str(gpx_name) + ".gpx"))
         parsed_data = parse_activity_data(json_data)
         if parsed_data:
+            gpx_files.append(os.path.join(GPX_FOLDER, str(gpx_name) + ".gpx"))
             save_gpx(parsed_data, gpx_name)
     return gpx_files
 
