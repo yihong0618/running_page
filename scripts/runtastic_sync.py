@@ -196,7 +196,7 @@ def gen_gpx(gpx_points):
     return gpx.to_xml(), file_name
 
 
-async def get_and_save_one_activate(rid, asyncio_semaphore, output=GPX_FILE_DIR):
+async def get_and_save_one_activity(rid, asyncio_semaphore, output=GPX_FILE_DIR):
     async with asyncio_semaphore:
         data = json.dumps(
             {
@@ -285,7 +285,7 @@ async def run(email, password, from_time, output=GPX_FILE_DIR):
     await _login(email, password)
     rids = await get_to_sync_sessions(from_time)
     tasks = [
-        asyncio.ensure_future(get_and_save_one_activate(rid, asyncio_semaphore, output))
+        asyncio.ensure_future(get_and_save_one_activity(rid, asyncio_semaphore, output))
         for rid in rids
     ]
     return await asyncio.gather(*tasks)

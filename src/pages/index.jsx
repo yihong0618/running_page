@@ -131,7 +131,7 @@ export default () => {
     });
     let polylineArr = document.querySelectorAll('polyline');
     if (polylineArr.length !== 0) {
-      polylineArr = Array.from(polylineArr).slice(1);
+      polylineArr = Array.from(polylineArr).slice();
     }
     // add picked runs svg event
     polylineArr.forEach((polyline) => {

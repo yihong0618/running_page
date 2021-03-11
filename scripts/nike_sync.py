@@ -3,13 +3,15 @@ import json
 import logging
 import os.path
 import time
-from datetime import datetime
+from collections import namedtuple
+from datetime import datetime, timedelta
 from xml.etree import ElementTree
 
 import gpxpy.gpx
 import httpx
 
 from config import (
+    run_map,
     BASE_URL,
     GPX_FOLDER,
     JSON_FILE,
@@ -17,8 +19,10 @@ from config import (
     OUTPUT_DIR,
     SQL_FILE,
     TOKEN_REFRESH_URL,
+    BASE_TIMEZONE,
 )
-from utils import make_activities_file
+from utils import make_activities_file, adjust_time
+from generator import Generator
 
 # logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nike_sync")
@@ -291,6 +295,50 @@ def save_gpx(gpx_data, activity_id):
         f.write(gpx_data)
 
 
+def parse_no_gpx_data(activity):
+    if not activity.get("metrics"):
+        print(f"The activity {activity['id']} doesn't contain metrics information")
+        return
+    average_heartrate = None
+    summary_info = activity.get("summaries")
+    distance = 0
+
+    for s in summary_info:
+        if s.get("metric") == "distance":
+            distance = s.get("value", 0) * 1000
+        if s.get("metric") == "heart_rate":
+            average_heartrate = s.get("value", None)
+    start_stamp = activity["start_epoch_ms"] / 1000
+    end_stamp = activity["end_epoch_ms"] / 1000
+    moving_time = timedelta(seconds=int(end_stamp - start_stamp))
+    elapsed_time = timedelta(seconds=int(activity["active_duration_ms"] / 1000))
+
+    nike_id = activity["end_epoch_ms"]
+    start_date = datetime.utcfromtimestamp(activity["start_epoch_ms"] / 1000)
+    start_date_local = adjust_time(start_date, BASE_TIMEZONE)
+    end_date = datetime.utcfromtimestamp(activity["end_epoch_ms"] / 1000)
+    end_date_local = adjust_time(end_date, BASE_TIMEZONE)
+    d = {
+        "id": int(nike_id),
+        "name": "run from nike",
+        "type": "Run",
+        "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+        "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
+        "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
+        "end_local": datetime.strftime(end_date_local, "%Y-%m-%d %H:%M:%S"),
+        "length": distance,
+        "average_heartrate": average_heartrate,
+        "map": run_map(""),
+        "start_latlng": None,
+        "distance": distance,
+        "moving_time": moving_time,
+        "elapsed_time": elapsed_time,
+        "average_speed": distance / int(activity["active_duration_ms"] / 1000),
+        "location_country": "",
+    }
+    return namedtuple("x", d.keys())(*d.values())
+
+
 def make_new_gpxs(files):
     # TODO refactor maybe we do not need to upload
     if not files:
@@ -299,6 +347,7 @@ def make_new_gpxs(files):
     if not os.path.exists(GPX_FOLDER):
         os.mkdir(GPX_FOLDER)
     gpx_files = []
+    tracks_list = []
     for file in files:
         with open(file, "r") as f:
             try:
@@ -306,11 +355,23 @@ def make_new_gpxs(files):
             except:
                 return
         # ALL save name using utc if you want local please offset
-        gpx_name = str(json_data["end_epoch_ms"])
+        activity_name = str(json_data["end_epoch_ms"])
         parsed_data = parse_activity_data(json_data)
         if parsed_data:
-            gpx_files.append(os.path.join(GPX_FOLDER, str(gpx_name) + ".gpx"))
-            save_gpx(parsed_data, gpx_name)
+            gpx_files.append(os.path.join(GPX_FOLDER, str(activity_name) + ".gpx"))
+            save_gpx(parsed_data, activity_name)
+        else:
+            try:
+                track = parse_no_gpx_data(json_data)
+                if track:
+                    tracks_list.append(track)
+            # just ignore some unexcept run
+            except Exception as e:
+                print(str(e))
+                continue
+    if tracks_list:
+        generator = Generator(SQL_FILE)
+        generator.sync_from_app(tracks_list)
     return gpx_files
 
 

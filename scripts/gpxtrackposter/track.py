@@ -49,16 +49,16 @@ class Track:
             )
             pass
 
-    def load_from_db(self, activate):
+    def load_from_db(self, activity):
         # use strava as file name
-        self.file_names = [str(activate.run_id)]
+        self.file_names = [str(activity.run_id)]
         start_time = datetime.datetime.strptime(
-            activate.start_date_local, "%Y-%m-%d %H:%M:%S"
+            activity.start_date_local, "%Y-%m-%d %H:%M:%S"
         )
         self.start_time_local = start_time
-        self.end_time = start_time + activate.elapsed_time
-        self.length = float(activate.distance)
-        summary_polyline = activate.summary_polyline
+        self.end_time = start_time + activity.elapsed_time
+        self.length = float(activity.distance)
+        summary_polyline = activity.summary_polyline
         polyline_data = polyline.decode(summary_polyline) if summary_polyline else []
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
 

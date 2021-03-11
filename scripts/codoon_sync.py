@@ -16,11 +16,8 @@ import hmac
 import base64
 import urllib.parse
 
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE, start_point, run_map
 from generator import Generator
-
-start_point = namedtuple("start_point", "lat lon")
-run_map = namedtuple("polyline", "summary_polyline")
 
 # device info
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
