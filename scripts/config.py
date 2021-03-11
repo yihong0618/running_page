@@ -1,4 +1,5 @@
 import os
+from collections import namedtuple
 import yaml
 
 GET_DIR = "activities"
@@ -11,6 +12,10 @@ JSON_FILE = "src/static/activities.json"
 BASE_URL = "https://api.nike.com/sport/v3/me"
 TOKEN_REFRESH_URL = "https://unite.nike.com/tokenRefresh"
 NIKE_CLIENT_ID = "HlHa2Cje3ctlaOqnxvgZXNaAs7T9nAuH"
+BASE_TIMEZONE = "Asia/Shanghai"
+
+start_point = namedtuple("start_point", "lat lon")
+run_map = namedtuple("polyline", "summary_polyline")
 
 try:
     with open("config.yaml") as f:

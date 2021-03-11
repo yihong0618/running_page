@@ -13,21 +13,13 @@ from urllib.parse import quote
 
 import gpxpy
 import polyline
-import pytz
 import requests
 
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE, BASE_TIMEZONE, start_point, run_map
+from utils import adjust_time
 from generator import Generator
 
 get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
-start_point = namedtuple("start_point", "lat lon")
-run_map = namedtuple("polyline", "summary_polyline")
-
-# now its the same like keep_sync but we want the code can run in sigle file
-# by copy so maybe refactor later
-def adjust_time(time, tz_name):
-    tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
-    return time + tc_offset
 
 
 def download_joyrun_gpx(gpx_data, joyrun_id):
@@ -259,10 +251,10 @@ class Joyrun:
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
         start_latlng = start_point(*run_points_data[0]) if run_points_data else None
         start_date = datetime.utcfromtimestamp(start_time)
-        start_date_local = adjust_time(start_date, "Asia/Shanghai")
+        start_date_local = adjust_time(start_date, BASE_TIMEZONE)
         end = datetime.utcfromtimestamp(end_time)
         # only for China now
-        end_local = adjust_time(end, "Asia/Shanghai")
+        end_local = adjust_time(end, BASE_TIMEZONE)
         location_country = None
         # joyrun location is kind of fucking strage, so I decide not use it, if you want use it, uncomment this two lines
         # if run_data["city"] or run_data["province"]:

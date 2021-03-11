@@ -8,19 +8,18 @@ from collections import namedtuple
 from datetime import datetime, timedelta
 
 import polyline
-import pytz
 import gpxpy
 import requests
 
 from config import (
+    start_point,
+    run_map,
     GPX_FOLDER,
     JSON_FILE,
     SQL_FILE,
 )
 from generator import Generator
-
-start_point = namedtuple("start_point", "lat lon")
-run_map = namedtuple("polyline", "summary_polyline")
+from utils import adjust_time
 
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
@@ -69,11 +68,6 @@ def decode_runmap_data(text):
     run_points_data = zlib.decompress(base64.b64decode(text), 16 + zlib.MAX_WBITS)
     run_points_data = json.loads(run_points_data)
     return run_points_data
-
-
-def adjust_time(time, tz_name):
-    tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
-    return time + tc_offset
 
 
 def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):

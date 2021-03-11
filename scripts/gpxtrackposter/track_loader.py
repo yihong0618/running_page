@@ -118,9 +118,9 @@ class TrackLoader:
         else:
             activities = session.query(Activity).order_by(Activity.start_date_local)
         tracks = []
-        for activate in activities:
+        for activity in activities:
             t = Track()
-            t.load_from_db(activate)
+            t.load_from_db(activity)
             tracks.append(t)
         print(len(tracks))
         tracks = self._filter_tracks(tracks)
