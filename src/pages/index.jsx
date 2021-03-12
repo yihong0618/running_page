@@ -17,7 +17,7 @@ import {
   sortDateFunc,
   getBoundsForGeoData,
 } from 'src/utils/utils';
-import { IS_CHINESE } from 'src/utils/const';
+import { IS_CHINESE, USE_ANIMATION_FOR_GRID } from 'src/utils/const';
 
 export default () => {
   const { activities, thisYear } = useActivities();
@@ -141,6 +141,28 @@ export default () => {
       const [runName] = runDate.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
         `${+thisYear + 1}`,
       ];
+      if (USE_ANIMATION_FOR_GRID) {
+        const length = polyline.getTotalLength();
+        polyline.style.transition = polyline.style.WebkitTransition = 'none';
+        polyline.style.strokeDasharray = length + ' ' + length;
+        polyline.style.strokeDashoffset = length;
+        polyline.getBoundingClientRect();
+        polyline.style.animation = polyline.style.WebkitTransition =
+          'dash 5s linear alternate infinite';
+        polyline.style.strokeDashoffset = '0';
+        let keyFrames = document.createElement('style');
+        // tricky for (length-1000)
+        keyFrames.innerHTML = `\
+        @keyframes dash {\
+          from {\
+            stroke-dasharray: 0 ${length};\
+          }\
+          to {\
+            stroke-dasharray: ${length} ${length-1000};\
+          }\
+        }`;
+        polyline.appendChild(keyFrames)
+      }
       const run = runs
         .filter((r) => r.start_date_local.slice(0, 10) === runName)
         .sort((a, b) => b.distance - a.distance)[0];

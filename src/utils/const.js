@@ -12,6 +12,7 @@ const MUNICIPALITY_CITIES_ARR = [
 
 // IF you outside China please make sure IS_CHINESE = false
 const IS_CHINESE = true;
+const USE_ANIMATION_FOR_GRID = false;
 const CHINESE_INFO_MESSAGE = (yearLength, year) =>
   `我用 App 记录自己跑步 ${yearLength} 年了，下面列表展示的是 ${year} 的数据`;
 const ENGLISH_INFO_MESSAGE = (yearLength, year) =>
@@ -42,6 +43,7 @@ export {
   IS_CHINESE,
   INFO_MESSAGE,
   RUN_TITLES,
+  USE_ANIMATION_FOR_GRID,
 };
 
 export const AVATAR =
