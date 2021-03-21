@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Python 3 API wrapper for Garmin Connect to get your statistics.

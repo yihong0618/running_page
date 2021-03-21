@@ -225,7 +225,7 @@ class Codoon:
                 "latitude": point["latitude"],
                 "longitude": point["longitude"],
                 "elevation": point["elevation"],
-                "time": datetime.strptime(point["time_stamp"], "%Y-%m-%dT%H:%M:%S"),
+                "time": datetime.fromisoformat(point["time_stamp"]),
             }
             points_dict_list.append(points_dict)
         gpx = gpxpy.gpx.GPX()
