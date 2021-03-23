@@ -1,7 +1,7 @@
 ![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
 
 # [打造个人跑步主页](https://yihong.run/running) 
-简体中文 | [English](README-EN.md)
+[English](README-EN.md) | 简体中文
 
 <details>
 <summary>GIF 展示</summary>
@@ -61,7 +61,6 @@
 ## 支持
 - **[Strava](#strava)**
 - **[Nike Run Club](#nike-run-club)**
-- **[Runtastic(Adidas Run)](#runtasticadidas-run)**
 - **[Garmin](#Garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#Keep)**
@@ -124,7 +123,7 @@ siteMetadata: {
 },
 ```
 
-## 下载您的 Runtastic(Adidas Run)/Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据, [别忘了在 `total` 页面生成可视化 SVG](#Total-Data-Analysis).
+## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据, [别忘了在 `total` 页面生成可视化 SVG](#Total-Data-Analysis).
 
 ### GPX
 
@@ -278,20 +277,6 @@ python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
 示例：
 ```python
 python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
-```
-</details>
-
-### Runtastic(Adidas Run)
-
-<details>
-<summary>获取您的 Runtastic(Adidas Run) 数据</summary>
-
-```python
-python3(python) scripts/runtastic_sync.py ${your email} ${your password}
-```
-示例：
-```python
-python3(python) scripts/runtastic_sync.py example@gmail.com example
 ```
 </details>
 

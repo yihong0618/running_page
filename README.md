@@ -3,8 +3,7 @@
 
 # [Create a personal running home page](https://yihong.run/running)
 
-[简体中文](https://github.com/yihong0618/running_page/blob/master/README-CN.md) | English
-
+English | [简体中文](https://github.com/yihong0618/running_page/blob/master/README-CN.md) 
 <details>
 <summary>GIF SHOW</summary>
 
@@ -58,7 +57,6 @@
 
 - **[Garmin](#garmin)**
 - **[Garmin-CN](#garmin-cnchina)**
-- **[Runtastic(Adidas Run)](#runtasticadidas-run)**
 - **[Nike Run Club](#nike-run-club)**
 - **[Strava](#strava)**
 - **[GPX](#GPX)**
@@ -164,23 +162,6 @@ python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
 example：
 ```python
 python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
-```
-</details>
-
-### Runtastic(Adidas Run)
-
-<details>
-<summary>Get your <code>Runtastic</code> data</summary>
-
-<br>
-
-```python
-python3(python) scripts/runtastic_sync.py ${your email} ${your password}
-```
-example：
-
-```python
-python3(python) scripts/runtastic_sync.py example@gmail.com example
 ```
 </details>
 
