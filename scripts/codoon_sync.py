@@ -219,9 +219,9 @@ class Codoon:
 
     def parse_points_to_gpx(self, run_points_data):
         def to_date(ts):
-            #TODO use https://docs.python.org/3/library/datetime.html#datetime.datetime.fromisoformat
-            #once we decide to move on to python v3.7+
-            ts_fmts = ['%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f']
+            # TODO use https://docs.python.org/3/library/datetime.html#datetime.datetime.fromisoformat
+            # once we decide to move on to python v3.7+
+            ts_fmts = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f"]
 
             for ts_fmt in ts_fmts:
                 try:
@@ -229,9 +229,11 @@ class Codoon:
                     # shouldn't be an issue since it's an offline cmdline tool
                     return datetime.strptime(ts, ts_fmt)
                 except ValueError:
-                   pass
+                    pass
 
-            raise ValueError(f"cannot parse timestamp {ts} into date with fmts: {ts_fmts}")
+            raise ValueError(
+                f"cannot parse timestamp {ts} into date with fmts: {ts_fmts}"
+            )
 
         # TODO for now kind of same as `keep` maybe refactor later
         points_dict_list = []

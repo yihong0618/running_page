@@ -311,6 +311,9 @@ def parse_no_gpx_data(activity):
             distance = s.get("value", 0) * 1000
         if s.get("metric") == "heart_rate":
             average_heartrate = s.get("value", None)
+    # maybe training that no distance
+    if not distance:
+        return
     start_stamp = activity["start_epoch_ms"] / 1000
     end_stamp = activity["end_epoch_ms"] / 1000
     moving_time = timedelta(seconds=int(end_stamp - start_stamp))
