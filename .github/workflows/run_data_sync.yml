@@ -10,7 +10,6 @@ on:
     paths:
       - scripts/nike_sync.py
       - scripts/nike_to_strava_sync.py
-      - scripts/runtastic_sync.py
       - scripts/strava_sync.py
       - scripts/gen_svg.py
       - scripts/garmin_sync.py
@@ -20,7 +19,7 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support runtastic/strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava, Please change the 'pass' it to your own
+  RUN_TYPE: pass # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava, Please change the 'pass' it to your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   TITLE_GRID: Over 10km Runs
@@ -64,11 +63,6 @@ jobs:
         run: |
           python scripts/nike_to_strava_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
   
-      - name: Run sync Runtastic script
-        if: env.RUN_TYPE == 'runtastic'
-        run: |
-          python scripts/runtastic_sync.py ${{ secrets.RUNTASTIC_EMAIL }} ${{ secrets.RUNTASTIC_PASSWORD }}
-
       - name: Run sync Keep script
         if: env.RUN_TYPE == 'keep'
         run: |
