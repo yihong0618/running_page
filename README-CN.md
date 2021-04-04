@@ -410,7 +410,7 @@ https://github.com/flopp/GpxTrackPoster
 ## server(recommend vercel)
 
 <details>
-<summary>使用 vercel 部署</summary>
+<summary>使用 Vercel 部署</summary>
 
 1. vercel 连接你的 GitHub repo
 
@@ -422,6 +422,24 @@ https://github.com/flopp/GpxTrackPoster
 
 2. 等待部署完毕
 3. 访问
+</details>
+
+<details>
+<summary> 使用 Cloudflare 部署 </summary>
+<br>
+
+1. 在 `Pages` 中点击 `Create a project` 以连接到你的仓库
+
+2. 点击 `Begin setup` 后，修改项目的 `Build settings`。
+
+3. 在 `Framework preset` 中选择 `Gatsby` 框架。
+
+4. 向下滚动，点击 `Environment variables` 修改变量如下：
+
+   > Variable name = `PYTHON_VERSION`, Value = `3.7`
+
+5. 点击 `Save and Deploy`，完成部署。
+
 </details>
 
 <details>

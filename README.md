@@ -1,9 +1,9 @@
 ![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
 
-
 # [Create a personal running home page](https://yihong.run/running)
 
-English | [简体中文](https://github.com/yihong0618/running_page/blob/master/README-CN.md) 
+English | [简体中文](https://github.com/yihong0618/running_page/blob/master/README-CN.md)
+
 <details>
 <summary>GIF SHOW</summary>
 
@@ -159,10 +159,13 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
 ```
+
 example：
+
 ```python
 python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
 ```
+
 </details>
 
 ### Nike Run Club
@@ -181,13 +184,17 @@ Get Nike's `refresh_token`
 ![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png)
 
 3. Execute in the root directory:
+
 ```python
 python3(python) scripts/nike_sync.py ${nike refresh_token}
 ```
+
 example：
+
 ```python
 python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
 ```
+
 ![example img](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/nike_sync_%20example.png)
 
 </details>
@@ -308,7 +315,7 @@ https://github.com/flopp/GpxTrackPoster
 ## server(recommendation vercel)
 
 <details>
-<summary> Use <code>vercel</code> deploy </summary>
+<summary> Use <code>Vercel</code> to deploy </summary>
 <br>
 
 1. vercel connects to your GitHub repo.
@@ -316,6 +323,7 @@ https://github.com/flopp/GpxTrackPoster
 <br>
 
 ![image](https://user-images.githubusercontent.com/15976103/94452465-2599b880-01e2-11eb-9538-582f0f46c421.png)
+
 2. import repo
 
 <br>
@@ -324,6 +332,24 @@ https://github.com/flopp/GpxTrackPoster
 
 2. Awaiting completion of deployment
 3. Visits
+
+</details>
+
+<details>
+<summary> Use <code>Cloudflare</code> to deploy </summary>
+<br>
+
+1. Click `Create a project` in `Pages` to connect to your Repo.
+
+2. After clicking `Begin setup`, modify Project's `Build settings`.
+
+3. Select `Framework preset` to `Gatsby`
+
+4. Scroll down, click `Environment variables`, then variable below:
+
+   > Variable name = `PYTHON_VERSION`, Value = `3.7`
+
+5. Click `Save and Deploy`
 
 </details>
 
