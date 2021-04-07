@@ -18,6 +18,10 @@ const CHINESE_INFO_MESSAGE = (yearLength, year) =>
 const ENGLISH_INFO_MESSAGE = (yearLength, year) =>
   `Running Journey with ${yearLength} Years, the table shows year ${year} data`;
 
+// not support English for now
+const CHINESE_LOCATION_INFO_MESSAGE_FIRST = "我跑过了一些地方，希望随着时间推移，地图点亮的地方越来越多";
+const CHINESE_LOCATION_INFO_MESSAGE_SECOND = "不要停下来，不要停下奔跑的脚步";
+
 const INFO_MESSAGE = IS_CHINESE ? CHINESE_INFO_MESSAGE : ENGLISH_INFO_MESSAGE;
 const FULL_MARATHON_RUN_TITLE = IS_CHINESE ? '全程马拉松' : 'Full Marathon';
 const HALF_MARATHON_RUN_TITLE = IS_CHINESE ? '半程马拉松' : 'Half Marathon';
@@ -38,6 +42,8 @@ const RUN_TITLES = {
 };
 
 export {
+  CHINESE_LOCATION_INFO_MESSAGE_FIRST,
+  CHINESE_LOCATION_INFO_MESSAGE_SECOND,
   MAPBOX_TOKEN,
   MUNICIPALITY_CITIES_ARR,
   IS_CHINESE,
@@ -53,6 +59,6 @@ export const NAVS = [
   { text: 'About', link: 'https://github.com/yihong0618/running_page' },
 ];
 
-const nike = 'rgb(224,237,94)';
+const nike = 'rgb(224,237,94)'; // if you want change the main color change here src/styles/variables.scss
 export const MAIN_COLOR = nike;
 export const PROVINCE_FILL_COLOR = '#47b8e0';
