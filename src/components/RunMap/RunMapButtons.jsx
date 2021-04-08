@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {MAIN_COLOR} from 'src/utils/const';
+import React, { useState, useEffect } from 'react';
+import { MAIN_COLOR } from 'src/utils/const';
 import useActivities from 'src/hooks/useActivities';
 import styles from './style.module.scss';
 
-const RunMapButtons = ({changeYear, thisYear, mapButtonYear}) => {
+const RunMapButtons = ({ changeYear, thisYear, mapButtonYear }) => {
   const elements = document.getElementsByClassName(styles.button);
-  const {years} = useActivities();
+  const { years } = useActivities();
   const yearsButtons = years.slice();
   yearsButtons.push('Total');
   const [index, setIndex] = useState(0);
@@ -33,7 +33,7 @@ const RunMapButtons = ({changeYear, thisYear, mapButtonYear}) => {
         {yearsButtons.map((year) => (
           <li
             key={`${year}button`}
-            style={{color: year === thisYear ? MAIN_COLOR : 'white'}}
+            style={{ color: year === thisYear ? MAIN_COLOR : 'white' }}
             year={year}
             onClick={(e) => {
               changeYear(year);

@@ -68,7 +68,7 @@ const RunMap = ({
       onLoad={addControlHandler}
       mapboxApiAccessToken={MAPBOX_TOKEN}
     >
-      <RunMapButtons changeYear={changeYear} thisYear={thisYear} mapButtonYear={mapButtonYear}/>
+      <RunMapButtons changeYear={changeYear} thisYear={thisYear} mapButtonYear={mapButtonYear} />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
           id="prvince"
