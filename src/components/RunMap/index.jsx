@@ -20,6 +20,7 @@ const RunMap = ({
   changeYear,
   geoData,
   thisYear,
+  mapButtonYear
 }) => {
   const { provinces } = useActivities();
   const addControlHandler = (event) => {
@@ -67,7 +68,7 @@ const RunMap = ({
       onLoad={addControlHandler}
       mapboxApiAccessToken={MAPBOX_TOKEN}
     >
-      <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
+      <RunMapButtons changeYear={changeYear} thisYear={thisYear} mapButtonYear={mapButtonYear} />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
           id="prvince"
