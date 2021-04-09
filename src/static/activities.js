@@ -14712,6 +14712,34 @@ const activities = [
     "average_heartrate": 163.0,
     "average_speed": 3.040487107547679,
     "streak": 1
+  },
+  {
+    "run_id": 9223370418965436607,
+    "name": "run from keep",
+    "distance": 6127.999766805226,
+    "moving_time": "0:35:40",
+    "type": "Run",
+    "start_date": "2021-04-08 13:06:34",
+    "start_date_local": "2021-04-08 21:06:34",
+    "location_country": "{'latitude': 31.24212673611111, 'longitude': 121.67296793619792, 'country': '\u4e2d\u56fd', 'nationCode': '156', 'province': '\u4e0a\u6d77\u5e02', 'city': '\u4e0a\u6d77\u5e02', 'cityCode': '021', 'district': '\u6d66\u4e1c\u65b0\u533a', 'districtCode': '310115'}",
+    "summary_polyline": "",
+    "average_heartrate": null,
+    "average_speed": 2.863551292899638,
+    "streak": 2
+  },
+  {
+    "run_id": 9223370418929087907,
+    "name": "run from keep",
+    "distance": 7098.54833984375,
+    "moving_time": "0:38:12",
+    "type": "Run",
+    "start_date": "2021-04-08 23:07:09",
+    "start_date_local": "2021-04-09 07:07:09",
+    "location_country": "{'latitude': 31.24054718017578, 'longitude': 121.6730728149414, 'country': '\u4e2d\u56fd', 'nationCode': '156', 'province': '\u4e0a\u6d77\u5e02', 'city': '\u4e0a\u6d77\u5e02', 'cityCode': '021', 'district': '\u6d66\u4e1c\u65b0\u533a', 'districtCode': '310115'}",
+    "summary_polyline": "",
+    "average_heartrate": 151.0,
+    "average_speed": 3.09709787951298,
+    "streak": 3
   }
 ];
 
