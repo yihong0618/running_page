@@ -1,15 +1,23 @@
-![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
+<p align="center">
+  <img width="150" height="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
+</p>
 
-# [Create a personal running home page](https://yihong.run/running)
+
+<h3 align="center">
+  <a href="https://yihong.run/running"> Create a personal running home page </a>
+</h3>
+
+<p align="center">
+  <a href="https://github.com/yihong0618/running_page/actions"><img src="https://github.com/yihong0618/running_page/actions/workflows/run_data_sync.yml/badge.svg" alt="Github Action"></a>
+  <a href="https://t.me/running_page"><img src="https://badgen.net/badge/icon/join?icon=telegram&amp;label=usergroup" alt="Chat on telegram"></a>
+</p>
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/15976103/98808834-c02f1d80-2457-11eb-9a7c-70e91faa5e30.gif" alt="demo" width="800">
+</p>
+
 
 English | [简体中文](https://github.com/yihong0618/running_page/blob/master/README-CN.md)
-
-<details>
-<summary>GIF SHOW</summary>
-
-![running_page](https://user-images.githubusercontent.com/15976103/98808834-c02f1d80-2457-11eb-9a7c-70e91faa5e30.gif)
-
-</details>
 
 ## [Runner's Page Show](https://github.com/yihong0618/running_page/issues/12)
 
