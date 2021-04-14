@@ -55,8 +55,8 @@ export {
 export const AVATAR =
   'https://raw.githubusercontent.com/KANGNAMEMEDA/-/main/1.JPG'; // Temp avatar
 export const NAVS = [
-  { text: 'Blog', link: 'https://github.com/yihong0618/running_page' },
-  { text: 'About', link: 'https://github.com/yihong0618/running_page' },
+  //{ text: 'Blog', link: 'https://github.com/yihong0618/running_page' },
+  { text: 'RUNNING', link: 'https://kangnamemeda.github.io/running_page/' },
 ];
 
 const nike = 'rgb(224,237,94)'; // if you want change the main color change here src/styles/variables.scss
