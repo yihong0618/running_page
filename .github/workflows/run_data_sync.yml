@@ -99,7 +99,7 @@ jobs:
       - name: Push new runs
         uses: github-actions-x/commit@v2.6
         with:
-          github-token: ${{ secrets.running }}
+          github-token: ${{ secrets.RUNNING }}
           commit-message: "Add new runs"
           files: activities src/static/ scripts/ assets/ GPX_OUT/
           rebase: 'true'
