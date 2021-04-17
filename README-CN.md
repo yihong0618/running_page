@@ -35,6 +35,7 @@
 | [AhianZhang](https://github.com/AhianZhang) | https://running.ahianzhang.com | Keep |
 | [L1cardo](https://github.com/L1cardo) | https://run.licardo.cn | Nike |
 | [luckylele666](https://github.com/luckylele666) | https://0000928.xyz | Strava |
+| [MFYDev](https://github.com/MFYDev) | https://mfydev.run | Nike |
 
 ## 它是怎么工作的
 
