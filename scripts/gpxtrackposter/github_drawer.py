@@ -86,7 +86,7 @@ class GithubDrawer(TracksDrawer):
 
             dr.add(
                 dr.text(
-                    f"{year_length} {km_or_mi}"r
+                    f"{year_length} {km_or_mi}"
                     insert=(offset.tuple()[0] + 165, offset.tuple()[1] + 5),
                     fill=self.poster.colors["text"],
                     alignment_baseline="hanging",
