@@ -7,6 +7,7 @@ const YearsStat = ({ year, onClick }) => {
   const { years } = useActivities();
   // make sure the year click on front
   let yearsArrayUpdate = years.slice();
+  yearsArrayUpdate.push('Total');
   yearsArrayUpdate = yearsArrayUpdate.filter((x) => x !== year);
   yearsArrayUpdate.unshift(year);
 
@@ -23,7 +24,9 @@ const YearsStat = ({ year, onClick }) => {
       {yearsArrayUpdate.map((year) => (
         <YearStat key={year} year={year} onClick={onClick} />
       ))}
-      <YearStat key="Total" year="Total" onClick={onClick} />
+      {yearsArrayUpdate.hasOwnProperty('Total') ?
+        <YearStat key="Total" year="Total" onClick={onClick} /> : <div/>
+      }
     </div>
   );
 };
