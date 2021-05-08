@@ -51,6 +51,7 @@
 6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep 等, 自动备份 gpx 数据，方便备份及上传到其它软件
 
 > 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里（建议本地同步，之后 actions 选择正在用的 app）
+> 注: 如果你不想公开数据，可以选择 strava 的模糊处理，或 private 仓库。
 
 <details>
 <summary>缩放地图彩蛋</summary>
