@@ -61,6 +61,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 > automatically backup gpx data for easy backup and uploading to other software.
 
+> Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
 
 ## Support
 
