@@ -44,7 +44,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [AhianZhang](https://github.com/AhianZhang) | https://running.ahianzhang.com | Keep |
 | [L1cardo](https://github.com/L1cardo) | https://run.licardo.cn | Nike |
 | [luckylele666](https://github.com/luckylele666) | https://0000928.xyz | Strava |
-| [MFYDev](https://github.com/MFYDev) | https://mfydev.run | Nike |
+| [MFYDev](https://github.com/MFYDev) | https://mfydev.run | Garmin-cn |
 
 ## How it works
 
