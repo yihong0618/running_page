@@ -185,6 +185,8 @@ python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
 
 <br>
 
+**Please note: When you choose to deploy running_page on your own server, due to Nike has blocked some IDC's IP band, maybe your server cannot sync Nike Run Club's data correctly and display `403 error`, then you have to change another way to host it.**
+
 Get Nike's `refresh_token`
 1. Login [Nike](https://www.nike.com) website
 2. In Develop -> Application-> Storage -> https:unite.nike.com look for `refresh_token`
