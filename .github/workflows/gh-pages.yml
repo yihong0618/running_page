@@ -54,6 +54,8 @@ jobs:
           yarn install
       - run: |
           yarn build --prefix-paths
+      - run: |
+          cp -r assets/ public/static
 
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2.2.0
