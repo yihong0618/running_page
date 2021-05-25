@@ -149,6 +149,7 @@ python3(python) scripts/gpx_sync.py
 <details>
 <summary>Get your <code>Garmin</code> data</summary>
 <br>
+If you only want to sync `type running` add args --only-run
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}

@@ -273,6 +273,7 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 
 <details>
 <summary>获取您的 Garmin-CN 数据</summary>
+如果你只想同步跑步数据请增加 --only-run
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
