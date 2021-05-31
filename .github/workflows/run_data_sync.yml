@@ -77,6 +77,8 @@ jobs:
         if: env.RUN_TYPE == 'garmin'
         run: |
           python scripts/garmin_sync.py ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
+        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # python scripts/garmin_sync.py ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} --only-run
 
       - name: Run sync Garmin CN script
         if: env.RUN_TYPE == 'garmin_cn'
