@@ -5,7 +5,7 @@
 R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 # [打造个人跑步主页](https://yihong.run/running) 
-[English](README-EN.md) | 简体中文
+[English](README-EN.md) | 简体中文 | [Wiki](https://wiki.mfydev.run/)
 
 <details>
 <summary>GIF 展示</summary>
@@ -509,8 +509,9 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 # 特别感谢
 - @[flopp](https://github.com/flopp) 特别棒的项目 [GpxTrackPoster](https://github.com/flopp/GpxTrackPoster)
 - @[shaonianche](https://github.com/shaonianche) icon 设计及文档
-- @[geekplux](https://github.com/geekplux) 帮助及鼓励, 重构了前端代码，学到了不少~
-- @[ben-29](https://github.com/ben-29) 搞定了咕咚，和我一起搞定了悦跑圈，太厉害了。
+- @[geekplux](https://github.com/geekplux) 帮助及鼓励, 重构了前端代码，学到了不少
+- @[ben-29](https://github.com/ben-29) 搞定了咕咚，和我一起搞定了悦跑圈，太厉害了
+- @[MFYDev](https://github.com/MFYDev) Wiki
 
 # 赞赏
 谢谢就够了

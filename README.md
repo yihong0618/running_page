@@ -17,7 +17,7 @@
 </p>
 
 
-English | [简体中文](https://github.com/yihong0618/running_page/blob/master/README-CN.md)
+English | [简体中文](https://github.com/yihong0618/running_page/blob/master/README-CN.md)| [Wiki](https://wiki.mfydev.run/)
 
 ## [Runner's Page Show](https://github.com/yihong0618/running_page/issues/12)
 
@@ -432,7 +432,8 @@ Before submitting PR:
 
 - @[flopp](https://github.com/flopp) great repo [GpxTrackPoster](https://github.com/flopp/GpxTrackPoster)
 - @[shaonianche](https://github.com/shaonianche) icon design and doc
-- @[geekplux](https://github.com/geekplux) Friendly help and encouragement, refactored the whole front-end code, learned a lot~
+- @[geekplux](https://github.com/geekplux) Friendly help and encouragement, refactored the whole front-end code, learned a lot 
+- @[MFYDev](https://github.com/MFYDev) Wiki
 
 # Support
 Thanks is enough.
