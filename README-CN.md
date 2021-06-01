@@ -1,6 +1,6 @@
 ![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
 
-# [这里是白银越野赛全部21位逝者的故事](https://mp.weixin.qq.com/s/34HL50MamcRVO-yMaPWonw)
+# [这里是白银越野赛全部21位逝者的故事](https://github.com/yihong0618/running_page/issues/135)
 
 R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
