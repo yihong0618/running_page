@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
     <div>
       <Helmet bodyAttributes={{ class: styles.body }}>
         <html lang="en" />
-        {/* <title>{title}</title> */}
+        <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="keywords" content="running" />
         <meta
@@ -21,7 +21,6 @@ const Layout = ({ children }) => {
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
       </Helmet>
-      <Header title={siteTitle} />
       <div className="pa3 pa5-l">{children}</div>
     </div>
   );
