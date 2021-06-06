@@ -81,7 +81,7 @@ export default () => {
   useEffect(() => {
     setViewport({
       width: '100%',
-      height: 400,
+      height: 500,
       ...bounds,
     });
   }, [geoData]);

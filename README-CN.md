@@ -100,33 +100,24 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0
 
 ## 一些个性化选项
 
-### 左上角的头像
-
-修改 `src/utils/const.js` 里的 `export const AVATAR =
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU';` 换成你想要的图片的链接。
-
-### 右上角默认的 Blog 和 About
-
-修改 `src/utils/const.js` 里的 `NAVS`，换成你想要的链接，如：
-
-```javascript
-export const NAVS = [
-  { text: 'Blog', link: 'https://yihong.run/running' },
-  { text: 'About', link: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md' },
-];
-```
-
-你也可以自行添加多个链接，照葫芦画瓢即可。
-
-### 页面标题与网站链接
-
 在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
 
 ```javascript
 siteMetadata: {
-  title: 'Running page',
-  siteUrl: 'https://yihong.run',
+  siteTitle: 'Running Page', #网站标题
+  siteUrl: 'https://yihong.run', #网站域名
+  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU', #左上角LOGO
   description: 'Personal site and blog',
+  navLinks: [
+    {
+      name: 'Blog', #右上角导航名称
+      url: 'https://yihong.run/running', #右上角导航链接 
+    },
+    {
+      name: 'About',
+      url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
+    },
+  ],
 },
 ```
 

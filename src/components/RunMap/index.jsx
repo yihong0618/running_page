@@ -1,16 +1,15 @@
-import React from 'react';
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import ReactMapGL, { Source, Layer } from 'react-map-gl';
-import {
-  MAPBOX_TOKEN,
-  IS_CHINESE,
-  MAIN_COLOR,
-  PROVINCE_FILL_COLOR,
-} from 'src/utils/const';
-import {geoJsonForMap} from 'src/utils/utils'
+import React from 'react';
+import ReactMapGL, { Layer, Source } from 'react-map-gl';
 import useActivities from 'src/hooks/useActivities';
-import RunMapButtons from './RunMapButtons';
+import {
+  IS_CHINESE,
+  MAIN_COLOR, MAPBOX_TOKEN,
+  PROVINCE_FILL_COLOR
+} from 'src/utils/const';
+import { geoJsonForMap } from 'src/utils/utils';
 import RunMarker from './RunMaker';
+import RunMapButtons from './RunMapButtons';
 import styles from './style.module.scss';
 
 const RunMap = ({
@@ -20,7 +19,7 @@ const RunMap = ({
   changeYear,
   geoData,
   thisYear,
-  mapButtonYear
+  mapButtonYear,
 }) => {
   const { provinces } = useActivities();
   const addControlHandler = (event) => {
@@ -30,7 +29,7 @@ const RunMap = ({
       map.addControl(
         new MapboxLanguage({
           defaultLanguage: 'zh',
-        })
+        }),
       );
       map.setLayoutProperty('country-label-lg', 'text-field', [
         'get',
@@ -47,9 +46,8 @@ const RunMap = ({
     geoData = geoJsonForMap();
   }
 
-  const isSingleRun =
-    geoData.features.length === 1 &&
-    geoData.features[0].geometry.coordinates.length;
+  const isSingleRun = geoData.features.length === 1
+    && geoData.features[0].geometry.coordinates.length;
   let startLon;
   let startLat;
   let endLon;

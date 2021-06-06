@@ -1,7 +1,7 @@
 import React from 'react';
-import { INFO_MESSAGE } from 'src/utils/const';
 import YearStat from 'src/components/YearStat';
 import useActivities from 'src/hooks/useActivities';
+import { INFO_MESSAGE } from 'src/utils/const';
 
 const YearsStat = ({ year, onClick }) => {
   const { years } = useActivities();
@@ -15,7 +15,7 @@ const YearsStat = ({ year, onClick }) => {
   return (
     <div className="fl w-100 w-30-l pb5 pr5-l">
       <section className="pb4" style={{ paddingBottom: '0rem' }}>
-        <p>
+        <p style={{ lineHeight: 1.8 }}>
           {INFO_MESSAGE(years.length, year)}
           <br />
         </p>
@@ -24,9 +24,8 @@ const YearsStat = ({ year, onClick }) => {
       {yearsArrayUpdate.map((year) => (
         <YearStat key={year} year={year} onClick={onClick} />
       ))}
-      {yearsArrayUpdate.hasOwnProperty('Total') ?
-        <YearStat key="Total" year="Total" onClick={onClick} /> : <div/>
-      }
+      {yearsArrayUpdate.hasOwnProperty('Total')
+        ? <YearStat key="Total" year="Total" onClick={onClick} /> : <div />}
     </div>
   );
 };

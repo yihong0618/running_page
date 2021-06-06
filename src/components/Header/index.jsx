@@ -2,7 +2,7 @@ import { Link } from 'gatsby';
 import React from 'react';
 import useSiteMetadata from 'src/hooks/useSiteMetadata';
 
-const Header = ({ siteTitle }) => {
+const Header = () => {
   const { logo, siteUrl, navLinks } = useSiteMetadata();
 
   return (

@@ -4,7 +4,9 @@ import useActivities from 'src/hooks/useActivities';
 
 // only support China for now
 const LocationSummary = () => {
-  const { years, countries, provinces, cities } = useActivities();
+  const {
+    years, countries, provinces, cities,
+  } = useActivities();
   return (
     <div style={{ cursor: 'pointer' }}>
       <section>
