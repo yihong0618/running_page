@@ -161,9 +161,22 @@ def sanitise_json(d):
 def get_to_generate_files():
     file_names = os.listdir(GPX_FOLDER)
     try:
-        last_time = max(
-            int(i.split(".")[0]) for i in file_names if not i.startswith(".")
-        )
+        # error when mixed keep & nike gpx files
+        timestamps = []
+        for i in file_names:
+            if i.startswith("."):
+                continue
+            t = int(i.split(".")[0])
+            # 7226553600000 representing Tue Jan 01 2199 00:00:00 GMT+0800 (CST)
+            if t > 0 and t < 7226553600000:
+                timestamps.append(t)
+            else:
+                logger.info(f"Invalid timestamp: {t}")
+
+        if len(timestamps) > 0:
+            last_time = max(timestamps)
+        else:
+            last_time = 0
     except:
         last_time = 0
     return [
@@ -402,3 +415,4 @@ if __name__ == "__main__":
     # waiting for gpx
     time.sleep(2)
     make_activities_file(SQL_FILE, GPX_FOLDER, JSON_FILE)
+
