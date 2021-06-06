@@ -4,9 +4,7 @@ import React from 'react';
 import { Marker } from 'react-map-gl';
 import styles from './style.module.scss';
 
-const RunMarker = ({
-  startLon, startLat, endLon, endLat,
-}) => {
+const RunMarker = ({ startLon, startLat, endLon, endLat }) => {
   const size = 20;
   return (
     <div>

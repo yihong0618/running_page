@@ -13,7 +13,9 @@ const titleForShow = (run) => {
   if (run.name) {
     name = run.name;
   }
-  return `${name} ${date} ${distance} KM ${!run.summary_polyline ? '(No map data for this run)' : ''}`;
+  return `${name} ${date} ${distance} KM ${
+    !run.summary_polyline ? '(No map data for this run)' : ''
+  }`;
 };
 
 const formatPace = (d) => {
@@ -47,7 +49,9 @@ const locationForRun = (run) => {
     }
     const l = location.split(',');
     // or to handle keep location format
-    let countryMatch = l[l.length - 1].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
+    let countryMatch = l[l.length - 1].match(
+      /[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/
+    );
     if (!countryMatch && l.length >= 3) {
       countryMatch = l[2].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
     }
@@ -147,8 +151,10 @@ const getBoundsForGeoData = (geoData) => {
     [applyToArray(Math.min, pointsLong), applyToArray(Math.min, pointsLat)],
     [applyToArray(Math.max, pointsLong), applyToArray(Math.max, pointsLat)],
   ];
-  const viewport = new WebMercatorViewport({ width: 800, height: 600 })
-    .fitBounds(cornersLongLat, { padding: 200 });
+  const viewport = new WebMercatorViewport({
+    width: 800,
+    height: 600,
+  }).fitBounds(cornersLongLat, { padding: 200 });
   let { longitude, latitude, zoom } = viewport;
   if (features.length > 1) {
     zoom = 11.5;
@@ -156,20 +162,20 @@ const getBoundsForGeoData = (geoData) => {
   return { longitude, latitude, zoom };
 };
 
-const filterYearRuns = ((run, year) => {
+const filterYearRuns = (run, year) => {
   if (run && run.start_date_local) {
     return run.start_date_local.slice(0, 4) === year;
   }
   return false;
-});
+};
 
-const filterCityRuns = ((run, city) => {
+const filterCityRuns = (run, city) => {
   if (run && run.location_country) {
     return run.location_country.includes(city);
   }
   return false;
-});
-const filterTitleRuns = ((run, title) => titleForRun(run) === title);
+};
+const filterTitleRuns = (run, title) => titleForRun(run) === title;
 
 const filterAndSortRuns = (activities, item, filterFunc, sortFunc) => {
   let s = activities;
@@ -179,9 +185,26 @@ const filterAndSortRuns = (activities, item, filterFunc, sortFunc) => {
   return s.sort(sortFunc);
 };
 
-const sortDateFunc = (a, b) => new Date(b.start_date_local.replace(' ', 'T')) - new Date(a.start_date_local.replace(' ', 'T'));
+const sortDateFunc = (a, b) =>
+  new Date(b.start_date_local.replace(' ', 'T')) -
+  new Date(a.start_date_local.replace(' ', 'T'));
 const sortDateFuncReverse = (a, b) => sortDateFunc(b, a);
 
 export {
-  titleForShow, formatPace, scrollToMap, locationForRun, intComma, pathForRun, geoJsonForRuns, geoJsonForMap, titleForRun, filterYearRuns, filterCityRuns, filterTitleRuns, filterAndSortRuns, sortDateFunc, sortDateFuncReverse, getBoundsForGeoData,
+  titleForShow,
+  formatPace,
+  scrollToMap,
+  locationForRun,
+  intComma,
+  pathForRun,
+  geoJsonForRuns,
+  geoJsonForMap,
+  titleForRun,
+  filterYearRuns,
+  filterCityRuns,
+  filterTitleRuns,
+  filterAndSortRuns,
+  sortDateFunc,
+  sortDateFuncReverse,
+  getBoundsForGeoData,
 };

@@ -24,8 +24,11 @@ const YearsStat = ({ year, onClick }) => {
       {yearsArrayUpdate.map((year) => (
         <YearStat key={year} year={year} onClick={onClick} />
       ))}
-      {yearsArrayUpdate.hasOwnProperty('Total')
-        ? <YearStat key="Total" year="Total" onClick={onClick} /> : <div />}
+      {yearsArrayUpdate.hasOwnProperty('Total') ? (
+        <YearStat key="Total" year="Total" onClick={onClick} />
+      ) : (
+        <div />
+      )}
     </div>
   );
 };

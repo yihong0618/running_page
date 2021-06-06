@@ -57,9 +57,8 @@
     "build": "gatsby build",
     "develop": "gatsby develop",
     "serve": "gatsby serve",
-    "format": "prettier --write '**/*.js' '**/*.jsx' '**/*.md' '**/*.scss'",
-    "check": "prettier --check '**/*.js' '**/*.jsx' '**/*.md' '**/*.scss'",
-    "test": "node test.js",
+    "lint": "eslint --ext .js,.jsx src --fix",
+    "check": "npx prettier --write *.{js,jsx,scss,json,md,yaml}",
     "ci": "yarn run check && yarn run build && yarn run test"
   },
   "engines": {
@@ -73,8 +72,10 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^7.13.0",
     "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0"
   }

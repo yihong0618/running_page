@@ -4,8 +4,9 @@ import ReactMapGL, { Layer, Source } from 'react-map-gl';
 import useActivities from 'src/hooks/useActivities';
 import {
   IS_CHINESE,
-  MAIN_COLOR, MAPBOX_TOKEN,
-  PROVINCE_FILL_COLOR
+  MAIN_COLOR,
+  MAPBOX_TOKEN,
+  PROVINCE_FILL_COLOR,
 } from 'src/utils/const';
 import { geoJsonForMap } from 'src/utils/utils';
 import RunMarker from './RunMaker';
@@ -29,7 +30,7 @@ const RunMap = ({
       map.addControl(
         new MapboxLanguage({
           defaultLanguage: 'zh',
-        }),
+        })
       );
       map.setLayoutProperty('country-label-lg', 'text-field', [
         'get',
@@ -46,8 +47,9 @@ const RunMap = ({
     geoData = geoJsonForMap();
   }
 
-  const isSingleRun = geoData.features.length === 1
-    && geoData.features[0].geometry.coordinates.length;
+  const isSingleRun =
+    geoData.features.length === 1 &&
+    geoData.features[0].geometry.coordinates.length;
   let startLon;
   let startLat;
   let endLon;
@@ -66,7 +68,11 @@ const RunMap = ({
       onLoad={addControlHandler}
       mapboxApiAccessToken={MAPBOX_TOKEN}
     >
-      <RunMapButtons changeYear={changeYear} thisYear={thisYear} mapButtonYear={mapButtonYear} />
+      <RunMapButtons
+        changeYear={changeYear}
+        thisYear={thisYear}
+        mapButtonYear={mapButtonYear}
+      />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
           id="prvince"

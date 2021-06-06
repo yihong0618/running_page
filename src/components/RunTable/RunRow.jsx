@@ -3,9 +3,7 @@ import { MAIN_COLOR } from 'src/utils/const';
 import { formatPace, titleForRun } from 'src/utils/utils';
 import styles from './style.module.scss';
 
-const RunRow = ({
-  runs, run, locateActivity, runIndex, setRunIndex,
-}) => {
+const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
   const distance = (run.distance / 1000.0).toFixed(1);
   const pace = run.average_speed;
 
