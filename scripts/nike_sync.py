@@ -94,7 +94,14 @@ def run(refresh_token):
         logger.info(f"Found {len(activities)} new activities")
 
         for activity in activities:
-            full_activity = nike.get_activity(activity["id"])
+            # ignore NTC record
+            app_id = activity["app_id"]
+            activity_id = activity["id"]
+            if app_id == "com.nike.ntc.brand.ios":
+                logger.info(f"Ignore NTC record {activity_id}")
+                continue
+
+            full_activity = nike.get_activity(activity_id)
             save_activity(full_activity)
 
         if last_id is None or not activities:
