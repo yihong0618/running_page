@@ -162,12 +162,15 @@ def get_to_generate_files():
     file_names = os.listdir(GPX_FOLDER)
     try:
         # error when mixed keep & nike gpx files
+        # since keep has gpx files like 9223370434827882207.gpx
+        # so we need to check gpx file name ensure it is a valid timestamp
         timestamps = []
         for i in file_names:
             if i.startswith("."):
                 continue
             t = int(i.split(".")[0])
-            # 7226553600000 representing Tue Jan 01 2199 00:00:00 GMT+0800 (CST)
+            # the follow 7226553600000 representing the timestamp(with millisecond)
+            # for "Tue Jan 01 2199 00:00:00 GMT+0800 (CST)"
             if t > 0 and t < 7226553600000:
                 timestamps.append(t)
             else:
