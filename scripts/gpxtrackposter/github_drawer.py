@@ -1,12 +1,13 @@
 import calendar
 import datetime
 import locale
+
 import svgwrite
 
-from .utils import format_float
 from .exceptions import PosterError
 from .poster import Poster
 from .tracks_drawer import TracksDrawer
+from .utils import format_float
 from .xy import XY
 
 

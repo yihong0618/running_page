@@ -2,21 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import base64
+import hashlib
+import hmac
 import json
 import os
 import time
+import urllib.parse
 from collections import namedtuple
 from datetime import datetime, timedelta
 
 import gpxpy
 import polyline
 import requests
-import hashlib
-import hmac
-import base64
-import urllib.parse
-
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE, start_point, run_map
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 
 # device info

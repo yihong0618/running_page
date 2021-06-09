@@ -1,13 +1,12 @@
 import datetime
 import sys
 
-
 import arrow
 import stravalib
-from sqlalchemy import func
 from gpxtrackposter import track_loader
+from sqlalchemy import func
 
-from .db import init_db, update_or_create_activity, Activity
+from .db import Activity, init_db, update_or_create_activity
 
 
 class Generator:

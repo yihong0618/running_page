@@ -5,12 +5,13 @@
 # license that can be found in the LICENSE file.
 
 import svgwrite
+
 from .exceptions import PosterError
 from .poster import Poster
 from .track import Track
 from .tracks_drawer import TracksDrawer
+from .utils import compute_grid, format_float, project
 from .xy import XY
-from .utils import format_float, project, compute_grid
 
 
 class GridDrawer(TracksDrawer):
