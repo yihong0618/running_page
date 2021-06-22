@@ -434,6 +434,7 @@ My secret is as follows
 - [x] Support English
 - [x] Refine the code
 - [x] add new features
+- [ ] tests
 - [ ] support the world map
 - [ ] support multiple types, like hiking, biking~
 
