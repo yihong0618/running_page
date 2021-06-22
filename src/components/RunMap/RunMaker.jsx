@@ -1,7 +1,7 @@
+import EndSvg from 'assets/end.svg';
+import StartSvg from 'assets/start.svg';
 import React from 'react';
 import { Marker } from 'react-map-gl';
-import StartSvg from 'assets/start.svg';
-import EndSvg from 'assets/end.svg';
 import styles from './style.module.scss';
 
 const RunMarker = ({ startLon, startLat, endLon, endLat }) => {

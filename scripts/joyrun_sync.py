@@ -14,10 +14,10 @@ from urllib.parse import quote
 import gpxpy
 import polyline
 import requests
-
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE, BASE_TIMEZONE, start_point, run_map
-from utils import adjust_time
+from config import BASE_TIMEZONE, GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
+
+from utils import adjust_time
 
 get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
 

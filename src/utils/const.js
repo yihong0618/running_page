@@ -19,14 +19,15 @@ const ENGLISH_INFO_MESSAGE = (yearLength, year) =>
   `Running Journey with ${yearLength} Years, the table shows year ${year} data`;
 
 // not support English for now
-const CHINESE_LOCATION_INFO_MESSAGE_FIRST = "我跑过了一些地方，希望随着时间推移，地图点亮的地方越来越多";
-const CHINESE_LOCATION_INFO_MESSAGE_SECOND = "不要停下来，不要停下奔跑的脚步";
+const CHINESE_LOCATION_INFO_MESSAGE_FIRST =
+  '我跑过了一些地方，希望随着时间推移，地图点亮的地方越来越多';
+const CHINESE_LOCATION_INFO_MESSAGE_SECOND = '不要停下来，不要停下奔跑的脚步';
 
 const INFO_MESSAGE = IS_CHINESE ? CHINESE_INFO_MESSAGE : ENGLISH_INFO_MESSAGE;
 const FULL_MARATHON_RUN_TITLE = IS_CHINESE ? '全程马拉松' : 'Full Marathon';
 const HALF_MARATHON_RUN_TITLE = IS_CHINESE ? '半程马拉松' : 'Half Marathon';
 const MORNING_RUN_TITLE = IS_CHINESE ? '清晨跑步' : 'Morning Run';
-const LUNCH_RUN_TITLE = IS_CHINESE ? '上午跑步' : 'Lunch Run';
+const MIDDAY_RUN_TITLE = IS_CHINESE ? '午间跑步' : 'Midday Run';
 const AFTERNOON_RUN_TITLE = IS_CHINESE ? '午后跑步' : 'Afternoon Run';
 const EVENING_RUN_TITLE = IS_CHINESE ? '傍晚跑步' : 'Evening Run';
 const NIGHT_RUN_TITLE = IS_CHINESE ? '夜晚跑步' : 'Night Run';
@@ -35,7 +36,7 @@ const RUN_TITLES = {
   FULL_MARATHON_RUN_TITLE,
   HALF_MARATHON_RUN_TITLE,
   MORNING_RUN_TITLE,
-  LUNCH_RUN_TITLE,
+  MIDDAY_RUN_TITLE,
   AFTERNOON_RUN_TITLE,
   EVENING_RUN_TITLE,
   NIGHT_RUN_TITLE,

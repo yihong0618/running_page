@@ -6,17 +6,19 @@ Copy most code from https://github.com/cyberjunky/python-garminconnect
 """
 
 import argparse
+import asyncio
 import logging
 import os
-import time
 import re
 import sys
+import time
 import traceback
-import asyncio
-import httpx
-import aiofiles
 
+import aiofiles
+import cloudscraper
+import httpx
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, config
+
 from utils import make_activities_file
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -46,13 +48,14 @@ GARMIN_CN_URL_DICT = {
 
 
 class Garmin:
-    def __init__(self, email, password, auth_domain):
+    def __init__(self, email, password, auth_domain, is_only_running=False):
         """
         Init module
         """
         self.email = email
         self.password = password
         self.req = httpx.AsyncClient(timeout=TIME_OUT)
+        self.cf_req = cloudscraper.CloudScraper()
         self.URL_DICT = (
             GARMIN_CN_URL_DICT
             if auth_domain and str(auth_domain).upper() == "CN"
@@ -64,8 +67,9 @@ class Garmin:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
             "origin": self.URL_DICT.get("SSO_URL_ORIGIN"),
         }
+        self.is_only_running = is_only_running
 
-    async def login(self):
+    def login(self):
         """
         Login to portal
         """
@@ -102,29 +106,26 @@ class Garmin:
         }
 
         try:
-            response = await self.req.post(
+            self.cf_req.get(
+                self.URL_DICT.get("SIGNIN_URL"), headers=self.headers, params=params
+            )
+            response = self.cf_req.post(
                 self.URL_DICT.get("SIGNIN_URL"),
                 headers=self.headers,
                 params=params,
                 data=data,
             )
-            if response.status_code == 429:
-                raise GarminConnectTooManyRequestsError("Too many requests")
-            response.raise_for_status()
-            logger.debug("Login response code %s", response.status_code)
-            text = response.text
         except Exception as err:
             raise GarminConnectConnectionError("Error connecting") from err
-
-        # logger.debug("Response is %s", text)
-        response_url = re.search(r'"(https:[^"]+?ticket=[^"]+)"', text)
+        response_url = re.search(r'"(https:[^"]+?ticket=[^"]+)"', response.text)
 
         if not response_url:
             raise GarminConnectAuthenticationError("Authentication error")
 
         response_url = re.sub(r"\\", "", response_url.group(1))
         try:
-            response = await self.req.get(response_url)
+            response = self.cf_req.get(response_url)
+            self.req.cookies = self.cf_req.cookies
             if response.status_code == 429:
                 raise GarminConnectTooManyRequestsError("Too many requests")
             response.raise_for_status()
@@ -154,7 +155,7 @@ class Garmin:
                     "Exception occurred during data retrieval - perhaps session expired - trying relogin: %s"
                     % err
                 )
-                await self.login()
+                self.login()
                 await self.fetch_data(url, retrying=True)
 
     async def get_activities(self, start, limit):
@@ -162,6 +163,8 @@ class Garmin:
         Fetch available activities
         """
         url = f"{self.modern_url}/proxy/activitylist-service/activities/search/activities?start={start}&limit={limit}"
+        if self.is_only_running:
+            url = url + "&activityType=running"
         return await self.fetch_data(url)
 
     async def download_activity(self, activity_id):
@@ -247,12 +250,19 @@ if __name__ == "__main__":
         action="store_true",
         help="if garmin accout is com",
     )
+    parser.add_argument(
+        "--only-run",
+        dest="only_run",
+        action="store_true",
+        help="if is only for running",
+    )
     options = parser.parse_args()
     email = options.email or config("sync", "garmin", "email")
     password = options.password or config("sync", "garmin", "password")
     auth_domain = (
         "CN" if options.is_cn else config("sync", "garmin", "authentication_domain")
     )
+    is_only_running = options.only_run
     if email == None or password == None:
         print("Missing argument nor valid configuration file")
         sys.exit(1)
@@ -262,8 +272,8 @@ if __name__ == "__main__":
         os.mkdir(GPX_FOLDER)
 
     async def download_new_activities():
-        client = Garmin(email, password, auth_domain)
-        await client.login()
+        client = Garmin(email, password, auth_domain, is_only_running)
+        client.login()
 
         # because I don't find a para for after time, so I use garmin-id as filename
         # to find new run to generage

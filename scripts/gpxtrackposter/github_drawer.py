@@ -1,12 +1,13 @@
 import calendar
 import datetime
 import locale
+
 import svgwrite
 
-from .utils import format_float
 from .exceptions import PosterError
 from .poster import Poster
 from .tracks_drawer import TracksDrawer
+from .utils import format_float
 from .xy import XY
 
 
@@ -87,7 +88,7 @@ class GithubDrawer(TracksDrawer):
             dr.add(
                 dr.text(
                     f"{year_length} {km_or_mi}",
-                    insert=(offset.tuple()[0] + 165, offset.tuple()[1] + 2),
+                    insert=(offset.tuple()[0] + 165, offset.tuple()[1] + 5),
                     fill=self.poster.colors["text"],
                     alignment_baseline="hanging",
                     style=year_length_style,

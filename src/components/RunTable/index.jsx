@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { MAIN_COLOR } from 'src/utils/const';
+import { sortDateFunc, sortDateFuncReverse } from 'src/utils/utils';
 import RunRow from './RunRow';
 import styles from './style.module.scss';
-import { sortDateFunc, sortDateFuncReverse } from 'src/utils/utils';
-import { MAIN_COLOR } from 'src/utils/const';
 
 const RunTable = ({
   runs,

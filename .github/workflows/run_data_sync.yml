@@ -38,15 +38,18 @@ jobs:
         with:
           python-version: 3.6
 
-      - name: Configure pip cache
-        uses: actions/cache@v1
-        id: pip-cache
-        with:
-          path: venv
-          key: pip-1-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            pip-
+      # from pdm
+      - name: Set Variables
+        id: set_variables
+        run: |
+          echo "::set-output name=PY::$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')"
+          echo "::set-output name=PIP_CACHE::$(pip cache dir)"
 
+      - name: Cache PIP
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.set_variables.outputs.PIP_CACHE }}
+          key: Ubuntu-pip-${{ steps.set_variables.outputs.PY }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -77,6 +80,8 @@ jobs:
         if: env.RUN_TYPE == 'garmin'
         run: |
           python scripts/garmin_sync.py ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
+        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # python scripts/garmin_sync.py ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} --only-run
 
       - name: Run sync Garmin CN script
         if: env.RUN_TYPE == 'garmin_cn'

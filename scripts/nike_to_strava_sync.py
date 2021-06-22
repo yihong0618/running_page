@@ -6,11 +6,10 @@ import os
 import time
 from datetime import datetime, timedelta
 
-from stravalib.client import Client
-
 from config import OUTPUT_DIR
 from nike_sync import make_new_gpxs, run
 from strava_sync import run_strava_sync
+from stravalib.client import Client
 
 
 def get_last_time(client):

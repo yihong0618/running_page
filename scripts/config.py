@@ -1,5 +1,6 @@
 import os
 from collections import namedtuple
+
 import yaml
 
 GET_DIR = "activities"

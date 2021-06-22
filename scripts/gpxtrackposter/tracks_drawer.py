@@ -5,11 +5,13 @@
 # license that can be found in the LICENSE file.
 
 import argparse
+
 import svgwrite
+
 from .poster import Poster
+from .utils import interpolate_color
 from .value_range import ValueRange
 from .xy import XY
-from .utils import interpolate_color
 
 
 class TracksDrawer:

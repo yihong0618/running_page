@@ -1,8 +1,10 @@
-$global-font-family: "Helvetica Neue", "Helvetica", "Arial",
-	BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+$global-font-family: "Helvetica Neue", "Segoe UI", Arial, "Hiragino Sans GB", "Microsoft YaHei", Roboto,sans-serif;
+
+
 $breakpoint-mobile: 960px;
 $breakpoint-stack: 530px;
 
 $nike: rgb(224, 237, 94);
 $light: rgb(204, 204, 204);
 $dark: rgb(26, 26, 26);
+$map-box-line-color:rgb(71, 184, 224)

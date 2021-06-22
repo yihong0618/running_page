@@ -4,24 +4,18 @@
 import argparse
 import base64
 import json
+import os
 import time
 import zlib
-import os
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-import polyline
 import gpxpy
+import polyline
 import requests
-
-from config import (
-    start_point,
-    run_map,
-    GPX_FOLDER,
-    JSON_FILE,
-    SQL_FILE,
-)
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
+
 from utils import adjust_time
 
 # need to test

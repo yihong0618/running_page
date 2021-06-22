@@ -1,28 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from 'src/components/Layout';
+import LocationStat from 'src/components/LocationStat';
+import RunMap from 'src/components/RunMap';
+import RunTable from 'src/components/RunTable';
 import SVGStat from 'src/components/SVGStat';
 import YearsStat from 'src/components/YearsStat';
-import LocationStat from 'src/components/LocationStat';
-import RunTable from 'src/components/RunTable';
-import RunMap from 'src/components/RunMap';
 import useActivities from 'src/hooks/useActivities';
+import useSiteMetadata from 'src/hooks/useSiteMetadata';
+import { IS_CHINESE } from 'src/utils/const';
 import {
-  titleForShow,
-  scrollToMap,
-  geoJsonForRuns,
-  filterCityRuns,
-  filterYearRuns,
-  filterTitleRuns,
   filterAndSortRuns,
-  sortDateFunc,
+  filterCityRuns,
+  filterTitleRuns,
+  filterYearRuns,
+  geoJsonForRuns,
   getBoundsForGeoData,
+  scrollToMap,
+  sortDateFunc,
+  titleForShow,
 } from 'src/utils/utils';
-import { IS_CHINESE, USE_ANIMATION_FOR_GRID } from 'src/utils/const';
 
 export default () => {
+  const { siteTitle } = useSiteMetadata();
   const { activities, thisYear } = useActivities();
   const [year, setYear] = useState(thisYear);
-  const [mapButtonYear,setMapButtonYear] = useState(thisYear)
   const [runIndex, setRunIndex] = useState(-1);
   const [runs, setActivity] = useState(
     filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc)
@@ -38,6 +39,7 @@ export default () => {
     height: 400,
     ...bounds,
   });
+
   const changeByItem = (item, name, func) => {
     scrollToMap();
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
@@ -48,7 +50,7 @@ export default () => {
   const changeYear = (y) => {
     // default year
     setYear(y);
-    setMapButtonYear(y)
+
     if (viewport.zoom > 3) {
       setViewport({
         width: '100%',
@@ -56,6 +58,7 @@ export default () => {
         ...bounds,
       });
     }
+
     changeByItem(y, 'Year', filterYearRuns);
     clearInterval(intervalId);
   };
@@ -78,7 +81,7 @@ export default () => {
   useEffect(() => {
     setViewport({
       width: '100%',
-      height: 400,
+      height: 500,
       ...bounds,
     });
   }, [geoData]);
@@ -92,6 +95,7 @@ export default () => {
       if (i >= runsNum) {
         clearInterval(id);
       }
+
       const tempRuns = runs.slice(0, i);
       setGeoData(geoJsonForRuns(tempRuns));
       i += sliceNume;
@@ -104,13 +108,16 @@ export default () => {
     if (year !== 'Total') {
       return;
     }
+
     let rectArr = document.querySelectorAll('rect');
+
     if (rectArr.length !== 0) {
       rectArr = Array.from(rectArr).slice(1);
     }
 
     rectArr.forEach((rect) => {
       const rectColor = rect.getAttribute('fill');
+
       // not run has no click event
       if (rectColor !== '#444444') {
         const runDate = rect.innerHTML;
@@ -132,9 +139,11 @@ export default () => {
       }
     });
     let polylineArr = document.querySelectorAll('polyline');
+
     if (polylineArr.length !== 0) {
-      polylineArr = Array.from(polylineArr).slice();
+      polylineArr = Array.from(polylineArr).slice(1);
     }
+
     // add picked runs svg event
     polylineArr.forEach((polyline) => {
       // not run has no click event
@@ -143,28 +152,6 @@ export default () => {
       const [runName] = runDate.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
         `${+thisYear + 1}`,
       ];
-      if (USE_ANIMATION_FOR_GRID) {
-        const length = polyline.getTotalLength();
-        polyline.style.transition = polyline.style.WebkitTransition = 'none';
-        polyline.style.strokeDasharray = length + ' ' + length;
-        polyline.style.strokeDashoffset = length;
-        polyline.getBoundingClientRect();
-        polyline.style.animation = polyline.style.WebkitTransition =
-          'dash 5s linear alternate infinite';
-        polyline.style.strokeDashoffset = '0';
-        let keyFrames = document.createElement('style');
-        // tricky for (length-1000)
-        keyFrames.innerHTML = `\
-        @keyframes dash {\
-          from {\
-            stroke-dasharray: 0 ${length};\
-          }\
-          to {\
-            stroke-dasharray: ${length} ${length-1000};\
-          }\
-        }`;
-        polyline.appendChild(keyFrames)
-      }
       const run = runs
         .filter((r) => r.start_date_local.slice(0, 10) === runName)
         .sort((a, b) => b.distance - a.distance)[0];
@@ -181,7 +168,9 @@ export default () => {
     <Layout>
       <div className="mb5">
         <div className="w-100">
-          <h1 className="f1 fw9 i">Running</h1>
+          <h1 className="f1 fw9 i">
+            <a href="/">{siteTitle}</a>
+          </h1>
         </div>
         {viewport.zoom <= 3 && IS_CHINESE ? (
           <LocationStat
@@ -202,7 +191,6 @@ export default () => {
             setViewport={setViewport}
             changeYear={changeYear}
             thisYear={thisYear}
-            mapButtonYear={mapButtonYear}
           />
           {year === 'Total' ? (
             <SVGStat />

@@ -12,13 +12,14 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-import shutil
 import concurrent.futures
+import shutil
+
+from generator.db import Activity, init_db
+
 from .exceptions import ParameterError, TrackLoadError
 from .track import Track
 from .year_range import YearRange
-
-from generator.db import init_db, Activity
 
 log = logging.getLogger(__name__)
 

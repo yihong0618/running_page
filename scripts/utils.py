@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import json
-import pytz
 from datetime import datetime
 
+import pytz
 from generator import Generator
 
 
