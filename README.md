@@ -69,6 +69,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Strava](#strava)**
 - **[GPX](#GPX)**
 - **[Nike_to_Strava(Using NRC Run, Strava backup data)](#Nike_to_Strava)**
+- **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#)**
 
 ## Download
 

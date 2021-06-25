@@ -1,5 +1,6 @@
 import os
 from collections import namedtuple
+from re import M
 
 import yaml
 
@@ -35,3 +36,13 @@ def config(*keys):
         return dct
 
     return safeget(_config, *keys)
+
+
+# add more type here
+STRAVA_GARMIN_TYPE_DICT = {
+    "Hike": "hiking",
+    "Run": "running",
+    "EBikeRide": "cycling",
+    "Walk": "walking",
+    "Swim": "swimming",
+}

@@ -8,8 +8,8 @@ from datetime import datetime, timedelta
 
 from config import OUTPUT_DIR
 from nike_sync import make_new_gpxs, run
+from utils import make_strava_client
 from strava_sync import run_strava_sync
-from stravalib.client import Client
 
 
 def get_last_time(client):
@@ -42,16 +42,6 @@ def get_to_generate_files(last_time):
     ]
 
 
-def make_client(client_id, client_secret, refresh_token):
-    client = Client()
-
-    refresh_response = client.refresh_access_token(
-        client_id=client_id, client_secret=client_secret, refresh_token=refresh_token
-    )
-    client.access_token = refresh_response["access_token"]
-    return client
-
-
 def upload_gpx(client, file_name):
     with open(file_name, "rb") as f:
         r = client.upload_activity(activity_file=f, data_type="gpx")
@@ -74,7 +64,7 @@ if __name__ == "__main__":
     time.sleep(2)
 
     # upload new gpx to strava
-    client = make_client(
+    client = make_strava_client(
         options.client_id, options.client_secret, options.strava_refresh_token
     )
     last_time = get_last_time(client)

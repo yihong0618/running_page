@@ -77,6 +77,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[咕咚](#codoon咕咚)** (因咕咚限制单个设备原因，无法自动化)
 - **[GPX](#GPX)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
+- **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#)**
 
 ## 下载
 
@@ -525,6 +526,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 清理整个项目
 - [x] 完善前端代码
 - [x] better actions
+- [ ] tests
 - [ ] 支持不同的运动类型
 
 # 参与项目

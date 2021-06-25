@@ -4,6 +4,7 @@
 import json
 from datetime import datetime
 
+from stravalib.client import Client
 import pytz
 from generator import Generator
 
@@ -19,3 +20,13 @@ def make_activities_file(sql_file, gpx_dir, json_file):
     activities_list = generator.load()
     with open(json_file, "w") as f:
         json.dump(activities_list, f)
+
+
+def make_strava_client(client_id, client_secret, refresh_token):
+    client = Client()
+
+    refresh_response = client.refresh_access_token(
+        client_id=client_id, client_secret=client_secret, refresh_token=refresh_token
+    )
+    client.access_token = refresh_response["access_token"]
+    return client

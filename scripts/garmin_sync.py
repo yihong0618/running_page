@@ -10,6 +10,7 @@ import asyncio
 import logging
 import os
 import re
+import json
 import sys
 import time
 import traceback
@@ -34,6 +35,8 @@ GARMIN_COM_URL_DICT = {
     "MODERN_URL": "https://connect.garmin.com",
     "SIGNIN_URL": "https://sso.garmin.com/sso/signin",
     "CSS_URL": "https://static.garmincdn.com/com.garmin.connect/ui/css/gauth-custom-v1.2-min.css",
+    "UPLOAD_URL": "https://connect.garmin.com/modern/proxy/upload-service/upload/.gpx",
+    "ACTIVITY_URL": "https://connect.garmin.com/proxy/activity-service/activity/{activity_id}",
 }
 
 GARMIN_CN_URL_DICT = {
@@ -44,6 +47,8 @@ GARMIN_CN_URL_DICT = {
     "MODERN_URL": "https://connect.garmin.cn",
     "SIGNIN_URL": "https://sso.garmin.cn/sso/signin",
     "CSS_URL": "https://static.garmincdn.cn/cn.garmin.connect/ui/css/gauth-custom-v1.2-min.css",
+    "UPLOAD_URL": "https://connect.garmin.cn/modern/proxy/upload-service/upload/.gpx",
+    "ACTIVITY_URL": "https://connect.garmin.cn/proxy/activity-service/activity/{activity_id}",
 }
 
 
@@ -68,6 +73,9 @@ class Garmin:
             "origin": self.URL_DICT.get("SSO_URL_ORIGIN"),
         }
         self.is_only_running = is_only_running
+        self.upload_url = self.URL_DICT.get("UPLOAD_URL")
+        self.activity_url = self.URL_DICT.get("ACTIVITY_URL")
+        self.is_login = False
 
     def login(self):
         """
@@ -129,6 +137,7 @@ class Garmin:
             if response.status_code == 429:
                 raise GarminConnectTooManyRequestsError("Too many requests")
             response.raise_for_status()
+            self.is_login = True
         except Exception as err:
             raise GarminConnectConnectionError("Error connecting") from err
 
@@ -162,6 +171,8 @@ class Garmin:
         """
         Fetch available activities
         """
+        if not self.is_login:
+            self.login()
         url = f"{self.modern_url}/proxy/activitylist-service/activities/search/activities?start={start}&limit={limit}"
         if self.is_only_running:
             url = url + "&activityType=running"
@@ -173,6 +184,39 @@ class Garmin:
         response = await self.req.get(url, headers=self.headers)
         response.raise_for_status()
         return response.read()
+
+    async def upload_activities(self, files):
+        if not self.is_login:
+            self.login()
+        for file, garmin_type in files:
+            files = {"data": ("file.gpx", file)}
+
+            try:
+                res = await self.req.post(
+                    self.upload_url, files=files, headers={"nk": "NT"}
+                )
+            except Exception as e:
+                print(str(e))
+                # just pass for now
+                continue
+            try:
+                resp = res.json()["detailedImportResult"]
+            except Exception as e:
+                print(e)
+                raise Exception("failed to upload")
+            # change the type
+            if resp["successes"]:
+                activity_id = resp["successes"][0]["internalId"]
+                print(f"id {activity_id} uploaded...")
+                data = {"activityTypeDTO": {"typeKey": garmin_type}}
+                encoding_headers = {"Content-Type": "application/json; charset=UTF-8"}
+                r = await self.req.put(
+                    self.activity_url.format(activity_id=activity_id),
+                    data=json.dumps(data),
+                    headers=encoding_headers,
+                )
+                r.raise_for_status()
+        await self.req.aclose()
 
 
 class GarminConnectHttpError(Exception):
@@ -290,6 +334,7 @@ if __name__ == "__main__":
         )
         print(f"Download finished. Elapsed {time.time()-start_time} seconds")
         make_activities_file(SQL_FILE, GPX_FOLDER, JSON_FILE)
+        await client.req.aclose()
 
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(download_new_activities())
