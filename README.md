@@ -447,7 +447,7 @@ My secret is as follows
 Before submitting PR:
 
 - Format Python code with `black` (black .)
-- Format Python code with `isort` (isort --profile black  **/**/*.py )
+- Format Python code with `isort` (isort --profile black  **/**/*.py)
 
 # Special thanks
 
