@@ -18,15 +18,6 @@ const RunMapButtons = ({ changeYear, thisYear, mapButtonYear }) => {
     }
     setIndex(elementIndex);
   };
-  useEffect(() => {
-    if (elements[index]) {
-      elements[index].style.color = 'white';
-    }
-    if (elements[yearsButtons.indexOf(mapButtonYear)]) {
-      elements[yearsButtons.indexOf(mapButtonYear)].style.color = MAIN_COLOR;
-    }
-    setIndex(yearsButtons.indexOf(mapButtonYear));
-  });
   return (
     <div>
       <ul className={styles.buttons}>
