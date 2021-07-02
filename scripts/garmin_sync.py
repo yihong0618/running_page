@@ -19,6 +19,7 @@ import aiofiles
 import cloudscraper
 import httpx
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, config
+from io import BytesIO
 
 from utils import make_activities_file
 
@@ -216,6 +217,34 @@ class Garmin:
                     headers=encoding_headers,
                 )
                 r.raise_for_status()
+        await self.req.aclose()
+
+    async def upload_activities_original(self, datas):
+        if not self.is_login:
+            self.login()
+        for data in datas:
+            print(data.filename)
+            with open(data.filename, "wb") as f:
+                for chunk in data.content:
+                    f.write(chunk)
+            f = open(data.filename, "rb")
+            files = {"data": (data.filename, BytesIO(f.read()))}
+
+            try:
+                res = await self.req.post(
+                    self.upload_url, files=files, headers={"nk": "NT"}
+                )
+                os.remove(data.filename)
+            except Exception as e:
+                print(str(e))
+                # just pass for now
+                continue
+            try:
+                resp = res.json()["detailedImportResult"]
+                print(resp)
+            except Exception as e:
+                print(e)
+                raise Exception("failed to upload")
         await self.req.aclose()
 
 
