@@ -458,4 +458,4 @@ Before submitting PR:
 
 # Support
 
-Thanks is enough.
+No need sponsor, just enjoy it.
