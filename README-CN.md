@@ -42,7 +42,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [luckylele666](https://github.com/luckylele666) | https://0000928.xyz                        | Strava    |
 | [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
 | [Jim Gao](https://github.com/tianheg)             | https://run.yidajiabei.xyz/ | Keep |
-
+| [Oysmart](https://github.com/oysmart)             | https://run.ouyang.wang                  | Garmin-cn |
 ## 它是怎么工作的
 
 ![image](https://user-images.githubusercontent.com/15976103/105784027-e1ad9900-5fb2-11eb-9479-372be21482f1.png)
