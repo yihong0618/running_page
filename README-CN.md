@@ -41,7 +41,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [L1cardo](https://github.com/L1cardo)           | https://run.licardo.cn                     | Nike      |
 | [luckylele666](https://github.com/luckylele666) | https://0000928.xyz                        | Strava    |
 | [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
-| [Jim Gao](https://github.com/tianheg)             | https://run.yidajiabei.xyz/ | Keep |
+| [Jim Gao](https://github.com/tianheg)           | https://run.yidajiabei.xyz/                | Keep      |
+| [Ouyang](https://github.com/oysmart)            | https://run.ouyang.wang                    | Garmin-cn |
 
 ## 它是怎么工作的
 
