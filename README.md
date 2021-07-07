@@ -453,6 +453,7 @@ Before submitting PR:
 # Special thanks
 
 - @[flopp](https://github.com/flopp) great repo [GpxTrackPoster](https://github.com/flopp/GpxTrackPoster)
+- @[danpalmer](https://github.com/danpalmer) UI design
 - @[shaonianche](https://github.com/shaonianche) icon design and doc
 - @[geekplux](https://github.com/geekplux) Friendly help and encouragement, refactored the whole front-end code, learned a lot
 - @[MFYDev](https://github.com/MFYDev) Wiki
