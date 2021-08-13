@@ -178,6 +178,8 @@ class Codoon:
             auth=self.auth.reload(params),
         )
         login_data = r.json()
+        if login_data.__contains__("status") and login_data["status"] == "Error":
+            raise Exception(login_data["description"])
         self.refresh_token = login_data["refresh_token"]
         self.token = login_data["access_token"]
         self.user_id = login_data["user_id"]
