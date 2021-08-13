@@ -250,6 +250,7 @@ class Codoon:
         gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx_track.name = "gpx from codoon"
+        gpx_track.type = "Run"
         gpx.tracks.append(gpx_track)
 
         # Create first segment in our GPX track:
