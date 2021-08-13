@@ -15,8 +15,10 @@ from datetime import datetime, timedelta
 import gpxpy
 import polyline
 import requests
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
+from config import BASE_TIMEZONE, GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
+
+from scripts.utils import adjust_time_to_utc
 
 # device info
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
@@ -243,7 +245,7 @@ class Codoon:
                 "latitude": point["latitude"],
                 "longitude": point["longitude"],
                 "elevation": point["elevation"],
-                "time": to_date(point["time_stamp"]),
+                "time": adjust_time_to_utc(to_date(point["time_stamp"]), BASE_TIMEZONE),
             }
             points_dict_list.append(points_dict)
         gpx = gpxpy.gpx.GPX()
