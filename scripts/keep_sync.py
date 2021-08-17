@@ -47,7 +47,7 @@ def get_to_download_runs_ids(session, headers):
 
             for i in run_logs:
                 logs = [j["stats"] for j in i["logs"]]
-                result.extend(k['id'] for k in logs if not k['isDoubtful'])
+                result.extend(k["id"] for k in logs if not k["isDoubtful"])
             last_date = r.json()["data"]["lastTimestamp"]
             since_time = datetime.utcfromtimestamp(last_date / 1000)
             print(f"pares keep ids data since {since_time}")
