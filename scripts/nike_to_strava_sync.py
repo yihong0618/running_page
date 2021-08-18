@@ -26,8 +26,7 @@ def get_last_time(client):
                 break
         else:
             return 0
-        # add 30 minutes to make sure after the end of this activity
-        end_date = activity.start_date + activity.elapsed_time + timedelta(minutes=30)
+        end_date = activity.start_date + activity.elapsed_time
         return int(datetime.timestamp(end_date) * 1000)
     except Exception as e:
         print(f"Something wrong to get last time err: {str(e)}")
@@ -68,10 +67,8 @@ if __name__ == "__main__":
     client = make_strava_client(
         options.client_id, options.client_secret, options.strava_refresh_token
     )
-    # last_time = get_last_time(client)
-    last_time = 0
+    last_time = get_last_time(client)
     files = get_to_generate_files(last_time)
-    print(files)
     new_gpx_files = make_new_gpxs(files)
     time.sleep(10)  # just wait
     if new_gpx_files:
