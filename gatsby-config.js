@@ -7,7 +7,7 @@ module.exports = {
     description: 'Personal site and blog',
     navLinks: [
       {
-        name: 'Blog',
+        name: "iKnow's Blog",
         url: 'https://iknow.fun',
       },
       {
