@@ -5,14 +5,16 @@
 # license that can be found in the LICENSE file.
 
 import datetime
-import gpxpy as mod_gpxpy
 import json
 import os
+from collections import namedtuple
+
+import gpxpy as mod_gpxpy
+import polyline
 import s2sphere as s2
+
 from .exceptions import TrackLoadError
 from .utils import parse_datetime_to_local
-import polyline
-from collections import namedtuple
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
@@ -45,20 +47,20 @@ class Track:
                 self._load_gpx_data(mod_gpxpy.parse(file))
         except:
             print(
-                f"Something went wrong when loading GPX. for file {self.file_names[0]}"
+                f"Something went wrong when loading GPX. for file {self.file_names[0]}, we just ignore this file and continue"
             )
             pass
 
-    def load_from_db(self, activate):
+    def load_from_db(self, activity):
         # use strava as file name
-        self.file_names = [str(activate.run_id)]
+        self.file_names = [str(activity.run_id)]
         start_time = datetime.datetime.strptime(
-            activate.start_date_local, "%Y-%m-%d %H:%M:%S"
+            activity.start_date_local, "%Y-%m-%d %H:%M:%S"
         )
         self.start_time_local = start_time
-        self.end_time = start_time + activate.elapsed_time
-        self.length = float(activate.distance)
-        summary_polyline = activate.summary_polyline
+        self.end_time = start_time + activity.elapsed_time
+        self.length = float(activity.distance)
+        summary_polyline = activity.summary_polyline
         polyline_data = polyline.decode(summary_polyline) if summary_polyline else []
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
 
@@ -104,6 +106,7 @@ class Track:
                 ]
                 self.polylines.append(line)
                 polyline_container.extend([[p.latitude, p.longitude] for p in s.points])
+                self.polyline_container = polyline_container
         # get start point
         try:
             self.start_latlng = start_point(*polyline_container[0])
@@ -119,13 +122,24 @@ class Track:
         """Append other track to self."""
         self.end_time = other.end_time
         self.length += other.length
-        self.moving_dict["distance"] += other.moving_dict["distance"]
-        self.moving_dict["moving_time"] += other.moving_dict["moving_time"]
-        self.moving_dict["elapsed_time"] += other.moving_dict["elapsed_time"]
-        self.polylines[0].extend(other.polylines[0])
-        self.polyline_str = polyline.encode(self.polylines[0])
-        self.file_names.extend(other.file_names)
-        self.special = self.special or other.special
+        # TODO maybe a better way
+        try:
+            self.moving_dict["distance"] += other.moving_dict["distance"]
+            self.moving_dict["moving_time"] += other.moving_dict["moving_time"]
+            self.moving_dict["elapsed_time"] += other.moving_dict["elapsed_time"]
+            self.polyline_container.extend(other.polyline_container)
+            self.polyline_str = polyline.encode(self.polyline_container)
+            self.moving_dict["average_speed"] = (
+                self.moving_dict["distance"]
+                / self.moving_dict["moving_time"].total_seconds()
+            )
+            self.file_names.extend(other.file_names)
+            self.special = self.special or other.special
+        except:
+            print(
+                f"something wrong append this {self.end_time},in files {str(self.file_names)}"
+            )
+            pass
 
     def load_cache(self, cache_file_name):
         try:

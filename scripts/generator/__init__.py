@@ -1,14 +1,12 @@
 import datetime
-import time
 import sys
-
 
 import arrow
 import stravalib
-from sqlalchemy import func
 from gpxtrackposter import track_loader
+from sqlalchemy import func
 
-from .db import init_db, update_or_create_activity, Activity
+from .db import Activity, init_db, update_or_create_activity
 
 
 class Generator:
@@ -25,8 +23,7 @@ class Generator:
         self.client_secret = client_secret
         self.refresh_token = refresh_token
 
-    def check_access(self) -> None:
-        now = datetime.datetime.fromtimestamp(time.time())
+    def check_access(self):
         response = self.client.refresh_access_token(
             client_id=self.client_id,
             client_secret=self.client_secret,
@@ -35,7 +32,6 @@ class Generator:
         # Update the authdata object
         self.access_token = response["access_token"]
         self.refresh_token = response["refresh_token"]
-        self.expires_at = datetime.datetime.fromtimestamp(response["expires_at"])
 
         self.client.access_token = response["access_token"]
         print("Access ok")
@@ -56,19 +52,19 @@ class Generator:
                 filters = {"before": datetime.datetime.utcnow()}
 
         for run_activity in self.client.get_activities(**filters):
-            created = update_or_create_activity(self.session, run_activity)
-            if created:
-                sys.stdout.write("+")
-            else:
-                sys.stdout.write(".")
-            sys.stdout.flush()
-
+            if run_activity.type == "Run":
+                created = update_or_create_activity(self.session, run_activity)
+                if created:
+                    sys.stdout.write("+")
+                else:
+                    sys.stdout.write(".")
+                sys.stdout.flush()
         self.session.commit()
 
     def sync_from_gpx(self, gpx_dir):
         loader = track_loader.TrackLoader()
         tracks = loader.load_tracks(gpx_dir)
-        print(len(tracks))
+        print(f"load {len(tracks)} tracks")
         if not tracks:
             print("No tracks found.")
             return
@@ -86,6 +82,7 @@ class Generator:
         if not app_tracks:
             print("No tracks found.")
             return
+        print("Syncing tracks '+' means new track '.' means update tracks")
         for t in app_tracks:
             created = update_or_create_activity(self.session, t)
             if created:
@@ -97,7 +94,11 @@ class Generator:
         self.session.commit()
 
     def load(self):
-        activities = self.session.query(Activity).order_by(Activity.start_date_local)
+        activities = (
+            self.session.query(Activity)
+            .filter(Activity.distance > 0.1)
+            .order_by(Activity.start_date_local)
+        )
         activity_list = []
 
         streak = 0

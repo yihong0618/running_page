@@ -13,21 +13,13 @@ from urllib.parse import quote
 
 import gpxpy
 import polyline
-import pytz
 import requests
-
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE
+from config import BASE_TIMEZONE, GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 
-get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
-start_point = namedtuple("start_point", "lat lon")
-run_map = namedtuple("polyline", "summary_polyline")
+from utils import adjust_time
 
-# now its the same like keep_sync but we want the code can run in sigle file
-# by copy so maybe refactor later
-def adjust_time(time, tz_name):
-    tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
-    return time + tc_offset
+get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
 
 
 def download_joyrun_gpx(gpx_data, joyrun_id):
@@ -252,16 +244,21 @@ class Joyrun:
         heart_rate = None
         if heart_rate_list:
             heart_rate = int(sum(heart_rate_list) / len(heart_rate_list))
+            # fix #66
+            if heart_rate < 0:
+                heart_rate = None
+
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
         start_latlng = start_point(*run_points_data[0]) if run_points_data else None
         start_date = datetime.utcfromtimestamp(start_time)
-        start_date_local = adjust_time(start_date, "Asia/Shanghai")
+        start_date_local = adjust_time(start_date, BASE_TIMEZONE)
         end = datetime.utcfromtimestamp(end_time)
         # only for China now
-        end_local = adjust_time(end, "Asia/Shanghai")
+        end_local = adjust_time(end, BASE_TIMEZONE)
         location_country = None
-        if run_data["city"] or run_data["province"]:
-            location_country = str(run_data["city"]) + " " + str(run_data["province"])
+        # joyrun location is kind of fucking strage, so I decide not use it, if you want use it, uncomment this two lines
+        # if run_data["city"] or run_data["province"]:
+        #     location_country = str(run_data["city"]) + " " + str(run_data["province"])
         d = {
             "id": int(joyrun_id),
             "name": "run from joyrun",
@@ -339,8 +336,4 @@ if __name__ == "__main__":
     generator.sync_from_app(tracks)
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
-        f.write("const activities = ")
-        json.dump(activities_list, f, indent=2)
-        f.write(";\n")
-        f.write("\n")
-        f.write("export {activities};\n")
+        json.dump(activities_list, f)

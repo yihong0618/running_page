@@ -1,0 +1,19 @@
+@import "../../styles/variables.scss";
+
+.body {
+  background-color: $dark;
+  color: $nike;
+  p,
+  h1,
+  h3,
+  h4,
+  li,
+  a {
+    color: $nike;
+    text-decoration:none;
+  }
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+  }
+}

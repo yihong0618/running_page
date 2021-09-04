@@ -1,12 +1,13 @@
 import calendar
 import datetime
 import locale
+
 import svgwrite
 
-from .utils import format_float
 from .exceptions import PosterError
 from .poster import Poster
 from .tracks_drawer import TracksDrawer
+from .utils import format_float
 from .xy import XY
 
 
@@ -24,7 +25,9 @@ class GithubDrawer(TracksDrawer):
         year_length_style = f"font-size:{110 * 3.0 / 80.0}px; font-family:Arial;"
         month_names_style = f"font-size:2.5px; font-family:Arial"
         total_length_year_dict = self.poster.total_length_year_dict
-        for year in range(self.poster.years.to_year ,self.poster.years.from_year-1, -1):
+        for year in range(self.poster.years.from_year, self.poster.years.to_year + 1)[
+            ::-1
+        ]:
             start_date_weekday, _ = calendar.monthrange(year, 1)
             github_rect_first_day = datetime.date(year, 1, 1)
             # Github profile the first day start from the last Monday of the last year or the first Monday of this year
@@ -85,7 +88,7 @@ class GithubDrawer(TracksDrawer):
             dr.add(
                 dr.text(
                     f"{year_length} {km_or_mi}",
-                    insert=(offset.tuple()[0] + 165, offset.tuple()[1] + 2),
+                    insert=(offset.tuple()[0] + 165, offset.tuple()[1] + 5),
                     fill=self.poster.colors["text"],
                     alignment_baseline="hanging",
                     style=year_length_style,

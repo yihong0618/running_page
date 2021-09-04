@@ -5,12 +5,13 @@
 # license that can be found in the LICENSE file.
 
 import svgwrite
+
 from .exceptions import PosterError
 from .poster import Poster
 from .track import Track
 from .tracks_drawer import TracksDrawer
+from .utils import compute_grid, format_float, project
 from .xy import XY
-from .utils import format_float, project, compute_grid
 
 
 class GridDrawer(TracksDrawer):
@@ -39,7 +40,7 @@ class GridDrawer(TracksDrawer):
         )
         offset.x += (size.x - count_x * cell_size - (count_x - 1) * spacing_x) / 2
         offset.y += (size.y - count_y * cell_size - (count_y - 1) * spacing_y) / 2
-        for (index, tr) in enumerate(self.poster.tracks):
+        for (index, tr) in enumerate(self.poster.tracks[::-1]):
             p = XY(index % count_x, index // count_x) * XY(
                 cell_size + spacing_x, cell_size + spacing_y
             )

@@ -1,26 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import argparse
 import base64
 import json
+import os
 import time
 import zlib
-import os
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-import polyline
-import pytz
 import gpxpy
+import polyline
 import requests
-
-from config import (
-    GPX_FOLDER,
-    JSON_FILE,
-    SQL_FILE,
-)
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 
-start_point = namedtuple("start_point", "lat lon")
-run_map = namedtuple("polyline", "summary_polyline")
+from utils import adjust_time
 
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
@@ -48,7 +44,10 @@ def get_to_download_runs_ids(session, headers):
         r = session.get(RUN_DATA_API.format(last_date=last_date), headers=headers)
         if r.ok:
             run_logs = r.json()["data"]["records"]
-            result.extend([i["logs"][0]["stats"]["id"] for i in run_logs])
+
+            for i in run_logs:
+                logs = [j["stats"] for j in i["logs"]]
+                result.extend(k["id"] for k in logs if not k["isDoubtful"])
             last_date = r.json()["data"]["lastTimestamp"]
             since_time = datetime.utcfromtimestamp(last_date / 1000)
             print(f"pares keep ids data since {since_time}")
@@ -68,11 +67,6 @@ def decode_runmap_data(text):
     run_points_data = zlib.decompress(base64.b64decode(text), 16 + zlib.MAX_WBITS)
     run_points_data = json.loads(run_points_data)
     return run_points_data
-
-
-def adjust_time(time, tz_name):
-    tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
-    return time + tc_offset
 
 
 def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
@@ -98,6 +92,9 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
     heart_rate = None
     if run_data["heartRate"]:
         heart_rate = run_data["heartRate"].get("averageHeartRate", None)
+        # fix #66
+        if heart_rate and heart_rate < 0:
+            heart_rate = None
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
     start_latlng = start_point(*run_points_data[0]) if run_points_data else None
     start_date = datetime.utcfromtimestamp(start_time / 1000)
@@ -202,11 +199,7 @@ def run_keep_sync(email, password, with_download_gpx=False):
 
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
-        f.write("const activities = ")
-        json.dump(activities_list, f, indent=2)
-        f.write(";\n")
-        f.write("\n")
-        f.write("export {activities};\n")
+        json.dump(activities_list, f)
 
 
 if __name__ == "__main__":

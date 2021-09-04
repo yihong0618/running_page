@@ -12,13 +12,14 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-import shutil
 import concurrent.futures
+import shutil
+
+from generator.db import Activity, init_db
+
 from .exceptions import ParameterError, TrackLoadError
 from .track import Track
 from .year_range import YearRange
-
-from generator.db import init_db, Activity
 
 log = logging.getLogger(__name__)
 
@@ -118,9 +119,9 @@ class TrackLoader:
         else:
             activities = session.query(Activity).order_by(Activity.start_date_local)
         tracks = []
-        for activate in activities:
+        for activity in activities:
             t = Track()
-            t.load_from_db(activate)
+            t.load_from_db(activity)
             tracks.append(t)
         print(len(tracks))
         tracks = self._filter_tracks(tracks)

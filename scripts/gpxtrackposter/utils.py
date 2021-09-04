@@ -4,15 +4,17 @@
 # Use of this source code is governed by a MIT-style
 # license that can be found in the LICENSE file.
 
-import colour
 import locale
 import math
-import pytz
 from datetime import datetime
 from typing import List, Optional, Tuple
+
+import colour
+import pytz
 import s2sphere as s2
-from .value_range import ValueRange
 from timezonefinder import TimezoneFinder
+
+from .value_range import ValueRange
 from .xy import XY
 
 
@@ -41,7 +43,9 @@ def project(
     min_y = lat2y(bbox.lat_lo().degrees)
     max_y = lat2y(bbox.lat_hi().degrees)
     d_y = abs(max_y - min_y)
-
+    # the distance maybe zero
+    if d_x == 0 or d_y == 0:
+        return []
     scale = size.x / d_x if size.x / size.y <= d_x / d_y else size.y / d_y
     offset = offset + 0.5 * (size - scale * XY(d_x, -d_y)) - scale * XY(min_x, min_y)
     lines = []
