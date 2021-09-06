@@ -26,17 +26,17 @@ def get_last_time(client):
                 break
         else:
             return 0
-        # add 30 minutes to make sure after the end of this activity
-        end_date = activity.start_date + activity.elapsed_time + timedelta(minutes=30)
+        end_date = activity.start_date + activity.elapsed_time
         return int(datetime.timestamp(end_date) * 1000)
-    except:
+    except Exception as e:
+        print(f"Something wrong to get last time err: {str(e)}")
         return 0
 
 
 def get_to_generate_files(last_time):
     file_names = os.listdir(OUTPUT_DIR)
     return [
-        OUTPUT_DIR + "/" + i
+        os.path.join(OUTPUT_DIR, i)
         for i in file_names
         if not i.startswith(".") and int(i.split(".")[0]) > last_time
     ]
@@ -72,6 +72,11 @@ if __name__ == "__main__":
     new_gpx_files = make_new_gpxs(files)
     time.sleep(10)  # just wait
     if new_gpx_files:
+        if len(new_gpx_files) > 10:
+            print(
+                "too many gpx files to upload, will upload 10, because of the rate limit"
+            )
+            new_gpx_files = new_gpx_files[:10]
         for f in new_gpx_files:
             upload_gpx(client, f)
 

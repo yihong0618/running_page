@@ -1,6 +1,7 @@
 httpx==0.15.4
 gpxpy==1.4.2
-stravalib==0.10.2
+# stravalib==0.10.2
+git+https://github.com/hozn/stravalib.git
 appdirs>=1.4.0
 svgwrite>=1.1.9
 colour

@@ -26,6 +26,19 @@ const formatPace = (d) => {
   return `${minutes}:${seconds.toFixed(0).toString().padStart(2, '0')}`;
 };
 
+const formatRunTime = (distance,pace) => {
+  if (Number.isNaN(distance) || Number.isNaN(pace)) {
+    return '0min';
+  }
+  const formatPace = (1000.0 / 60.0) * (1.0 / pace);
+  const minutes = Math.floor(formatPace * distance);
+  if (minutes === 0) {
+    const seconds = Math.floor((formatPace * distance - minutes) * 60.0);
+    return seconds + 's';
+  }
+  return minutes + 'min';
+};
+
 // for scroll to the map
 const scrollToMap = () => {
   const el = document.querySelector('.fl.w-100.w-70-l');
@@ -207,4 +220,5 @@ export {
   sortDateFunc,
   sortDateFuncReverse,
   getBoundsForGeoData,
+  formatRunTime,
 };
