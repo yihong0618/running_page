@@ -45,6 +45,8 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
 | [Jim Gao](https://github.com/tianheg)             | https://run.yidajiabei.xyz/ | Keep |
 | [Eished](https://github.com/eished)             | https://run.iknow.fun                      | Keep      |
+| [Liuxin](https://github.com/liuxindtc)             | https://liuxin.run                   |  Nike      |
+
 ## How it works
 
 ![image](https://user-images.githubusercontent.com/15976103/103496454-4294f600-4e79-11eb-9bd6-8eea7a07ddff.png)
