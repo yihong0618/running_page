@@ -2,16 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import appdirs
 import logging
 import os
 import sys
 
-from gpxtrackposter import poster, track_loader
-from gpxtrackposter import grid_drawer, circular_drawer
-from gpxtrackposter import github_drawer
-from gpxtrackposter.exceptions import ParameterError, PosterError
+import appdirs
 from config import SQL_FILE
+from gpxtrackposter import (
+    circular_drawer,
+    github_drawer,
+    grid_drawer,
+    poster,
+    track_loader,
+)
+from gpxtrackposter.exceptions import ParameterError, PosterError
 
 # from flopp great repo
 __app_name__ = "create_poster"

@@ -5,14 +5,16 @@
 # license that can be found in the LICENSE file.
 
 import datetime
-import gpxpy as mod_gpxpy
 import json
 import os
+from collections import namedtuple
+
+import gpxpy as mod_gpxpy
+import polyline
 import s2sphere as s2
+
 from .exceptions import TrackLoadError
 from .utils import parse_datetime_to_local
-import polyline
-from collections import namedtuple
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")

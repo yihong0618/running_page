@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { MAIN_COLOR } from 'src/utils/const';
+import React, { useEffect, useState } from 'react';
 import useActivities from 'src/hooks/useActivities';
+import { MAIN_COLOR } from 'src/utils/const';
 import styles from './style.module.scss';
 
 const RunMapButtons = ({ changeYear, thisYear, mapButtonYear }) => {
@@ -18,15 +18,6 @@ const RunMapButtons = ({ changeYear, thisYear, mapButtonYear }) => {
     }
     setIndex(elementIndex);
   };
-  useEffect(() => {
-    if (elements[index]) {
-      elements[index].style.color = 'white';
-    }
-    if (elements[yearsButtons.indexOf(mapButtonYear)]) {
-      elements[yearsButtons.indexOf(mapButtonYear)].style.color = MAIN_COLOR
-    }
-    setIndex(yearsButtons.indexOf(mapButtonYear));
-  })
   return (
     <div>
       <ul className={styles.buttons}>

@@ -1,10 +1,12 @@
 """Create a poster from track data."""
-from datetime import datetime
-import pytz
-from collections import defaultdict
 import gettext
 import locale
+from collections import defaultdict
+from datetime import datetime
+
+import pytz
 import svgwrite
+
 from .utils import format_float
 from .value_range import ValueRange
 from .xy import XY

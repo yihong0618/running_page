@@ -8,15 +8,17 @@ import argparse
 import calendar
 import datetime
 import math
-import svgwrite
 from typing import List, Optional
+
+import svgwrite
+
 from .exceptions import PosterError
 from .poster import Poster
 from .track import Track
 from .tracks_drawer import TracksDrawer
+from .utils import compute_grid
 from .value_range import ValueRange
 from .xy import XY
-from .utils import compute_grid
 
 
 class CircularDrawer(TracksDrawer):

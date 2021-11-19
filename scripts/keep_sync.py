@@ -4,24 +4,18 @@
 import argparse
 import base64
 import json
+import os
 import time
 import zlib
-import os
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-import polyline
 import gpxpy
+import polyline
 import requests
-
-from config import (
-    start_point,
-    run_map,
-    GPX_FOLDER,
-    JSON_FILE,
-    SQL_FILE,
-)
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
+
 from utils import adjust_time
 
 # need to test
@@ -50,8 +44,10 @@ def get_to_download_runs_ids(session, headers):
         r = session.get(RUN_DATA_API.format(last_date=last_date), headers=headers)
         if r.ok:
             run_logs = r.json()["data"]["records"]
+
             for i in run_logs:
-                result.extend(j["stats"]["id"] for j in i["logs"])
+                logs = [j["stats"] for j in i["logs"]]
+                result.extend(k["id"] for k in logs if not k["isDoubtful"])
             last_date = r.json()["data"]["lastTimestamp"]
             since_time = datetime.utcfromtimestamp(last_date / 1000)
             print(f"pares keep ids data since {since_time}")
