@@ -18,7 +18,7 @@ import requests
 from config import BASE_TIMEZONE, GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 
-from scripts.utils import adjust_time_to_utc
+from utils import adjust_time_to_utc
 
 # device info
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
