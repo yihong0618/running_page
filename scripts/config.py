@@ -16,6 +16,8 @@ TOKEN_REFRESH_URL = "https://unite.nike.com/tokenRefresh"
 NIKE_CLIENT_ID = "HlHa2Cje3ctlaOqnxvgZXNaAs7T9nAuH"
 BASE_TIMEZONE = "Asia/Shanghai"
 
+ENDOMONDO_FILE_DIR = "Workouts"
+
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
