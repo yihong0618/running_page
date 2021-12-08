@@ -3,7 +3,7 @@ module.exports = {
   siteMetadata: {
     siteTitle: 'Thomas\' Running Page',
     siteUrl: 'https://running-page-thomas-lv.vercel.app/',
-    logo: 'https://file02.16sucai.com/d/file/2014/0924/ba3f2c28eb8475b32224c596c1235242.jpg',
+    logo: 'https://avatars.githubusercontent.com/u/19815167?v=4',
     description: 'Personal site and blog',
     navLinks: [
       {
