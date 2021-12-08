@@ -2,8 +2,8 @@ module.exports = {
   pathPrefix: `/`, // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'Thomas\' Running Page',
-    siteUrl: 'https://github.com/Thomas-Lv',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
+    siteUrl: 'https://running-page-thomas-lv.vercel.app/',
+    logo: 'https://avatars.githubusercontent.com/u/19815167?v=4',
     description: 'Personal site and blog',
     navLinks: [
       {
@@ -12,7 +12,7 @@ module.exports = {
       },
       {
         name: 'About',
-        url: 'https://github.com/Thomas-Lv/running_page/blob/master/README-CN.md',
+        url: 'https://github.com/Thomas-Lv',
       },
     ],
   },
