@@ -3,7 +3,7 @@ name: Run Data Sync
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '* * 6 * * ?'
   push:
     branches:
       - master
@@ -25,6 +25,7 @@ env:
   TITLE_GRID: Over 10km Runs
   GITHUB_NAME: Eished
   GITHUB_EMAIL: kished@outlook.com
+  MIN_GRID_DISTANCE: 10
 
 jobs:
   sync:
