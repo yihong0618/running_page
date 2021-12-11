@@ -53,8 +53,9 @@
   "scripts": {
     "data:clean": "rm scripts/data.db GPX_OUT/* activities/* src/static/activities.json",
     "data:download:garmin": "python3 scripts/garmin_sync.py",
-    "data:analysis": "python3 scripts/gen_svg.py --from-db --type github --output assets/github.svg",
-    "build": "gatsby build",
+    "data:github": "python3 scripts/gen_svg.py --from-db --type github --athlete xuandao --output assets/github.svg",
+    "data:grid": "python3 scripts/gen_svg.py --from-db --type grid --athlete xuandao --output assets/grid.svg",
+    "build": "gatsby build && tnpm run data:github && tnpm run data:grid",
     "develop": "gatsby develop",
     "serve": "gatsby serve",
     "lint": "eslint --ext .js,.jsx src --fix",
