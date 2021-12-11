@@ -3,7 +3,7 @@ name: Run Data Sync
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
   push:
     branches:
       - master
@@ -19,13 +19,13 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn, Please change the 'pass' it to your own
-  ATHLETE: yihong0618
-  TITLE: Yihong0618 Running
+  RUN_TYPE: nike # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn, Please change the 'pass' it to your own
+  ATHLETE: xuandao
+  TITLE: xuandao Running
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Runs # also here
-  GITHUB_NAME: yihong0618
-  GITHUB_EMAIL: zouzou0208@gmail.com
+  GITHUB_NAME: xuandao
+  GITHUB_EMAIL: songwa7@gmail.com
 
 jobs:
   sync:
@@ -66,7 +66,7 @@ jobs:
         if: env.RUN_TYPE == 'nike_to_strava'
         run: |
           python scripts/nike_to_strava_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
-  
+
       - name: Run sync Keep script
         if: env.RUN_TYPE == 'keep'
         run: |
@@ -98,7 +98,7 @@ jobs:
         if: env.RUN_TYPE == 'strava_to_garmin'
         run: |
           python scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
-  
+
       - name: Run sync Strava to Garmin-cn(Run with strava(or others upload to strava) data backup in Garmin-cn)
         if: env.RUN_TYPE == 'strava_to_garmin_cn'
         run: |
@@ -115,8 +115,8 @@ jobs:
       - name: Push new runs
         uses: github-actions-x/commit@v2.6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Add new runs"
+          github-token: ${{ secrets.G_TOKEN }}
+          commit-message: 'Add new runs'
           files: activities src/static/ scripts/ assets/ GPX_OUT/
           rebase: 'true'
           name: ${{ env.GITHUB_NAME }}

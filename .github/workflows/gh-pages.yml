@@ -1,10 +1,10 @@
 name: Publish GitHub Pages
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [master]
     paths:
       - .github/workflows/gh-pages.yml
       - package.json
@@ -18,7 +18,7 @@ on:
       - src/**.json
 
   schedule:
-    - cron: "5 0 * * *"
+    - cron: '5 0 * * *'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -73,4 +73,4 @@ jobs:
           # Prevent Jekyll from building the site
           jekyll: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
