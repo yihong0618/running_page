@@ -1,18 +1,18 @@
 module.exports = {
   pathPrefix: `/`, // Change to `/running_page` when running on github pages
   siteMetadata: {
-    siteTitle: 'Running Page',
-    siteUrl: 'https://yihong.run',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
+    siteTitle: 'lizhimiao\'s Running Page',
+    siteUrl: 'https://lizhimiao.com/',
+    logo: 'https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F49e7db70-29de-4dd3-a175-b5e0abf6ca54%2Fandroid-chrome-192x192.png?table=block&id=9fc4005a-ce27-4416-bf5d-756d02c4700a&cache=v2',
     description: 'Personal site and blog',
     navLinks: [
       {
         name: 'Blog',
-        url: 'https://yihong.run/running',
+        url: 'https://lizhimiao.com/',
       },
       {
-        name: 'About',
-        url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
+        name: 'Twitter',
+        url: 'https://twitter.com/_lizhimiao',
       },
     ],
   },
