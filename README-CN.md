@@ -552,6 +552,13 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - @[ben-29](https://github.com/ben-29) 搞定了咕咚，和我一起搞定了悦跑圈，太厉害了
 - @[MFYDev](https://github.com/MFYDev) Wiki
 
+# 推荐的 Forks
+
+- @[gongzili456](https://github.com/gongzili456) for [摩托车骑行版本](https://github.com/gongzili456/running_page)
+
+- @[ben-29](https://github.com/ben-29) for [多种运动类型支持](https://github.com/ben-29/workouts_page)
+- @[geekplux](https://github.com/geekplux) for [多种运动类型支持](https://github.com/geekplux/activities)
+
 # 赞赏
 
 谢谢就够了

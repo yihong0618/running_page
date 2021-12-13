@@ -460,6 +460,12 @@ Before submitting PR:
 - @[geekplux](https://github.com/geekplux) Friendly help and encouragement, refactored the whole front-end code, learned a lot
 - @[MFYDev](https://github.com/MFYDev) Wiki
 
+# Recommended Forks
+
+- @[gongzili456](https://github.com/gongzili456) for [motorcycle version](https://github.com/gongzili456/running_page)
+
+- @[ben-29](https://github.com/ben-29) for [different types support](https://github.com/ben-29/workouts_page)
+- @[geekplux](https://github.com/geekplux) for [different types support](https://github.com/geekplux/activities)
 # Support
 
 No need sponsor, just enjoy it.
