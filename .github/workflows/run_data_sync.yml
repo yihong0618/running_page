@@ -1,7 +1,6 @@
 name: Run Data Sync
 
 on:
-  # workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
   push:
@@ -16,6 +15,7 @@ on:
       - scripts/keep_sync.py
       - scripts/gpx_sync.py
       - requirements.txt
+  workflow_dispatch:
 
 env:
   # please change to your own config.
