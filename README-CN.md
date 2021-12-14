@@ -89,7 +89,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 git clone https://github.com/yihong0618/running_page.git
 ```
 
-## 安装及测试
+## 安装及测试 (node >= 12 and <= 14 python >= 3.6)
 
 ```
 pip3 install -r requirements.txt
@@ -555,7 +555,6 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 # 推荐的 Forks
 
 - @[gongzili456](https://github.com/gongzili456) for [摩托车骑行版本](https://github.com/gongzili456/running_page)
-
 - @[ben-29](https://github.com/ben-29) for [多种运动类型支持](https://github.com/ben-29/workouts_page)
 - @[geekplux](https://github.com/geekplux) for [多种运动类型支持](https://github.com/geekplux/activities)
 

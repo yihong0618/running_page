@@ -82,7 +82,7 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git
 ```
 
-## Installation and testing
+## Installation and testing (node >= 12 and <= 14 python >= 3.6)
 
 ```
 pip3 install -r requirements.txt
@@ -463,7 +463,6 @@ Before submitting PR:
 # Recommended Forks
 
 - @[gongzili456](https://github.com/gongzili456) for [motorcycle version](https://github.com/gongzili456/running_page)
-
 - @[ben-29](https://github.com/ben-29) for [different types support](https://github.com/ben-29/workouts_page)
 - @[geekplux](https://github.com/geekplux) for [different types support](https://github.com/geekplux/activities)
 # Support
