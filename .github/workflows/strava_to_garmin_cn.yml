@@ -1,0 +1,123 @@
+name: strava to garmin
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 16 * * *'
+  push:
+    branches:
+      - master
+    paths:
+      - scripts/nike_sync.py
+      - scripts/nike_to_strava_sync.py
+      - scripts/strava_sync.py
+      - scripts/gen_svg.py
+      - scripts/garmin_sync.py
+      - scripts/keep_sync.py
+      - scripts/gpx_sync.py
+      - requirements.txt
+
+env:
+  # please change to your own config.
+  RUN_TYPE: strava_to_garmin_cn # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn, Please change the 'pass' it to your own
+  ATHLETE: xuandao
+  TITLE: xuandao Running
+  MIN_GRID_DISTANCE: 10 # change min distance here
+  TITLE_GRID: Over 10km Runs # also here
+  GITHUB_NAME: xuandao
+  GITHUB_EMAIL: songwa7@gmail.com
+
+jobs:
+  sync:
+    name: Sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+
+      # from pdm
+      - name: Set Variables
+        id: set_variables
+        run: |
+          echo "::set-output name=PY::$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')"
+          echo "::set-output name=PIP_CACHE::$(pip cache dir)"
+
+      - name: Cache PIP
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.set_variables.outputs.PIP_CACHE }}
+          key: Ubuntu-pip-${{ steps.set_variables.outputs.PY }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+        if: steps.pip-cache.outputs.cache-hit != 'true'
+
+      - name: Run sync Nike script
+        if: env.RUN_TYPE == 'nike'
+        run: |
+          python scripts/nike_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }}
+
+      - name: Run sync Nike to Strava(Run with nike data backup and show with strava)
+        if: env.RUN_TYPE == 'nike_to_strava'
+        run: |
+          python scripts/nike_to_strava_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
+
+      - name: Run sync Keep script
+        if: env.RUN_TYPE == 'keep'
+        run: |
+          python scripts/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} --with-gpx
+
+      - name: Run sync Strava script
+        if: env.RUN_TYPE == 'strava'
+        run: |
+          python scripts/strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
+
+      - name: Run sync Garmin script
+        if: env.RUN_TYPE == 'garmin'
+        run: |
+          python scripts/garmin_sync.py ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
+        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # python scripts/garmin_sync.py ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} --only-run
+
+      - name: Run sync Garmin CN script
+        if: env.RUN_TYPE == 'garmin_cn'
+        run: |
+          python scripts/garmin_sync.py ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
+
+      - name: Run sync Only GPX script
+        if: env.RUN_TYPE == 'only_gpx'
+        run: |
+          python scripts/gpx_sync.py
+
+      - name: Run sync Strava to Garmin(Run with strava(or others upload to strava) data backup in Garmin)
+        if: env.RUN_TYPE == 'strava_to_garmin'
+        run: |
+          python scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
+
+      - name: Run sync Strava to Garmin-cn(Run with strava(or others upload to strava) data backup in Garmin-cn)
+        if: env.RUN_TYPE == 'strava_to_garmin_cn'
+        run: |
+          python scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
+
+      - name: Make svg GitHub profile
+        if: env.RUN_TYPE != 'pass'
+        run: |
+          python scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+          python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance "${{ env.MIN_GRID_DISTANCE }}"  --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+          python scripts/gen_svg.py --from-db --type circular --use-localtime
+          python scripts/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
+
+      - name: Push new runs
+        uses: github-actions-x/commit@v2.6
+        with:
+          github-token: ${{ secrets.G_TOKEN }}
+          commit-message: 'Add new runs'
+          files: activities src/static/ scripts/ assets/ GPX_OUT/
+          rebase: 'true'
+          name: ${{ env.GITHUB_NAME }}
+          email: ${{ env.GITHUB_EMAIL }}
