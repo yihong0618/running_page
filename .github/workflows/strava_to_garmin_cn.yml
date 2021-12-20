@@ -3,7 +3,7 @@ name: strava to garmin
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 16 * * *'
+    - cron: '10 16 * * *'
   push:
     branches:
       - master
