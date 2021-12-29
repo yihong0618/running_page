@@ -3,7 +3,7 @@ import Stat from 'src/components/Stat';
 import useActivities from 'src/hooks/useActivities';
 import useHover from 'src/hooks/useHover';
 import { formatPace } from 'src/utils/utils';
-import styles from './style.module.scss';
+import * as styles from './style.module.scss';
 
 const YearStat = ({ year, onClick }) => {
   let { activities: runs, years } = useActivities();

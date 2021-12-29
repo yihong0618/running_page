@@ -11,7 +11,7 @@ import {
 import { geoJsonForMap } from 'src/utils/utils';
 import RunMarker from './RunMaker';
 import RunMapButtons from './RunMapButtons';
-import styles from './style.module.scss';
+import * as styles from './style.module.scss';
 
 const RunMap = ({
   title,
