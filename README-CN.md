@@ -44,8 +44,10 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Jim Gao](https://github.com/tianheg)           | https://run.yidajiabei.xyz/                | Keep      |
 | [Oysmart](https://github.com/oysmart)           | https://run.ouyang.wang                    | Garmin-cn |
 | [Eished](https://github.com/eished)             | https://run.iknow.fun                      | Keep      |
-| [Liuxin](https://github.com/liuxindtc)          | https://liuxin.run                         | Nike     |
+| [Liuxin](https://github.com/liuxindtc)          | https://liuxin.run                         | Nike      |
 | [loucx](https://github.com/loucx)               | https://loucx.github.io/running            | Nike      |
+| [winf42](https://github.com/winf42)             | https://winf42.github.io/running           | Garmin-cn |
+
 
 ## 它是怎么工作的
 
