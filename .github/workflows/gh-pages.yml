@@ -53,9 +53,9 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - run: |
-          yarn install
+          npm install
       - run: |
-          yarn build --prefix-paths
+          npm build
       - run: |
           cp -r assets/ public/static
 
