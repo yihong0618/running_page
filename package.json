@@ -6,15 +6,7 @@
   "dependencies": {
     "@mapbox/mapbox-gl-language": "^1.0.0",
     "@mapbox/polyline": "^1.1.1",
-    "babel-eslint": "^10.1.0",
     "date-fns": "^2.28.0",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.28.0",
-    "eslint-plugin-react-hooks": "^4.3.0",
     "gatsby": "^4.0.0",
     "gatsby-alias-imports": "^1.0.6",
     "gatsby-image": "^3.11.0",
@@ -42,7 +34,7 @@
     "gatsby-transformer-yaml": "^4.4.0",
     "mapbox": "^1.0.0-beta10",
     "node-sass": "^7.0.1",
-    "pngquant-bin": "^7.0.2",
+    "pngquant-bin": "^6.0.0",
     "prettier": "^2.5.1",
     "prop-types": "^15.8.0",
     "react": "^17.0.2",
@@ -75,5 +67,14 @@
     "type": "git",
     "url": "https://github.com/irvingbennett/running_page"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0"    
+  }
 }
