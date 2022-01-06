@@ -1,0 +1,29 @@
+Metadata-Version: 2.1
+Name: geographiclib
+Version: 1.52
+Summary: The geodesic routines from GeographicLib
+Home-page: https://geographiclib.sourceforge.io/1.52/python
+Author: Charles Karney
+Author-email: charles@karney.com
+License: MIT
+Keywords: gis geographical earth distance geodesic
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Scientific/Engineering :: GIS
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Description-Content-Type: text/markdown
+
+This implements
+[Algorithms for Geodesics](https://doi.org/10.1007/s00190-012-0578-z)
+(Karney, 2013) for solving the direct and inverse problems for an
+ellipsoid of revolution.
+
+Documentation is available at
+<https://geographiclib.sourceforge.io/1.52/python/>.
+
+

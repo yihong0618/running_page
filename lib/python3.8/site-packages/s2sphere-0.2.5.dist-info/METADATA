@@ -1,0 +1,62 @@
+Metadata-Version: 2.0
+Name: s2sphere
+Version: 0.2.5
+Summary: Python implementation of the S2 Geometry Library
+Home-page: http://s2sphere.readthedocs.io
+Author: Jonathan Gillham and contributors
+Author-email: sven@sidewalklabs.com
+License: MIT
+Description-Content-Type: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Requires-Dist: future (>=0.15)
+Provides-Extra: docs
+Requires-Dist: Sphinx (>=1.6.5); extra == 'docs'
+Requires-Dist: sphinx-rtd-theme (>=0.1.9); extra == 'docs'
+Provides-Extra: tests
+Requires-Dist: flake8 (>=2.5.4); extra == 'tests'
+Requires-Dist: hacking (>=0.11.0); extra == 'tests'
+Requires-Dist: nose (>=1.3.4); extra == 'tests'
+Requires-Dist: numpy (>=1.11.0); extra == 'tests'
+
+s2sphere
+========
+
+.. image:: https://badge.fury.io/py/s2sphere.svg
+    :target: https://pypi.python.org/pypi/s2sphere/
+.. image:: https://travis-ci.org/sidewalklabs/s2sphere.svg?branch=master
+    :target: https://travis-ci.org/sidewalklabs/s2sphere
+.. image:: https://coveralls.io/repos/github/sidewalklabs/s2sphere/badge.svg?branch=master
+    :target: https://coveralls.io/github/sidewalklabs/s2sphere?branch=master
+
+Python implementation of a part of the C++ `S2 geometry library <https://code.google.com/p/s2-geometry-library/>`_.
+
+Links: `Documentation <http://s2sphere.readthedocs.io>`_,
+`GitHub <https://github.com/sidewalklabs/s2sphere>`_,
+`Issue Tracker <https://github.com/sidewalklabs/s2sphere/issues>`_
+
+Install with:
+
+.. code-block:: sh
+
+    pip install s2sphere
+
+
+Quick set up for development (see the `Developing section in the docs <http://s2sphere.readthedocs.io/en/latest/dev.html>`_ for more details):
+
+.. code-block:: sh
+
+    pip install .[tests]
+    nosetests -vv
+
+

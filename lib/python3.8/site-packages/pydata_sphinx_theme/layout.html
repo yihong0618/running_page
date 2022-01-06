@@ -1,0 +1,105 @@
+{%- extends "basic/layout.html" %}
+{%- import "static/webpack-macros.html" as _webpack with context %}
+
+{%- block css %}
+    {{ _webpack.head_pre_bootstrap() }}
+    {{ _webpack.head_pre_icons() }}
+    {% block fonts %}
+      {{ _webpack.head_pre_fonts() }}
+    {% endblock %}
+    {{- css() }}
+    {{ _webpack.head_js_preload() }}
+{%- endblock %}
+
+{%- block extrahead %}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="{{ language }}">
+    {% for favicon in theme_favicons %}
+      {% if favicon.href[:4] == 'http'%}
+      <link rel="{{ favicon.rel }}" sizes="{{ favicon.sizes }}" href="{{ favicon.href }}">
+      {% else %}
+      <link rel="{{ favicon.rel }}" sizes="{{ favicon.sizes }}" href="{{ pathto('_static/' + favicon.href, 1) }}">
+      {% endif %}
+    {% endfor %}
+
+    <!-- Google Analytics -->
+    {{ generate_google_analytics_script(id=theme_google_analytics_id) }}
+{%- endblock %}
+
+{# Silence the sidebar's, relbar's #}
+{% block header %}{% endblock %}
+{% block relbar1 %}{% endblock %}
+{% block relbar2 %}{% endblock %}
+{% block sidebarsourcelink %}{% endblock %}
+
+{% block body_tag %}
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+{%- endblock %}
+{%- block content %}
+    {# Added to support a banner with an alert #}
+    <div class="container-fluid" id="banner"></div>
+
+    {% block docs_navbar %}
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main">
+      {%- include "docs-navbar.html" %}
+    </nav>
+    {% endblock %}
+
+    <div class="container-xl">
+      <div class="row">
+          {% block docs_sidebar %}
+            {% if sidebars %}
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+                {%- for sidebartemplate in sidebars %}
+                {%- include sidebartemplate %}
+                {%- endfor %}
+            </div>
+            {% else %}
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            {% endif %}
+          {% endblock %}
+
+          {% block docs_toc %}
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            {% if meta is defined and not (meta is not none and 'notoc' in meta) %}
+              {% for toc_item in theme_page_sidebar_items %}
+              <div class="toc-item">
+                {% include toc_item %}
+              </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          {% endblock %}
+
+          {% block docs_main %}
+          {% if sidebars %}
+            {% set content_col_class = "col-md-9 col-xl-7" %}
+          {% else %}
+            {% set content_col_class = "col-md-11 col-xl-8" %}
+          {% endif %}
+          <main class="col-12 {{ content_col_class }} py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              {% block docs_body %}
+              <div>
+                {% block body %} {% endblock %}
+              </div>
+              {% endblock %}
+              {% if theme_show_prev_next %}
+              {% include "prev-next.html" %}
+              {% endif %}
+          </main>
+          {% endblock %}
+
+      </div>
+    </div>
+
+
+  {%- block scripts_end %}
+  {{ _webpack.body_post() }}
+  {%- endblock %}
+
+{%- endblock %}
+
+{%- block footer %}
+{%- include "footer.html" %}
+{%- endblock %}

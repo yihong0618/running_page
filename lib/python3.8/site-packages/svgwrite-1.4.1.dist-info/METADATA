@@ -1,0 +1,265 @@
+Metadata-Version: 2.1
+Name: svgwrite
+Version: 1.4.1
+Summary: A Python library to create SVG drawings.
+Home-page: http://github.com/mozman/svgwrite.git
+Author: Manfred Moitzi
+Author-email: me@mozman.at
+License: MIT License
+Download-URL: http://github.com/mozman/svgwrite/releases
+Platform: OS Independent
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Provides: svgwrite
+Requires-Python: >=3.6
+
+svgwrite
+========
+
+This package is in maintenance mode, no new features will be added, there will
+be no change of behavior, just bugfixes will be merged.
+
+Abstract
+--------
+
+A Python library to create SVG drawings.
+
+a simple example::
+
+    import svgwrite
+
+    dwg = svgwrite.Drawing('test.svg', profile='tiny')
+    dwg.add(dwg.line((0, 0), (10, 0), stroke=svgwrite.rgb(10, 10, 16, '%')))
+    dwg.add(dwg.text('Test', insert=(0, 0.2), fill='red'))
+    dwg.save()
+
+for more examples see: examples.py
+
+As the name `svgwrite` implies, `svgwrite` creates new SVG drawings, it does not read existing drawings and also does
+not import existing drawings, but you can always include other SVG drawings by the <image> entity.
+
+Installation
+------------
+
+with pip::
+
+    pip install svgwrite
+
+or from source::
+
+    python setup.py install
+
+
+Documentation
+-------------
+
+http://readthedocs.org/docs/svgwrite/
+
+svgwrite can be found on GitHub.com at:
+
+http://github.com/mozman/svgwrite.git
+
+Contact
+-------
+
+svgwrite@mozman.at
+
+NEWS
+====
+
+Version 1.4.1 - 2021-01-15
+--------------------------
+
+* This package is in maintenance mode, no new features will be added, there will
+  be no change of behavior, just bugfixes will be merged.
+* Merged some contributions and bugfixes.
+
+Version 1.4 - 2020-03-28
+------------------------
+
+* Requires Python 3.6
+* Removed Python2 support
+* Optimized/faster ``svgparser.py`` module by Florian Festi
+* Removed batch files to run tests on Windows, use ``pytest`` or ``tox`` instead
+
+Version 1.3.1 - 2019-06-28
+--------------------------
+
+* BUGFIX: changed license of module shapes.py to MIT license
+
+Version 1.3.0 - 2019-06-23
+--------------------------
+
+* Dropping Python 2 support in v1.4
+* NEW: easy stylesheet embedding: `Drawing.embed_stylesheet(content)`, see example `using_fonts.py <https://github.com/mozman/svgwrite/blob/9d509fe1842e519b8d8475f83543a7589b7c1879/examples/using_fonts.py#L21>`_
+* NEW: embedded local fonts: `Drawing.embed_font(fontname, filename)`, see example using_fonts.py
+* NEW: embedded web fonts: `Drawing.embed_google_web_font(fontname, uri)`, see example using_fonts.py
+* NEW: shapes extension by `Christof Hanke <https://www.induhviduals.de/>`_
+* NEW: for write(), save() and saveas(), indentation for pretty print is configurable by `Mitar <http://mitar.tnode.com/>`_
+* BUGFIX: converted regex strings in tests to raw strings by `tirkarthi <http://tirkarthi.github.io/>`_
+
+Version 1.2.1 - 2018-11-16
+--------------------------
+
+* BUGFIX: Python 2 pretty print encoding issue
+
+Version 1.2.0 - 2018-10-27
+--------------------------
+
+* NEW: Inkscape extension - support for Inkscape layers
+* BUGFIX: compatibility with Python 3.7 by fixing re.split() usage
+
+Version 1.1.12 - 2017-12-27
+---------------------------
+
+* BUGFIX: values attribute for element animate, accepts any semicolon separated values
+
+Version 1.1.11 - 2017-05-31
+---------------------------
+
+* CHANGED: e.set_markers((sm, mm, em)), accepts None/False values to set markers individually, like just set end
+  marker: s.set_markers((None, False, em))
+* BUGFIX: text-decoration attribute accepts multiple values like 'underline overline'
+
+Version 1.1.10 - 2017-01-28
+---------------------------
+
+* NEW: added `pretty` argument to `Drawing.write`, `Drawing.save` and `Drawing.saveas` to produce easy to read XML
+  output, svgwrite reparses the output string with minidom, this reduces the performance because this process requires
+  memory and runtime, default value for `pretty` is False.
+* Moved repository to GitHub.com: http://github.com/mozman/svgwrite.git
+
+Version 1.1.9 - 2016-10-26
+--------------------------
+
+* NEW: added solidColor paint server (only valid in the Tiny 1.2 profile)
+
+Version 1.1.8 - 2016-05-31
+--------------------------
+
+* BUGFIX: None checks: 'if value:' -> 'if value is not None:'
+
+Version 1.1.7 - 2016-05-22
+--------------------------
+
+* BUGFIX: color accepts percentage values as floats like "rgb(10.2%, 3.78%, 20%)"
+
+Version 1.1.6 - 2014-05-30
+--------------------------
+
+* BUGFIX: sign for offset-value wasn't optional
+
+Version 1.1.5 - 2014-03-26
+--------------------------
+
+* BUGFIX: xml serialization for CPython 3.4.0
+
+Version 1.1.4 - 2014-03-16
+--------------------------
+
+* simplified path parser
+* pyparsing as external dependency (by jenselme)
+
+Version 1.1.3 - 2013-10-01
+--------------------------
+
+* updated pyparsing for Python 3 to version 2.0.1 (prior version caused memory leaks)
+* BUGFIX: utf8 to unicode encoding error for Python 2.7
+* Tests for Python 3 require CPython3.3 or newer, using the 'u' prefix.
+
+Version 1.1.2 - 2013-01-08
+--------------------------
+
+* prevent setup.py from compiling all modules - error with 'pyparsing_py2.py' and Python3
+* BUGFIX: all tests run with CPython3.3
+
+Version 1.1.1 - 2012-08-15
+--------------------------
+
+* License changed to MIT License
+* tested with CPython2.7, CPython3.2, CPython3.3 and pypy-1.9 on Win7 Pro 32-bit
+* BUGFIX: dwg.animateTranform() -> dwg.animateTransform()
+* BUGFIX: in examples, replaced width and height params by size parameter
+* added examples
+* edit docs
+
+Version 1.0.1 - 2012-06-08
+--------------------------
+
+* added inline stylesheets
+* added examples created by Lawrence Tattrie
+
+Version 1.0.0 - 2012-05-27
+--------------------------
+
+* stable
+* tested with CPython 2.7, CPython 3.2, pypy-1.8
+* added script tag - thx to jmahmood
+* docs also available at: http://readthedocs.org/docs/svgwrite
+
+Version 0.2.4 - 2011-12-30
+--------------------------
+
+* beta version
+* Python 2.7: all strings will be converted by the unicode() function, for strings containing none-ascii-characters use
+  prefix ``u""`` or better use ``from __future__ import unicode_literals``, because this is Python 3 compatible.
+* tested with CPython 2.7, CPython 3.2, and PyPy 1.7
+* BUGFIX: color parsing accepts white spaces in ``rgb()`` like ``rgb(0, 0, 0)``
+
+Version 0.2.3 - 2010-11-13
+--------------------------
+
+* beta version
+* Python 3.1 support
+* splitted examples.py into several files and moved them to the subdir 'examples'
+
+Version 0.2.2 - 2010-11-05
+--------------------------
+
+* alpha version
+* removed 'attribs' parameter from all constructors
+* new elements: Set, Animate, AnimateMotion, AnimateColor, AnimateTransform, all filter elements
+* added set_desc(title, desc), set_metadata(xmldata) to BaseElement class
+* moved content of interfaces.py to mixins.py, (ITransform -> Transform and so on)
+
+Version 0.2.1 - 2010-10-31
+--------------------------
+
+* alpha version
+* new elements: Marker, ClipPath, Mask
+* paint service: LinearGradient, RadialGradient, Pattern
+
+Version 0.2.0 - 2010-10-24
+--------------------------
+
+* alpha version
+* validator rewritten as validator2.py
+* debug and profile options separated for each drawing object
+* important change: create objects with factory functions of the *Drawing* class: drawing.<svg-elementname>(...)
+* added mixins for setting stroke and fill properties
+* new elements: Hyperlink, Image, TextArea,
+
+Version 0.1.0 - 2010-09-26
+--------------------------
+
+* alpha version
+* new elements:
+
+    * basic shapes: Line, Rect, Circle, Ellipse, Polyline, Polygon, Path
+    * text elements: Text, TSpan, TRef, TextPath
+    * container elements: Group, Symbol, SVG, Use, Defs
+
+* for examples see: examples.py
+
+

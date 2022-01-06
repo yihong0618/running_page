@@ -1,0 +1,740 @@
+{
+    "achievement_count": 9,
+    "athlete": {
+        "id": 1513,
+        "resource_state": 1
+    },
+    "athlete_count": 2,
+    "average_speed": 2.0,
+    "best_efforts": [
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 400,
+            "elapsed_time": 134,
+            "end_index": 204,
+            "id": 464733311,
+            "kom_rank": null,
+            "moving_time": 136,
+            "name": "400m",
+            "pr_rank": null,
+            "resource_state": 2,
+            "segment": null,
+            "start_date": "2013-12-12T19:40:29Z",
+            "start_date_local": "2013-12-12T11:40:29Z",
+            "start_index": 112
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 805,
+            "elapsed_time": 279,
+            "end_index": 299,
+            "id": 464733312,
+            "kom_rank": null,
+            "moving_time": 281,
+            "name": "1/2 mile",
+            "pr_rank": 3,
+            "resource_state": 2,
+            "segment": null,
+            "start_date": "2013-12-12T19:40:29Z",
+            "start_date_local": "2013-12-12T11:40:29Z",
+            "start_index": 112
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 1000,
+            "elapsed_time": 355,
+            "end_index": 340,
+            "id": 464733313,
+            "kom_rank": null,
+            "moving_time": 356,
+            "name": "1k",
+            "pr_rank": 2,
+            "resource_state": 2,
+            "segment": null,
+            "start_date": "2013-12-12T19:40:30Z",
+            "start_date_local": "2013-12-12T11:40:30Z",
+            "start_index": 113
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 1609,
+            "elapsed_time": 656,
+            "end_index": 478,
+            "id": 464733314,
+            "kom_rank": null,
+            "moving_time": 602,
+            "name": "1 mile",
+            "pr_rank": 3,
+            "resource_state": 2,
+            "segment": null,
+            "start_date": "2013-12-12T19:40:30Z",
+            "start_date_local": "2013-12-12T11:40:30Z",
+            "start_index": 113
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 3219,
+            "elapsed_time": 1579,
+            "end_index": 855,
+            "id": 464733315,
+            "kom_rank": null,
+            "moving_time": 1382,
+            "name": "2 miles",
+            "pr_rank": 3,
+            "resource_state": 2,
+            "segment": null,
+            "start_date": "2013-12-12T19:40:29Z",
+            "start_date_local": "2013-12-12T11:40:29Z",
+            "start_index": 112
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 5000,
+            "elapsed_time": 2507,
+            "end_index": 1158,
+            "id": 464733316,
+            "kom_rank": null,
+            "moving_time": 2178,
+            "name": "5k",
+            "pr_rank": 2,
+            "resource_state": 2,
+            "segment": null,
+            "start_date": "2013-12-12T19:36:41Z",
+            "start_date_local": "2013-12-12T11:36:41Z",
+            "start_index": 0
+        }
+    ],
+    "calories": 537.9,
+    "comment_count": 1,
+    "commute": false,
+    "description": null,
+    "distance": 5781.1,
+    "elapsed_time": 3140,
+    "end_latlng": [
+        37.780877,
+        -122.39548
+    ],
+    "external_id": "620D5DDD-B836-4F6B-8760-F905B8C2895F",
+    "flagged": false,
+    "gear_id": "g69911",
+    "guid": "620D5DDD-B836-4F6B-8760-F905B8C2895F",
+    "has_kudoed": false,
+    "id": 99895560,
+    "kudos_count": 12,
+    "location_city": "San Francisco",
+    "location_state": "CA",
+    "manual": false,
+    "map": {
+        "id": "a99895560",
+        "polyline": "ubreFbk`jVTFJCLI^u@`@k@~@aAHUZg@b@c@P]hAyATa@d@e@PYh@_@p@cABGIMd@W\\[HOAK[a@@GPOl@u@PQXc@NO^o@V_AH[Be@CcAMm@Yk@I]EGCSWs@Oq@Ig@Wm@EYSeAOOIUMMICW@iAHOEW@OCoBLi@JS@_@C]BYFk@A]@UB[?_@Jg@X{@H[Dw@Cs@FMASIG?SBaBS{@@UI]@k@Gk@AQE[Cc@?SCS@s@A[Gi@?a@SDF?DiAOYKIFIG@NADWISA_BAcAD[IDAc@Fc@AOFO?[D[As@BSD[?a@Lq@JWNML[LYPo@n@]VqAl@ODgAj@CD{@Vm@^]d@UTMTi@t@QNQXQPKVg@d@o@z@[ZeA|AWVk@v@[\\ULGJQFU`@SHY`@UFWRAFa@NCBGf@QRc@PQr@KFK@SPHQJBLEDMBEF?BCHSFCHOf@[JSDA^]JO@GZ]D@BSFQ\\KBE?IDCR?VSDG@Of@c@?EHKFKXSNW\\YBM^Y?GNMBMh@m@f@{@RQLWdAmAf@i@PKHQRSLYVKVYPM\\GZONANMLG^Ih@a@j@M`@YJMLYf@_@D@PCXBX_@TKHMPBNAVEPIb@DZCJDRCNDNCNBVOXAVDPENAx@Jv@Bp@Jz@@z@LfAELDXAr@PDCECHZ@RIZARBXFPV\\BJ\\NVd@HBPL@NLPHDDLVHV`@DZBFPJFTLRDBJEBEXC|@j@NDJXPPBLLLNXVp@B^Lr@@b@J\\n@h@DBJ?DD?JOf@W`@CRKPGFQFa@XINERDXBQBDPARGVED@RRBFEA?PD?@DDGFAD@DDL@VJVTZ\\DJLDDL?LBFf@x@RTNHDt@Xh@PH@DQp@KRA^YlA[b@By@e@GEDLPv@^OBXCTGJG^q@AGIEYIGP",
+        "resource_state": 3,
+        "summary_polyline": "oyqeFz``jVvGsItDsIiEwQsXbBaVcByQz@wLjHkWzYzYw[vLcGbGg@hOz@?jClFjHvBf@hErIyBnFjCR"
+    },
+    "max_speed": 8.3,
+    "moving_time": 2892,
+    "name": "Lunch Rover Shuffle-Walk-Yog with Todd",
+    "photo_count": 0,
+    "total_photo_count": 0,
+    "private": false,
+    "resource_state": 3,
+    "segment_efforts": [
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 172.8,
+            "elapsed_time": 108,
+            "end_index": 113,
+            "id": 2137250436,
+            "kom_rank": null,
+            "moving_time": 61,
+            "name": "Sprint to catch light",
+            "pr_rank": null,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": -1.8,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 124.35,
+                "elevation_high": 6.8,
+                "elevation_low": 4.5,
+                "end_latitude": 37.7782023511827,
+                "end_latlng": [
+                    37.7782023511827,
+                    -122.39171963185072
+                ],
+                "end_longitude": -122.39171963185072,
+                "id": 3866093,
+                "maximum_grade": -0.0,
+                "name": "Sprint to catch light",
+                "pr_time": 108,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.778987400233746,
+                "start_latlng": [
+                    37.778987400233746,
+                    -122.39271523430943
+                ],
+                "start_longitude": -122.39271523430943,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:38:42Z",
+            "start_date_local": "2013-12-12T11:38:42Z",
+            "start_index": 76
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 773.2,
+            "elapsed_time": 273,
+            "end_index": 327,
+            "id": 2137250444,
+            "kom_rank": null,
+            "moving_time": 273,
+            "name": "AT&T 800m Dash",
+            "pr_rank": 1,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": -0.0,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 785.3,
+                "elevation_high": 4.1,
+                "elevation_low": 0.0,
+                "end_latitude": 37.782742,
+                "end_latlng": [
+                    37.782742,
+                    -122.387922
+                ],
+                "end_longitude": -122.387922,
+                "id": 5666311,
+                "maximum_grade": 18.1,
+                "name": "AT&T 800m Dash",
+                "pr_time": 273,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.777171,
+                "start_latlng": [
+                    37.777171,
+                    -122.390329
+                ],
+                "start_longitude": -122.390329,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:41:27Z",
+            "start_date_local": "2013-12-12T11:41:27Z",
+            "start_index": 151
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 257.5,
+            "elapsed_time": 88,
+            "end_index": 211,
+            "id": 2137250440,
+            "kom_rank": null,
+            "moving_time": 88,
+            "name": "AT&T Park Backside",
+            "pr_rank": 1,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": 0.0,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 249.397,
+                "elevation_high": 6.2,
+                "elevation_low": 6.2,
+                "end_latitude": 37.778352638706565,
+                "end_latlng": [
+                    37.778352638706565,
+                    -122.38767142407596
+                ],
+                "end_longitude": -122.38767142407596,
+                "id": 1808371,
+                "maximum_grade": 0.0,
+                "name": "AT&T Park Backside",
+                "pr_time": 88,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.777267936617136,
+                "start_latlng": [
+                    37.777267936617136,
+                    -122.39012941718102
+                ],
+                "start_longitude": -122.39012941718102,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:41:31Z",
+            "start_date_local": "2013-12-12T11:41:31Z",
+            "start_index": 155
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 1768.4,
+            "elapsed_time": 741,
+            "end_index": 562,
+            "id": 2137250448,
+            "kom_rank": null,
+            "moving_time": 689,
+            "name": "Mile By the Bay ",
+            "pr_rank": null,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": -0.0,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 1689.36,
+                "elevation_high": 4.2,
+                "elevation_low": 3.0,
+                "end_latitude": 37.79156947508454,
+                "end_latlng": [
+                    37.79156947508454,
+                    -122.38967721350491
+                ],
+                "end_longitude": -122.38967721350491,
+                "id": 2552268,
+                "maximum_grade": 0.6,
+                "name": "Mile By the Bay ",
+                "pr_time": 741,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.777588460594416,
+                "start_latlng": [
+                    37.777588460594416,
+                    -122.38948199898005
+                ],
+                "start_longitude": -122.38948199898005,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:41:52Z",
+            "start_date_local": "2013-12-12T11:41:52Z",
+            "start_index": 172
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 322.5,
+            "elapsed_time": 115,
+            "end_index": 288,
+            "id": 2137250442,
+            "kom_rank": null,
+            "moving_time": 115,
+            "name": "Pier 42 to Pier 40 Beer Dash",
+            "pr_rank": 1,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": 0.2,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 318.09,
+                "elevation_high": 4.4,
+                "elevation_low": 3.5,
+                "end_latitude": 37.781130066141486,
+                "end_latlng": [
+                    37.781130066141486,
+                    -122.38788725808263
+                ],
+                "end_longitude": -122.38788725808263,
+                "id": 3394958,
+                "maximum_grade": 0.9,
+                "name": "Pier 42 to Pier 40 Beer Dash",
+                "pr_time": 115,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.7783128246665,
+                "start_latlng": [
+                    37.7783128246665,
+                    -122.38754871301353
+                ],
+                "start_longitude": -122.38754871301353,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:42:59Z",
+            "start_date_local": "2013-12-12T11:42:59Z",
+            "start_index": 211
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 1678.8,
+            "elapsed_time": 790,
+            "end_index": 672,
+            "id": 2137250456,
+            "kom_rank": null,
+            "moving_time": 714,
+            "name": "AT&T Park to Ferry Building Scenic Mile",
+            "pr_rank": null,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": -0.0,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 1596.4,
+                "elevation_high": 3.7,
+                "elevation_low": 2.8,
+                "end_latitude": 37.7944156,
+                "end_latlng": [
+                    37.7944156,
+                    -122.3931068
+                ],
+                "end_longitude": -122.3931068,
+                "id": 825637,
+                "maximum_grade": 0.7,
+                "name": "AT&T Park to Ferry Building Scenic Mile",
+                "pr_time": 790,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.7814597,
+                "start_latlng": [
+                    37.7814597,
+                    -122.3882274
+                ],
+                "start_longitude": -122.3882274,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:45:08Z",
+            "start_date_local": "2013-12-12T11:45:08Z",
+            "start_index": 298
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 1755.4,
+            "elapsed_time": 861,
+            "end_index": 695,
+            "id": 2137250458,
+            "kom_rank": null,
+            "moving_time": 781,
+            "name": "south beach speed mile",
+            "pr_rank": null,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": -0.0,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 1657.4,
+                "elevation_high": 3.9,
+                "elevation_low": 2.4,
+                "end_latitude": 37.795105,
+                "end_latlng": [
+                    37.795105,
+                    -122.393717
+                ],
+                "end_longitude": -122.393717,
+                "id": 4878224,
+                "maximum_grade": 0.8,
+                "name": "south beach speed mile",
+                "pr_time": 861,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.78152,
+                "start_latlng": [
+                    37.78152,
+                    -122.388018
+                ],
+                "start_longitude": -122.388018,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:45:10Z",
+            "start_date_local": "2013-12-12T11:45:10Z",
+            "start_index": 299
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 1628.4,
+            "elapsed_time": 770,
+            "end_index": 672,
+            "id": 2137250457,
+            "kom_rank": null,
+            "moving_time": 694,
+            "name": "Townsend Mile",
+            "pr_rank": null,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": 0.3,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 1600.1,
+                "elevation_high": 4.2,
+                "elevation_low": -0.4,
+                "end_latitude": 37.794483,
+                "end_latlng": [
+                    37.794483,
+                    -122.393248
+                ],
+                "end_longitude": -122.393248,
+                "id": 4850732,
+                "maximum_grade": 21.2,
+                "name": "Townsend Mile",
+                "pr_time": 770,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.781929,
+                "start_latlng": [
+                    37.781929,
+                    -122.388087
+                ],
+                "start_longitude": -122.388087,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:45:28Z",
+            "start_date_local": "2013-12-12T11:45:28Z",
+            "start_index": 308
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 286.2,
+            "elapsed_time": 160,
+            "end_index": 665,
+            "id": 2137250453,
+            "kom_rank": null,
+            "moving_time": 136,
+            "name": "Gotta Catch That Ferry Home!",
+            "pr_rank": null,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": 0.1,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 331.264,
+                "elevation_high": 3.2,
+                "elevation_low": 2.5,
+                "end_latitude": 37.79453448954764,
+                "end_latlng": [
+                    37.79453448954764,
+                    -122.3928627559192
+                ],
+                "end_longitude": -122.3928627559192,
+                "id": 790791,
+                "maximum_grade": 1.6,
+                "name": "Gotta Catch That Ferry Home!",
+                "pr_time": 160,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.79226324524524,
+                "start_latlng": [
+                    37.79226324524524,
+                    -122.3912170530505
+                ],
+                "start_longitude": -122.3912170530505,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T19:55:23Z",
+            "start_date_local": "2013-12-12T11:55:23Z",
+            "start_index": 597
+        },
+        {
+            "activity": {
+                "id": 99895560
+            },
+            "athlete": {
+                "id": 1513
+            },
+            "distance": 552.3,
+            "elapsed_time": 245,
+            "end_index": 1014,
+            "id": 2137250459,
+            "kom_rank": null,
+            "moving_time": 245,
+            "name": "Harrison to Brannan on Embarcadero",
+            "pr_rank": 2,
+            "resource_state": 2,
+            "segment": {
+                "activity_type": "Run",
+                "average_grade": 0.1,
+                "city": "San Francisco",
+                "climb_category": 0,
+                "distance": 542.2,
+                "elevation_high": 3.9,
+                "elevation_low": 3.0,
+                "end_latitude": 37.784975,
+                "end_latlng": [
+                    37.784975,
+                    -122.387799
+                ],
+                "end_longitude": -122.387799,
+                "id": 2856187,
+                "maximum_grade": 3.6,
+                "name": "Harrison to Brannan on Embarcadero",
+                "pr_time": 219,
+                "private": false,
+                "resource_state": 2,
+                "start_latitude": 37.789698,
+                "start_latlng": [
+                    37.789698,
+                    -122.388244
+                ],
+                "start_longitude": -122.388244,
+                "state": "CA"
+            },
+            "start_date": "2013-12-12T20:08:00Z",
+            "start_date_local": "2013-12-12T12:08:00Z",
+            "start_index": 892
+        }
+    ],
+    "splits_metric": [
+        {
+            "distance": 1002.9,
+            "elapsed_time": 395,
+            "elevation_difference": -2.0,
+            "moving_time": 369,
+            "split": 1
+        },
+        {
+            "distance": 1000.0,
+            "elapsed_time": 429,
+            "elevation_difference": -0.1,
+            "moving_time": 429,
+            "split": 2
+        },
+        {
+            "distance": 998.7,
+            "elapsed_time": 482,
+            "elevation_difference": -0.5,
+            "moving_time": 482,
+            "split": 3
+        },
+        {
+            "distance": 1000.2,
+            "elapsed_time": 620,
+            "elevation_difference": 0.6,
+            "moving_time": 620,
+            "split": 4
+        },
+        {
+            "distance": 1000.3,
+            "elapsed_time": 583,
+            "elevation_difference": 7.5,
+            "moving_time": 508,
+            "split": 5
+        },
+        {
+            "distance": 779.0,
+            "elapsed_time": 631,
+            "elevation_difference": -5.3,
+            "moving_time": 487,
+            "split": 6
+        }
+    ],
+    "splits_standard": [
+        {
+            "distance": 1613.2,
+            "elapsed_time": 622,
+            "elevation_difference": -2.2,
+            "moving_time": 596,
+            "split": 1
+        },
+        {
+            "distance": 1608.2,
+            "elapsed_time": 893,
+            "elevation_difference": -0.5,
+            "moving_time": 893,
+            "split": 2
+        },
+        {
+            "distance": 1609.2,
+            "elapsed_time": 926,
+            "elevation_difference": 3.4,
+            "moving_time": 851,
+            "split": 3
+        },
+        {
+            "distance": 950.5,
+            "elapsed_time": 699,
+            "elevation_difference": -0.5,
+            "moving_time": 555,
+            "split": 4
+        }
+    ],
+    "start_date": "2013-12-12T19:36:41Z",
+    "start_date_local": "2013-12-12T11:36:41Z",
+    "start_latitude": 37.781076,
+    "start_latlng": [
+        37.781076,
+        -122.395536
+    ],
+    "start_longitude": -122.395536,
+    "timezone": "(GMT-08:00) America/Los_Angeles",
+    "total_elevation_gain": 13.5,
+    "trainer": false,
+    "type": "Run",
+    "upload_id": 109244893,
+    "workout_type": null
+}
