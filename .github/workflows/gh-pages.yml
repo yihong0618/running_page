@@ -55,7 +55,7 @@ jobs:
       - run: |
           npm install
       - run: |
-          npm build
+          gatsby build
       - run: |
           cp -r assets/ public/static
 
