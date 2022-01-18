@@ -3,7 +3,7 @@
 </p>
 
 <h3 align="center">
-  <a href="https://yihong.run/running"> Create a personal running home page </a>
+  <a href="https://yihong.run"> Create a personal running home page </a>
 </h3>
 
 <p align="center">
