@@ -7357,6 +7357,11 @@ gaze@^1.0.0:
   dependencies:
     globule "^1.0.0"
 
+gcoord@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/gcoord/-/gcoord-0.3.2.tgz#57efe1535e1fe79095d0b2166600941c33438d42"
+  integrity sha512-LwhA+ev6fBXadAFprI+Q593TTC1QYa0Quewd3YUT51wQS2S6gekrC1YCQlJhKA8HpqCF+dX+fBcX/lkYM5Kgog==
+
 generate-robotstxt@^8.0.3:
   version "8.0.3"
   resolved "https://registry.npmjs.org/generate-robotstxt/-/generate-robotstxt-8.0.3.tgz#83384090406e760e9d02247412b2b704562c9b58"
