@@ -19,11 +19,11 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: only_gpx # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn, Please change the 'pass' it to your own
+  RUN_TYPE: keep # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn, Please change the 'pass' it to your own
   ATHLETE: WonSikin
   TITLE: Start to Run
-  MIN_GRID_DISTANCE: 5 # change min distance here
-  TITLE_GRID: Over 5km Runs # also here
+  MIN_GRID_DISTANCE: 2 # change min distance here
+  TITLE_GRID: Over 2km Runs # also here
   GITHUB_NAME: wonsikin
   GITHUB_EMAIL: fnghwsj@gmail.com
 
