@@ -62,8 +62,9 @@
     "check": "npx prettier --write *.{js,jsx,scss,json,md,yaml}",
     "ci": "yarn run check && yarn run build && yarn run test"
   },
+  "engineStrict": true,
   "engines": {
-    "node": ">=10.0.0 < 15.0.0"
+    "node": ">=14.15.0"
   },
   "repository": {
     "type": "git",
