@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: `/`, // Change to `/running_page` when running on github pages
+  pathPrefix: '/', // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'https://yihong.run',
@@ -57,7 +57,12 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-sass',
       options: {
-        precision: 8,
+        cssLoaderOptions: {
+          esModule: false,
+          modules: {
+            namedExport: false,
+          },
+        },
       },
     },
     {
