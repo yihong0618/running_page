@@ -78,7 +78,7 @@ const RunMap = ({
       />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
-          id="prvince"
+          id="province"
           type="fill"
           paint={{
             'fill-color': PROVINCE_FILL_COLOR,
