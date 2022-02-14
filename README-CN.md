@@ -137,7 +137,7 @@ siteMetadata: {
 ```
 * 修改 `src/utils/const.js` 文件中的样式： 
 ```javascript
-// styling: 虚线设置为 `true`
+// styling: 关闭虚线: 设置为 `false`
 const USE_DASH_LINE = true;
 // styling: 透明度: [0, 1]
 const LINE_OPACITY = 0.4;
