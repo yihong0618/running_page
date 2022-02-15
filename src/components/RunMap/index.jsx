@@ -61,7 +61,7 @@ const RunMap = ({
     [startLon, startLat] = points[0];
     [endLon, endLat] = points[points.length - 1];
   }
-  let dash = USE_DASH_LINE ? [2, 2] : [2, 0];
+  let dash = USE_DASH_LINE && !isSingleRun ? [2, 2] : [2, 0];
 
   return (
     <ReactMapGL
@@ -92,7 +92,7 @@ const RunMap = ({
             'line-color': MAIN_COLOR,
             'line-width': isBigMap ? 1 : 2,
             'line-dasharray': dash,
-            'line-opacity': LINE_OPACITY,
+            'line-opacity': isSingleRun ? 1 : LINE_OPACITY,
           }}
           layout={{
             'line-join': 'round',
