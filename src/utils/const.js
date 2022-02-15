@@ -10,6 +10,11 @@ const MUNICIPALITY_CITIES_ARR = [
   '澳门特别行政区',
 ];
 
+// styling: set to `true` if you want dash-line route
+const USE_DASH_LINE = true;
+// styling: route line opacity: [0, 1]
+const LINE_OPACITY = 0.4;
+
 // IF you outside China please make sure IS_CHINESE = false
 const IS_CHINESE = true;
 const USE_ANIMATION_FOR_GRID = false;
@@ -53,6 +58,8 @@ export {
   INFO_MESSAGE,
   RUN_TITLES,
   USE_ANIMATION_FOR_GRID,
+  USE_DASH_LINE,
+  LINE_OPACITY,
 };
 
 const nike = 'rgb(224,237,94)'; // if you want change the main color change here src/styles/variables.scss

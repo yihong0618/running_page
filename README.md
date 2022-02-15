@@ -110,7 +110,7 @@ const MAPBOX_TOKEN =
 
 ## Custom your page
 
-Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
+* Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
 
 ```javascript
 siteMetadata: {
@@ -129,6 +129,13 @@ siteMetadata: {
     },
   ],
 },
+```
+* Modifying styling in `src/utils/const.js`
+```javascript
+// styling: set to `false` if you want to disable dash-line route
+const USE_DASH_LINE = true;
+// styling: route line opacity: [0, 1]
+const LINE_OPACITY = 0.4;
 ```
 
 ## Download your running data and do not forget to [generate svg in `total` page](#Total-Data-Analysis).

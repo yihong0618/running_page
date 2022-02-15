@@ -115,7 +115,7 @@ const MAPBOX_TOKEN =
 
 ## 一些个性化选项
 
-在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
+* 在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
 
 ```javascript
 siteMetadata: {
@@ -135,7 +135,13 @@ siteMetadata: {
   ],
 },
 ```
-
+* 修改 `src/utils/const.js` 文件中的样式： 
+```javascript
+// styling: 关闭虚线: 设置为 `false`
+const USE_DASH_LINE = true;
+// styling: 透明度: [0, 1]
+const LINE_OPACITY = 0.4;
+```
 ## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据, [别忘了在 `total` 页面生成可视化 SVG](#Total-Data-Analysis).
 
 ### GPX
