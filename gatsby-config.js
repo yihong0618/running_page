@@ -2,17 +2,17 @@ module.exports = {
   pathPrefix: '/running_page', // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'Running Page',
-    siteUrl: 'http://run.5iwork.com',
+    siteUrl: 'http://blog.5iwork.com/upload/2021/06/handsome-2f8ccb094aae4f6db185d3b66d0ee81f.jpg',
     logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
-    description: 'Personal site and blog',
+    description: '跑步记录',
     navLinks: [
       {
         name: 'Blog',
         url: 'http://blog.5iwork.com',
       },
       {
-        name: 'About',
-        url: 'domain.5iwork.com',
+        name: 'Domain',
+        url: 'http://domain.5iwork.com',
       },
     ],
   },
