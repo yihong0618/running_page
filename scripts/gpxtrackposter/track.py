@@ -45,10 +45,11 @@ class Track:
                 raise TrackLoadError("Empty GPX file")
             with open(file_name, "r") as file:
                 self._load_gpx_data(mod_gpxpy.parse(file))
-        except:
+        except Exception as e:
             print(
                 f"Something went wrong when loading GPX. for file {self.file_names[0]}, we just ignore this file and continue"
             )
+            print(str(e))
             pass
 
     def load_from_db(self, activity):
@@ -204,7 +205,9 @@ class Track:
             "elapsed_time": datetime.timedelta(
                 seconds=(moving_data.moving_time + moving_data.stopped_time)
             ),
-            "average_speed": moving_data.moving_distance / moving_data.moving_time,
+            "average_speed": moving_data.moving_distance / moving_data.moving_time
+            if moving_data.moving_time
+            else 0,
         }
 
     def to_namedtuple(self):

@@ -20,7 +20,7 @@ import {
   titleForShow,
 } from 'src/utils/utils';
 
-export default () => {
+const Index = () => {
   const { siteTitle } = useSiteMetadata();
   const { activities, thisYear } = useActivities();
   const [year, setYear] = useState(thisYear);
@@ -209,3 +209,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default Index;

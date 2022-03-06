@@ -3,7 +3,7 @@
 </p>
 
 <h3 align="center">
-  <a href="https://yihong.run/running"> Create a personal running home page </a>
+  <a href="https://yihong.run"> Create a personal running home page </a>
 </h3>
 
 <p align="center">
@@ -43,9 +43,12 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [L1cardo](https://github.com/L1cardo)           | https://run.licardo.cn                     | Nike      |
 | [luckylele666](https://github.com/luckylele666) | https://0000928.xyz                        | Strava    |
 | [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
-| [Jim Gao](https://github.com/tianheg)             | https://run.yidajiabei.xyz/ | Keep |
+| [Jim Gao](https://github.com/tianheg)           | https://run.yidajiabei.xyz/                | Keep      |
 | [Eished](https://github.com/eished)             | https://run.iknow.fun                      | Keep      |
-| [Liuxin](https://github.com/liuxindtc)             | https://liuxin.run                   |  Nike      |
+| [Liuxin](https://github.com/liuxindtc)          | https://liuxin.run                         | Nike      |
+| [loucx](https://github.com/loucx)               | https://loucx.github.io/running            | Nike      |
+| [winf42](https://github.com/winf42)             | https://winf42.github.io                   | Garmin-cn |
+| [sun0225SUN](https://github.com/sun0225SUN)     | https://run.sunguoqi.com                   | Nike      |
 
 ## How it works
 
@@ -82,7 +85,7 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git
 ```
 
-## Installation and testing
+## Installation and testing (node >= 12 and <= 14 python >= 3.6)
 
 ```
 pip3 install -r requirements.txt
@@ -107,7 +110,7 @@ const MAPBOX_TOKEN =
 
 ## Custom your page
 
-Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
+* Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
 
 ```javascript
 siteMetadata: {
@@ -126,6 +129,13 @@ siteMetadata: {
     },
   ],
 },
+```
+* Modifying styling in `src/utils/const.js`
+```javascript
+// styling: set to `false` if you want to disable dash-line route
+const USE_DASH_LINE = true;
+// styling: route line opacity: [0, 1]
+const LINE_OPACITY = 0.4;
 ```
 
 ## Download your running data and do not forget to [generate svg in `total` page](#Total-Data-Analysis).
@@ -460,6 +470,11 @@ Before submitting PR:
 - @[geekplux](https://github.com/geekplux) Friendly help and encouragement, refactored the whole front-end code, learned a lot
 - @[MFYDev](https://github.com/MFYDev) Wiki
 
+# Recommended Forks
+
+- @[gongzili456](https://github.com/gongzili456) for [motorcycle version](https://github.com/gongzili456/running_page)
+- @[ben-29](https://github.com/ben-29) for [different types support](https://github.com/ben-29/workouts_page)
+- @[geekplux](https://github.com/geekplux) for [different types support](https://github.com/geekplux/activities)
 # Support
 
 No need sponsor, just enjoy it.
