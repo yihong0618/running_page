@@ -28,6 +28,7 @@ TYPE_DICT = {
     "cycling": "Ride",
     "CYCLING": "Ride",
     "Ride": "Ride",
+    "VirtualRide": "VirtualRide",
     "indoor_cycling": "Indoor Ride",
     "walking": "Hike",
     "hiking": "Hike",
@@ -39,7 +40,7 @@ TYPE_DICT = {
     "flight": "Flight",
 }
 
-MAPPING_TYPE = ["Hike", "Ride", "Rowing", "Run", "Swim", "RoadTrip"]
+MAPPING_TYPE = ["Hike", "Ride", "VirtualRide", "Rowing", "Run", "Swim", "RoadTrip"]
 
 
 try:
