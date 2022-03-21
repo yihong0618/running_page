@@ -5,8 +5,8 @@ import styles from './style.module.scss';
 
 const SVGStat = () => (
   <div>
-    <GitHubSvg className={styles.runSVG} />
     <GridSvg className={styles.runSVG} />
+    <GitHubSvg className={styles.runSVG} />
   </div>
 );
 

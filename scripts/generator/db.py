@@ -3,6 +3,7 @@ import random
 import string
 import time
 
+from config import TYPE_DICT
 from geopy.geocoders import Nominatim
 from sqlalchemy import Column, Float, Integer, Interval, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -36,6 +37,7 @@ ACTIVITY_KEYS = [
     "summary_polyline",
     "average_heartrate",
     "average_speed",
+    "source",
 ]
 
 
@@ -55,6 +57,7 @@ class Activity(Base):
     average_heartrate = Column(Float)
     average_speed = Column(Float)
     streak = None
+    source = Column(String)
 
     def to_dict(self):
         out = {}
@@ -77,6 +80,10 @@ def update_or_create_activity(session, run_activity):
         activity = (
             session.query(Activity).filter_by(run_id=int(run_activity.id)).first()
         )
+        type = run_activity.type
+        source = run_activity.source if hasattr(run_activity, "source") else "gpx"
+        if run_activity.type in TYPE_DICT:
+            type = TYPE_DICT[run_activity.type]
         if not activity:
             start_point = run_activity.start_latlng
             location_country = getattr(run_activity, "location_country", "")
@@ -103,13 +110,14 @@ def update_or_create_activity(session, run_activity):
                 distance=run_activity.distance,
                 moving_time=run_activity.moving_time,
                 elapsed_time=run_activity.elapsed_time,
-                type=run_activity.type,
+                type=type,
                 start_date=run_activity.start_date,
                 start_date_local=run_activity.start_date_local,
                 location_country=location_country,
                 average_heartrate=run_activity.average_heartrate,
                 average_speed=float(run_activity.average_speed),
                 summary_polyline=run_activity.map.summary_polyline,
+                source=source,
             )
             session.add(activity)
             created = True
@@ -118,10 +126,11 @@ def update_or_create_activity(session, run_activity):
             activity.distance = float(run_activity.distance)
             activity.moving_time = run_activity.moving_time
             activity.elapsed_time = run_activity.elapsed_time
-            activity.type = run_activity.type
+            activity.type = type
             activity.average_heartrate = run_activity.average_heartrate
             activity.average_speed = float(run_activity.average_speed)
             activity.summary_polyline = run_activity.map.summary_polyline
+            activity.source = source
     except Exception as e:
         print(f"something wrong with {run_activity.id}")
         print(str(e))

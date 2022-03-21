@@ -283,6 +283,7 @@ class Joyrun:
             ),
             "average_speed": run_data["meter"] / run_data["second"],
             "location_country": location_country,
+            "source": "Joyrun",
         }
         return namedtuple("x", d.keys())(*d.values())
 

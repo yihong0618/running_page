@@ -35,6 +35,9 @@ class Track:
         self.moving_dict = {}
         self.run_id = 0
         self.start_latlng = []
+        self.type = ""
+        self.source = ""
+        self.name = ""
 
     def load_gpx(self, file_name):
         try:
@@ -213,8 +216,8 @@ class Track:
     def to_namedtuple(self):
         d = {
             "id": self.run_id,
-            "name": "run from gpx",  # maybe change later
-            "type": "Run",  # Run for now only support run for now maybe change later
+            "name": self.name,
+            "type": self.type,
             "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
             "start_date_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
@@ -225,6 +228,7 @@ class Track:
             else None,
             "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,
+            "source": self.source,
         }
         d.update(self.moving_dict)
         # return a nametuple that can use . to get attr

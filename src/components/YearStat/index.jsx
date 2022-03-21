@@ -1,5 +1,6 @@
 import React from 'react';
 import Stat from 'src/components/Stat';
+import WorkoutStat from 'src/components/WorkoutStat';
 import useActivities from 'src/hooks/useActivities';
 import useHover from 'src/hooks/useHover';
 import { formatPace } from 'src/utils/utils';
@@ -21,16 +22,19 @@ const YearStat = ({ year, onClick }) => {
   }
   let sumDistance = 0;
   let streak = 0;
-  let pace = 0;
-  let paceNullCount = 0;
   let heartRate = 0;
   let heartRateNullCount = 0;
+  const workoutsCounts = {};
+
   runs.forEach((run) => {
     sumDistance += run.distance || 0;
     if (run.average_speed) {
-      pace += run.average_speed;
-    } else {
-      paceNullCount++;
+      if(workoutsCounts[run.type]){
+        var [oriCount, oriAvgSpd, oriDistance] = workoutsCounts[run.type]
+        workoutsCounts[run.type] = [oriCount + 1, oriAvgSpd + run.average_speed, oriDistance + run.distance]
+      }else{
+        workoutsCounts[run.type] = [1, run.average_speed, run.distance]
+      }
     }
     if (run.average_heartrate) {
       heartRate += run.average_heartrate;
@@ -42,11 +46,15 @@ const YearStat = ({ year, onClick }) => {
     }
   });
   sumDistance = (sumDistance / 1000.0).toFixed(1);
-  const avgPace = formatPace(pace / (runs.length - paceNullCount));
   const hasHeartRate = !(heartRate === 0);
   const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
     0
   );
+
+  const workoutsArr = Object.entries(workoutsCounts);
+  workoutsArr.sort((a, b) => {
+    return b[1][0] - a[1][0]
+  });
   return (
     <div
       style={{ cursor: 'pointer' }}
@@ -55,9 +63,16 @@ const YearStat = ({ year, onClick }) => {
     >
       <section>
         <Stat value={year} description=" Journey" />
-        <Stat value={runs.length} description=" Runs" />
+
+        {workoutsArr.map(([type, count]) => (
+          <WorkoutStat
+            value={count[0]}
+            description={` ${type}`+"s"}
+            pace={formatPace(count[1] / count[0])}
+            /* distance={(count[2]/1000).toFixed(1)} */
+          />
+        ))}
         <Stat value={sumDistance} description=" KM" />
-        <Stat value={avgPace} description=" Avg Pace" />
         <Stat
           value={`${streak} day`}
           description=" Streak"

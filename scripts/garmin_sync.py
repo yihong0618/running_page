@@ -7,10 +7,10 @@ Copy most code from https://github.com/cyberjunky/python-garminconnect
 
 import argparse
 import asyncio
+import json
 import logging
 import os
 import re
-import json
 import sys
 import time
 import traceback
@@ -20,7 +20,7 @@ import cloudscraper
 import httpx
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, config
 
-from utils import make_activities_file
+from utils import make_activities_file_only
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -50,6 +50,10 @@ GARMIN_CN_URL_DICT = {
     "UPLOAD_URL": "https://connect.garmin.cn/modern/proxy/upload-service/upload/.gpx",
     "ACTIVITY_URL": "https://connect.garmin.cn/proxy/activity-service/activity/{activity_id}",
 }
+
+# set to True if you want to sync all time activities
+# default only sync last 20
+GET_ALL = False
 
 
 class Garmin:
@@ -165,7 +169,7 @@ class Garmin:
                     % err
                 )
                 self.login()
-                await self.fetch_data(url, retrying=True)
+                return await self.fetch_data(url, retrying=True)
 
     async def get_activities(self, start, limit):
         """
@@ -265,13 +269,22 @@ async def download_garmin_gpx(client, activity_id):
 
 
 async def get_activity_id_list(client, start=0):
-    activities = await client.get_activities(start, 100)
-    if len(activities) > 0:
-        ids = list(map(lambda a: str(a.get("activityId", "")), activities))
-        print(f"Syncing Activity IDs")
-        return ids + await get_activity_id_list(client, start + 100)
+    if GET_ALL:
+        activities = await client.get_activities(start, 100)
+        if len(activities) > 0:
+            ids = list(map(lambda a: str(a.get("activityId", "")), activities))
+            print(f"Syncing Activity IDs")
+            return ids + await get_activity_id_list(client, start + 100)
+        else:
+            return []
     else:
-        return []
+        activities = await client.get_activities(start, 20)
+        if len(activities) > 0:
+            ids = list(map(lambda a: str(a.get("activityId", "")), activities))
+            print(f"Syncing Activity IDs")
+            return ids
+        else:
+            return []
 
 
 async def gather_with_concurrency(n, tasks):
@@ -333,7 +346,7 @@ if __name__ == "__main__":
             10, [download_garmin_gpx(client, id) for id in to_generate_garmin_ids]
         )
         print(f"Download finished. Elapsed {time.time()-start_time} seconds")
-        make_activities_file(SQL_FILE, GPX_FOLDER, JSON_FILE)
+        make_activities_file_only(SQL_FILE, GPX_FOLDER, JSON_FILE)
         await client.req.aclose()
 
     loop = asyncio.get_event_loop()

@@ -1,6 +1,6 @@
 import React from 'react';
 import { MAIN_COLOR } from 'src/utils/const';
-import { formatPace, titleForRun, formatRunTime  } from 'src/utils/utils';
+import { formatPace, titleForRun, colorFromType, formatRunTime } from 'src/utils/utils';
 import styles from './style.module.scss';
 
 const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
@@ -11,6 +11,8 @@ const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
 
   const heartRate = run.average_heartrate;
 
+  const type = run.type;
+
   const runTime = formatRunTime(distance,pace);
 
   // change click color
@@ -20,7 +22,7 @@ const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
 
     const elements = document.getElementsByClassName(styles.runRow);
     if (runIndex !== -1 && elementIndex !== runIndex) {
-      elements[runIndex].style.color = MAIN_COLOR;
+      elements[runIndex].style.color = colorFromType(runs[runIndex].type);
     }
     setRunIndex(elementIndex);
   };
@@ -33,8 +35,10 @@ const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
         handleClick(e, runs, run);
         locateActivity(run);
       }}
+      style={{color: colorFromType(type)}}
     >
-      <td>{titleForRun(run)}</td>
+      <td>{run.name}</td>
+      <td>{type}</td>
       <td>{distance}</td>
       {pace && <td>{paceParts}</td>}
       <td>{heartRate && heartRate.toFixed(0)}</td>

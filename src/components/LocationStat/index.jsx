@@ -8,7 +8,7 @@ import CitiesStat from './CitiesStat';
 import LocationSummary from './LocationSummary';
 import PeriodStat from './PeriodStat';
 
-const LocationStat = ({ changeYear, changeCity, changeTitle }) => (
+const LocationStat = ({ changeYear, changeCity, changeType }) => (
   <div className="fl w-100 w-30-l pb5 pr5-l">
     <section className="pb4" style={{ paddingBottom: '0rem' }}>
       <p style={{ lineHeight: 1.8 }}>
@@ -25,7 +25,7 @@ const LocationStat = ({ changeYear, changeCity, changeTitle }) => (
     <hr color="red" />
     <LocationSummary />
     <CitiesStat onClick={changeCity} />
-    <PeriodStat onClick={changeTitle} />
+    <PeriodStat onClick={changeType} />
     <YearStat year="Total" onClick={changeYear} />
   </div>
 );

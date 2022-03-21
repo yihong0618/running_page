@@ -7,6 +7,7 @@ import {
   MAIN_COLOR,
   MAPBOX_TOKEN,
   PROVINCE_FILL_COLOR,
+  COUNTRY_FILL_COLOR,
   USE_DASH_LINE,
   LINE_OPACITY,
 } from 'src/utils/const';
@@ -24,10 +25,10 @@ const RunMap = ({
   thisYear,
   mapButtonYear,
 }) => {
-  const { provinces } = useActivities();
+  const { countries, provinces } = useActivities();
   const addControlHandler = (event) => {
     const map = event && event.target;
-    // set lauguage to Chinese if you use English please comment it
+    // set language to Chinese if you use English please comment it
     if (map && IS_CHINESE) {
       map.addControl(
         new MapboxLanguage({
@@ -41,8 +42,10 @@ const RunMap = ({
     }
   };
   const filterProvinces = provinces.slice();
+  const filterCountries = countries.slice();
   // for geojson format
   filterProvinces.unshift('in', 'name');
+  filterCountries.unshift('in', 'name');
 
   const isBigMap = viewport.zoom <= 3;
   if (isBigMap && IS_CHINESE) {
@@ -82,14 +85,24 @@ const RunMap = ({
           type="fill"
           paint={{
             'fill-color': PROVINCE_FILL_COLOR,
+            'fill-opacity': 0.2,
           }}
           filter={filterProvinces}
+        />
+        <Layer
+          id="countries"
+          type="fill"
+          paint={{
+            'fill-color': COUNTRY_FILL_COLOR,
+            'fill-opacity': 0.5,
+          }}
+          filter={filterCountries}
         />
         <Layer
           id="runs2"
           type="line"
           paint={{
-            'line-color': MAIN_COLOR,
+            'line-color': ['get', 'color'],
             'line-width': isBigMap ? 1 : 2,
             'line-dasharray': dash,
             'line-opacity': isSingleRun ? 1 : LINE_OPACITY,

@@ -20,6 +20,7 @@ const useActivities = () => {
             start_date_local
             streak
             summary_polyline
+            source
           }
         }
       }
@@ -29,6 +30,7 @@ const useActivities = () => {
   const activities = allActivitiesJson.nodes;
   const cities = {};
   const runPeriod = {};
+  const workoutsCounts = {};
   const provinces = new Set();
   const countries = new Set();
   let years = new Set();
@@ -43,6 +45,10 @@ const useActivities = () => {
         ? runPeriod[periodName] + 1
         : 1;
     }
+
+    workoutsCounts[run.type] = workoutsCounts[run.type]
+    ? workoutsCounts[run.type] + 1
+    : 1;
 
     const { city, province, country } = location;
     // drop only one char city
@@ -65,6 +71,7 @@ const useActivities = () => {
     provinces: [...provinces],
     cities,
     runPeriod,
+    workoutsCounts,
     thisYear,
   };
 };

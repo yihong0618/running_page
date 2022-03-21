@@ -15,6 +15,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       start_date_local: Date
       streak: Float
       summary_polyline: String
+      source: String
     }
   `;
   createTypes(typeDefs);
