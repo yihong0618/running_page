@@ -77,12 +77,14 @@ const IKB = 'rgb(0,47,167)';
 const wpink = 'rgb(228,212,220)';
 const gold = 'rgb(242,190,69)';
 const purple = 'rgb(154,118,252)';
+const veryPeri = 'rgb(105,106,173)';//长春花蓝
 
 // If your map has an offset please change this line
 // issues #92 and #198
 export const NEED_FIX_MAP = false;
 export const MAIN_COLOR = yellow;
 export const RIDE_COLOR = green;
+export const VIRTUAL_RIDE_COLOR = veryPeri;
 export const HIKE_COLOR = pink;
 export const SWIM_COLOR = gold;
 export const ROWING_COLOR = cyan;

@@ -98,5 +98,35 @@ python3(python) scripts/xingzhe_sync.py w0xxx 185000 --from-auth-token
 
 </details>
 
+### 自驾(Google路书)
+
+<details>
+<summary>导入谷歌地图的KML路书</summary>
+
+1. 使用 [谷歌地图](https://www.google.com/maps/d/) ，创建地图(路线放到同一个图层)
+2. 把图层导出为KML文件
+3. 把kml文件重命名为 `import.kml`, 放到 `scripts`目录
+4. 修改`scripts/kml2polyline.py`, 填入路线相关信息
+  ```
+  # TODO modify here
+  # 路线名称
+  track.name = "2020-10 西藏 Road Trip"
+  # 开始/结束时间 年月日时分
+  track.start_time = datetime(2020, 9, 29, 10, 0)
+  track.end_time = datetime(2020, 10, 10, 18, 0)
+  # 总路程
+  distance = 4000  # KM
+  # 总天数
+  days = 12
+  # 平均每天自驾时长
+  hours_per_day = 6
+  ```
+5. 控制台执行以下脚本
+  ```python
+  python3(python) scripts\kml2polyline.py
+  ```
+
+</details>
+
 # 致谢
 - @[yihong0618](https://github.com/yihong0618) 特别棒的项目 [running_page](https://github.com/yihong0618/running_page) 非常感谢

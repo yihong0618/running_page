@@ -10,6 +10,7 @@ This project is based on [running_page](https://github.com/yihong0618/running_pa
 1. support new apps
     - **[Codoon（咕咚）](#codoon咕咚)** (Couldn't automate for its limitation from server side)
     - **[Xingzhe（行者）](#xingzhe行者)**
+1. support [RoadTrip(GoogleMaps)](#roadtripgooglemaps) , show Road Trip in maps
 
 
 
@@ -78,6 +79,35 @@ example：
 python3(python) scripts/xingzhe_sync.py w0xxx 185000 --from-auth-token
 ```
 
+</details>
+
+### RoadTrip(GoogleMaps)
+
+<details>
+<summary>Import KMl from Google Maps</summary>
+
+1. Create map in  [Google Maps](https://www.google.com/maps/d/) (keep route in one Layer)
+2. Export Layer to KML file
+3. Rename the file to `import.kml` and place it into `scripts`
+4. Modify `scripts/kml2polyline.py`, fill in the trip info
+  ```
+  # TODO modify here
+  # trip name
+  track.name = "2020-10 Tibet Road Trip"
+  # start/end time Year-Month-Day-Hour-Minute
+  track.start_time = datetime(2020, 9, 29, 10, 0)
+  track.end_time = datetime(2020, 10, 10, 18, 0)
+  # total distance
+  distance = 4000  # KM
+  # total days
+  days = 12
+  # average daily distacnce
+  hours_per_day = 6
+  ```
+5. Execute in Console
+  ```python
+  python3(python) scripts\kml2polyline.py
+  ```
 </details>
 
 # Special thanks
