@@ -10,6 +10,7 @@ import os
 from collections import namedtuple
 
 import gpxpy as mod_gpxpy
+import lxml
 import polyline
 import s2sphere as s2
 
@@ -93,16 +94,44 @@ class Track:
         gpx.simplify()
         polyline_container = []
         heart_rate_list = []
+        # determinate type
+        if gpx.tracks[0].type:
+            self.type = gpx.tracks[0].type
+        # determinate source
+        if gpx.creator:
+            self.source = gpx.creator
+        elif gpx.tracks[0].source:
+            self.source = gpx.tracks[0].source
+        if self.source == "xingzhe":
+            self.start_time_local = self.start_time
+            self.run_id = gpx.tracks[0].number
+        # determinate name
+        if gpx.name:
+            self.name = gpx.name
+        elif gpx.tracks[0].name:
+            self.name = gpx.tracks[0].name
+        else:
+            self.name = self.type + " from " + self.source
+
         for t in gpx.tracks:
             for s in t.segments:
                 try:
+                    extensions = [
+                        {
+                            lxml.etree.QName(child).localname: child.text
+                            for child in p.extensions[0]
+                        }
+                        for p in s.points
+                        if p.extensions
+                    ]
                     heart_rate_list.extend(
                         [
-                            int(p.extensions[0].getchildren()[0].text)
-                            for p in s.points
-                            if p.extensions
+                            int(p["hr"]) if p.__contains__("hr") else None
+                            for p in extensions
+                            if extensions
                         ]
                     )
+                    heart_rate_list = list(filter(None, heart_rate_list))
                 except:
                     pass
                 line = [
