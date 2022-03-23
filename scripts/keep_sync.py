@@ -122,6 +122,7 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
         ),
         "average_speed": run_data["distance"] / run_data["duration"],
         "location_country": str(run_data.get("region", "")),
+        "source": "Keep",
     }
     return namedtuple("x", d.keys())(*d.values())
 
