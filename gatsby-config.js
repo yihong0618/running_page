@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: '/running_page', // Change to `/running_page` when running on github pages
+  pathPrefix: '/', // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'http://blog.5iwork.com/upload/2021/06/handsome-2f8ccb094aae4f6db185d3b66d0ee81f.jpg',
