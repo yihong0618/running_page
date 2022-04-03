@@ -48,6 +48,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [loucx](https://github.com/loucx)               | https://loucx.github.io/running            | Nike      |
 | [winf42](https://github.com/winf42)             | https://winf42.github.io                   | Garmin-cn |
 | [sun0225SUN](https://github.com/sun0225SUN)     | https://run.sunguoqi.com                   | Nike      |
+| [Zhan](https://www.zlog.in/about)               | https://run.zlog.in                        | Nike      |
 
 ## 它是怎么工作的
 
