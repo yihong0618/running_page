@@ -3,7 +3,7 @@ module.exports = {
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'http://blog.5iwork.com/upload/2021/06/handsome-2f8ccb094aae4f6db185d3b66d0ee81f.jpg',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
+    logo: 'http://blog.5iwork.com/upload/2021/06/handsome-2f8ccb094aae4f6db185d3b66d0ee81f.jpg',
     description: '跑步记录',
     navLinks: [
       {
