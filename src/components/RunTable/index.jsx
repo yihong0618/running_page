@@ -14,13 +14,13 @@ const RunTable = ({
   const [sortFuncInfo, setSortFuncInfo] = useState('');
   // TODO refactor?
   const sortKMFunc = (a, b) =>
-    sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance;
+    sortFuncInfo === '公里' ? a.distance - b.distance : b.distance - a.distance;
   const sortPaceFunc = (a, b) =>
-    sortFuncInfo === 'Pace'
+    sortFuncInfo === '配速'
       ? a.average_speed - b.average_speed
       : b.average_speed - a.average_speed;
   const sortBPMFunc = (a, b) =>
-    sortFuncInfo === 'BPM'
+    sortFuncInfo === '心率'
       ? a.average_heartrate - b.average_heartrate
       : b.average_heartrate - a.average_heartrate;
   const sortRunTimeFunc = (a, b) => {
@@ -32,7 +32,7 @@ const RunTable = ({
     const bDistance = (b.distance / 1000.0).toFixed(1);
     const aPace = (1000.0 / 60.0) * (1.0 / a.average_speed);
     const bPace = (1000.0 / 60.0) * (1.0 / b.average_speed);
-    if (sortFuncInfo === 'Time') {
+    if (sortFuncInfo === '跑步日期') {
       return aDistance * aPace - bDistance * bPace;
     } else {
       return bDistance * bPace - aDistance * aPace;
