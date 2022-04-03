@@ -2,8 +2,8 @@ module.exports = {
   pathPrefix: '/', // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'Running Page',
-    siteUrl: 'http://blog.5iwork.com/upload/2021/06/handsome-2f8ccb094aae4f6db185d3b66d0ee81f.jpg',
-    logo: 'http://blog.5iwork.com/upload/2021/06/handsome-2f8ccb094aae4f6db185d3b66d0ee81f.jpg',
+    siteUrl: 'https://github.com/wwwwwfp/running_page/blob/master/src/images/head.jpg',
+    logo: 'https://github.com/wwwwwfp/running_page/blob/master/src/images/head.jpg',
     description: '跑步记录',
     navLinks: [
       {
