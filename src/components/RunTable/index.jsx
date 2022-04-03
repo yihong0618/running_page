@@ -14,13 +14,13 @@ const RunTable = ({
   const [sortFuncInfo, setSortFuncInfo] = useState('');
   // TODO refactor?
   const sortKMFunc = (a, b) =>
-    sortFuncInfo === '公里' ? a.distance - b.distance : b.distance - a.distance;
+    sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance;
   const sortPaceFunc = (a, b) =>
-    sortFuncInfo === '配速'
+    sortFuncInfo === 'Pace'
       ? a.average_speed - b.average_speed
       : b.average_speed - a.average_speed;
   const sortBPMFunc = (a, b) =>
-    sortFuncInfo === '心率'
+    sortFuncInfo === 'BPM'
       ? a.average_heartrate - b.average_heartrate
       : b.average_heartrate - a.average_heartrate;
   const sortRunTimeFunc = (a, b) => {
@@ -32,7 +32,7 @@ const RunTable = ({
     const bDistance = (b.distance / 1000.0).toFixed(1);
     const aPace = (1000.0 / 60.0) * (1.0 / a.average_speed);
     const bPace = (1000.0 / 60.0) * (1.0 / b.average_speed);
-    if (sortFuncInfo === '跑步日期') {
+    if (sortFuncInfo === 'Time') {
       return aDistance * aPace - bDistance * bPace;
     } else {
       return bDistance * bPace - aDistance * aPace;
@@ -41,11 +41,11 @@ const RunTable = ({
   const sortDateFuncClick =
     sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
   const sortFuncMap = new Map([
-    ['KM', sortKMFunc],
-    ['Pace', sortPaceFunc],
-    ['BPM', sortBPMFunc],
-    ['Time', sortRunTimeFunc],
-    ['Date', sortDateFuncClick],
+    ['公里', sortKMFunc],
+    ['配速', sortPaceFunc],
+    ['心率', sortBPMFunc],
+    ['时长', sortRunTimeFunc],
+    ['开始时间', sortDateFuncClick],
   ]);
   const handleClick = (e) => {
     const funcName = e.target.innerHTML;
