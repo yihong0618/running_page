@@ -10,9 +10,9 @@ const MUNICIPALITY_CITIES_ARR = [
 ];
 
 // styling: set to `true` if you want dash-line route
-const USE_DASH_LINE = true;
+const USE_DASH_LINE = false;
 // styling: route line opacity: [0, 1]
-const LINE_OPACITY = 0.4;
+const LINE_OPACITY = 1;
 
 // IF you outside China please make sure IS_CHINESE = false
 const IS_CHINESE = true;
@@ -65,6 +65,6 @@ const nike = 'rgb(224,237,94)'; // if you want change the main color change here
 
 // If your map has an offset please change this line
 // issues #92 and #198
-export const NEED_FIX_MAP = true;
+export const NEED_FIX_MAP = false;
 export const MAIN_COLOR = nike;
 export const PROVINCE_FILL_COLOR = '#47b8e0';
