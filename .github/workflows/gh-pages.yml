@@ -69,7 +69,7 @@ jobs:
           # Build directory to deploy
           build_dir: public
           # Write the given domain name to the CNAME file
-          fqdn: run.5iwork.com # optional
+          fqdn: ran.5iwork.com # optional
           # Prevent Jekyll from building the site
           jekyll: false
         env:
