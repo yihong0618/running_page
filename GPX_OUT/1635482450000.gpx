@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="gpx.py -- https://github.com/tkrajina/gpxpy">
+  <trk>
+    <trkseg>
+      <trkpt lat="30.277895936742425" lon="120.0226089823991">
+        <ele>7</ele>
+        <time>2021-10-29T04:17:14Z</time>
+      </trkpt>
+      <trkpt lat="30.27798998169601" lon="120.02268592827022">
+        <ele>7</ele>
+        <time>2021-10-29T04:24:09Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>165</gpxtpx:hr>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="30.27788495644927" lon="120.02259992994368">
+        <ele>7</ele>
+        <time>2021-10-29T04:24:16Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>141</gpxtpx:hr>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="30.27790892869234" lon="120.02261895686388">
+        <ele>7</ele>
+        <time>2021-10-29T04:40:41Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>144</gpxtpx:hr>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="30.277833994477987" lon="120.02255693078041">
+        <time>2021-10-29T04:40:50Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
