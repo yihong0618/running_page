@@ -37,7 +37,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [wh1994](https://github.com/wh1994)             | https://run4life.fun                       | Garmin    |
 | [liuyihui](https://github.com/YiHui-Liu)        | https://run.foolishfox.cn                  | Keep      |
 | [FrankSun](https://github.com/hi-franksun)      | https://hi-franksun.github.io/running_page | Nike      |
-| [AhianZhang](https://github.com/AhianZhang)     | https://running.ahianzhang.com             | Keep      |
+| [AhianZhang](https://github.com/AhianZhang)     | https://running.ahianzhang.com             | Nike      |
 | [L1cardo](https://github.com/L1cardo)           | https://run.licardo.cn                     | Nike      |
 | [luckylele666](https://github.com/luckylele666) | https://0000928.xyz                        | Strava    |
 | [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
