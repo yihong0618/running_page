@@ -14,6 +14,8 @@ const MUNICIPALITY_CITIES_ARR = [
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
+// styling: map height
+const MAP_HEIGHT = 600;
 
 // IF you outside China please make sure IS_CHINESE = false
 const IS_CHINESE = true;
@@ -66,6 +68,7 @@ export {
   USE_ANIMATION_FOR_GRID,
   USE_DASH_LINE,
   LINE_OPACITY,
+  MAP_HEIGHT,
 };
 
 const nike = 'rgb(224,237,94)';
