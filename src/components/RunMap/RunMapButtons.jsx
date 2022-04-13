@@ -17,6 +17,7 @@ const RunMapButtons = ({ changeYear, thisYear, mapButtonYear }) => {
       elements[index].style.color = 'white';
     }
     setIndex(elementIndex);
+    changeYear(year);
   };
   return (
     <div>
@@ -26,10 +27,7 @@ const RunMapButtons = ({ changeYear, thisYear, mapButtonYear }) => {
             key={`${year}button`}
             style={{ color: year === thisYear ? MAIN_COLOR : 'white' }}
             year={year}
-            onClick={(e) => {
-              changeYear(year);
-              handleClick(e, year);
-            }}
+            onClick={(e) => handleClick(e, year)}
             className={styles.button}
           >
             {year}

@@ -25,16 +25,14 @@ const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
       elements[runIndex].style.color = colorFromType(runs[runIndex].type);
     }
     setRunIndex(elementIndex);
+    locateActivity(run);
   };
 
   return (
     <tr
       className={styles.runRow}
       key={run.start_date_local}
-      onClick={(e) => {
-        handleClick(e, runs, run);
-        locateActivity(run);
-      }}
+      onClick={(e) => handleClick(e, runs, run) }
       style={{color: colorFromType(type)}}
     >
       <td>{run.name}</td>

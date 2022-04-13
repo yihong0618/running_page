@@ -42,10 +42,10 @@ const Index = () => {
   });
 
   const changeByItem = (item, name, func) => {
-    scrollToMap();
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setTitle(`${item} ${name} Map`);
     setRunIndex(-1);
+    scrollToMap();
   };
 
   const changeYear = (y) => {
@@ -171,11 +171,10 @@ const Index = () => {
   return (
     <Layout>
       <div className="mb5">
-        <div className="w-100">
+        <div className="fl w-30-l">
           <h1 className="f1 fw9 i">
             <a href="/">{siteTitle}</a>
           </h1>
-        </div>
         {viewport.zoom <= 3 && IS_CHINESE ? (
           <LocationStat
             changeYear={changeYear}
@@ -185,6 +184,7 @@ const Index = () => {
         ) : (
           <YearsStat year={year} onClick={changeYear} />
         )}
+        </div>
         <div className="fl w-100 w-70-l">
           <RunMap
             runs={runs}

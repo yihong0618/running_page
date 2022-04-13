@@ -45,7 +45,6 @@ const YearStat = ({ year, onClick }) => {
       streak = Math.max(streak, run.streak);
     }
   });
-  sumDistance = (sumDistance / 1000.0).toFixed(1);
   const hasHeartRate = !(heartRate === 0);
   const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
     0
@@ -63,16 +62,21 @@ const YearStat = ({ year, onClick }) => {
     >
       <section>
         <Stat value={year} description=" Journey" />
-
-        {workoutsArr.map(([type, count]) => (
+        { sumDistance > 0 &&
+          <WorkoutStat
+            value={runs.length}
+            description={" Total"}
+            distance={(sumDistance / 1000.0).toFixed(0)}
+          />
+        }
+        { workoutsArr.map(([type, count]) => (
           <WorkoutStat
             value={count[0]}
             description={` ${type}`+"s"}
-            pace={formatPace(count[1] / count[0])}
-            /* distance={(count[2]/1000).toFixed(1)} */
+            // pace={formatPace(count[1] / count[0])}
+            distance={(count[2]/1000).toFixed(0)}
           />
         ))}
-        <Stat value={sumDistance} description=" KM" />
         <Stat
           value={`${streak} day`}
           description=" Streak"

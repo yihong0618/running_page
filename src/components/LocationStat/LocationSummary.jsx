@@ -8,7 +8,7 @@ const LocationSummary = () => {
   return (
     <div style={{ cursor: 'pointer' }}>
       <section>
-        {years && <Stat value={`${years.length}`} description=" 年里我跑过" />}
+        {years && <Stat value={`${years.length}`} description=" 年里我走过" />}
         {countries && <Stat value={countries.length} description=" 个国家" />}
         {provinces && <Stat value={provinces.length} description=" 个省份" />}
         {cities && (
