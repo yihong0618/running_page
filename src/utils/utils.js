@@ -13,7 +13,8 @@ import {
   SWIM_COLOR,
   ROWING_COLOR,
   ROAD_TRIP_COLOR,
-  FLIGHT_COLOR
+  FLIGHT_COLOR,
+  RUN_COLOR
 } from './const';
 
 const titleForShow = (run) => {
@@ -169,7 +170,7 @@ const titleForRun = (run) => {
 const colorFromType = (workoutType) => {
   switch (workoutType) {
     case 'Run':
-      return MAIN_COLOR;
+      return RUN_COLOR;
     case 'Ride':
     case 'Indoor Ride':
       return RIDE_COLOR;
