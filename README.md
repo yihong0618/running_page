@@ -39,16 +39,17 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [wh1994](https://github.com/wh1994)             | https://run4life.fun                       | Garmin    |
 | [liuyihui](https://github.com/YiHui-Liu)        | https://run.foolishfox.cn                  | Keep      |
 | [FrankSun](https://github.com/hi-franksun)      | https://hi-franksun.github.io/running_page | Nike      |
-| [AhianZhang](https://github.com/AhianZhang)     | https://running.ahianzhang.com             | Keep      |
+| [AhianZhang](https://github.com/AhianZhang)     | https://running.ahianzhang.com             | Nike      |
 | [L1cardo](https://github.com/L1cardo)           | https://run.licardo.cn                     | Nike      |
 | [luckylele666](https://github.com/luckylele666) | https://0000928.xyz                        | Strava    |
 | [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
-| [Jim Gao](https://github.com/tianheg)           | https://run.yidajiabei.xyz/                | Keep      |
+| [tianheg](https://github.com/tianheg)           | https://run.tianheg.xyz/                   | Keep      |
 | [Eished](https://github.com/eished)             | https://run.iknow.fun                      | Keep      |
 | [Liuxin](https://github.com/liuxindtc)          | https://liuxin.run                         | Nike      |
 | [loucx](https://github.com/loucx)               | https://loucx.github.io/running            | Nike      |
 | [winf42](https://github.com/winf42)             | https://winf42.github.io                   | Garmin-cn |
 | [sun0225SUN](https://github.com/sun0225SUN)     | https://run.sunguoqi.com                   | Nike      |
+| [Zhan](https://www.zlog.in/about/)              | https://run.zlog.in                        | Nike      |
 
 ## How it works
 
