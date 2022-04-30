@@ -7,6 +7,8 @@ import {
   MAIN_COLOR,
   MAPBOX_TOKEN,
   PROVINCE_FILL_COLOR,
+  USE_DASH_LINE,
+  LINE_OPACITY,
 } from 'src/utils/const';
 import { geoJsonForMap } from 'src/utils/utils';
 import RunMarker from './RunMaker';
@@ -59,6 +61,7 @@ const RunMap = ({
     [startLon, startLat] = points[0];
     [endLon, endLat] = points[points.length - 1];
   }
+  let dash = USE_DASH_LINE && !isSingleRun ? [2, 2] : [2, 0];
 
   return (
     <ReactMapGL
@@ -75,7 +78,7 @@ const RunMap = ({
       />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
-          id="prvince"
+          id="province"
           type="fill"
           paint={{
             'fill-color': PROVINCE_FILL_COLOR,
@@ -88,6 +91,8 @@ const RunMap = ({
           paint={{
             'line-color': MAIN_COLOR,
             'line-width': isBigMap ? 1 : 2,
+            'line-dasharray': dash,
+            'line-opacity': isSingleRun ? 1 : LINE_OPACITY,
           }}
           layout={{
             'line-join': 'round',

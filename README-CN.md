@@ -19,8 +19,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 | Runner                                          | page                                       | App       |
 | ----------------------------------------------- | ------------------------------------------ | --------- |
-| [shaonianche](https://github.com/shaonianche)   | https://run.duangfei.org                   | Nike      |
-| [yihong0618](https://github.com/yihong0618)     | https://yihong.run/running                 | Nike      |
+| [shaonianche](https://github.com/shaonianche)   | https://run.duanfei.org                    | Strava    |
+| [yihong0618](https://github.com/yihong0618)     | https://yihong.run                         | Nike      |
 | [superleeyom](https://github.com/superleeyom)   | https://running.leeyom.top                 | Nike      |
 | [geekplux](https://github.com/geekplux)         | https://activities.geekplux.com            | Nike      |
 | [guanlan](https://github.com/guanlan)           | https://grun.vercel.app                    | Strava    |
@@ -37,14 +37,18 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [wh1994](https://github.com/wh1994)             | https://run4life.fun                       | Garmin    |
 | [liuyihui](https://github.com/YiHui-Liu)        | https://run.foolishfox.cn                  | Keep      |
 | [FrankSun](https://github.com/hi-franksun)      | https://hi-franksun.github.io/running_page | Nike      |
-| [AhianZhang](https://github.com/AhianZhang)     | https://running.ahianzhang.com             | Keep      |
+| [AhianZhang](https://github.com/AhianZhang)     | https://running.ahianzhang.com             | Nike      |
 | [L1cardo](https://github.com/L1cardo)           | https://run.licardo.cn                     | Nike      |
 | [luckylele666](https://github.com/luckylele666) | https://0000928.xyz                        | Strava    |
 | [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
-| [Jim Gao](https://github.com/tianheg)             | https://run.yidajiabei.xyz/ | Keep |
-| [Oysmart](https://github.com/oysmart)             | https://run.ouyang.wang                  | Garmin-cn |
+| [tianheg](https://github.com/tianheg)           | https://run.tianheg.xyz/                   | Keep      |
+| [Oysmart](https://github.com/oysmart)           | https://run.ouyang.wang                    | Garmin-cn |
 | [Eished](https://github.com/eished)             | https://run.iknow.fun                      | Keep      |
-| [Liuxin](https://github.com/liuxindtc)             | https://liuxin.run                   |  Nike      |
+| [Liuxin](https://github.com/liuxindtc)          | https://liuxin.run                         | Nike      |
+| [loucx](https://github.com/loucx)               | https://loucx.github.io/running            | Nike      |
+| [winf42](https://github.com/winf42)             | https://winf42.github.io                   | Garmin-cn |
+| [sun0225SUN](https://github.com/sun0225SUN)     | https://run.sunguoqi.com                   | Nike      |
+| [Zhan](https://www.zlog.in/about)               | https://run.zlog.in                        | Nike      |
 
 ## 它是怎么工作的
 
@@ -89,7 +93,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 git clone https://github.com/yihong0618/running_page.git
 ```
 
-## 安装及测试
+## 安装及测试 (node >= 12 and <= 14 python >= 3.6)
 
 ```
 pip3 install -r requirements.txt
@@ -112,7 +116,7 @@ const MAPBOX_TOKEN =
 
 ## 一些个性化选项
 
-在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
+* 在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
 
 ```javascript
 siteMetadata: {
@@ -132,7 +136,13 @@ siteMetadata: {
   ],
 },
 ```
-
+* 修改 `src/utils/const.js` 文件中的样式： 
+```javascript
+// styling: 关闭虚线: 设置为 `false`
+const USE_DASH_LINE = true;
+// styling: 透明度: [0, 1]
+const LINE_OPACITY = 0.4;
+```
 ## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据, [别忘了在 `total` 页面生成可视化 SVG](#Total-Data-Analysis).
 
 ### GPX
@@ -551,6 +561,12 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - @[geekplux](https://github.com/geekplux) 帮助及鼓励, 重构了前端代码，学到了不少
 - @[ben-29](https://github.com/ben-29) 搞定了咕咚，和我一起搞定了悦跑圈，太厉害了
 - @[MFYDev](https://github.com/MFYDev) Wiki
+
+# 推荐的 Forks
+
+- @[gongzili456](https://github.com/gongzili456) for [摩托车骑行版本](https://github.com/gongzili456/running_page)
+- @[ben-29](https://github.com/ben-29) for [多种运动类型支持](https://github.com/ben-29/workouts_page)
+- @[geekplux](https://github.com/geekplux) for [多种运动类型支持](https://github.com/geekplux/activities)
 
 # 赞赏
 

@@ -9,6 +9,12 @@
   "plugins": [
     "prettier"
   ],
+  "prettier/prettier": [
+    "error",
+    {
+      "endOfLine": "auto"
+    }
+  ],
 
   "env": {
     "browser": true,
