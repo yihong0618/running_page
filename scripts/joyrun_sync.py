@@ -147,6 +147,8 @@ class Joyrun:
             auth=self.auth.reload(params),
         )
         login_data = r.json()
+        if login_data["ret"] != "0":
+            raise Exception(f'{login_data["ret"]}: {login_data["msg"]}')
         self.sid = login_data["data"]["sid"]
         self.uid = login_data["data"]["user"]["uid"]
         print(f"your uid and sid are {str(self.uid)} {str(self.sid)}")

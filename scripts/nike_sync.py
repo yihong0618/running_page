@@ -97,7 +97,10 @@ def run(refresh_token):
             # ignore NTC record
             app_id = activity["app_id"]
             activity_id = activity["id"]
-            if app_id == "com.nike.ntc.brand.ios":
+            if (
+                app_id == "com.nike.ntc.brand.ios"
+                or app_id == "com.nike.ntc.brand.droid"
+            ):
                 logger.info(f"Ignore NTC record {activity_id}")
                 continue
 
