@@ -21,8 +21,8 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 | Runner                                          | page                                       | App       |
 | ----------------------------------------------- | ------------------------------------------ | --------- |
-| [shaonianche](https://github.com/shaonianche)   | https://run.duangfei.org                   | Nike      |
-| [yihong0618](https://github.com/yihong0618)     | https://yihong.run/running                 | Nike      |
+| [shaonianche](https://github.com/shaonianche)   | https://run.duanfei.org                    | Strava    |
+| [yihong0618](https://github.com/yihong0618)     | https://yihong.run                         | Nike      |
 | [superleeyom](https://github.com/superleeyom)   | https://running.leeyom.top                 | Nike      |
 | [geekplux](https://github.com/geekplux)         | https://activities.geekplux.com            | Nike      |
 | [guanlan](https://github.com/guanlan)           | https://grun.vercel.app                    | Strava    |
