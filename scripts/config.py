@@ -1,14 +1,13 @@
 import os
 from collections import namedtuple
-from re import M
 
 import yaml
 
 GET_DIR = "activities"
 OUTPUT_DIR = "activities"
 GPX_FOLDER = os.path.join(os.getcwd(), "GPX_OUT")
-SQL_FILE = "scripts/data.db"
-JSON_FILE = "src/static/activities.json"
+SQL_FILE = os.path.join(os.getcwd(), "scripts", "data.db")
+JSON_FILE = os.path.join(os.getcwd(), "src", "static", "activities.json")
 
 # TODO: Move into nike_sync
 BASE_URL = "https://api.nike.com/sport/v3/me"
