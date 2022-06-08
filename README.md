@@ -51,6 +51,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [sun0225SUN](https://github.com/sun0225SUN)     | https://run.sunguoqi.com                   | Nike      |
 | [Zhan](https://www.zlog.in/about/)              | https://run.zlog.in                        | Nike      |
 | [Dennis](https://run.domon.cn/)                 | https://run.domon.cn                       | Garmin-cn |
+| [hanpei](https://running.nexts.top/)            | https://running.nexts.top                  | Garmin-cn |
 
 ## How it works
 
