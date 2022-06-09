@@ -19,39 +19,39 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 ## [Runner's Page Show](https://github.com/yihong0618/running_page/issues/12)
 
-| Runner                                          | page                                       | App       |
-| ----------------------------------------------- | ------------------------------------------ | --------- |
-| [shaonianche](https://github.com/shaonianche)   | https://run.duanfei.org                    | Strava    |
-| [yihong0618](https://github.com/yihong0618)     | https://yihong.run                         | Nike      |
-| [superleeyom](https://github.com/superleeyom)   | https://running.leeyom.top                 | Nike      |
-| [geekplux](https://github.com/geekplux)         | https://activities.geekplux.com            | Nike      |
-| [guanlan](https://github.com/guanlan)           | https://grun.vercel.app                    | Strava    |
-| [tuzimoe](https://github.com/tuzimoe)           | https://run.tuzi.moe                       | Nike      |
-| [ben_29](https://github.com/ben-29)             | https://running.ben29.xyz                  | Strava    |
-| [kcllf](https://github.com/kcllf)               | https://running-tau.vercel.app             | Garmin-cn |
-| [mq](https://github.com/MQ-0707)                | https://running-iota.vercel.app            | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app        | Keep      |
-| [yvetterowe](https://github.com/yvetterowe)     | https://run.haoluo.io                      | Strava    |
-| [love-exercise](https://github.com/KaiOrange)   | https://run.kai666666.top                  | Keep      |
-| [zstone12](https://github.com/zstone12)         | https://running-page.zstone12.vercel.app   | Keep      |
-| [Lax](https://github.com/Lax)                   | https://lax.github.io/running              | Keep      |
-| [lusuzi](https://github.com/lusuzi)             | https://running.lusuzi.vercel.app          | Nike      |
-| [wh1994](https://github.com/wh1994)             | https://run4life.fun                       | Garmin    |
-| [liuyihui](https://github.com/YiHui-Liu)        | https://run.foolishfox.cn                  | Keep      |
-| [FrankSun](https://github.com/hi-franksun)      | https://hi-franksun.github.io/running_page | Nike      |
-| [AhianZhang](https://github.com/AhianZhang)     | https://running.ahianzhang.com             | Nike      |
-| [L1cardo](https://github.com/L1cardo)           | https://run.licardo.cn                     | Nike      |
-| [luckylele666](https://github.com/luckylele666) | https://0000928.xyz                        | Strava    |
-| [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
-| [tianheg](https://github.com/tianheg)           | https://run.tianheg.xyz/                   | Keep      |
-| [Eished](https://github.com/eished)             | https://run.iknow.fun                      | Keep      |
-| [Liuxin](https://github.com/liuxindtc)          | https://liuxin.run                         | Nike      |
-| [loucx](https://github.com/loucx)               | https://loucx.github.io/running            | Nike      |
-| [winf42](https://github.com/winf42)             | https://winf42.github.io                   | Garmin-cn |
-| [sun0225SUN](https://github.com/sun0225SUN)     | https://run.sunguoqi.com                   | Nike      |
-| [Zhan](https://www.zlog.in/about/)              | https://run.zlog.in                        | Nike      |
-| [Dennis](https://run.domon.cn/)                 | https://run.domon.cn                       | Garmin-cn |
-| [hanpei](https://running.nexts.top/)            | https://running.nexts.top                  | Garmin-cn |
+| Runner                                          | page                                         | App       |
+| ----------------------------------------------- | ---------------------------------------------|-----------|
+| [shaonianche](https://github.com/shaonianche)   | <https://run.duanfei.org>                    | Strava    |
+| [yihong0618](https://github.com/yihong0618)     | <https://yihong.run>                         | Nike      |
+| [superleeyom](https://github.com/superleeyom)   | <https://running.leeyom.top>                 | Nike      |
+| [geekplux](https://github.com/geekplux)         | <https://activities.geekplux.com>            | Nike      |
+| [guanlan](https://github.com/guanlan)           | <https://grun.vercel.app>                    | Strava    |
+| [tuzimoe](https://github.com/tuzimoe)           | <https://run.tuzi.moe>                       | Nike      |
+| [ben_29](https://github.com/ben-29)             | <https://running.ben29.xyz>                  | Strava    |
+| [kcllf](https://github.com/kcllf)               | <https://running-tau.vercel.app>             | Garmin-cn |
+| [mq](https://github.com/MQ-0707)                | <https://running-iota.vercel.app>            | Keep      |
+| [zhaohongxuan](https://github.com/zhaohongxuan) | <https://running-page-psi.vercel.app>        | Keep      |
+| [yvetterowe](https://github.com/yvetterowe)     | <https://run.haoluo.io>                      | Strava    |
+| [love-exercise](https://github.com/KaiOrange)   | <https://run.kai666666.top>                  | Keep      |
+| [zstone12](https://github.com/zstone12)         | <https://running-page.zstone12.vercel.app>   | Keep      |
+| [Lax](https://github.com/Lax)                   | <https://lax.github.io/running>              | Keep      |
+| [lusuzi](https://github.com/lusuzi)             | <https://running.lusuzi.vercel.app>          | Nike      |
+| [wh1994](https://github.com/wh1994)             | <https://run4life.fun>                       | Garmin    |
+| [liuyihui](https://github.com/YiHui-Liu)        | <https://run.foolishfox.cn>                  | Keep      |
+| [FrankSun](https://github.com/hi-franksun)      | <https://hi-franksun.github.io/running_page> | Nike      |
+| [AhianZhang](https://github.com/AhianZhang)     | <https://running.ahianzhang.com>             | Nike      |
+| [L1cardo](https://github.com/L1cardo)           | <https://run.licardo.cn>                     | Nike      |
+| [luckylele666](https://github.com/luckylele666) | <https://0000928.xyz>                        | Strava    |
+| [MFYDev](https://github.com/MFYDev)             | <https://mfydev.run>                         | Garmin-cn |
+| [tianheg](https://github.com/tianheg)           | <https://run.tianheg.xyz/>                   | Keep      |
+| [Eished](https://github.com/eished)             | <https://run.iknow.fun>                      | Keep      |
+| [Liuxin](https://github.com/liuxindtc)          | <https://liuxin.run>                         | Nike      |
+| [loucx](https://github.com/loucx)               | <https://loucx.github.io/running>            | Nike      |
+| [winf42](https://github.com/winf42)             | <https://winf42.github.io>                   | Garmin-cn |
+| [sun0225SUN](https://github.com/sun0225SUN)     | <https://run.sunguoqi.com>                   | Nike      |
+| [Zhan](https://www.zlog.in/about/)              | <https://run.zlog.in>                        | Nike      |
+| [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
+| [hanpei](https://running.nexts.top)             | <https://running.nexts.top>                  | Garmin-cn |
 
 ## How it works
 
@@ -66,8 +66,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 5. Mapbox for map display
 6. Supports most sports apps such as nike strava...
 
-> automatically backup gpx data for easy backup and uploading to other software.
-
+> automatically backup gpx data for easy backup and uploading to other software.<br>
 > Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
 
 ## Support
@@ -96,14 +95,13 @@ yarn install
 yarn develop
 ```
 
-Open your browser and visit http://localhost:8000/
+Open your browser and visit <http://localhost:8000/>
 
 ## Local sync data
 
 ### Modifying Mapbox token in `src/utils/const.js`
 
-> If you use English please change `IS_CHINESE = false` in `src/utils/const.js`
-
+> If you use English please change `IS_CHINESE = false` in `src/utils/const.js` <br>
 > Suggested changes to your own [Mapbox token](https://www.mapbox.com/)
 
 ```javascript
@@ -113,7 +111,7 @@ const MAPBOX_TOKEN =
 
 ## Custom your page
 
-* Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
+- Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
 
 ```javascript
 siteMetadata: {
@@ -133,7 +131,9 @@ siteMetadata: {
   ],
 },
 ```
-* Modifying styling in `src/utils/const.js`
+
+- Modifying styling in `src/utils/const.js`
+
 ```javascript
 // styling: set to `false` if you want to disable dash-line route
 const USE_DASH_LINE = true;
@@ -141,7 +141,7 @@ const USE_DASH_LINE = true;
 const LINE_OPACITY = 0.4;
 ```
 
-## Download your running data and do not forget to [generate svg in `total` page](#Total-Data-Analysis).
+## Download your running data and do not forget to [generate svg in `total` page](#Total-Data-Analysis)
 
 ### GPX
 
@@ -174,6 +174,12 @@ example：
 python3(python) scripts/garmin_sync.py example@gmail.com example
 ```
 
+only-run：
+
+```python
+python3(python) scripts/garmin_sync.py example@gmail.com example --only-run
+```
+
 </details>
 
 ### Garmin-CN(China)
@@ -201,7 +207,7 @@ python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
 
 <br>
 
-**Please note: When you choose to deploy running_page on your own server, due to Nike has blocked some IDC's IP band, maybe your server cannot sync Nike Run Club's data correctly and display `403 error`, then you have to change another way to host it.**
+> Please note: When you choose to deploy running_page on your own server, due to Nike has blocked some IDC's IP band, maybe your server cannot sync Nike Run Club's data correctly and display `403 error`, then you have to change another way to host it.
 
 Get Nike's `refresh_token`
 
@@ -242,6 +248,7 @@ python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
 <br>
 
 ![My API Application](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/strava_settings_api.png)
+
 Created successfully：
 
 <br>
@@ -302,17 +309,18 @@ curl -X POST https://www.strava.com/oauth/token \
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
 ```
 
-References：  
-https://developers.strava.com/docs/getting-started  
-https://github.com/barrald/strava-uploader  
-https://github.com/strava/go.strava
+References：
+
+- <https://developers.strava.com/docs/getting-started>
+- <https://github.com/barrald/strava-uploader>
+- <https://github.com/strava/go.strava>
 
 </details>
 
 ### Nike_to_Strava
 
 <details>
-<summary>Get your <code>Nike Run Club</code> data and upload to strava</summary>
+<summary>Get your <code> Nike Run Club </code> data and upload to strava</summary>
 
 <br>
 
@@ -354,15 +362,15 @@ Generate year circular svg show
 python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
 ```
 
-For more display effects, see:  
-https://github.com/flopp/GpxTrackPoster
+For more display effects, see:
+<https://github.com/flopp/GpxTrackPoster>
 
 </details>
 
 ## server(recommendation vercel)
 
 <details>
-<summary> Use <code>Vercel</code> to deploy </summary>
+<summary> Use <code> Vercel </code> to deploy </summary>
 <br>
 
 1. vercel connects to your GitHub repo.
@@ -383,7 +391,7 @@ https://github.com/flopp/GpxTrackPoster
 </details>
 
 <details>
-<summary> Use <code>Cloudflare</code> to deploy </summary>
+<summary> Use <code> Cloudflare </code> to deploy </summary>
 <br>
 
 1. Click `Create a project` in `Pages` to connect to your Repo.
@@ -410,12 +418,13 @@ https://github.com/flopp/GpxTrackPoster
 3. Go to repository's `Actions -> Workflows -> All Workflows`, choose `Publish GitHub Pages` from the left panel, click `Run workflow`. Make sure the workflow runs without errors, and `gh-pages` branch is created.
 
 4. Go to repository's `Settings -> GitHub Pages -> Source`, choose `Branch: gh-pages`, click `Save`.
+
 </details>
 
 ## GitHub Actions
 
 <details>
-<summary> Modifying information in <code>GitHub Actions</code>  </summary>
+<summary> Modifying information in <code> GitHub Actions </code>  </summary>
 <br>
 
 Actions [source code](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
@@ -426,20 +435,18 @@ The following steps need to be taken
 <br>
 
 ![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
-Add your secret in repo Settings > Secrets (add only the ones you need).
+
+2. Add your secret in repo Settings > Secrets (add only the ones you need).
 
 <br>
 
 ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
-My secret is as follows
+
+3. My secret is as follows
 
 <br>
 
-![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png) 3. add your [GitHub secret](https://github.com/settings/tokens) and have the same name as the GitHub secret in your project.
-
-<br>
-
-![image](https://user-images.githubusercontent.com/15976103/94450721-2f222100-01e0-11eb-94a7-ef1f06fc0a59.png)
+![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
 
 </details>
 
@@ -462,8 +469,8 @@ My secret is as follows
 
 Before submitting PR:
 
-- Format Python code with `black` (black .)
-- Format Python code with `isort` (isort --profile black  **/**/*.py)
+- Format Python code with `black` (`black .`)
+- Format Python code with `isort` (`isort --profile black  **/**/*.py`)
 
 # Special thanks
 
@@ -478,6 +485,7 @@ Before submitting PR:
 - @[gongzili456](https://github.com/gongzili456) for [motorcycle version](https://github.com/gongzili456/running_page)
 - @[ben-29](https://github.com/ben-29) for [different types support](https://github.com/ben-29/workouts_page)
 - @[geekplux](https://github.com/geekplux) for [different types support](https://github.com/geekplux/activities)
+
 # Support
 
 No need sponsor, just enjoy it.
