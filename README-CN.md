@@ -17,39 +17,39 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 ## [大家的跑步主页展示](https://github.com/yihong0618/running_page/issues/12)
 
-| Runner                                          | page                                       | App       |
-| ----------------------------------------------- | ------------------------------------------ | --------- |
-| [shaonianche](https://github.com/shaonianche)   | https://run.duanfei.org                    | Strava    |
-| [yihong0618](https://github.com/yihong0618)     | https://yihong.run                         | Nike      |
-| [superleeyom](https://github.com/superleeyom)   | https://running.leeyom.top                 | Nike      |
-| [geekplux](https://github.com/geekplux)         | https://activities.geekplux.com            | Nike      |
-| [guanlan](https://github.com/guanlan)           | https://grun.vercel.app                    | Strava    |
-| [tuzimoe](https://github.com/tuzimoe)           | https://run.tuzi.moe                       | Nike      |
-| [ben_29](https://github.com/ben-29)             | https://running.ben29.xyz                  | Strava    |
-| [kcllf](https://github.com/kcllf)               | https://running-tau.vercel.app             | Garmin-cn |
-| [mq](https://github.com/MQ-0707)                | https://running-iota.vercel.app            | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan) | https://running-page-psi.vercel.app        | Keep      |
-| [yvetterowe](https://github.com/yvetterowe)     | https://run.haoluo.io                      | Strava    |
-| [love-exercise](https://github.com/KaiOrange)   | https://run.kai666666.top                  | Keep      |
-| [zstone12](https://github.com/zstone12)         | https://running-page.zstone12.vercel.app   | Keep      |
-| [Lax](https://github.com/Lax)                   | https://lax.github.io/running              | Keep      |
-| [lusuzi](https://github.com/lusuzi)             | https://running.lusuzi.vercel.app          | Nike      |
-| [wh1994](https://github.com/wh1994)             | https://run4life.fun                       | Garmin    |
-| [liuyihui](https://github.com/YiHui-Liu)        | https://run.foolishfox.cn                  | Keep      |
-| [FrankSun](https://github.com/hi-franksun)      | https://hi-franksun.github.io/running_page | Nike      |
-| [AhianZhang](https://github.com/AhianZhang)     | https://running.ahianzhang.com             | Nike      |
-| [L1cardo](https://github.com/L1cardo)           | https://run.licardo.cn                     | Nike      |
-| [luckylele666](https://github.com/luckylele666) | https://0000928.xyz                        | Strava    |
-| [MFYDev](https://github.com/MFYDev)             | https://mfydev.run                         | Garmin-cn |
-| [tianheg](https://github.com/tianheg)           | https://run.tianheg.xyz/                   | Keep      |
-| [Oysmart](https://github.com/oysmart)           | https://run.ouyang.wang                    | Garmin-cn |
-| [Eished](https://github.com/eished)             | https://run.iknow.fun                      | Keep      |
-| [Liuxin](https://github.com/liuxindtc)          | https://liuxin.run                         | Nike      |
-| [loucx](https://github.com/loucx)               | https://loucx.github.io/running            | Nike      |
-| [winf42](https://github.com/winf42)             | https://winf42.github.io                   | Garmin-cn |
-| [sun0225SUN](https://github.com/sun0225SUN)     | https://run.sunguoqi.com                   | Nike      |
-| [Zhan](https://www.zlog.in/about)               | https://run.zlog.in                        | Nike      |
-| [Dennis](https://run.domon.cn/)                 | https://run.domon.cn                       | Garmin-cn |
+| Runner                                          | page                                         | App       |
+| ----------------------------------------------- | ---------------------------------------------|-----------|
+| [shaonianche](https://github.com/shaonianche)   | <https://run.duanfei.org>                    | Strava    |
+| [yihong0618](https://github.com/yihong0618)     | <https://yihong.run>                         | Nike      |
+| [superleeyom](https://github.com/superleeyom)   | <https://running.leeyom.top>                 | Nike      |
+| [geekplux](https://github.com/geekplux)         | <https://activities.geekplux.com>            | Nike      |
+| [guanlan](https://github.com/guanlan)           | <https://grun.vercel.app>                    | Strava    |
+| [tuzimoe](https://github.com/tuzimoe)           | <https://run.tuzi.moe>                       | Nike      |
+| [ben_29](https://github.com/ben-29)             | <https://running.ben29.xyz>                  | Strava    |
+| [kcllf](https://github.com/kcllf)               | <https://running-tau.vercel.app>             | Garmin-cn |
+| [mq](https://github.com/MQ-0707)                | <https://running-iota.vercel.app>            | Keep      |
+| [zhaohongxuan](https://github.com/zhaohongxuan) | <https://running-page-psi.vercel.app>        | Keep      |
+| [yvetterowe](https://github.com/yvetterowe)     | <https://run.haoluo.io>                      | Strava    |
+| [love-exercise](https://github.com/KaiOrange)   | <https://run.kai666666.top>                  | Keep      |
+| [zstone12](https://github.com/zstone12)         | <https://running-page.zstone12.vercel.app>   | Keep      |
+| [Lax](https://github.com/Lax)                   | <https://lax.github.io/running>              | Keep      |
+| [lusuzi](https://github.com/lusuzi)             | <https://running.lusuzi.vercel.app>          | Nike      |
+| [wh1994](https://github.com/wh1994)             | <https://run4life.fun>                       | Garmin    |
+| [liuyihui](https://github.com/YiHui-Liu)        | <https://run.foolishfox.cn>                  | Keep      |
+| [FrankSun](https://github.com/hi-franksun)      | <https://hi-franksun.github.io/running_page> | Nike      |
+| [AhianZhang](https://github.com/AhianZhang)     | <https://running.ahianzhang.com>             | Nike      |
+| [L1cardo](https://github.com/L1cardo)           | <https://run.licardo.cn>                     | Nike      |
+| [luckylele666](https://github.com/luckylele666) | <https://0000928.xyz>                        | Strava    |
+| [MFYDev](https://github.com/MFYDev)             | <https://mfydev.run>                         | Garmin-cn |
+| [tianheg](https://github.com/tianheg)           | <https://run.tianheg.xyz/>                   | Keep      |
+| [Oysmart](https://github.com/oysmart)           | <https://run.ouyang.wang>                    | Garmin-cn |
+| [Eished](https://github.com/eished)             | <https://run.iknow.fun>                      | Keep      |
+| [Liuxin](https://github.com/liuxindtc)          | <https://liuxin.run>                         | Nike      |
+| [loucx](https://github.com/loucx)               | <https://loucx.github.io/running>            | Nike      |
+| [winf42](https://github.com/winf42)             | <https://winf42.github.io>                   | Garmin-cn |
+| [sun0225SUN](https://github.com/sun0225SUN)     | <https://run.sunguoqi.com>                   | Nike      |
+| [Zhan](https://www.zlog.in/about)               | <https://run.zlog.in>                        | Nike      |
+| [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
 
 ## 它是怎么工作的
 
@@ -62,11 +62,11 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 3. 支持 Vercel(推荐) 和 GitHub Pages 自动部署
 4. React Hooks
 5. Mapbox 进行地图展示
-6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep 等, 自动备份 gpx 数据，方便备份及上传到其它软件
+6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep 等，自动备份 gpx 数据，方便备份及上传到其它软件
 
 > 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里（建议本地同步，之后 actions 选择正在用的 app）
 
-> 注: 如果你不想公开数据，可以选择 strava 的模糊处理，或 private 仓库。
+> 注：如果你不想公开数据，可以选择 strava 的模糊处理，或 private 仓库。
 
 <details>
 <summary>缩放地图彩蛋</summary>
@@ -82,8 +82,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Garmin](#Garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#Keep)**
-- **[悦跑圈](#joyrun悦跑圈)** (因悦跑圈限制单个设备原因，无法自动化)
-- **[咕咚](#codoon咕咚)** (因咕咚限制单个设备原因，无法自动化)
+- **[悦跑圈](#joyrun 悦跑圈)** (因悦跑圈限制单个设备原因，无法自动化)
+- **[咕咚](#codoon 咕咚)** (因咕咚限制单个设备原因，无法自动化)
 - **[GPX](#GPX)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#)**
@@ -102,7 +102,7 @@ yarn install
 yarn develop
 ```
 
-访问 http://localhost:8000/ 查看
+访问 <http://localhost:8000/> 查看
 
 ## 替换 `src/utils/const.js` 文件中的 Mapbox token
 
@@ -117,7 +117,7 @@ const MAPBOX_TOKEN =
 
 ## 一些个性化选项
 
-* 在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
+- 在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
 
 ```javascript
 siteMetadata: {
@@ -137,14 +137,17 @@ siteMetadata: {
   ],
 },
 ```
-* 修改 `src/utils/const.js` 文件中的样式： 
+
+- 修改 `src/utils/const.js` 文件中的样式：
+
 ```javascript
-// styling: 关闭虚线: 设置为 `false`
+// styling: 关闭虚线：设置为 `false`
 const USE_DASH_LINE = true;
-// styling: 透明度: [0, 1]
+// styling: 透明度：[0, 1]
 const LINE_OPACITY = 0.4;
 ```
-## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据, [别忘了在 `total` 页面生成可视化 SVG](#Total-Data-Analysis).
+
+## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据，[别忘了在 `total` 页面生成可视化 SVG](#Total-Data-Analysis)
 
 ### GPX
 
@@ -165,7 +168,7 @@ python3(python) scripts/gpx_sync.py
 <details>
 <summary>获取您的 Keep 数据</summary>
 
-确保自己的账号能用手机号 + 密码登陆 (不要忘记添加 secret 和更改自己的账号，在 GitHub Actions 中), 注: 海外手机号需要换成国内 +86 的手机号
+> 确保自己的账号能用手机号 + 密码登陆 (不要忘记添加 secret 和更改自己的账号，在 GitHub Actions 中), 注：海外手机号需要换成国内 +86 的手机号
 
 ```python
 python3(python) scripts/keep_sync.py ${your mobile} ${your password}
@@ -200,7 +203,8 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 确保自己的账号能用手机号 + 验证码登陆
 
-点击获取验证码, 注： **不要在手机输入验证码，拿到验证码就好，用这个验证码放到下方命令中**
+点击获取验证码
+> 注：不要在手机输入验证码，拿到验证码就好，用这个验证码放到下方命令中
 
 ![image](https://user-images.githubusercontent.com/15976103/102352588-e3af3000-3fe2-11eb-8131-14946b0262eb.png)
 
@@ -214,7 +218,7 @@ python3(python) scripts/joyrun_sync.py ${your mobile} ${your 验证码}
 python3(python) scripts/joyrun_sync.py 13333xxxx xxxx
 ```
 
-> 注：我增加了 joyrun 可以导出 gpx 功能, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
+> 注：我增加了 joyrun 可以导出 gpx 功能，执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
 python3(python) scripts/joyrun_sync.py ${your mobile} ${your 验证码} --with-gpx
@@ -226,7 +230,7 @@ python3(python) scripts/joyrun_sync.py ${your mobile} ${your 验证码} --with-g
 python3(python) scripts/joyrun_sync.py 13333xxxx example --with-gpx
 ```
 
-> 注：因为验证码有过期时间，我增加了 cookie uid sid 登陆的方式， uid 及 sid 在您登陆过程中会在控制台打印出来
+> 注：因为验证码有过期时间，我增加了 cookie uid sid 登陆的方式，uid 及 sid 在您登陆过程中会在控制台打印出来
 
 ![image](https://user-images.githubusercontent.com/15976103/102354069-05a9b200-3fe5-11eb-9b30-221c32bbc607.png)
 
@@ -253,7 +257,7 @@ python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password}
 python3(python) scripts/codoon_sync.py 13333xxxx xxxx
 ```
 
-> 注：我增加了 Codoon 可以导出 gpx 功能, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
+> 注：我增加了 Codoon 可以导出 gpx 功能，执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
 python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password} --with-gpx
@@ -265,7 +269,7 @@ python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password} 
 python3(python) scripts/codoon_sync.py 13333xxxx xxxx --with-gpx
 ```
 
-> 注：因为登录 token 有过期时间限制，我增加了 refresh_token&user_id 登陆的方式， refresh_token 及 user_id 在您登陆过程中会在控制台打印出来
+> 注：因为登录 token 有过期时间限制，我增加了 refresh_token&user_id 登陆的方式，refresh_token 及 user_id 在您登陆过程中会在控制台打印出来
 
 ![image](https://user-images.githubusercontent.com/6956444/105690972-9efaab00-5f37-11eb-905c-65a198ad2300.png)
 
@@ -298,7 +302,8 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 
 <details>
 <summary>获取您的 Garmin-CN 数据</summary>
-如果你只想同步跑步数据请增加 --only-run
+
+> 如果你只想同步跑步数据请增加 --only-run
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
@@ -310,6 +315,12 @@ python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
 python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
 ```
 
+仅同步跑步数据：
+
+```python
+python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn --only-run
+```
+
 </details>
 
 ### Nike Run Club
@@ -317,14 +328,14 @@ python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
 <details>
 <summary>获取 Nike Run Club 数据</summary>
 
-**请注意：当您选择将 running_page 部署在自己的服务器上时，由于 Nike 已经封禁了一部分 IDC 的服务器 IP 段，您的服务器可能不能正常同步 Nike Run Club 的数据并显示 `403 error` ，这时您将不得不选择其他的托管方式。**
+> 请注意：当您选择将 running_page 部署在自己的服务器上时，由于 Nike 已经封禁了一部分 IDC 的服务器 IP 段，您的服务器可能不能正常同步 Nike Run Club 的数据并显示 `403 error` ，这时您将不得不选择其他的托管方式。
 
 获取 Nike 的 refresh_token
 
 1. 登录 [Nike](https://www.nike.com) 官网
 2. In Developer -> Application-> Storage -> https:unite.nike.com 中找到 refresh_token
 
-![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png) 3. 在项目根目录下执行:
+![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png) 3. 在项目根目录下执行：
 
 ```python
 python3(python) scripts/nike_sync.py ${nike refresh_token}
@@ -348,19 +359,21 @@ python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
 1. 注册/登陆 [Strava](https://www.strava.com/) 账号
 2. 登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 
-3. 创建 `My API Application`  
+3. 创建 `My API Application`
    输入下列信息：
    ![My API Application](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/strava_settings_api.png)
    创建成功：
    ![](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/created_successfully_1.png)
-4. 使用以下链接请求所有权限  
+4. 使用以下链接请求所有权限
    将 ${your_id} 替换为 My API Application 中的 Client ID 后访问完整链接
 
 ```
 https://www.strava.com/oauth/authorize?client_id=${your_id}&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=read_all,profile:read_all,activity:read_all,profile:write,activity:write
 ```
 
-![get_all_permissions](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_all_permissions.png) 5. 提取授权后返回链接中的 code 值  
+![get_all_permissions](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_all_permissions.png)
+
+5. 提取授权后返回链接中的 code 值
 例如：
 
 ```
@@ -373,7 +386,7 @@ http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f347
 1dab37edd9970971fb502c9efdd087f4f3471e6
 ```
 
-![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png) 6. 使用 Client_id、Client_secret、Code 请求 refresch_token  
+![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png) 6. 使用 Client_id、Client_secret、Code 请求 refresch_token
 在 `终端/iTerm` 中执行：
 
 ```
@@ -396,17 +409,17 @@ curl -X POST https://www.strava.com/oauth/token \
 
 ![get_refresch_token](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_refresch_token.png)
 
-7. 同步数据至 Strava  
+7. 同步数据至 Strava
    在项目根目录执行：
 
 ```python
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
 ```
 
-其他资料参见  
-https://developers.strava.com/docs/getting-started  
-https://github.com/barrald/strava-uploader  
-https://github.com/strava/go.strava
+其他资料参见
+<https://developers.strava.com/docs/getting-started>
+<https://github.com/barrald/strava-uploader>
+<https://github.com/strava/go.strava>
 
 </details>
 
@@ -440,7 +453,7 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
-> 注: 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为 special-color2, --min-distance 10.0 用来筛选 10km 以上的)
+> 注：感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为 special-color2, --min-distance 10.0 用来筛选 10km 以上的)
 
 ```
 python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
@@ -456,8 +469,8 @@ python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --t
 python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
 ```
 
-更多展示效果参见：  
-https://github.com/flopp/GpxTrackPoster
+更多展示效果参见：
+<https://github.com/flopp/GpxTrackPoster>
 
 </details>
 
@@ -476,6 +489,7 @@ https://github.com/flopp/GpxTrackPoster
 
 2. 等待部署完毕
 3. 访问
+
 </details>
 
 <details>
@@ -506,6 +520,7 @@ https://github.com/flopp/GpxTrackPoster
 3. 在项目的 `Actions -> Workflows -> All Workflows` 中选择 Publish GitHub Pages，点击 `Run workflow`
 
 4. 在项目的 `Settings -> GitHub Pages -> Source` 部分，选择 `Branch: gh-pages` 并点击 `Save`。
+
 </details>
 
 ## GitHub Actions (Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。)
@@ -522,8 +537,6 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
    ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
    我的 secret 如下
    ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
-3. 添加你的 [GitHub secret](https://github.com/settings/tokens)并和项目中的 GitHub secret 同名
-   ![image](https://user-images.githubusercontent.com/15976103/94450721-2f222100-01e0-11eb-94a7-ef1f06fc0a59.png)
 
 </details>
 
@@ -549,17 +562,17 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - 任何 Issues PR 均欢迎。
 - 可以提交 PR share 自己的 Running page 在 README 中。
 
-提交 PR 前:
+提交 PR 前：
 
-- 使用 black 对 Python 代码进行格式化。(black .)
-- 使用 isort 对 Python import 进行格式化。(isort --profile black  **/**/*.py)
+- 使用 black 对 Python 代码进行格式化。(`black .`)
+- 使用 isort 对 Python import 进行格式化。(`isort --profile black  **/**/*.py`)
 
 # 特别感谢
 
 - @[flopp](https://github.com/flopp) 特别棒的项目 [GpxTrackPoster](https://github.com/flopp/GpxTrackPoster)
 - @[danpalmer](https://github.com/danpalmer) 原始的 UI 设计
 - @[shaonianche](https://github.com/shaonianche) icon 设计及文档
-- @[geekplux](https://github.com/geekplux) 帮助及鼓励, 重构了前端代码，学到了不少
+- @[geekplux](https://github.com/geekplux) 帮助及鼓励，重构了前端代码，学到了不少
 - @[ben-29](https://github.com/ben-29) 搞定了咕咚，和我一起搞定了悦跑圈，太厉害了
 - @[MFYDev](https://github.com/MFYDev) Wiki
 
