@@ -52,6 +52,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Zhan](https://www.zlog.in/about/)              | <https://run.zlog.in>                        | Nike      |
 | [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
 | [hanpei](https://running.nexts.top)             | <https://running.nexts.top>                  | Garmin-cn |
+| [liugezhou](https://github.com/liugezhou)       | <https://run.liugezhou.online>               | Strava    |
 
 ## How it works
 
