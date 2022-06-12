@@ -97,6 +97,28 @@ yarn develop
 
 Open your browser and visit <http://localhost:8000/>
 
+## Docker 
+```
+#build
+# NRC
+docker build -t running_page:latest . --build-arg app=NRC --build-arg nike_refresh_token=""
+# Garmin
+docker build -t running_page:latest . --build-arg app=Garmin --build-arg email=""  --build-arg password="" 
+# Garmin-CN
+docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password="" 
+# Strava
+docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+#Nike_to_Strava
+docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+
+#run
+docker run -itd -p 80:80   running_page:latest
+
+#visit
+Open your browser and visit localhost:80
+
+```
+
 ## Local sync data
 
 ### Modifying Mapbox token in `src/utils/const.js`

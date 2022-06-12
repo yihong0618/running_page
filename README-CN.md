@@ -104,6 +104,29 @@ yarn develop
 
 访问 <http://localhost:8000/> 查看
 
+## Docker 
+```
+#构建
+# NRC
+docker build -t running_page:latest . --build-arg app=NRC --build-arg nike_refresh_token=""
+# Garmin
+docker build -t running_page:latest . --build-arg app=Garmin --build-arg email=""  --build-arg password="" 
+# Garmin-CN
+docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password="" 
+# Strava
+docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+#Nike_to_Strava
+docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+
+#启动
+docker run -itd -p 80:80   running_page:latest
+
+#访问
+访问 ip:80 查看
+
+```
+
+
 ## 替换 `src/utils/const.js` 文件中的 Mapbox token
 
 > 建议有能力的同学把代码中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
