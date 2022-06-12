@@ -50,6 +50,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [sun0225SUN](https://github.com/sun0225SUN)     | <https://run.sunguoqi.com>                   | Nike      |
 | [Zhan](https://www.zlog.in/about)               | <https://run.zlog.in>                        | Nike      |
 | [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
+| [liugezhou](https://github.com/liugezhou)       | <https://run.liugezhou.online>               | Strava    |
 
 ## 它是怎么工作的
 
