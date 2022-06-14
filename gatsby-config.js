@@ -36,6 +36,24 @@ module.exports = {
         rootFolder: './',
       },
     },
+    'gatsby-plugin-react-helmet',
+    {
+      resolve: 'gatsby-transformer-remark',
+      options: {
+        plugins: [
+          'gatsby-remark-responsive-iframe',
+          'gatsby-remark-smartypants',
+          'gatsby-remark-widows',
+          'gatsby-remark-external-links',
+          {
+            resolve: 'gatsby-remark-autolink-headers',
+            options: {
+              className: 'header-link',
+            },
+          },
+        ],
+      },
+    },
     {
       resolve: 'gatsby-plugin-sass',
       options: {
@@ -61,11 +79,20 @@ module.exports = {
         name: 'gatsby-starter-default',
         short_name: 'starter',
         start_url: '/',
-        background_color: '#1A1A1A',
-        theme_color: '#1A1A1A',
+        background_color: '#e1e1e1',
+        theme_color: '#e1e1e1',
         display: 'minimal-ui',
         icon: 'src/images/favicon.png', // This path is relative to the root of the site.
       },
     },
+    'gatsby-transformer-sharp',
+    'gatsby-plugin-sharp',
+    'gatsby-plugin-sitemap',
+    {
+      resolve: 'gatsby-plugin-robots-txt',
+      options: {
+        policy: [{ userAgent: '*', allow: '/' }],
+      },
+    },
   ],
-}
+};
