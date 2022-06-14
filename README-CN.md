@@ -50,6 +50,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [sun0225SUN](https://github.com/sun0225SUN)     | <https://run.sunguoqi.com>                   | Nike      |
 | [Zhan](https://www.zlog.in/about)               | <https://run.zlog.in>                        | Nike      |
 | [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
+| [hanpei](https://running.nexts.top)             | <https://running.nexts.top>    
 | [liugezhou](https://github.com/liugezhou)       | <https://run.liugezhou.online>               | Strava    |
 
 ## 它是怎么工作的
@@ -92,7 +93,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 ## 下载
 
 ```
-git clone https://github.com/yihong0618/running_page.git
+git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
 ## 安装及测试 (node >= 12 and <= 14 python >= 3.6)
