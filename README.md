@@ -85,7 +85,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 Clone or fork the repo.
 
 ```
-git clone https://github.com/yihong0618/running_page.git
+git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
 ## Installation and testing (node >= 12 and <= 14 python >= 3.6)
