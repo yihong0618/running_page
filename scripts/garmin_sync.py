@@ -266,12 +266,15 @@ async def download_garmin_gpx(client, activity_id):
 
 async def get_activity_id_list(client, start=0):
     activities = await client.get_activities(start, 100)
-    if len(activities) > 0:
-        ids = list(map(lambda a: str(a.get("activityId", "")), activities))
-        print(f"Syncing Activity IDs")
-        return ids + await get_activity_id_list(client, start + 100)
-    else:
+    if activities is None:
         return []
+    else:
+        if len(activities) > 0:
+            ids = list(map(lambda a: str(a.get("activityId", "")), activities))
+            print(f"Syncing Activity IDs")
+            return ids + await get_activity_id_list(client, start + 100)
+        else:
+            return []
 
 
 async def gather_with_concurrency(n, tasks):
