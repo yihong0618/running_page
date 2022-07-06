@@ -32,5 +32,3 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Check formatting (black)
       run: black . --check
-    - name: Run isort
-      run: isort --profile black  **/**/*.py -c -v 

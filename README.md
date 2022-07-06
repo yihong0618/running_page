@@ -535,7 +535,6 @@ The following steps need to be taken
 Before submitting PR:
 
 - Format Python code with `black` (`black .`)
-- Format Python code with `isort` (`isort --profile black  **/**/*.py`)
 
 # Special thanks
 

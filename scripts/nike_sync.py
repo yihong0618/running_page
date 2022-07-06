@@ -10,15 +10,15 @@ from xml.etree import ElementTree
 import gpxpy.gpx
 import httpx
 from config import (
-  BASE_TIMEZONE,
-  BASE_URL,
-  GPX_FOLDER,
-  JSON_FILE,
-  NIKE_CLIENT_ID,
-  OUTPUT_DIR,
-  SQL_FILE,
-  TOKEN_REFRESH_URL,
-  run_map,
+    BASE_TIMEZONE,
+    BASE_URL,
+    GPX_FOLDER,
+    JSON_FILE,
+    NIKE_CLIENT_ID,
+    OUTPUT_DIR,
+    SQL_FILE,
+    TOKEN_REFRESH_URL,
+    run_map,
 )
 from generator import Generator
 

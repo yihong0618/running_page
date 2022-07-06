@@ -6,11 +6,11 @@ import sys
 import appdirs
 from config import SQL_FILE
 from gpxtrackposter import (
-  circular_drawer,
-  github_drawer,
-  grid_drawer,
-  poster,
-  track_loader,
+    circular_drawer,
+    github_drawer,
+    grid_drawer,
+    poster,
+    track_loader,
 )
 from gpxtrackposter.exceptions import ParameterError, PosterError
 
