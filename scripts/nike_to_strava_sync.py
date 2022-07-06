@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import argparse
 import os
 import time
@@ -8,8 +5,9 @@ from datetime import datetime, timedelta
 
 from config import OUTPUT_DIR
 from nike_sync import make_new_gpxs, run
-from utils import make_strava_client
 from strava_sync import run_strava_sync
+
+from utils import make_strava_client
 
 
 def get_last_time(client):
@@ -38,7 +36,7 @@ def get_to_generate_files(last_time):
     return [
         os.path.join(OUTPUT_DIR, i)
         for i in file_names
-        if not i.startswith(".") and int(i.split(".")[0]) > last_time
+        if i.endswith(".gpx") and int(i.split(".")[0]) > last_time
     ]
 
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 If you do not want bind any account
 Only the gpx files in GPX_OUT sync
