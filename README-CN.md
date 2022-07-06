@@ -88,6 +88,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[悦跑圈](#joyrun 悦跑圈)** (因悦跑圈限制单个设备原因，无法自动化)
 - **[咕咚](#codoon 咕咚)** (因咕咚限制单个设备原因，无法自动化)
 - **[GPX](#GPX)**
+- **[TCX](#TCX)**
+- **[Tcx_to_Strava(upload all tcx data to strava)](#TCX_to_Strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#)**
 
@@ -97,7 +99,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## 安装及测试 (node >= 12 and <= 14 python >= 3.6)
+## 安装及测试 (node >= 12 and <= 14 python >= 3.7)
 
 ```
 pip3 install -r requirements.txt
@@ -185,6 +187,20 @@ const LINE_OPACITY = 0.4;
 
 ```python
 python3(python) scripts/gpx_sync.py
+```
+
+</details>
+
+### TCX
+
+<details>
+<summary>Make your <code>TCX</code> data</summary>
+<br>
+
+把其它软件生成的 tcx files 拷贝到 TCX_OUT 之后运行
+
+```python
+python3(python) scripts/tcx_sync.py
 ```
 
 </details>
@@ -311,6 +327,10 @@ python3(python) scripts/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth
 
 <details>
 <summary>获取您的 Garmin 数据</summary>
+<br>
+如果你只想同步跑步数据增加命令 --only-run
+如果你想同步 `tcx` 格式，增加命令 --tcx
+
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
@@ -446,6 +466,28 @@ python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_
 <https://developers.strava.com/docs/getting-started>
 <https://github.com/barrald/strava-uploader>
 <https://github.com/strava/go.strava>
+
+</details>
+
+### TCX_to_Strava
+
+<details>
+<summary>Upload all tcx files to strava</summary>
+
+<br>
+
+1. 完成 strava 的步骤
+2. 在项目根目录下执行:
+
+```python
+python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresch_token}
+```
+
+示例：
+
+```python
+python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
+```
 
 </details>
 
