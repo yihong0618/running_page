@@ -85,8 +85,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Garmin](#Garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#Keep)**
-- **[悦跑圈](#joyrun 悦跑圈)** (因悦跑圈限制单个设备原因，无法自动化)
-- **[咕咚](#codoon 咕咚)** (因咕咚限制单个设备原因，无法自动化)
+- **[悦跑圈](#joyrun悦跑圈，因悦跑圈限制单个设备原因，无法自动化)**
+- **[咕咚](#codoon咕咚，因咕咚限制单个设备原因，无法自动化)**
 - **[GPX](#GPX)**
 - **[TCX](#TCX)**
 - **[Tcx_to_Strava(upload all tcx data to strava)](#TCX_to_Strava)**
