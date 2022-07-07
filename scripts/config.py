@@ -6,6 +6,7 @@ import yaml
 GET_DIR = "activities"
 OUTPUT_DIR = "activities"
 GPX_FOLDER = os.path.join(os.getcwd(), "GPX_OUT")
+TCX_FOLDER = os.path.join(os.getcwd(), "TCX_OUT")
 SQL_FILE = os.path.join(os.getcwd(), "scripts", "data.db")
 JSON_FILE = os.path.join(os.getcwd(), "src", "static", "activities.json")
 
