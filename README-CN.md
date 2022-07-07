@@ -19,6 +19,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 | Runner                                          | page                                         | App       |
 | ----------------------------------------------- | ---------------------------------------------|-----------|
+| [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
 | [shaonianche](https://github.com/shaonianche)   | <https://run.duanfei.org>                    | Strava    |
 | [yihong0618](https://github.com/yihong0618)     | <https://yihong.run>                         | Nike      |
 | [superleeyom](https://github.com/superleeyom)   | <https://running.leeyom.top>                 | Nike      |
