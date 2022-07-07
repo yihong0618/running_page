@@ -36,7 +36,7 @@ def get_to_generate_files(last_time):
     return [
         os.path.join(OUTPUT_DIR, i)
         for i in file_names
-        if i.endswith(".gpx") and int(i.split(".")[0]) > last_time
+        if i.endswith(".json") and int(i.split(".")[0]) > last_time
     ]
 
 
