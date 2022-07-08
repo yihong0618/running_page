@@ -1,0 +1,413 @@
+{
+    "id": "3081000000005710054750007112836422492187",
+    "type": "run",
+    "app_id": "RUNNING_ANDROID",
+    "start_epoch_ms": 1418220242892,
+    "end_epoch_ms": 1418222248892,
+    "last_modified": 1418220209000,
+    "active_duration_ms": 2006000,
+    "session": false,
+    "delete_indicator": false,
+    "summaries": [
+        {
+            "metric": "speed",
+            "summary": "mean",
+            "source": "nike.running.android",
+            "app_id": "RUNNING_ANDROID",
+            "value": 13.016370149551348
+        },
+        {
+            "metric": "distance",
+            "summary": "total",
+            "source": "nike.running.android",
+            "app_id": "RUNNING_ANDROID",
+            "value": 7.2530107
+        },
+        {
+            "metric": "nikefuel",
+            "summary": "total",
+            "source": "nike.running.android",
+            "app_id": "RUNNING_ANDROID",
+            "value": 1855
+        },
+        {
+            "metric": "pace",
+            "summary": "mean",
+            "source": "nike.running.android",
+            "app_id": "RUNNING_ANDROID",
+            "value": 4.609580037339987
+        },
+        {
+            "metric": "stars",
+            "summary": "total",
+            "source": "nike.running.android",
+            "app_id": "RUNNING_ANDROID",
+            "value": 0
+        },
+        {
+            "metric": "calories",
+            "summary": "total",
+            "source": "nike.running.android",
+            "app_id": "RUNNING_ANDROID",
+            "value": 512
+        },
+        {
+            "metric": "nikefuel",
+            "summary": "mean",
+            "source": "nike.running.android",
+            "app_id": "RUNNING_ANDROID",
+            "value": 55.48354935194417
+        },
+        {
+            "metric": "steps",
+            "summary": "total",
+            "source": "nike.running.android",
+            "app_id": "RUNNING_ANDROID",
+            "value": 5620
+        }
+    ],
+    "sources": [
+        "nike.running.android",
+        "com.nike.pacecalculator.v1",
+        "com.nike.speedcalculator.v1"
+    ],
+    "tags": {
+        "emotion": "AMPED",
+        "location": "OUTDOORS",
+        "note": "NOTE",
+        "shoes": "mizuno wave rider 16",
+        "terrain": "AMPED",
+        "weather": "AMPED"
+    },
+    "change_tokens": [
+        "60616689c77ccd6b821ba70ceb590288999a0b2ae405afd73f3bb484ed634c23:1418220209000"
+    ],
+    "metric_types": [
+        "elevation",
+        "distance",
+        "pace",
+        "latitude",
+        "calories",
+        "stars",
+        "steps",
+        "speed",
+        "nikefuel",
+        "longitude"
+    ],
+    "metrics": [
+        {
+            "type": "pace",
+            "unit": "MKM",
+            "source": "com.nike.pacecalculator.v1",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418222248892,
+                    "value": 4.609580037339987
+                }
+            ]
+        },
+        {
+            "type": "longitude",
+            "unit": "DD",
+            "source": "nike.running.android",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418220242892,
+                    "value": 114.400444
+                },
+                {
+                    "start_epoch_ms": 1418220493643,
+                    "end_epoch_ms": 1418220493643,
+                    "value": 114.400444
+                },
+                {
+                    "start_epoch_ms": 1418220744393,
+                    "end_epoch_ms": 1418220744393,
+                    "value": 114.400406
+                },
+                {
+                    "start_epoch_ms": 1418220995143,
+                    "end_epoch_ms": 1418220995143,
+                    "value": 114.40038
+                },
+                {
+                    "start_epoch_ms": 1418221245893,
+                    "end_epoch_ms": 1418221245893,
+                    "value": 114.40038
+                },
+                {
+                    "start_epoch_ms": 1418221496643,
+                    "end_epoch_ms": 1418221496643,
+                    "value": 114.401
+                },
+                {
+                    "start_epoch_ms": 1418221747393,
+                    "end_epoch_ms": 1418221747393,
+                    "value": 114.401115
+                },
+                {
+                    "start_epoch_ms": 1418221998143,
+                    "end_epoch_ms": 1418221998143,
+                    "value": 114.401115
+                }
+            ]
+        },
+        {
+            "type": "speed",
+            "unit": "KMH",
+            "source": "com.nike.speedcalculator.v1",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418222248892,
+                    "value": 13.016370149551348
+                }
+            ]
+        },
+        {
+            "type": "calories",
+            "unit": "KCAL",
+            "source": "nike.running.android",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418222248892,
+                    "value": 512
+                }
+            ]
+        },
+        {
+            "type": "distance",
+            "unit": "KM",
+            "source": "nike.running.android",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418222248892,
+                    "value": 7.2530107
+                }
+            ]
+        },
+        {
+            "type": "elevation",
+            "unit": "M",
+            "source": "nike.running.android",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418220242892,
+                    "value": 15
+                },
+                {
+                    "start_epoch_ms": 1418220493643,
+                    "end_epoch_ms": 1418220493643,
+                    "value": 15
+                },
+                {
+                    "start_epoch_ms": 1418220744393,
+                    "end_epoch_ms": 1418220744393,
+                    "value": 15
+                },
+                {
+                    "start_epoch_ms": 1418220995143,
+                    "end_epoch_ms": 1418220995143,
+                    "value": 15
+                },
+                {
+                    "start_epoch_ms": 1418221245893,
+                    "end_epoch_ms": 1418221245893,
+                    "value": 15
+                },
+                {
+                    "start_epoch_ms": 1418221496643,
+                    "end_epoch_ms": 1418221496643,
+                    "value": 13
+                },
+                {
+                    "start_epoch_ms": 1418221747393,
+                    "end_epoch_ms": 1418221747393,
+                    "value": 13
+                },
+                {
+                    "start_epoch_ms": 1418221998143,
+                    "end_epoch_ms": 1418221998143,
+                    "value": 13
+                }
+            ]
+        },
+        {
+            "type": "steps",
+            "unit": "STEP",
+            "source": "nike.running.android",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418222248892,
+                    "value": 5620
+                }
+            ]
+        },
+        {
+            "type": "nikefuel",
+            "unit": "FUEL",
+            "source": "nike.running.android",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418222248892,
+                    "value": 1855
+                }
+            ]
+        },
+        {
+            "type": "latitude",
+            "unit": "DD",
+            "source": "nike.running.android",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418220242892,
+                    "value": 30.515375
+                },
+                {
+                    "start_epoch_ms": 1418220493643,
+                    "end_epoch_ms": 1418220493643,
+                    "value": 30.515375
+                },
+                {
+                    "start_epoch_ms": 1418220744393,
+                    "end_epoch_ms": 1418220744393,
+                    "value": 30.515263
+                },
+                {
+                    "start_epoch_ms": 1418220995143,
+                    "end_epoch_ms": 1418220995143,
+                    "value": 30.515165
+                },
+                {
+                    "start_epoch_ms": 1418221245893,
+                    "end_epoch_ms": 1418221245893,
+                    "value": 30.515165
+                },
+                {
+                    "start_epoch_ms": 1418221496643,
+                    "end_epoch_ms": 1418221496643,
+                    "value": 30.514189
+                },
+                {
+                    "start_epoch_ms": 1418221747393,
+                    "end_epoch_ms": 1418221747393,
+                    "value": 30.51419
+                },
+                {
+                    "start_epoch_ms": 1418221998143,
+                    "end_epoch_ms": 1418221998143,
+                    "value": 30.51419
+                }
+            ]
+        },
+        {
+            "type": "stars",
+            "unit": "STAR",
+            "source": "nike.running.android",
+            "appId": "RUNNING_ANDROID",
+            "values": [
+                {
+                    "start_epoch_ms": 1418220242892,
+                    "end_epoch_ms": 1418222248892,
+                    "value": 0
+                }
+            ]
+        }
+    ],
+    "moments": [
+        {
+            "key": "split_km",
+            "value": "1",
+            "timestamp": 1418220498986,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_km",
+            "value": "2",
+            "timestamp": 1418220770384,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_km",
+            "value": "3",
+            "timestamp": 1418221044506,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_km",
+            "value": "4",
+            "timestamp": 1418221322066,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_km",
+            "value": "5",
+            "timestamp": 1418221591462,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_km",
+            "value": "6",
+            "timestamp": 1418221860402,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_km",
+            "value": "7",
+            "timestamp": 1418222131608,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_mile",
+            "value": "1",
+            "timestamp": 1418220663836,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_mile",
+            "value": "2",
+            "timestamp": 1418221103467,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_mile",
+            "value": "3",
+            "timestamp": 1418221545337,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        },
+        {
+            "key": "split_mile",
+            "value": "4",
+            "timestamp": 1418221979183,
+            "app_id": "RUNNING_ANDROID",
+            "source": "nike.running.android"
+        }
+    ]
+}
