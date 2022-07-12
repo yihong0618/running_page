@@ -90,9 +90,9 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[咕咚](#codoon咕咚，因咕咚限制单个设备原因，无法自动化)**
 - **[GPX](#GPX)**
 - **[TCX](#TCX)**
-- **[Tcx_to_Strava(upload all tcx data to strava)](#TCX_to_Strava)**
+- **[Tcx+Strava(upload all tcx data to strava)](#TCX_to_Strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
-- **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#)**
+- **[Garmin+Strava(Using Garmin Run, Strava backup data)](#garminstrava)**
 
 ## 下载
 
@@ -492,6 +492,7 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
 
 </details>
 
+
 ### Nike+Strava
 
 <details>
@@ -500,7 +501,7 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
 <br>
 
 1. 完成 nike 和 strava 的步骤
-2. 在项目根目录下执行::
+2. 在项目根目录下执行:
 
 ```python
 python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresch_token}
@@ -513,6 +514,29 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 ```
 
 </details>
+
+### Garmin+Strava
+
+<details>
+<summary>Get your <code>Garmin</code> data and upload to strava</summary>
+
+<br>
+
+1. 完成 garmin 和 strava 的步骤
+2. 在项目根目录下执行:
+
+```python
+python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresch_token} ${garmin_email} ${garmin_password} --is-cn
+```
+
+示例：
+
+```python
+python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
+```
+
+</details>
+
 
 ### Total Data Analysis
 

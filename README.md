@@ -81,7 +81,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[TCX](#TCX)**
 - **[Nike_to_Strava(Using NRC Run, Strava backup data)](#Nike_to_Strava)**
 - **[Tcx_to_Strava(upload all tcx data to strava)](#TCX_to_Strava)**
-- **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#)**
+- **[Garmin+Strava(Using Garmin Run, Strava backup data)](#garminstrava)**
 
 ## Download
 
@@ -404,6 +404,26 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 ```
 
 </details>
+
+### Garmin+Strava
+
+<details>
+<summary>Get your <code>Garmin</code> data and upload to strava</summary>
+
+<br>
+
+1. finish garmin and strava setps
+2. Execute in the root directory:
+
+```python
+python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresch_token} ${garmin_email} ${garmin_password} --is-cn
+```
+e.g.
+
+```python
+python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
+```
+
 
 ### Total Data Analysis
 
