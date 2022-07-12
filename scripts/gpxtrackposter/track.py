@@ -9,6 +9,7 @@ import os
 from collections import namedtuple
 
 import gpxpy as mod_gpxpy
+import lxml
 import polyline
 import s2sphere as s2
 from rich import print
@@ -146,13 +147,22 @@ class Track:
         for t in gpx.tracks:
             for s in t.segments:
                 try:
+                    extensions = [
+                        {
+                            lxml.etree.QName(child).localname: child.text
+                            for child in p.extensions[0]
+                        }
+                        for p in s.points
+                        if p.extensions
+                    ]
                     heart_rate_list.extend(
                         [
-                            int(p.extensions[0].getchildren()[0].text)
-                            for p in s.points
-                            if p.extensions
+                            int(p["hr"]) if p.__contains__("hr") else None
+                            for p in extensions
+                            if extensions
                         ]
                     )
+                    heart_rate_list = list(filter(None, heart_rate_list))
                 except:
                     pass
                 line = [
