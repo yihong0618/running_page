@@ -45,7 +45,7 @@ if __name__ == "__main__":
     )
     last_time = get_strava_last_time(client, is_milliseconds=False)
     to_upload_time_list, to_upload_dict = get_to_generate_files(last_time)
-    index = 0
+    index = 1
     for i in to_upload_time_list:
         tcx_file = to_upload_dict.get(i)
         upload_file_to_strava(client, tcx_file, "tcx")

@@ -68,7 +68,7 @@ if __name__ == "__main__":
     loop.run_until_complete(future)
     new_ids = future.result()
     print(f"To upload to strava {len(new_ids)} files")
-    index = 0
+    index = 1
     for i in new_ids:
         f = os.path.join(folder, f"{i}.{file_type}")
         upload_file_to_strava(strava_client, f, file_type)
