@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import argparse
 import os
 import time
@@ -8,29 +5,9 @@ from datetime import datetime, timedelta
 
 from config import OUTPUT_DIR
 from nike_sync import make_new_gpxs, run
-from utils import make_strava_client
 from strava_sync import run_strava_sync
 
-
-def get_last_time(client):
-    """
-    if there is no activities cause exception return 0
-    """
-    try:
-        activity = None
-        activities = client.get_activities(limit=10)
-        # for else in python if you don't know please google it.
-        for a in activities:
-            if a.type == "Run":
-                activity = a
-                break
-        else:
-            return 0
-        end_date = activity.start_date + activity.elapsed_time
-        return int(datetime.timestamp(end_date) * 1000)
-    except Exception as e:
-        print(f"Something wrong to get last time err: {str(e)}")
-        return 0
+from utils import make_strava_client, get_strava_last_time, upload_file_to_strava
 
 
 def get_to_generate_files(last_time):
@@ -38,14 +15,8 @@ def get_to_generate_files(last_time):
     return [
         os.path.join(OUTPUT_DIR, i)
         for i in file_names
-        if not i.startswith(".") and int(i.split(".")[0]) > last_time
+        if i.endswith(".json") and int(i.split(".")[0]) > last_time
     ]
-
-
-def upload_gpx(client, file_name):
-    with open(file_name, "rb") as f:
-        r = client.upload_activity(activity_file=f, data_type="gpx")
-        print(r)
 
 
 if __name__ == "__main__":
@@ -67,7 +38,7 @@ if __name__ == "__main__":
     client = make_strava_client(
         options.client_id, options.client_secret, options.strava_refresh_token
     )
-    last_time = get_last_time(client)
+    last_time = get_strava_last_time(client)
     files = get_to_generate_files(last_time)
     new_gpx_files = make_new_gpxs(files)
     time.sleep(10)  # just wait
@@ -80,7 +51,7 @@ if __name__ == "__main__":
             #  if you want sync all data from nike to strava drop comment the line below
             new_gpx_files = new_gpx_files[:10]
         for f in new_gpx_files:
-            upload_gpx(client, f)
+            upload_file_to_strava(client, f, "gpx")
 
     time.sleep(
         10
