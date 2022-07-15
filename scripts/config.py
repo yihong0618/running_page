@@ -11,8 +11,8 @@ FOLDER_DICT = {
     "gpx": GPX_FOLDER,
     "tcx": TCX_FOLDER,
 }
-SQL_FILE = os.path.join(os.getcwd(), "scripts", "data.db")
-JSON_FILE = os.path.join(os.getcwd(), "src", "static", "activities.json")
+SQL_FILE = os.path.join("..", "scripts", "data.db")
+JSON_FILE = os.path.join("..", "src", "static", "activities.json")
 
 # TODO: Move into nike_sync
 BASE_URL = "https://api.nike.com/sport/v3/me"
