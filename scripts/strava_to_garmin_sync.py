@@ -1,16 +1,15 @@
 import argparse
 import asyncio
-from datetime import datetime, timedelta
 from io import BytesIO
-from xml.etree import ElementTree
-
 import gpxpy
+from xml.etree import ElementTree
 import gpxpy.gpx
-from config import STRAVA_GARMIN_TYPE_DICT
+from datetime import datetime, timedelta
+from utils import make_strava_client
 from garmin_sync import Garmin
 from strava_sync import run_strava_sync
 
-from utils import make_strava_client
+from config import STRAVA_GARMIN_TYPE_DICT
 
 
 def generate_strava_run_points(start_time, strava_streams):

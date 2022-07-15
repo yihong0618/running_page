@@ -2,16 +2,17 @@
 need to download the files from endomondo
 and store it in Workous dir in running_page
 """
-import json
 import os
+import json
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-import polyline
-from config import BASE_TIMEZONE, ENDOMONDO_FILE_DIR, JSON_FILE, SQL_FILE
+from utils import adjust_time
+from config import BASE_TIMEZONE, ENDOMONDO_FILE_DIR, SQL_FILE, JSON_FILE
 from generator import Generator
 
-from utils import adjust_time
+import polyline
+
 
 # TODO Same as keep_sync maybe refactor
 start_point = namedtuple("start_point", "lat lon")

@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import argparse
 import base64
 import hashlib
@@ -297,10 +300,7 @@ class Codoon:
             if str(log_id) not in old_gpx_ids and run_points_data:
                 gpx_data = self.parse_points_to_gpx(run_points_data)
                 download_codoon_gpx(gpx_data, str(log_id))
-        heart_rate_dict = run_data.get("heart_rate")
         heart_rate = None
-        if heart_rate_dict:
-            heart_rate = sum(heart_rate_dict.values()) / len(heart_rate_dict)
 
         polyline_str = polyline.encode(latlng_data) if latlng_data else ""
         start_latlng = start_point(*latlng_data[0]) if latlng_data else None
