@@ -6,10 +6,10 @@ import yaml
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
 
-GET_DIR = "activities"
-OUTPUT_DIR = "activities"
+OUTPUT_DIR = os.path.join(parent, "activities")
 GPX_FOLDER = os.path.join(parent, "GPX_OUT")
 TCX_FOLDER = os.path.join(parent, "TCX_OUT")
+ENDOMONDO_FILE_DIR = os.path.join(parent, "Workouts")
 FOLDER_DICT = {
     "gpx": GPX_FOLDER,
     "tcx": TCX_FOLDER,
@@ -23,7 +23,6 @@ TOKEN_REFRESH_URL = "https://unite.nike.com/tokenRefresh"
 NIKE_CLIENT_ID = "HlHa2Cje3ctlaOqnxvgZXNaAs7T9nAuH"
 BASE_TIMEZONE = "Asia/Shanghai"
 
-ENDOMONDO_FILE_DIR = "Workouts"
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
