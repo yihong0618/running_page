@@ -1,18 +1,21 @@
 import os
 from collections import namedtuple
-
 import yaml
+
+# getting content root directory
+current = os.path.dirname(os.path.realpath(__file__))
+parent = os.path.dirname(current)
 
 GET_DIR = "activities"
 OUTPUT_DIR = "activities"
-GPX_FOLDER = os.path.join(os.getcwd(), "GPX_OUT")
-TCX_FOLDER = os.path.join(os.getcwd(), "TCX_OUT")
+GPX_FOLDER = os.path.join(parent, "GPX_OUT")
+TCX_FOLDER = os.path.join(parent, "TCX_OUT")
 FOLDER_DICT = {
     "gpx": GPX_FOLDER,
     "tcx": TCX_FOLDER,
 }
-SQL_FILE = os.path.join("..", "scripts", "data.db")
-JSON_FILE = os.path.join("..", "src", "static", "activities.json")
+SQL_FILE = os.path.join(parent, "scripts", "data.db")
+JSON_FILE = os.path.join(parent, "src", "static", "activities.json")
 
 # TODO: Move into nike_sync
 BASE_URL = "https://api.nike.com/sport/v3/me"
