@@ -2,7 +2,7 @@ module.exports = {
   pathPrefix: '/running_page', // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'Running Page',
-    siteUrl: 'https://liuw.fun',
+    siteUrl: 'https://liuw.run',
     logo: 'icons/running.png',
     description: 'Personal site and blog',
     navLinks: [
