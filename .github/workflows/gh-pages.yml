@@ -1,6 +1,6 @@
 name: Publish GitHub Pages
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push events but only for the master branch
   push:
@@ -69,7 +69,7 @@ jobs:
           # Build directory to deploy
           build_dir: public
           # Write the given domain name to the CNAME file
-          #fqdn: custom.domain.name # optional
+          fqdn: liuw.fun # optional
           # Prevent Jekyll from building the site
           jekyll: false
         env:
