@@ -3,12 +3,12 @@ module.exports = {
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'https://liuw.run',
-    logo: 'icons/running.png',
+    logo: 'https://liuw.fun/images/running.png',
     description: 'Personal site and blog',
     navLinks: [
       {
         name: 'Blog',
-        url: 'https://liuwei.fun',
+        url: 'https://liuw.fun',
       },
       {
         name: 'About',
