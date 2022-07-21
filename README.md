@@ -54,6 +54,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
 | [hanpei](https://running.nexts.top)             | <https://running.nexts.top>                  | Garmin-cn |
 | [liugezhou](https://github.com/liugezhou)       | <https://run.liugezhou.online>               | Strava    |
+| [Jason Tan](https://github.com/Jason-cqtan)     | <https://jason-cqtan.github.io/running_page> | Nike      |
 
 ## How it works
 
