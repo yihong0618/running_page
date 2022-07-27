@@ -24,7 +24,7 @@ const formatPace = (d) => {
   const pace = (1000.0 / 60.0) * (1.0 / d);
   const minutes = Math.floor(pace);
   const seconds = Math.floor((pace - minutes) * 60.0);
-  return `${minutes}:${seconds.toFixed(0).toString().padStart(2, '0')}`;
+  return `${minutes}'${seconds.toFixed(0).toString().padStart(2, '0')}"`;
 };
 
 const formatRunTime = (distance,pace) => {
