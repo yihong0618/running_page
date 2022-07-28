@@ -1,26 +1,26 @@
 FROM python:3.10.5-slim AS data
 ARG app
 ARG nike_refresh_token
-ARG email 
+ARG email
 ARG password
 ARG client_id
 ARG client_secret
 ARG refresch_token
 ARG YOUR_NAME
 WORKDIR /root/running_page
-COPY ./ /root/running_page
+COPY . /root/running_page
 RUN pip3 install -i https://mirrors.aliyun.com/pypi/simple/ pip -U
 RUN pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 RUN pip3 install -r requirements.txt
 RUN if [ "$app" = "NRC" ] ; then \
        python3 scripts/nike_sync.py ${nike_refresh_token}; \
-    elif ["$app" = "Garmin"] ; then \
-         python3 scripts/gramin_sync.py ${email} ${password}; \
-    elif ["$app" = "Garmin-CN"] ; then \
-         python3 scripts/gramin_sync.py ${email} ${password}  --is-cn ; \
-    elif ["$app" = "Strava"] ; then \
+    elif [ "$app" = "Garmin" ] ; then \
+         python3 scripts/garmin_sync.py ${email} ${password}; \
+    elif [ "$app" = "Garmin-CN" ] ; then \
+         python3 scripts/garmin_sync.py ${email} ${password}  --is-cn ; \
+    elif [ "$app" = "Strava" ] ; then \
         python3 scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token};\
-    elif ["$app" = "Nike_to_Strava"] ; then \
+    elif [ "$app" = "Nike_to_Strava" ] ; then \
         python3  scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${refresch_token};\
     else \
         echo "Unknown app" ; \
