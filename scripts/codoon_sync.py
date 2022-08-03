@@ -312,6 +312,9 @@ class Codoon:
         if IS_ONLY_RUN and sport_type != 1:
             return
         cast_type = TYPE_DICT[sport_type] if sport_type in TYPE_DICT else sport_type
+        if not run_data["total_time"]:
+            print(f"ID {log_id} has no total time just ignore please check")
+            return 
         d = {
             "id": log_id,
             "name": str(cast_type) + " from codoon",
