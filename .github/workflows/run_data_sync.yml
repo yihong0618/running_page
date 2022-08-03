@@ -14,6 +14,8 @@ on:
       - scripts/garmin_sync.py
       - scripts/keep_sync.py
       - scripts/gpx_sync.py
+      - scripts/tcx_sync.py
+      - scripts/garmin_to_strava_sync.py
       - requirements.txt
   workflow_dispatch:
 
@@ -37,7 +39,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
-          python-version: 3.6
+          python-version: 3.7
 
       # from pdm
       - name: Set Variables
@@ -77,6 +79,7 @@ jobs:
         run: |
           python scripts/strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
 
+      # for garmin if you want generate `tcx` you can add --tcx command in the args.
       - name: Run sync Garmin script
         if: env.RUN_TYPE == 'garmin'
         run: |
@@ -104,17 +107,28 @@ jobs:
         run: |
           python scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
 
+      - name: Run sync Garmin-cn to Strava(Run with Garmin data backup in Strava)
+        if: env.RUN_TYPE == 'garmin_to_strava_cn'
+        run: |
+          python scripts/garmin_to_strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
+
+      - name: Run sync Garmin to Strava(Run with Garmin data backup in Strava)
+        if: env.RUN_TYPE == 'garmin_to_strava'
+        run: |
+          python scripts/garmin_to_strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
+
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
         run: |
           python scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
-          python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance "${{ env.MIN_GRID_DISTANCE }}"  --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+          python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}" --output assets/grid.svg --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime --min-distance "${{ env.MIN_GRID_DISTANCE }}"
           python scripts/gen_svg.py --from-db --type circular --use-localtime
           python scripts/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
 
       - name: Push new runs
         run: |
           git config --local user.email "${{ env.GITHUB_EMAIL }}"
-          git config --local user.name "${{ env.GITHUB_EMAIL }}"
-          git commit -a -m 'update new runs' || echo "nothing to commit"
+          git config --local user.name "${{ env.GITHUB_NAME }}"
+          git add .
+          git commit -m 'update new runs' || echo "nothing to commit"
           git push || echo "nothing to push"
