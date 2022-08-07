@@ -3,7 +3,7 @@ gpxpy==1.4.2
 stravalib
 appdirs>=1.4.0
 svgwrite>=1.1.9
-colour
+colour>=0.1.5
 s2sphere
 arrow
 geopy
@@ -13,3 +13,6 @@ timezonefinder
 pyyaml
 aiofiles
 cloudscraper==1.2.58
+python-tcxparser
+rich
+lxml

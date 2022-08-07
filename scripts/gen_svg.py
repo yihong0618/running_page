@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import argparse
 import logging
 import os
@@ -142,12 +139,6 @@ def main():
         help='Distance units; "metric", "imperial" (default: "metric").',
     )
     args_parser.add_argument(
-        "--clear-cache",
-        dest="clear_cache",
-        action="store_true",
-        help="Clear the track cache.",
-    )
-    args_parser.add_argument(
         "--verbose", dest="verbose", action="store_true", help="Verbose logging."
     )
     args_parser.add_argument("--logfile", dest="logfile", metavar="FILE", type=str)
@@ -206,17 +197,11 @@ def main():
     loader = track_loader.TrackLoader()
     if args.use_localtime:
         loader.use_local_time = True
-    loader.cache_dir = os.path.join(
-        appdirs.user_cache_dir(__app_name__, __app_author__), "tracks"
-    )
     if not loader.year_range.parse(args.year):
         raise ParameterError(f"Bad year range: {args.year}.")
 
     loader.special_file_names = args.special
     loader.min_length = args.min_distance * 1000
-    if args.clear_cache:
-        print("Clearing cache...")
-        loader.clear_cache()
 
     if args.from_db:
         # for svg from db here if you want gpx please do not use --from-db
@@ -225,8 +210,6 @@ def main():
     else:
         tracks = loader.load_tracks(args.gpx_dir)
     if not tracks:
-        if not args.clear_cache:
-            print("No tracks found.")
         return
 
     is_circular = args.type == "circular"

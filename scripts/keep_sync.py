@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import argparse
 import base64
 import json
@@ -102,6 +99,9 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
     start_date_local = adjust_time(start_date, tz_name)
     end = datetime.utcfromtimestamp(run_data["endTime"] / 1000)
     end_local = adjust_time(end, tz_name)
+    if not run_data["duration"]:
+        print(f"ID {keep_id} has no total time just ignore please check")
+        return
     d = {
         "id": int(keep_id),
         "name": "run from keep",
