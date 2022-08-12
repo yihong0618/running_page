@@ -24,7 +24,7 @@ def get_to_generate_files(last_time):
     tcx_files_dict = {
         int(i[0].time_objects()[0].timestamp()): i[1]
         for i in tcx_files
-        if int(i[0].time_objects()[0].timestamp()) > last_time
+        if len(i[0].time_objects()) > 0 and int(i[0].time_objects()[0].timestamp()) > last_time
     }
 
     return sorted(list(tcx_files_dict.keys())), tcx_files_dict
@@ -49,9 +49,9 @@ if __name__ == "__main__":
     for i in to_upload_time_list:
         tcx_file = to_upload_dict.get(i)
         upload_file_to_strava(client, tcx_file, "tcx")
-        if index % 10 == 0:
-            print("For the rate limit will sleep 10s")
-            time.sleep(10)
+        if index % 15 == 0:
+            print("For the rate limit will sleep 15 minutes")
+            time.sleep(961)
         index += 1
         time.sleep(1)
 
