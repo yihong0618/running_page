@@ -1,17 +1,17 @@
 module.exports = {
   pathPrefix: '/running_page', // Change to `/running_page` when running on github pages
   siteMetadata: {
-    siteTitle: 'https://conge.github.io',
-    siteUrl: 'https://yihong.run',
+    siteTitle: 'Conge 跑步',
+    siteUrl: 'https://conge.github.io',
     logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
     description: 'Personal site and blog',
     navLinks: [
       {
-        name: 'Blog',
+        name: '主页',
         url: 'https://conge.github.io',
       },
       {
-        name: 'About',
+        name: '关于',
         url: 'https://conge.github.io/about',
       },
     ],
