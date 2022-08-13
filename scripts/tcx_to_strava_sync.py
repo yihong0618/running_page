@@ -4,7 +4,7 @@ import time
 
 from config import TCX_FOLDER
 from strava_sync import run_strava_sync
-from stravalib.exc import RateLimitTimeout, ActivityUploadFailed 
+from stravalib.exc import RateLimitTimeout, ActivityUploadFailed, RateLimitExceeded
 from tcxparser import TCXParser
 
 from utils import make_strava_client, get_strava_last_time, upload_file_to_strava
@@ -25,7 +25,7 @@ def get_to_generate_files(last_time):
         int(i[0].time_objects()[0].timestamp()): i[1]
         for i in tcx_files
         if len(i[0].time_objects()) > 0
-        and int(i[0].time_objects()[0].timestamp()) > last_time
+        # and int(i[0].time_objects()[0].timestamp()) > last_time
     }
 
     return sorted(list(tcx_files_dict.keys())), tcx_files_dict
@@ -52,10 +52,13 @@ if __name__ == "__main__":
         try:
             upload_file_to_strava(client, tcx_file, "tcx")
         except RateLimitTimeout as e:
-            print("For the rate limit will sleep 15 minutes")
+            timeout = e.timeout
+            print(f"Strava API Rate Limit Timeout. Retry in {timeout} seconds")
+            print()
+            time.sleep(timeout)
             # try previous again
             upload_file_to_strava(client, tcx_file, "tcx")
-            time.sleep(961)
+
         except ActivityUploadFailed as e:
             print(f"Upload faild error {str(e)}")
         # spider rule
