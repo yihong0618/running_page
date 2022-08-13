@@ -66,10 +66,5 @@ def get_strava_last_time(client, is_milliseconds=True):
 def upload_file_to_strava(client, file_name, data_type):
     with open(file_name, "rb") as f:
         r = client.upload_activity(activity_file=f, data_type=data_type)
-        try:
-            r.wait()
-            print(file_name)
-            print("===== waiting for upload ====")
-            print(r.status, f"strava id: {r.activity_id}")
-        except Exception as e:
-            print(str(e))
+        print(f"{data_type} file: {file_name} is uploading to strava, upload_id: {r.upload_id}.")
+ 
