@@ -11,6 +11,18 @@ module.exports = {
         url: 'https://conge.github.io',
       },
       {
+        name: '书影音',
+        url: 'https://conge.github.io/books/',
+      },
+      {
+        name: '跑步周记',
+        url: 'https://conge.github.io/category/#%E6%8A%98%E8%BF%94%E7%82%B9',
+      },
+      {
+        name: '育儿周记',
+        url: 'https://conge.github.io/category/#%E7%88%B6%E8%8C%83%E5%AD%A6%E5%A0%82',
+      },
+      {
         name: '关于',
         url: 'https://conge.github.io/about',
       },
