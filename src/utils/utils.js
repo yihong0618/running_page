@@ -49,12 +49,38 @@ const scrollToMap = () => {
 
 // what about oversea?
 const locationForRun = (run) => {
-  const location = run.location_country;
+  let location = run.location_country;
   let [city, province, country] = ['', '', ''];
   if (location) {
     // Only for Chinese now
-    const cityMatch = location.match(/[\u4e00-\u9fa5]*(市|自治州)/);
-    const provinceMatch = location.match(/[\u4e00-\u9fa5]*(省|自治区)/);
+    // should fiter 臺灣
+    // eg: 7-Eleven, 中山北路二段77巷, 中山里, 中山區, 臺北市, 104010, 臺灣
+    // => 7-Eleven, 中山北路二段77巷, 中山里, 中山區, 臺北市, 臺灣, 104010, 中国
+
+    // 民生二路, 長生里, 前金區, 高雄市, 801, 臺灣
+    // => 民生二路, 長生里, 前金區, 高雄市, 台湾省, 801, 中国
+
+    // 恆春國小南灣分校, 南灣路仁愛巷, 南灣里, 恆春鎮, 臺灣省, 946, 臺灣
+    // => 恆春國小南灣分校, 南灣路仁愛巷, 南灣里, 恆春鎮, 台湾省, 946, 中国
+    // FIXME: pls pr a better solution
+    // may do data cleaning at data sync ?
+    if(location.indexOf('臺灣') > -1){
+      const taiwan = '台湾';
+      location = location.replace('臺灣', taiwan);
+      const _locArr = location.split(',').map(item=>item.trim());
+      const _locArrLen = _locArr.length;
+      // directly repalce last item with 中国
+      _locArr[_locArrLen-1] = '中国';
+      // if location not contain '台湾省', insert it before zip code(posistion is _locArrLen-2)
+      if(_locArr.indexOf(`${taiwan}省`) === -1){
+        _locArr.splice(_locArrLen-2, 0, `${taiwan}省`)
+      }
+      location = _locArr.join(',');
+    }
+    // fix error data
+    // eg: 城市广场 Urban Square, 苗江路, 草鞋湾, 半淞园路街道, 黄浦区, 上海市, 200011, 中国
+    const cityMatch = location.match(/[\u4e00-\u9fa5]{2,}(市|自治州)/);
+    const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
     if (cityMatch) {
       [city] = cityMatch;
     }
