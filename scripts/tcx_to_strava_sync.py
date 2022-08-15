@@ -25,7 +25,7 @@ def get_to_generate_files(last_time):
         int(i[0].time_objects()[0].timestamp()): i[1]
         for i in tcx_files
         if len(i[0].time_objects()) > 0
-        # and int(i[0].time_objects()[0].timestamp()) > last_time
+        and int(i[0].time_objects()[0].timestamp()) > last_time
     }
 
     return sorted(list(tcx_files_dict.keys())), tcx_files_dict
@@ -44,7 +44,15 @@ if __name__ == "__main__":
     client = make_strava_client(
         options.client_id, options.client_secret, options.strava_refresh_token
     )
-    last_time = get_strava_last_time(client, is_milliseconds=False)
+    parser.add_argument(
+        "--all",
+        dest="all",
+        action="store_true",
+        help="if upload to strava all without check last time",
+    )
+    last_time = 0
+    if not options.all:
+        last_time = get_strava_last_time(client, is_milliseconds=False)
     to_upload_time_list, to_upload_dict = get_to_generate_files(last_time)
     index = 1
     for i in to_upload_time_list:
