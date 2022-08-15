@@ -2,9 +2,9 @@
 FROM python:3.10.5-slim AS develop-py
 WORKDIR /root/running_page
 COPY ./requirements.txt /root/running_page/requirements.txt
-RUN pip3 install -i https://mirrors.aliyun.com/pypi/simple/ pip -U
-RUN pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/
-RUN pip3 install -r requirements.txt
+RUN pip3 install -i https://mirrors.aliyun.com/pypi/simple/ pip -U \
+        && pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/ \
+        && pip3 install -r requirements.txt
 
 FROM node:14  AS develop-node
 WORKDIR /root/running_page
