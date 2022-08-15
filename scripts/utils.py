@@ -1,4 +1,5 @@
 import json
+import time
 from datetime import datetime
 
 import pytz
@@ -9,6 +10,7 @@ except:
     pass
 from generator import Generator
 from stravalib.client import Client
+from stravalib.exc import RateLimitExceeded
 
 
 def adjust_time(time, tz_name):
@@ -65,11 +67,15 @@ def get_strava_last_time(client, is_milliseconds=True):
 
 def upload_file_to_strava(client, file_name, data_type):
     with open(file_name, "rb") as f:
-        r = client.upload_activity(activity_file=f, data_type=data_type)
         try:
-            r.wait()
-            print(file_name)
-            print("===== waiting for upload ====")
-            print(r.status, f"strava id: {r.activity_id}")
-        except Exception as e:
-            print(str(e))
+            r = client.upload_activity(activity_file=f, data_type=data_type)
+        except RateLimitExceeded as e:
+            timeout = e.timeout
+            print()
+            print(f"Strava API Rate Limit Exceeded. Retry after {timeout} seconds")
+            print()
+            time.sleep(timeout)
+            r = client.upload_activity(activity_file=f, data_type=data_type)
+        print(
+            f"Uploading {data_type} file: {file_name} to strava, upload_id: {r.upload_id}."
+        )
