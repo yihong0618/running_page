@@ -4,15 +4,15 @@
 
 [简体中文](README-CN.md) | English
 
-This project is based on [running_page](https://github.com/yihong0618/running_page), add support for multi sports type. Follow the steps in origin repo to deploy.
+This project is based on [running_page](https://github.com/yihong0618/running_page) and adds support for multi sports types. Follow the steps in the origin repo to deploy.
 
 ## New Features
 
-1. support multi sports type, like Ride/Hike/Swim/Rowing
+1. support multi sports types, like Ride/Hike/Swim/Rowing
 1. support new apps
-   - **[Codoon（咕咚）](#codoon咕咚)** (Couldn't automate for its limitation from server side)
+   - **[Codoon（咕咚）](#codoon咕咚)** (Couldn't automate for its limitation from the server side)
    - **[Xingzhe（行者）](#xingzhe行者)**
-1. support [RoadTrip(GoogleMaps)](#roadtripgooglemaps) , show Road Trip in maps
+1. support [RoadTrip(GoogleMaps)](#roadtripgooglemaps), show Road Trip on maps
 
 ## Custom your page
 
@@ -88,9 +88,9 @@ python3(python) scripts/xingzhe_sync.py w0xxx 185000 --from-auth-token
 ### RoadTrip(GoogleMaps)
 
 <details>
-<summary>Import KMl from Google Maps</summary>
+<summary>Import KML from Google Maps</summary>
 
-1. Create map in [Google Maps](https://www.google.com/maps/d/) (keep route in one Layer)
+1. Create a map in [Google Maps](https://www.google.com/maps/d/) (keep the route in one Layer)
 2. Export Layer to KML file
 3. Rename the file to `import.kml` and place it into `scripts`
 4. Modify `scripts/kml2polyline.py`, fill in the trip info
@@ -106,7 +106,7 @@ track.end_time = datetime(2020, 10, 10, 18, 0)
 distance = 4000  # KM
 # total days
 days = 12
-# average daily distacnce
+# average daily distance
 hours_per_day = 6
 ```
 
@@ -120,4 +120,4 @@ python3(python) scripts\kml2polyline.py
 
 # Special thanks
 
-- @[yihong0618](https://github.com/yihong0618) for Awesome [running_page](https://github.com/yihong0618/running_page) , Great Thanks
+- @[yihong0618](https://github.com/yihong0618) for Awesome [running_page](https://github.com/yihong0618/running_page), Great Thanks

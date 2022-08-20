@@ -7,7 +7,7 @@ import 'src/styles/index.scss';
 import styles from './style.module.scss';
 
 const Layout = ({ children }) => {
-  const { siteTitle, description } = useSiteMetadata();
+  const { siteTitle, description, keywords } = useSiteMetadata();
 
   return (
     <div>
@@ -15,7 +15,7 @@ const Layout = ({ children }) => {
         <html lang="en" />
         <title>{siteTitle}</title>
         <meta name="description" content={description} />
-        <meta name="keywords" content="running" />
+        <meta name="keywords" content={keywords} />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"

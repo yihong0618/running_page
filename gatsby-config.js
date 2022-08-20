@@ -4,7 +4,8 @@ module.exports = {
     siteTitle: 'Workouts Map',
     siteUrl: 'https://ben29.xyz',
     logo: 'https://avatars3.githubusercontent.com/u/6956444?s=460&u=97e1062227c4088db3c987146455245c6fa78441',
-    description: 'Personal site and blog',
+    description: 'Personal Workouts Page',
+    keywords: 'workouts, running, cycling, riding, roadtrip, hiking, swimming',
     navLinks: [
       {
         name: 'Blog',
@@ -64,9 +65,35 @@ module.exports = {
         start_url: '/',
         background_color: '#e1e1e1',
         theme_color: '#e1e1e1',
-        display: 'minimal-ui',
+        display: 'standalone',
         icon: 'src/images/favicon.png', // This path is relative to the root of the site.
       },
-    }
+    },
+    {
+      resolve: `gatsby-plugin-offline`,
+      options: {
+        runtimeCaching: [
+          {
+            urlPattern: /^https?:.*\/icons\/.*\.png/,
+            handler: `CacheFirst`,
+          },
+          {
+            urlPattern:
+              /^https?:.*\.(png|jpg|jpeg|webp|svg|gif|tiff|js|woff|woff2|json|css)$/,
+            handler: `StaleWhileRevalidate`,
+          },
+          {
+            urlPattern: /^https?:\/\/api\.mapbox\.com\//,
+            handler: `StaleWhileRevalidate`,
+          },
+          {
+            urlPattern: /^https?:.*\/page-data\/.*\.json/,
+            handler: `StaleWhileRevalidate`,
+          },
+        ],
+        skipWaiting: true,
+        clientsClaim: true,
+      },
+    },
   ],
 };
