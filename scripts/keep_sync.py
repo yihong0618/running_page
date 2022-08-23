@@ -21,6 +21,9 @@ LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+TRANS_GCJ02_TO_WGS84 = True
+
 pi = 3.1415926535897932384626  # π
 a = 6378245.0  # 长半轴
 ee = 0.00669342162296594323  # 偏心率平方
@@ -152,9 +155,12 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
             if str(keep_id) not in old_gpx_ids:
                 gpx_data = parse_points_to_gpx(run_points_data, start_time)
                 download_keep_gpx(gpx_data, str(keep_id))
-        run_points_data = [
-            gcj02_to_wgs84(p["latitude"], p["longitude"]) for p in run_points_data
-        ]
+        if TRANS_GCJ02_TO_WGS84:
+            run_points_data = [
+                gcj02_to_wgs84(p["latitude"], p["longitude"]) for p in run_points_data
+            ]
+        else:
+            run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
     heart_rate = None
     if run_data["heartRate"]:
         heart_rate = run_data["heartRate"].get("averageHeartRate", None)
