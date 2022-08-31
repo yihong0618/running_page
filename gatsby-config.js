@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: 'running_page', // Change to `/running_page` when running on github pages
+  pathPrefix: `/running_page`, // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'https://run.madless.club',
@@ -8,7 +8,7 @@ module.exports = {
     navLinks: [
       {
         name: 'Blog',
-        url: 'https://run.madless.clu',
+        url: 'https://run.madless.club',
       },
       {
         name: 'About',
