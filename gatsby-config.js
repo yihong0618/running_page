@@ -3,7 +3,7 @@ module.exports = {
   siteMetadata: {
     siteTitle: 'WangQiang的跑步记录',
     siteUrl: 'https://w298102526.github.io/running_page/',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
+    logo: 'https://raw.githubusercontent.com/w298102526/running_page/master/fnxh.jpg',
     description: 'Personal site and blog',
     navLinks: [
       {
