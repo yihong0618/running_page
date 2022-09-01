@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: '16'
+          node-version: '14'
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -69,7 +69,7 @@ jobs:
           # Build directory to deploy
           build_dir: public
           # Write the given domain name to the CNAME file
-          #fqdn: custom.domain.name # optional
+          fqdn: run.madless.club # optional
           # Prevent Jekyll from building the site
           jekyll: false
         env:
