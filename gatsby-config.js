@@ -2,13 +2,13 @@ module.exports = {
   pathPrefix: '/running_page', // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'WangQiang的跑步记录',
-    siteUrl: 'https://running-page-xi-two.vercel.app',
+    siteUrl: 'https://w298102526.github.io/running_page/',
     logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
     description: 'Personal site and blog',
     navLinks: [
       {
-        name: 'Blog',
-        url: 'https://running-page-xi-two.vercel.app/',
+        name: 'rep_github',
+        url: 'https://github.com/yihong0618/running_page',
       },
     ],
   },
