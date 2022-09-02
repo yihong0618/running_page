@@ -2,12 +2,12 @@ module.exports = {
   pathPrefix: '/running_page', // Change to `/running_page` when running on github pages
   siteMetadata: {
     siteTitle: 'WangQiang的跑步记录',
-    siteUrl: 'https://w298102526.github.io/running_page/',
-    logo: 'https://raw.githubusercontent.com/w298102526/running_page/master/fnxh.jpg',
+    siteUrl: 'https://wangqiang1988.github.io/running_page/',
+    logo: 'https://raw.githubusercontent.com/wangqiang1988/running_page/master/fnxh.jpg',
     description: 'Personal site and blog',
     navLinks: [
       {
-        name: 'rep_github',
+        name: '项目地址',
         url: 'https://github.com/yihong0618/running_page',
       },
     ],
