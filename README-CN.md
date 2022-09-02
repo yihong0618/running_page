@@ -56,6 +56,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
 | [Jason Tan](https://github.com/Jason-cqtan)     | <https://jason-cqtan.github.io/running_page> | Nike      |
 | [Conge](https://github.com/conge)               | <https://conge.github.io/running_page>       | Strava      |
+| [cvvz](https://github.com/cvvz)                 | <https://cvvz.github.io/running>             | Keep      |
 
 ## 它是怎么工作的
 
@@ -610,11 +611,13 @@ python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
 
 1. 配置 GitHub Action。如需使用自定义域名，可以修改 [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml) 中的 `fqdn`（默认已注释掉）
 
-2. 修改 `gatsby-config.js`，更新 `pathPrefix`。【如果使用自定义域名，可跳过这一步】
+2. 按照[官方文档](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)创建一个PAT，并在项目的 `Settings -> Secrets -> Actions` 中新增一个名为`PAT`的secret，值为该PAT的值。
 
-3. 在项目的 `Actions -> Workflows -> All Workflows` 中选择 Publish GitHub Pages，点击 `Run workflow`
+3. 修改 `gatsby-config.js`，更新 `pathPrefix`。【如果使用自定义域名，可跳过这一步】
 
-4. 在项目的 `Settings -> GitHub Pages -> Source` 部分，选择 `Branch: gh-pages` 并点击 `Save`。
+4. 在项目的 `Actions -> Workflows -> All Workflows` 中选择 Publish GitHub Pages，点击 `Run workflow`
+
+5. 在项目的 `Settings -> GitHub Pages -> Source` 部分，选择 `Branch: gh-pages` 并点击 `Save`。
 
 </details>
 
