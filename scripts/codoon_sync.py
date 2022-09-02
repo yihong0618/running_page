@@ -39,7 +39,7 @@ TYPE_DICT = {
 IS_ONLY_RUN = True
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
-TRANS_GCJ02_TO_WGS84 = True
+TRANS_GCJ02_TO_WGS84 = False
 # trans the coordinate data until the TRANS_END_DATE, work with TRANS_GCJ02_TO_WGS84 = True
 TRANS_END_DATE = "2014-03-24"
 
@@ -303,7 +303,7 @@ class Codoon:
             start_date = time.strptime(start_time, "%Y-%m-%dT%H:%M:%S")
             if trans_end_date > start_date:
                 latlng_data = [
-                  list(eviltransform.gcj2wgs(p[0], p[1])) for p in latlng_data
+                    list(eviltransform.gcj2wgs(p[0], p[1])) for p in latlng_data
                 ]
             for i, p in enumerate(run_points_data):
                 p["latitude"] = latlng_data[i][0]

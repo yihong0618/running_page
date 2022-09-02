@@ -25,6 +25,7 @@ RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
 TRANS_GCJ02_TO_WGS84 = True
 
+
 def login(session, mobile, passowrd):
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
@@ -88,7 +89,8 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
         run_points_data_gpx = run_points_data
         if TRANS_GCJ02_TO_WGS84:
             run_points_data = [
-                list(eviltransform.gcj2wgs(p["latitude"], p["longitude"])) for p in run_points_data
+                list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
+                for p in run_points_data
             ]
             for i, p in enumerate(run_points_data_gpx):
                 p["latitude"] = run_points_data[i][0]
