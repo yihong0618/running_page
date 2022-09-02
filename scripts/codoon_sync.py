@@ -305,11 +305,9 @@ class Codoon:
                 latlng_data = [
                   list(eviltransform.gcj2wgs(p[0], p[1])) for p in latlng_data
                 ]
-            i = 0
-            for p in run_points_data:
+            for i, p in enumerate(run_points_data):
                 p["latitude"] = latlng_data[i][0]
                 p["longitude"] = latlng_data[i][1]
-                i += 1
 
         if with_gpx:
             # pass the track no points

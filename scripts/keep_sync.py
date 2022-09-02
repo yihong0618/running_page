@@ -90,11 +90,9 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
             run_points_data = [
                 list(eviltransform.gcj2wgs(p["latitude"], p["longitude"])) for p in run_points_data
             ]
-            i = 0
-            for p in run_points_data_gpx:
+            for i, p in enumerate(run_points_data_gpx):
                 p["latitude"] = run_points_data[i][0]
                 p["longitude"] = run_points_data[i][1]
-                i += 1
         else:
             run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
         if with_download_gpx:
