@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import gpxpy
 import polyline
 import requests
+import eviltransform
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 
@@ -23,10 +24,6 @@ RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
 TRANS_GCJ02_TO_WGS84 = True
-
-pi = 3.1415926535897932384626  # π
-a = 6378245.0  # 长半轴
-ee = 0.00669342162296594323  # 偏心率平方
 
 
 def login(session, mobile, passowrd):
@@ -74,68 +71,6 @@ def decode_runmap_data(text):
     return run_points_data
 
 
-def _transformlat(lng, lat):
-    ret = (
-        -100.0
-        + 2.0 * lng
-        + 3.0 * lat
-        + 0.2 * lat * lat
-        + 0.1 * lng * lat
-        + 0.2 * math.sqrt(math.fabs(lng))
-    )
-    ret += (
-        (20.0 * math.sin(6.0 * lng * pi) + 20.0 * math.sin(2.0 * lng * pi)) * 2.0 / 3.0
-    )
-    ret += (20.0 * math.sin(lat * pi) + 40.0 * math.sin(lat / 3.0 * pi)) * 2.0 / 3.0
-    ret += (
-        (160.0 * math.sin(lat / 12.0 * pi) + 320 * math.sin(lat * pi / 30.0))
-        * 2.0
-        / 3.0
-    )
-    return ret
-
-
-def _transformlng(lng, lat):
-    ret = (
-        300.0
-        + lng
-        + 2.0 * lat
-        + 0.1 * lng * lng
-        + 0.1 * lng * lat
-        + 0.1 * math.sqrt(math.fabs(lng))
-    )
-    ret += (
-        (20.0 * math.sin(6.0 * lng * pi) + 20.0 * math.sin(2.0 * lng * pi)) * 2.0 / 3.0
-    )
-    ret += (20.0 * math.sin(lng * pi) + 40.0 * math.sin(lng / 3.0 * pi)) * 2.0 / 3.0
-    ret += (
-        (150.0 * math.sin(lng / 12.0 * pi) + 300.0 * math.sin(lng / 30.0 * pi))
-        * 2.0
-        / 3.0
-    )
-    return ret
-
-
-def gcj02_to_wgs84(lat, lng):
-    """
-    GCJ02(火星坐标系)转GPS84
-    :param lng:火星坐标系的经度
-    :param lat:火星坐标系纬度
-    :return:
-    """
-    dlat = _transformlat(lng - 105.0, lat - 35.0)
-    dlng = _transformlng(lng - 105.0, lat - 35.0)
-    radlat = lat / 180.0 * pi
-    magic = math.sin(radlat)
-    magic = 1 - ee * magic * magic
-    sqrtmagic = math.sqrt(magic)
-    dlat = (dlat * 180.0) / ((a * (1 - ee)) / (magic * sqrtmagic) * pi)
-    dlng = (dlng * 180.0) / (a / sqrtmagic * math.cos(radlat) * pi)
-    mglat = lat + dlat
-    mglng = lng + dlng
-    return [lat * 2 - mglat, lng * 2 - mglng]
-
-
 def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
     run_data = run_data["data"]
     run_points_data = []
@@ -151,16 +86,21 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
         r = requests.get(raw_data_url)
         # string strart with `H4sIAAAAAAAA` --> decode and unzip
         run_points_data = decode_runmap_data(r.text)
-        if with_download_gpx:
-            if str(keep_id) not in old_gpx_ids:
-                gpx_data = parse_points_to_gpx(run_points_data, start_time)
-                download_keep_gpx(gpx_data, str(keep_id))
+        run_points_data_gpx = run_points_data
         if TRANS_GCJ02_TO_WGS84:
             run_points_data = [
-                gcj02_to_wgs84(p["latitude"], p["longitude"]) for p in run_points_data
+                list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
+                for p in run_points_data
             ]
+            for i, p in enumerate(run_points_data_gpx):
+                p["latitude"] = run_points_data[i][0]
+                p["longitude"] = run_points_data[i][1]
         else:
             run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
+        if with_download_gpx:
+            if str(keep_id) not in old_gpx_ids:
+                gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
+                download_keep_gpx(gpx_data, str(keep_id))
     heart_rate = None
     if run_data["heartRate"]:
         heart_rate = run_data["heartRate"].get("averageHeartRate", None)
