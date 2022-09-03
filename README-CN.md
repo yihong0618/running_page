@@ -239,8 +239,6 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 </details>
 
-</details>
-
 <details>
 <summary>路线偏移修正</summary>
 
