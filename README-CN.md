@@ -406,17 +406,11 @@ python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
 <details>
 <summary>获取 Strava 数据</summary>
 
-1. 注册/登陆 [Strava](https://www.strava.com/) 账号
-2. 登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
+2. 修改 `gatsby-config.js`，更新 `pathPrefix`。【如果使用自定义域名，可跳过这一步】
 
-3. 创建 `My API Application`
-   输入下列信息：
-   ![My API Application](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/strava_settings_api.png)
-   创建成功：
-   ![](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/created_successfully_1.png)
-4. 使用以下链接请求所有权限
-   将 ${your_id} 替换为 My API Application 中的 Client ID 后访问完整链接
+3. 在项目的 `Actions -> Workflows -> All Workflows` 中选择 Publish GitHub Pages，点击 `Run workflow`
 
+4. 在项目的 `Settings -> GitHub Pages -> Source` 部分，选择 `Branch: gh-pages` 并点击 `Save`。
 ```
 https://www.strava.com/oauth/authorize?client_id=${your_id}&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=read_all,profile:read_all,activity:read_all,profile:write,activity:write
 ```
