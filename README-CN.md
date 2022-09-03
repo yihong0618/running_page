@@ -239,6 +239,24 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 </details>
 
+</details>
+
+<details>
+<summary>路线偏移修正</summary>
+
+如果您得到的运动路线与实际路线对比有整体偏移，可以修改代码中的参数进行修正
+
+> 注：Keep目前采用的是GCJ-02坐标系，因此导致得到运动数据在使用WGS-84坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
+
+- 修改 `scripts/keep_sync.py` 文件中的参数：
+
+```python
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+TRANS_GCJ02_TO_WGS84 = True
+```
+
+</details>
+
 ### JoyRun（悦跑圈）
 
 <details>
