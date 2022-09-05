@@ -56,6 +56,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
 | [Jason Tan](https://github.com/Jason-cqtan)     | <https://jason-cqtan.github.io/running_page> | Nike      |
 | [Conge](https://github.com/conge)               | <https://conge.github.io/running_page>       | Strava      |
+| [cvvz](https://github.com/cvvz)                 | <https://cvvz.github.io/running>             | Strava      |
 
 ## 它是怎么工作的
 
