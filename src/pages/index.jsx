@@ -106,7 +106,7 @@ const Index = () => {
       i += sliceNume;
     }, 100);
     setIntervalId(id);
-  }, [year]);
+  }, [runs]);
 
   // TODO refactor
   useEffect(() => {
