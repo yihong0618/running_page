@@ -52,7 +52,7 @@ const Index = () => {
 
   const changeYear = (y) => {
 
-    const ischanged = y === year;
+    const isChanged = y === year;
     // default year
     setYear(y);
 
@@ -64,7 +64,7 @@ const Index = () => {
       });
     }
 
-    changeByItem(y, 'Year', filterYearRuns, ischanged);
+    changeByItem(y, 'Year', filterYearRuns, isChanged);
     clearInterval(intervalId);
   };
 
