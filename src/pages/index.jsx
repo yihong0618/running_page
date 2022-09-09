@@ -40,14 +40,19 @@ const Index = () => {
     ...bounds,
   });
 
-  const changeByItem = (item, name, func) => {
+  const changeByItem = (item, name, func, isChanged) => {
     scrollToMap();
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
-    setTitle(`${item} ${name} Running Heatmap`);
-    setRunIndex(-1);
+    // if the year not change, we do not need to setYear
+    if (!isChanged) {
+      setRunIndex(-1);
+      setTitle(`${item} ${name} Running Heatmap`);
+    }
   };
 
   const changeYear = (y) => {
+
+    const ischanged = y === year;
     // default year
     setYear(y);
 
@@ -59,16 +64,16 @@ const Index = () => {
       });
     }
 
-    changeByItem(y, 'Year', filterYearRuns);
+    changeByItem(y, 'Year', filterYearRuns, ischanged);
     clearInterval(intervalId);
   };
 
   const changeCity = (city) => {
-    changeByItem(city, 'City', filterCityRuns);
+    changeByItem(city, 'City', filterCityRuns, false);
   };
 
   const changeTitle = (title) => {
-    changeByItem(title, 'Title', filterTitleRuns);
+    changeByItem(title, 'Title', filterTitleRuns, false);
   };
 
   const locateActivity = (run) => {
