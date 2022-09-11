@@ -41,14 +41,19 @@ const Index = () => {
     ...bounds,
   });
 
-  const changeByItem = (item, name, func) => {
-    setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
-    setTitle(`${item} ${name} Map`);
-    setRunIndex(-1);
+  const changeByItem = (item, name, func, isChanged) => {
     scrollToMap();
+    setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
+    // if the year not change, we do not need to setYear
+    if (!isChanged) {
+      setRunIndex(-1);
+      setTitle(`${item} ${name}  Heatmap`);
+    }
   };
 
   const changeYear = (y) => {
+
+    const isChanged = y === year;
     // default year
     setYear(y);
 
@@ -60,20 +65,20 @@ const Index = () => {
       });
     }
 
-    changeByItem(y, 'Year', filterYearRuns);
+    changeByItem(y, 'Year', filterYearRuns, isChanged);
     clearInterval(intervalId);
   };
 
   const changeCity = (city) => {
-    changeByItem(city, 'City', filterCityRuns);
+    changeByItem(city, 'City', filterCityRuns, false);
   };
 
   const changeTitle = (title) => {
-    changeByItem(title, 'Title', filterTitleRuns);
+    changeByItem(title, 'Title', filterTitleRuns, false);
   };
 
   const changeType = (type) => {
-    changeByItem(type, 'Type', filterTypeRuns);
+    changeByItem(type, 'Type', filterTypeRuns, false);
   };
   const locateActivity = (run) => {
     setGeoData(geoJsonForRuns([run]));
@@ -105,7 +110,7 @@ const Index = () => {
       i += sliceNume;
     }, 100);
     setIntervalId(id);
-  }, [year]);
+  }, [runs]);
 
   // TODO refactor
   useEffect(() => {

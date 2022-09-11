@@ -15,11 +15,11 @@ aiofiles
 cloudscraper==1.2.58
 python-tcxparser
 rich
+lxml
+eviltransform
 bs4
 pycrypto
 html.parser
 aiofiles
-lxml
 # if you need to import kml file
 fastkml
-eviltransform
