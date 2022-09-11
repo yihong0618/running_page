@@ -56,6 +56,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
 | [Jason Tan](https://github.com/Jason-cqtan)     | <https://jason-cqtan.github.io/running_page> | Nike      |
 | [Conge](https://github.com/conge)               | <https://conge.github.io/running_page>       | Strava      |
+| [cvvz](https://github.com/cvvz)                 | <https://cvvz.github.io/running>             | Strava      |
 
 ## 它是怎么工作的
 
@@ -239,6 +240,22 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 </details>
 
+<details>
+<summary>路线偏移修正</summary>
+
+如果您得到的运动路线与实际路线对比有整体偏移，可以修改代码中的参数进行修正
+
+> 注：Keep目前采用的是GCJ-02坐标系，因此导致得到运动数据在使用WGS-84坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
+
+- 修改 `scripts/keep_sync.py` 文件中的参数：
+
+```python
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+TRANS_GCJ02_TO_WGS84 = True
+```
+
+</details>
+
 ### JoyRun（悦跑圈）
 
 <details>
@@ -322,6 +339,26 @@ python3(python) scripts/codoon_sync.py 13333xxxx xxxx --with-gpx
 
 ```python
 python3(python) scripts/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth-token
+```
+
+</details>
+
+<details>
+<summary>路线偏移修正</summary>
+
+如果您得到的运动路线与实际路线对比有整体偏移，可以修改代码中的参数进行修正
+
+> 注：咕咚最初采用GCJ-02坐标系，在2014年3月份左右升级为WGS-84坐标系，导致升级之前的运动数据在使用WGS-84坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
+
+- 修改 `scripts/codoon_sync.py` 文件中的参数：
+
+> 注：TRANS_END_DATE 需要根据您的实际情况设定，程序会修正这一天之前的运动记录
+
+```python
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+TRANS_GCJ02_TO_WGS84 = True
+# trans the coordinate data until the TRANS_END_DATE, work with TRANS_GCJ02_TO_WGS84 = True
+TRANS_END_DATE = "2014-03-24"
 ```
 
 </details>

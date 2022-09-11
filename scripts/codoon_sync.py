@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 import gpxpy
 import polyline
 import requests
+import eviltransform
 from config import BASE_TIMEZONE, GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 
@@ -36,6 +37,11 @@ TYPE_DICT = {
 
 # only for running sports, if you want others, please change the True to False
 IS_ONLY_RUN = True
+
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+TRANS_GCJ02_TO_WGS84 = False
+# trans the coordinate data until the TRANS_END_DATE, work with TRANS_GCJ02_TO_WGS84 = True
+TRANS_END_DATE = "2014-03-24"
 
 
 # decrypt from libencrypt.so Java_com_codoon_jni_JNIUtils_encryptHttpSignature
@@ -292,6 +298,17 @@ class Codoon:
         run_points_data = run_data["points"] if "points" in run_data else None
 
         latlng_data = self.parse_latlng(run_points_data)
+        if TRANS_GCJ02_TO_WGS84:
+            trans_end_date = time.strptime(TRANS_END_DATE, "%Y-%m-%d")
+            start_date = time.strptime(start_time, "%Y-%m-%dT%H:%M:%S")
+            if trans_end_date > start_date:
+                latlng_data = [
+                    list(eviltransform.gcj2wgs(p[0], p[1])) for p in latlng_data
+                ]
+            for i, p in enumerate(run_points_data):
+                p["latitude"] = latlng_data[i][0]
+                p["longitude"] = latlng_data[i][1]
+
         if with_gpx:
             # pass the track no points
             if str(log_id) not in old_gpx_ids and run_points_data:
