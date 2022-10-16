@@ -47,8 +47,11 @@ if __name__ == "__main__":
     options = parser.parse_args()
     # upload new tcx to strava
     print("Need to load all tcx files maybe take some time")
-    client  = None
+    client = make_strava_client(
+        options.client_id, options.client_secret, options.strava_refresh_token
+    )
     last_time = 0
+    print(options.all)
     if not options.all:
         last_time = get_strava_last_time(client, is_milliseconds=False)
     to_upload_time_list, to_upload_dict = get_to_generate_files(last_time)
