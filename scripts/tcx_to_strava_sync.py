@@ -38,18 +38,16 @@ if __name__ == "__main__":
     parser.add_argument("client_id", help="strava client id")
     parser.add_argument("client_secret", help="strava client secret")
     parser.add_argument("strava_refresh_token", help="strava refresh token")
-    options = parser.parse_args()
-    # upload new tcx to strava
-    print("Need to load all tcx files maybe take some time")
-    client = make_strava_client(
-        options.client_id, options.client_secret, options.strava_refresh_token
-    )
     parser.add_argument(
         "--all",
         dest="all",
         action="store_true",
         help="if upload to strava all without check last time",
     )
+    options = parser.parse_args()
+    # upload new tcx to strava
+    print("Need to load all tcx files maybe take some time")
+    client  = None
     last_time = 0
     if not options.all:
         last_time = get_strava_last_time(client, is_milliseconds=False)
