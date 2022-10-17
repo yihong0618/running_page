@@ -94,6 +94,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[GPX](#GPX)**
 - **[TCX](#TCX)**
 - **[Tcx+Strava(upload all tcx data to strava)](#TCX_to_Strava)**
+- **[Gpx+Strava(upload all tcx data to strava)](#GPX_to_Strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin+Strava(Using Garmin Run, Strava backup data)](#garminstrava)**
 
@@ -517,7 +518,8 @@ python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_
 <br>
 
 1. 完成 strava 的步骤
-2. 在项目根目录下执行:
+2. 把 tcx 文件全部拷贝到 TCX_OUT 中
+3. 在项目根目录下执行:
 
 ```python
 python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresch_token}
@@ -528,6 +530,32 @@ python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret} ${st
 ```python
 python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
 ```
+
+4. 如果你已经上传过需要跳过判断增加参数 `--all`
+
+</details>
+
+### GPX_to_Strava
+
+<details>
+<summary>Upload all gpx files to strava</summary>
+
+<br>
+
+1. 完成 strava 的步骤
+2. 把 gpx 文件全部拷贝到 GPX_OUT 中
+2. 在项目根目录下执行:
+
+```python
+python3(python) scripts/gpx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresch_token}
+```
+
+示例：
+
+```python
+python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx
+```
+3. 如果你已经上传过需要跳过判断增加参数 `--all`
 
 </details>
 
@@ -551,6 +579,7 @@ python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id
 ```python
 python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 ```
+
 
 </details>
 
