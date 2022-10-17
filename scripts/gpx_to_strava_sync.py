@@ -21,10 +21,14 @@ def get_to_generate_files(last_time):
         if f.endswith(".gpx"):
             file_path = os.path.join(GPX_FOLDER, f)
             with open(file_path, "r") as r:
-                gpx = mod_gpxpy.parse(r)
+                try:
+                    gpx = mod_gpxpy.parse(r)
+                except Exception as e:
+                    print(f"Something is wring with {file_path} err: {str(e)}")
+                    continue
                 # if gpx file has no start time we ignore it.
                 if gpx.get_time_bounds()[0]:
-                    gpx_files.append((mod_gpxpy.parse(r), file_path))
+                    gpx_files.append((gpx, file_path))
     gpx_files_dict = {
         int(i[0].get_time_bounds()[0].timestamp()): i[1]
         for i in gpx_files
