@@ -21,7 +21,10 @@ def get_to_generate_files(last_time):
         if f.endswith(".gpx"):
             file_path = os.path.join(GPX_FOLDER, f)
             with open(file_path, "r") as r:
-                gpx_files.append((mod_gpxpy.parse(r), file_path))
+                gpx = mod_gpxpy.parse(r)
+                # if gpx file has no start time we ignore it.
+                if gpx.get_time_bounds()[0]:
+                    gpx_files.append((mod_gpxpy.parse(r), file_path))
     gpx_files_dict = {
         int(i[0].get_time_bounds()[0].timestamp()): i[1]
         for i in gpx_files
@@ -54,7 +57,7 @@ if __name__ == "__main__":
         last_time = get_strava_last_time(client, is_milliseconds=False)
     to_upload_time_list, to_upload_dict = get_to_generate_files(last_time)
     index = 1
-    print(f"len(to_upload_time_list) gpx files is going to upload")
+    print(f"{len(to_upload_time_list)} gpx files is going to upload")
     for i in to_upload_time_list:
         gpx_file = to_upload_dict.get(i)
         try:
