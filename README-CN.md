@@ -529,6 +529,8 @@ python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret} ${st
 
 ```python
 python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
+或
+python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. 如果你已经上传过需要跳过判断增加参数 `--all`
@@ -554,6 +556,8 @@ python3(python) scripts/gpx_to_strava_sync.py ${client_id} ${client_secret} ${st
 
 ```python
 python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx
+或
+python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx --all
 ```
 3. 如果你已经上传过需要跳过判断增加参数 `--all`
 
@@ -745,3 +749,14 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 # 赞赏
 
 谢谢就够了
+
+ # FAQ
+### Strava 100 每 15 分钟的请求， 1000 每日限制
+https://www.strava.com/settings/api
+https://developers.strava.com/docs/#rate-limiting
+
+等待时间限制（这里是strava接口请求限制），不要关闭终端，这里会自动执行下一组上传数据
+```
+Strava API Rate Limit Exceeded. Retry after 100 seconds
+Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+```
