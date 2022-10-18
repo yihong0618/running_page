@@ -383,6 +383,8 @@ example：
 
 ```python
 python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
+or
+python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -408,6 +410,8 @@ example：
 
 ```python
 python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx
+or
+python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -607,3 +611,13 @@ Before submitting PR:
 # Support
 
 Just enjoy it~
+
+ # FAQ
+### Strava Api limit
+https://www.strava.com/settings/api
+https://developers.strava.com/docs/#rate-limiting
+
+```
+Strava API Rate Limit Exceeded. Retry after 100 seconds
+Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+```
