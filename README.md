@@ -613,11 +613,10 @@ Before submitting PR:
 Just enjoy it~
 
  # FAQ
-### Strava 100 每 15 分钟的请求， 1000 每日限制
+### Strava Api limit
 https://www.strava.com/settings/api
 https://developers.strava.com/docs/#rate-limiting
 
-Just strava limit, wait
 ```
 Strava API Rate Limit Exceeded. Retry after 100 seconds
 Strava API Rate Limit Timeout. Retry in 799.491622 seconds
