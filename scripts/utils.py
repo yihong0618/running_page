@@ -48,6 +48,8 @@ def get_strava_last_time(client, is_milliseconds=True):
     try:
         activity = None
         activities = client.get_activities(limit=10)
+        activities = list(activities)
+        activities.sort(key=lambda x: x.start_date, reverse=True)
         # for else in python if you don't know please google it.
         for a in activities:
             if a.type == "Run":
