@@ -91,7 +91,7 @@ async def upload_to_activities(garmin_client, strava_client, strava_web_client, 
         return files_list
 
     # strava rate limit
-    for i in strava_activities[:len(strava_activities)]:
+    for i in strava_activities[: len(strava_activities)]:
         try:
             data = strava_web_client.get_activity_data(i.id, fmt=format)
             files_list.append(data)

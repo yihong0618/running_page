@@ -2,9 +2,9 @@ name: NEW_ISSUE_OR_PR
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, reopened]
   issues:
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, reopened]
 
 jobs:
   call_printer_pr:
