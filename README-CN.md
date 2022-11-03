@@ -96,7 +96,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Tcx+Strava(upload all tcx data to strava)](#TCX_to_Strava)**
 - **[Gpx+Strava(upload all tcx data to strava)](#GPX_to_Strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
-- **[Garmin+Strava(Using Garmin Run, Strava backup data)](#garminstrava)**
+- **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#Garmin_to_Strava)**
+- **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#Strava_to_Garmin)**
 
 ## 下载
 
@@ -513,7 +514,7 @@ python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_
 ### TCX_to_Strava
 
 <details>
-<summary>Upload all tcx files to strava</summary>
+<summary>上传所有的 tcx 格式的跑步数据到 strava</summary>
 
 <br>
 
@@ -540,7 +541,7 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 ### GPX_to_Strava
 
 <details>
-<summary>Upload all gpx files to strava</summary>
+<summary>上传所有的 gpx 格式的跑步数据到 strava</summary>
 
 <br>
 
@@ -567,7 +568,7 @@ python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx --all
 ### Nike+Strava
 
 <details>
-<summary>Get your <code>Nike Run Club</code> data and upload to strava</summary>
+<summary>获取 <code>Nike Run Club</code> 的跑步数据然后同步到 Strava</summary>
 
 <br>
 
@@ -587,10 +588,10 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 
 </details>
 
-### Garmin+Strava
+### Garmin_to_Strava
 
 <details>
-<summary>Get your <code>Garmin</code> data and upload to strava</summary>
+<summary>获取你的<code>佳明</code> 的跑步数据，然后同步到 Strava</summary>
 
 <br>
 
@@ -606,6 +607,30 @@ python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} 
 ```python
 python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
+
+</details>
+
+### Strava_to_Garmin
+
+<details>
+<summary>获取你的<code>Strava</code> 的跑步数据然后同步到 Garmin</summary>
+
+<br>
+
+1. 完成 garmin 和 strava 的步骤，同时，还需要在 Github Actions secret 那新增 Strava 配置：`secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
+2. 在项目根目录下执行:
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
+```
+
+如果你的佳明账号是中国区，执行如下的命令：
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+```
+
+注意：**首次初始化的时候，如果你有大量的 strava 跑步数据，可能有些数据会上传失败，只需要多重试几次即可。**
 
 </details>
 

@@ -84,7 +84,8 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Nike_to_Strava(Using NRC Run, Strava backup data)](#Nike_to_Strava)**
 - **[Tcx_to_Strava(upload all tcx data to strava)](#TCX_to_Strava)**
 - **[Gpx_to_Strava(upload all gpx data to strava)](#Gpx_to_Strava)**
-- **[Garmin+Strava(Using Garmin Run, Strava backup data)](#garminstrava)**
+- **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#Garmin_to_Strava)**
+- **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#Strava_to_Garmin)**
 
 ## Download
 
@@ -442,7 +443,7 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 
 </details>
 
-### Garmin+Strava
+### Garmin_to_Strava
 
 <details>
 <summary>Get your <code>Garmin</code> data and upload to strava</summary>
@@ -460,6 +461,29 @@ e.g.
 ```python
 python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
+</details>
+
+### Strava_to_Garmin
+
+<details>
+<summary>Get your <code>Strava</code> data and upload to Garmin</summary>
+
+<br>
+
+1. finish garmin and strava setps, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
+2. Execute in the root directory:
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
+```
+
+if your garmin account region is **China**, you need to execute the command:
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GRAMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+```
+ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
+</details>
 
 
 ### Total Data Analysis
