@@ -93,11 +93,10 @@ async def upload_to_activities(garmin_client, strava_client, strava_web_client, 
     # strava rate limit
     for i in strava_activities[:len(strava_activities)]:
         try:
-            print(i.id)
             data = strava_web_client.get_activity_data(i.id, fmt=format)
             files_list.append(data)
         except Exception as ex:
-            print(ex)
+            print("get strava data error: ", ex)
     await garmin_client.upload_activities_original(files_list)
     return files_list
 
