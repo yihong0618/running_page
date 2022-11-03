@@ -96,7 +96,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Tcx+Strava(upload all tcx data to strava)](#TCX_to_Strava)**
 - **[Gpx+Strava(upload all tcx data to strava)](#GPX_to_Strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
-- **[Garmin+Strava(Using Garmin Run, Strava backup data)](#garminstrava)**
+- **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#Garmin_to_Strava)**
+- **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#Strava_to_Garmin)**
 
 ## 下载
 
@@ -513,7 +514,7 @@ python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_
 ### TCX_to_Strava
 
 <details>
-<summary>Upload all tcx files to strava</summary>
+<summary>上传所有的 tcx 格式的跑步数据到 strava</summary>
 
 <br>
 
@@ -540,7 +541,7 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 ### GPX_to_Strava
 
 <details>
-<summary>Upload all gpx files to strava</summary>
+<summary>上传所有的 gpx 格式的跑步数据到 strava</summary>
 
 <br>
 
@@ -567,7 +568,7 @@ python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx --all
 ### Nike+Strava
 
 <details>
-<summary>Get your <code>Nike Run Club</code> data and upload to strava</summary>
+<summary>获取 <code>Nike Run Club</code> 的跑步数据然后同步到 Strava</summary>
 
 <br>
 
