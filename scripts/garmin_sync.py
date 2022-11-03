@@ -234,6 +234,7 @@ class Garmin:
                     self.upload_url, files=files, headers={"nk": "NT"}
                 )
                 os.remove(data.filename)
+                f.close()
             except Exception as e:
                 print(str(e))
                 # just pass for now

@@ -1,11 +1,10 @@
 import argparse
 import asyncio
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from xml.etree import ElementTree
 
 import gpxpy
 import gpxpy.gpx
-import pytz
 from stravaweblib import WebClient, DataFormat
 
 from garmin_sync import Garmin
@@ -74,26 +73,25 @@ def make_gpx_from_points(title, points_dict_list):
 
 
 async def upload_to_activities(garmin_client, strava_client, strava_web_client, format):
-    files_list = []
     last_activity = await garmin_client.get_activities(0, 1)
     if not last_activity:
-        print("no activity")
-        return files_list
+        print("no garmin activity")
+        filters = {}
     else:
         # is this startTimeGMT must have ?
         after_datetime_str = last_activity[0]["startTimeGMT"]
         after_datetime = datetime.strptime(after_datetime_str, "%Y-%m-%d %H:%M:%S")
-        after_datetime = (
-            after_datetime.replace(tzinfo=timezone.utc)
-                .astimezone(tz=pytz.timezone("Asia/Shanghai"))
-                .strftime("%Y-%m-%d %H:%M:%S")
-        )
-        print(after_datetime)
+        print("garmin last activity date: ", after_datetime)
         filters = {"after": after_datetime}
     strava_activities = list(strava_client.get_activities(**filters))
+    files_list = []
     print("strava activities size: ", len(strava_activities))
+    if not strava_activities:
+        print("no strava activity")
+        return files_list
+
     # strava rate limit
-    for i in strava_activities[:50]:
+    for i in strava_activities[:len(strava_activities)]:
         try:
             print(i.id)
             data = strava_web_client.get_activity_data(i.id, fmt=format)
@@ -119,7 +117,6 @@ if __name__ == "__main__":
         action="store_true",
         help="if garmin accout is cn",
     )
-
     options = parser.parse_args()
     strava_client = make_strava_client(
         options.strava_client_id,
@@ -131,7 +128,6 @@ if __name__ == "__main__":
         email=options.strava_email,
         password=options.strava_password,
     )
-
     garmin_auth_domain = "CN" if options.is_cn else ""
 
     try:
@@ -145,12 +141,12 @@ if __name__ == "__main__":
             )
         )
         loop.run_until_complete(future)
-
     except Exception as err:
         print(err)
-# Run the strava sync
-run_strava_sync(
-    options.strava_client_id,
-    options.strava_client_secret,
-    options.strava_refresh_token,
-)
+
+    # Run the strava sync
+    run_strava_sync(
+        options.strava_client_id,
+        options.strava_client_secret,
+        options.strava_refresh_token,
+    )
