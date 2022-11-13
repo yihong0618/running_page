@@ -109,7 +109,9 @@ class Track:
         polyline_container = []
         position_values = tcx.position_values()
         if not position_values and int(self.length) == 0:
-            raise Exception(f"This {file_name} TCX file do not contain distance and position values we ignore it")
+            raise Exception(
+                f"This {file_name} TCX file do not contain distance and position values we ignore it"
+            )
         if position_values:
             line = [s2.LatLng.from_degrees(p[0], p[1]) for p in position_values]
             self.polylines.append(line)
