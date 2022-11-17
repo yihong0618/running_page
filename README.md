@@ -44,7 +44,6 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [L1cardo](https://github.com/L1cardo)           | <https://run.licardo.cn>                     | Nike      |
 | [luckylele666](https://github.com/luckylele666) | <https://0000928.xyz>                        | Strava    |
 | [MFYDev](https://github.com/MFYDev)             | <https://mfydev.run>                         | Garmin-cn |
-| [tianheg](https://github.com/tianheg)           | <https://run.tianheg.xyz/>                   | Keep      |
 | [Eished](https://github.com/eished)             | <https://run.iknow.fun>                      | Keep      |
 | [Liuxin](https://github.com/liuxindtc)          | <https://liuxin.run>                         | Nike      |
 | [loucx](https://github.com/loucx)               | <https://loucx.github.io/running>            | Nike      |
