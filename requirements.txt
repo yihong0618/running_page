@@ -17,9 +17,12 @@ python-tcxparser
 rich
 lxml
 eviltransform
+stravaweblib
+tenacity
+
 bs4
 pycrypto
 html.parser
 aiofiles
 # if you need to import kml file
-fastkml
+#fastkml
