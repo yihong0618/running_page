@@ -41,6 +41,7 @@ const RIDE_TITLE = IS_CHINESE ? '骑行' : 'Ride';
 const INDOOR_RIDE_TITLE = IS_CHINESE ? '室内骑行' : 'Indoor Ride';
 const HIKE_TITLE = IS_CHINESE ? '徒步' : 'Hike';
 const ROWING_TITLE = IS_CHINESE ? '划船' : 'Rowing';
+const KAYAKING_TITLE = IS_CHINESE ? '皮划艇' : 'Kayaking';
 const ROAD_TRIP_TITLE = IS_CHINESE ? '自驾' : 'RoadTrip';
 const FLIGHT_TITLE = IS_CHINESE ? '飞行' : 'Flight';
 
@@ -53,6 +54,7 @@ const RUN_TITLES = {
   INDOOR_RIDE_TITLE,
   HIKE_TITLE,
   ROWING_TITLE,
+  KAYAKING_TITLE,
   SWIM_TITLE,
   ROAD_TRIP_TITLE,
   FLIGHT_TITLE,
@@ -82,6 +84,7 @@ const wpink = 'rgb(228,212,220)';
 const gold = 'rgb(242,190,69)';
 const purple = 'rgb(154,118,252)';
 const veryPeri = 'rgb(105,106,173)';//长春花蓝
+const red = 'rgb(255,0,0)';//大红色
 
 // If your map has an offset please change this line
 // issues #92 and #198
@@ -97,3 +100,4 @@ export const ROAD_TRIP_COLOR = purple;
 export const FLIGHT_COLOR = wpink;
 export const PROVINCE_FILL_COLOR = '#47b8e0';
 export const COUNTRY_FILL_COLOR = wpink;
+export const KAYAKING_COLOR = red;

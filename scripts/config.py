@@ -64,9 +64,19 @@ TYPE_DICT = {
     "rowing": "Rowing",
     "RoadTrip": "RoadTrip",
     "flight": "Flight",
+    "kayaking": "Kayaking",
 }
 
-MAPPING_TYPE = ["Hike", "Ride", "VirtualRide", "Rowing", "Run", "Swim", "RoadTrip"]
+MAPPING_TYPE = [
+    "Hike",
+    "Ride",
+    "VirtualRide",
+    "Rowing",
+    "Run",
+    "Swim",
+    "RoadTrip",
+    "Kayaking",
+]
 
 STRAVA_GARMIN_TYPE_DICT = {
     "Hike": "hiking",
