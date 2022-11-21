@@ -378,7 +378,7 @@ def make_new_gpxs(files):
     gpx_files = []
     tracks_list = []
     for file in files:
-        with open(file, "r") as f:
+        with open(file, "rb") as f:
             try:
                 json_data = json.loads(f.read())
             except:

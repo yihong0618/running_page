@@ -20,7 +20,7 @@ def get_to_generate_files(last_time):
     for f in file_names:
         if f.endswith(".gpx"):
             file_path = os.path.join(GPX_FOLDER, f)
-            with open(file_path, "r") as r:
+            with open(file_path, "rb") as r:
                 try:
                     gpx = mod_gpxpy.parse(r)
                 except Exception as e:
