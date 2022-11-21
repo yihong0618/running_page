@@ -22,9 +22,11 @@
 
 ### 新增运动类型
 
-- 修改 `scripts/config.py`, `TYPE_DICT` 增加类型映射关系
-- 修改 `src/utils/util.js` 里的 `colorFromType`, 增加 case
+- 修改 `scripts/config.py`, `TYPE_DICT` 增加类型映射关系, `MAPPING_TYPE` 里增加运动类型
+- 修改 `src/utils/const.js`, 增加类型标题，并加入到 `RUN_TITLES`
+- 修改 `src/utils/util.js` 里的 `colorFromType`, 增加 case 指定颜色; `titleForRun`  增加 case 指定类型标题
 
+- 参考这个 [commit](https://github.com/ben-29/workouts_page/commit/bfb6e9da4f72bdbdec669c42bdd10062558039cd)
 ---
 
 ### Codoon（咕咚）
