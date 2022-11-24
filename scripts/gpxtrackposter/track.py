@@ -37,6 +37,7 @@ class Track:
         self.moving_dict = {}
         self.run_id = 0
         self.start_latlng = []
+        self.type = "Run"
 
     def load_gpx(self, file_name):
         """
