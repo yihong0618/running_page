@@ -1,5 +1,5 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import ReactMapGL, { Layer, Source } from 'react-map-gl';
 import useActivities from 'src/hooks/useActivities';
 import {
@@ -26,21 +26,19 @@ const RunMap = ({
   mapButtonYear,
 }) => {
   const { countries, provinces } = useActivities();
-  const addControlHandler = (event) => {
-    const map = event && event.target;
-    // set language to Chinese if you use English please comment it
-    if (map && IS_CHINESE) {
-      map.addControl(
-        new MapboxLanguage({
-          defaultLanguage: 'zh',
-        })
-      );
-      map.setLayoutProperty('country-label-lg', 'text-field', [
-        'get',
-        'name_zh',
-      ]);
-    }
-  };
+  const mapRef = useRef();
+  const mapRefCallback = useCallback(
+    (ref) => {
+      if (ref !== null) {
+        mapRef.current = ref;
+        const map = ref.getMap();
+        if (map && IS_CHINESE) {
+          map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
+        }
+      }
+    },
+    [mapRef]
+  );
   const filterProvinces = provinces.slice();
   const filterCountries = countries.slice();
   // for geojson format
@@ -69,9 +67,9 @@ const RunMap = ({
   return (
     <ReactMapGL
       {...viewport}
-      mapStyle="mapbox://styles/mapbox/dark-v9"
+      mapStyle="mapbox://styles/mapbox/dark-v10"
       onViewportChange={setViewport}
-      onLoad={addControlHandler}
+      ref={mapRefCallback}
       mapboxApiAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons
