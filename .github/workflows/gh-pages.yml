@@ -1,6 +1,6 @@
 name: Publish GitHub Pages
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # trigger when the Run Data Sync workflow succeeded
   workflow_run:
@@ -57,7 +57,7 @@ jobs:
           # Build directory to deploy
           build_dir: public
           # Write the given domain name to the CNAME file
-          #fqdn: custom.domain.name # optional
+          fqdn: running.miaowu.org # optional
           # Prevent Jekyll from building the site
           jekyll: false
         env:
