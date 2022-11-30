@@ -18,6 +18,15 @@ from generator import Generator
 
 from utils import adjust_time_to_utc
 
+import numpy as np
+import xml.etree.ElementTree as ET
+
+# struct body
+FitType = np.dtype({
+    'names':['time','bpm','lati','longi'],   # unix timestamp, heart bpm, LatitudeDegrees, LongitudeDegrees
+    'formats':['i','S4','S32','S32']
+})
+
 # device info
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
 did = "24-00000000-03e1-7dd7-0033-c5870033c588"
@@ -74,6 +83,139 @@ def download_codoon_gpx(gpx_data, log_id):
         print(f"wrong id {log_id}")
         pass
 
+
+def autorm():   # auto remove data.db[for debugging only]
+    if os.path.exists("data.db"):
+        os.remove("data.db")
+    if os.path.exists("data.db-journal"):
+        os.remove("data.db-journal")
+        
+def set_array(fit_array,array_time,array_bpm,array_lati,array_longi):
+    fit_data = np.array((array_time,array_bpm,array_lati,array_longi),dtype = FitType)
+    if fit_array is None:
+        fit_array = fit_data
+    else:
+        fit_array = np.append(fit_array,fit_data)
+    return fit_array
+        
+def formated_input(run_data,run_data_label,tcx_label):   # load run_data from run_data_label, parse to tcx_label, return xml node
+    fit_data = str(run_data[run_data_label])
+    chile_node = ET.Element(tcx_label)
+    chile_node.text  = fit_data
+    return chile_node
+
+def tcx_output(fit_array,run_data):
+    # route ID
+    fit_id = str(run_data["id"])
+    # Root node
+    training_center_database = ET.Element("TrainingCenterDatabase",{"xmlns":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2","xmlns:ns5":"http://www.garmin.com/xmlschemas/ActivityGoals/v1","xmlns:ns3":"http://www.garmin.com/xmlschemas/ActivityExtension/v2","xmlns:ns2":"http://www.garmin.com/xmlschemas/UserProfile/v2","xmlns:xsi":"http://www.w3.org/2001/XMLSchema-instance","xmlns:ns4":"http://www.garmin.com/xmlschemas/ProfileExtension/v1","xsi:schemaLocation":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"})
+    # xml tree
+    tree = ET.ElementTree(training_center_database)
+    # Activities
+    activities = ET.Element("Activities")
+    training_center_database.append(activities)
+    # sport type
+    sports_type = TYPE_DICT.get(run_data["sports_type"])
+    # activity
+    activity = ET.Element("Activity", {"Sport":sports_type})
+    activities.append(activity)
+    #   Id
+    activity_id = ET.Element("Id")
+    activity_id.text = fit_id
+    activity.append(activity_id)
+    #   Creator
+    activity_creator = ET.Element("Creator")
+    activity.append(activity_creator)
+    #       Name
+    activity_creator_name = ET.Element("Name")
+    activity_creator_name.text = "咕咚"
+    activity_creator.append(activity_creator_name)
+    #   Lap
+    fit_start_time_CH = run_data["start_time"]
+        # parse to time array
+    time_array = time.strptime(fit_start_time_CH, "%Y-%m-%dT%H:%M:%S")
+        # parse to unix timestamp
+    unix_time = int(time.mktime(time_array))
+    unix_time = unix_time - 28800   # move to UTC[for UTC+08:00 only]
+        # zulu time
+    fit_start_time = time.strftime("%Y-%m-%dT%H:%M:%SZ",time.localtime(unix_time))
+    activity_lap = ET.Element("Lap",{"StartTime":fit_start_time})
+    activity.append(activity_lap)
+    #       TotalTimeSeconds
+    activity_lap.append(formated_input(run_data,"total_time","TotalTimeSeconds"))
+    #       DistanceMeters
+    activity_lap.append(formated_input(run_data,"total_length","DistanceMeters"))
+    #       Calories
+    activity_lap.append(formated_input(run_data,"total_calories","Calories"))
+    
+    
+    # Track
+    track = ET.Element("Track")
+    activity_lap.append(track)
+    for i in fit_array:
+        tp = ET.Element("Trackpoint")
+        track.append(tp)
+        # Time
+        time_stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ",time.localtime(i["time"]))
+        time_label = ET.Element("Time")
+        time_label.text = time_stamp
+        tp.append(time_label)
+        # HeartRateBpm
+            # None was converted to bytes by np.dtype, becoming a string "None" after decode...-_-
+            # as well as LatitudeDegrees and LongitudeDegrees below
+        if not bytes.decode(i["bpm"]) == "None":
+            bpm = ET.Element("HeartRateBpm")
+            bpm_value = ET.Element("Value")
+            bpm.append(bpm_value)
+            bpm_value.text = bytes.decode(i["bpm"])
+            tp.append(bpm)
+        # Position
+        if not bytes.decode(i["lati"]) == "None":
+            position = ET.Element("Position")
+            tp.append(position)
+        #   LatitudeDegrees
+            lati = ET.Element("LatitudeDegrees")
+            lati.text = bytes.decode(i["lati"])
+            position.append(lati)
+        #   LongitudeDegrees
+            longi = ET.Element("LongitudeDegrees")
+            longi.text = bytes.decode(i["longi"])
+            position.append(longi)
+    
+    # write to TCX file
+    tree.write("../TCX_OUT/" + fit_id + ".tcx", encoding='utf-8', xml_declaration=True)
+    
+
+def tcx_job(run_data):
+    # fit struct array
+    fit_array = None
+    
+    # raw data
+    own_heart_rate = run_data['heart_rate'] # bpm key-value
+    own_points = run_data["points"]         # track points
+    # get single bpm
+    for single_time,single_bpm in own_heart_rate.items():
+        single_time = int(single_time) - 28800   # for UTC+08:00 only
+        # set bpm data
+        fit_array = set_array(fit_array,single_time,single_bpm,None,None)
+    # get single track point
+    for point in own_points:
+        time_stamp = point.get('time_stamp')
+        latitude = point.get('latitude')
+        longitude = point.get('longitude')
+        
+        # to time array
+        time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%S")
+        # to unix timestamp
+        unix_time = int(time.mktime(time_array))
+        unix_time = unix_time - 28800   # for UTC+08:00 only
+        # set GPS data
+        fit_array = set_array(fit_array,unix_time,None,latitude,longitude)
+        fit_array = np.sort(fit_array,order = 'time')
+     
+    # write to TCX file
+    tcx_output(fit_array,run_data)
+        
 
 class CodoonAuth:
     def __init__(self, refresh_token=None):
@@ -287,9 +429,12 @@ class Codoon:
         dt, _, us = dt_str.partition(".")
         return datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S")
 
-    def parse_raw_data_to_namedtuple(self, run_data, old_gpx_ids, with_gpx=False):
+    def parse_raw_data_to_namedtuple(self, run_data, old_gpx_ids, with_gpx=False, with_tcx=False):
         run_data = run_data["data"]
         log_id = run_data["id"]
+        
+        if with_tcx:
+            tcx_job(run_data)   # TCX part
 
         start_time = run_data.get("start_time")
         if not start_time:
@@ -355,7 +500,7 @@ class Codoon:
         }
         return namedtuple("x", d.keys())(*d.values())
 
-    def get_old_tracks(self, old_ids, with_gpx=False):
+    def get_old_tracks(self, old_ids, with_gpx=False, with_tcx=False):
         run_records = self.get_runs_records()
 
         old_gpx_ids = os.listdir(GPX_FOLDER)
@@ -365,7 +510,7 @@ class Codoon:
         for i in new_run_routes:
             run_data = self.get_single_run_record(i["route_id"])
             run_data["data"]["id"] = i["log_id"]
-            track = self.parse_raw_data_to_namedtuple(run_data, old_gpx_ids, with_gpx)
+            track = self.parse_raw_data_to_namedtuple(run_data, old_gpx_ids, with_gpx, with_tcx)
             if track:
                 tracks.append(track)
         return tracks
@@ -380,6 +525,12 @@ if __name__ == "__main__":
         dest="with_gpx",
         action="store_true",
         help="get all keep data to gpx and download",
+    )
+    parser.add_argument(
+        "--with-tcx",
+        dest="with_tcx",
+        action="store_true",
+        help="get all keep data to tcx and download",
     )
     parser.add_argument(
         "--from-auth-token",
@@ -402,7 +553,7 @@ if __name__ == "__main__":
 
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
-    tracks = j.get_old_tracks(old_tracks_ids, options.with_gpx)
+    tracks = j.get_old_tracks(old_tracks_ids, options.with_gpx, options.with_tcx)
 
     generator.sync_from_app(tracks)
     activities_list = generator.load()
