@@ -24,10 +24,11 @@ from config import (
 )
 from generator import Generator
 
-from utils import adjust_time_to_utc
+from utils import adjust_time_to_utc, adjust_timestemp_to_utc, to_date
 
 import numpy as np
 import xml.etree.ElementTree as ET
+from tzlocal import get_localzone
 
 # struct body
 FitType = np.dtype(
@@ -99,13 +100,6 @@ def download_codoon_gpx(gpx_data, log_id):
         pass
 
 
-def autorm():  # auto remove data.db[for debugging only]
-    if os.path.exists("data.db"):
-        os.remove("data.db")
-    if os.path.exists("data.db-journal"):
-        os.remove("data.db-journal")
-
-
 def set_array(fit_array, array_time, array_bpm, array_lati, array_longi):
     fit_data = np.array((array_time, array_bpm, array_lati, array_longi), dtype=FitType)
     if fit_array is None:
@@ -162,14 +156,13 @@ def tcx_output(fit_array, run_data):
     activity_creator_name.text = "咕咚"
     activity_creator.append(activity_creator_name)
     #   Lap
-    fit_start_time_CH = run_data["start_time"]
-    # parse to time array
-    time_array = time.strptime(fit_start_time_CH, "%Y-%m-%dT%H:%M:%S")
-    # parse to unix timestamp
-    unix_time = int(time.mktime(time_array))
-    unix_time = unix_time - 28800  # move to UTC[for UTC+08:00 only]
+
+    # local time
+    fit_start_time_local = run_data["start_time"]
     # zulu time
-    fit_start_time = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.localtime(unix_time))
+    utc = adjust_time_to_utc(to_date(fit_start_time_local), str(get_localzone()))
+    fit_start_time = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+
     activity_lap = ET.Element("Lap", {"StartTime": fit_start_time})
     activity.append(activity_lap)
     #       TotalTimeSeconds
@@ -222,12 +215,13 @@ def tcx_job(run_data):
     # fit struct array
     fit_array = None
 
+    # ----------------------------------------------------------------------------------------------
     # raw data
     own_heart_rate = run_data["heart_rate"]  # bpm key-value
     own_points = run_data["points"]  # track points
     # get single bpm
     for single_time, single_bpm in own_heart_rate.items():
-        single_time = int(single_time) - 28800  # for UTC+08:00 only
+        single_time = adjust_timestemp_to_utc(single_time, str(get_localzone()))
         # set bpm data
         fit_array = set_array(fit_array, single_time, single_bpm, None, None)
     # get single track point
@@ -236,11 +230,13 @@ def tcx_job(run_data):
         latitude = point.get("latitude")
         longitude = point.get("longitude")
 
+        # move to UTC
+        utc = adjust_time_to_utc(to_date(time_stamp), str(get_localzone()))
+        time_stamp = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
         # to time array
-        time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%S")
+        time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%SZ")
         # to unix timestamp
         unix_time = int(time.mktime(time_array))
-        unix_time = unix_time - 28800  # for UTC+08:00 only
         # set GPS data
         fit_array = set_array(fit_array, unix_time, None, latitude, longitude)
         fit_array = np.sort(fit_array, order="time")
@@ -398,23 +394,6 @@ class Codoon:
         return points
 
     def parse_points_to_gpx(self, run_points_data):
-        def to_date(ts):
-            # TODO use https://docs.python.org/3/library/datetime.html#datetime.datetime.fromisoformat
-            # once we decide to move on to python v3.7+
-            ts_fmts = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f"]
-
-            for ts_fmt in ts_fmts:
-                try:
-                    # performance with using exceptions
-                    # shouldn't be an issue since it's an offline cmdline tool
-                    return datetime.strptime(ts, ts_fmt)
-                except ValueError:
-                    pass
-
-            raise ValueError(
-                f"cannot parse timestamp {ts} into date with fmts: {ts_fmts}"
-            )
-
         # TODO for now kind of same as `keep` maybe refactor later
         points_dict_list = []
         for point in run_points_data[:-1]:
