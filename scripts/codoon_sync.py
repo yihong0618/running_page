@@ -215,7 +215,6 @@ def tcx_job(run_data):
     # fit struct array
     fit_array = None
 
-    # ----------------------------------------------------------------------------------------------
     # raw data
     own_heart_rate = run_data["heart_rate"]  # bpm key-value
     own_points = run_data["points"]  # track points
@@ -226,6 +225,7 @@ def tcx_job(run_data):
         fit_array = set_array(fit_array, single_time, single_bpm, None, None)
     # get single track point
     for point in own_points:
+        repeat_flag = False
         time_stamp = point.get("time_stamp")
         latitude = point.get("latitude")
         longitude = point.get("longitude")
@@ -238,9 +238,19 @@ def tcx_job(run_data):
         # to unix timestamp
         unix_time = int(time.mktime(time_array))
         # set GPS data
-        fit_array = set_array(fit_array, unix_time, None, latitude, longitude)
-        fit_array = np.sort(fit_array, order="time")
+        # if the track point which has the same time has been added
+        for i in fit_array:
+            if i["time"] == unix_time:
+                print("1")
+                i["lati"] = latitude
+                i["longi"] = longitude
+                repeat_flag = True  # unix_time repeated
+                break
+        if not repeat_flag:
+            fit_array = set_array(fit_array, unix_time, None, latitude, longitude)
 
+    # order array
+    fit_array = np.sort(fit_array, order="time")
     # write to TCX file
     tcx_output(fit_array, run_data)
 
