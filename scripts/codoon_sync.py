@@ -103,7 +103,7 @@ def download_codoon_gpx(gpx_data, log_id):
 def set_array(fit_array, array_time, array_bpm, array_lati, array_longi):
     fit_data = np.array((array_time, array_bpm, array_lati, array_longi), dtype=FitType)
     if fit_array is None:
-        fit_array = fit_data
+        fit_array = np.array([fit_data], dtype=FitType)
     else:
         fit_array = np.append(fit_array, fit_data)
     return fit_array
@@ -211,48 +211,63 @@ def tcx_output(fit_array, run_data):
     )
 
 
+# TODO time complexity is too heigh, need to be reduced
 def tcx_job(run_data):
     # fit struct array
     fit_array = None
 
     # raw data
-    own_heart_rate = run_data["heart_rate"]  # bpm key-value
-    own_points = run_data["points"]  # track points
+    own_heart_rate = None
+    own_points = None
+    if "heart_rate" in run_data:
+        own_heart_rate = run_data["heart_rate"]  # bpm key-value
+    if "points" in run_data:
+        own_points = run_data["points"]  # track points
     # get single bpm
-    for single_time, single_bpm in own_heart_rate.items():
-        single_time = adjust_timestemp_to_utc(single_time, str(get_localzone()))
-        # set bpm data
-        fit_array = set_array(fit_array, single_time, single_bpm, None, None)
+    if own_heart_rate != None:
+        for single_time, single_bpm in own_heart_rate.items():
+            single_time = adjust_timestemp_to_utc(single_time, str(get_localzone()))
+            # set bpm data
+            fit_array = set_array(fit_array, single_time, single_bpm, None, None)
     # get single track point
-    for point in own_points:
-        repeat_flag = False
-        time_stamp = point.get("time_stamp")
-        latitude = point.get("latitude")
-        longitude = point.get("longitude")
+    if own_points != None:
+        for point in own_points:
+            repeat_flag = False
+            # TODO add elevation information
+            time_stamp = point.get("time_stamp")
+            latitude = point.get("latitude")
+            longitude = point.get("longitude")
 
-        # move to UTC
-        utc = adjust_time_to_utc(to_date(time_stamp), str(get_localzone()))
-        time_stamp = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
-        # to time array
-        time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%SZ")
-        # to unix timestamp
-        unix_time = int(time.mktime(time_array))
-        # set GPS data
-        # if the track point which has the same time has been added
-        for i in fit_array:
-            if i["time"] == unix_time:
-                print("1")
-                i["lati"] = latitude
-                i["longi"] = longitude
-                repeat_flag = True  # unix_time repeated
-                break
-        if not repeat_flag:
-            fit_array = set_array(fit_array, unix_time, None, latitude, longitude)
+            # move to UTC
+            utc = adjust_time_to_utc(to_date(time_stamp), str(get_localzone()))
+            time_stamp = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+            # to time array
+            time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%SZ")
+            # to unix timestamp
+            unix_time = int(time.mktime(time_array))
+            # set GPS data
+            # if the track point which has the same time has been added
+            if fit_array is None:
+                fit_array = set_array(fit_array, unix_time, None, latitude, longitude)
+            else:
+                for i in fit_array:
+                    if i["time"] == unix_time:
+                        i["lati"] = latitude
+                        i["longi"] = longitude
+                        repeat_flag = True  # unix_time repeated
+                        break
+                if not repeat_flag:
+                    fit_array = set_array(
+                        fit_array, unix_time, None, latitude, longitude
+                    )
 
-    # order array
-    fit_array = np.sort(fit_array, order="time")
-    # write to TCX file
-    tcx_output(fit_array, run_data)
+    if fit_array is not None:
+        # order array
+        fit_array = np.sort(fit_array, order="time")
+        # write to TCX file
+        tcx_output(fit_array, run_data)
+    else:
+        print("No data in " + str(run_data["id"]))
 
 
 class CodoonAuth:
