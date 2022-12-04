@@ -23,6 +23,29 @@ def adjust_time_to_utc(time, tz_name):
     return time - tc_offset
 
 
+def adjust_timestemp_to_utc(timestemp, tz_name):
+    tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
+    delta = int(tc_offset.total_seconds())
+    return int(timestemp) - delta
+
+
+def to_date(ts):
+    # TODO use https://docs.python.org/3/library/datetime.html#datetime.datetime.fromisoformat
+    # once we decide to move on to python v3.7+
+    ts_fmts = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f"]
+
+    for ts_fmt in ts_fmts:
+        try:
+            # performance with using exceptions
+            # shouldn't be an issue since it's an offline cmdline tool
+            return datetime.strptime(ts, ts_fmt)
+        except ValueError:
+            print("Error: Can not execute strptime")
+            pass
+
+    raise ValueError(f"cannot parse timestamp {ts} into date with fmts: {ts_fmts}")
+
+
 def make_activities_file(sql_file, data_dir, json_file, file_suffix="gpx"):
     generator = Generator(sql_file)
     generator.sync_from_data_dir(data_dir, file_suffix=file_suffix)
