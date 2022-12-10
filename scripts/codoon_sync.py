@@ -38,8 +38,9 @@ FitType = np.dtype(
             "bpm",
             "lati",
             "longi",
-        ],  # unix timestamp, heart bpm, LatitudeDegrees, LongitudeDegrees
-        "formats": ["i", "S4", "S32", "S32"],
+            "elevation",
+        ],  # unix timestamp, heart bpm, LatitudeDegrees, LongitudeDegrees, elevation
+        "formats": ["i", "S4", "S32", "S32", "S8"],
     }
 )
 
@@ -100,8 +101,10 @@ def download_codoon_gpx(gpx_data, log_id):
         pass
 
 
-def set_array(fit_array, array_time, array_bpm, array_lati, array_longi):
-    fit_data = np.array((array_time, array_bpm, array_lati, array_longi), dtype=FitType)
+def set_array(fit_array, array_time, array_bpm, array_lati, array_longi, ele):
+    fit_data = np.array(
+        (array_time, array_bpm, array_lati, array_longi, ele), dtype=FitType
+    )
     if fit_array is None:
         fit_array = np.array([fit_data], dtype=FitType)
     else:
@@ -204,6 +207,10 @@ def tcx_output(fit_array, run_data):
             longi = ET.Element("LongitudeDegrees")
             longi.text = bytes.decode(i["longi"])
             position.append(longi)
+            #  AltitudeMeters
+            altitude_meters = ET.Element("AltitudeMeters")
+            altitude_meters.text = bytes.decode(i["elevation"])
+            tp.append(altitude_meters)
 
     # write to TCX file
     tree.write(
@@ -228,7 +235,7 @@ def tcx_job(run_data):
         for single_time, single_bpm in own_heart_rate.items():
             single_time = adjust_timestemp_to_utc(single_time, str(get_localzone()))
             # set bpm data
-            fit_array = set_array(fit_array, single_time, single_bpm, None, None)
+            fit_array = set_array(fit_array, single_time, single_bpm, None, None, None)
     # get single track point
     if own_points != None:
         for point in own_points:
@@ -237,6 +244,7 @@ def tcx_job(run_data):
             time_stamp = point.get("time_stamp")
             latitude = point.get("latitude")
             longitude = point.get("longitude")
+            elevation = point.get("elevation")
 
             # move to UTC
             utc = adjust_time_to_utc(to_date(time_stamp), str(get_localzone()))
@@ -248,17 +256,20 @@ def tcx_job(run_data):
             # set GPS data
             # if the track point which has the same time has been added
             if fit_array is None:
-                fit_array = set_array(fit_array, unix_time, None, latitude, longitude)
+                fit_array = set_array(
+                    fit_array, unix_time, None, latitude, longitude, elevation
+                )
             else:
                 for i in fit_array:
                     if i["time"] == unix_time:
                         i["lati"] = latitude
                         i["longi"] = longitude
+                        i["elevation"] = elevation
                         repeat_flag = True  # unix_time repeated
                         break
                 if not repeat_flag:
                     fit_array = set_array(
-                        fit_array, unix_time, None, latitude, longitude
+                        fit_array, unix_time, None, latitude, longitude, elevation
                     )
 
     if fit_array is not None:
