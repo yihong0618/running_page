@@ -44,7 +44,6 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [L1cardo](https://github.com/L1cardo)           | <https://run.licardo.cn>                     | Nike      |
 | [luckylele666](https://github.com/luckylele666) | <https://0000928.xyz>                        | Strava    |
 | [MFYDev](https://github.com/MFYDev)             | <https://mfydev.run>                         | Garmin-cn |
-| [tianheg](https://github.com/tianheg)           | <https://run.tianheg.xyz/>                   | Keep      |
 | [Eished](https://github.com/eished)             | <https://run.iknow.fun>                      | Keep      |
 | [Liuxin](https://github.com/liuxindtc)          | <https://liuxin.run>                         | Nike      |
 | [loucx](https://github.com/loucx)               | <https://loucx.github.io/running>            | Nike      |
@@ -83,7 +82,9 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[TCX](#TCX)**
 - **[Nike_to_Strava(Using NRC Run, Strava backup data)](#Nike_to_Strava)**
 - **[Tcx_to_Strava(upload all tcx data to strava)](#TCX_to_Strava)**
-- **[Garmin+Strava(Using Garmin Run, Strava backup data)](#garminstrava)**
+- **[Gpx_to_Strava(upload all gpx data to strava)](#Gpx_to_Strava)**
+- **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#Garmin_to_Strava)**
+- **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#Strava_to_Garmin)**
 
 ## Download
 
@@ -371,7 +372,8 @@ References：
 <br>
 
 1. follow the strava steps
-2. Execute in the root directory:
+2. copy all your tcx files to TCX_OUT
+3. Execute in the root directory:
 
 ```python
 python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresch_token}
@@ -381,9 +383,42 @@ example：
 
 ```python
 python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
+or
+python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
+4. if you want to all files add args `--all`
+
 </details>
+
+### GPX_to_Strava
+
+<details>
+<summary>upload all gpx files to strava</summary>
+
+<br>
+
+1. follow the strava steps
+2. copy all your gpx files to GPX_OUT
+3. Execute in the root directory:
+
+```python
+python3(python) scripts/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresch_token}
+```
+
+example：
+
+```python
+python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx
+or
+python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
+```
+
+4. if you want to all files add args `--all`
+
+</details>
+
+
 
 ### Nike_to_Strava
 
@@ -407,7 +442,7 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 
 </details>
 
-### Garmin+Strava
+### Garmin_to_Strava
 
 <details>
 <summary>Get your <code>Garmin</code> data and upload to strava</summary>
@@ -425,6 +460,29 @@ e.g.
 ```python
 python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
+</details>
+
+### Strava_to_Garmin
+
+<details>
+<summary>Get your <code>Strava</code> data and upload to Garmin</summary>
+
+<br>
+
+1. finish garmin and strava setps, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
+2. Execute in the root directory:
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
+```
+
+if your garmin account region is **China**, you need to execute the command:
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+```
+ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
+</details>
 
 
 ### Total Data Analysis
@@ -576,3 +634,13 @@ Before submitting PR:
 # Support
 
 Just enjoy it~
+
+ # FAQ
+### Strava Api limit
+https://www.strava.com/settings/api
+https://developers.strava.com/docs/#rate-limiting
+
+```
+Strava API Rate Limit Exceeded. Retry after 100 seconds
+Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+```
