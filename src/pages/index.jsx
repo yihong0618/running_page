@@ -7,7 +7,7 @@ import SVGStat from 'src/components/SVGStat';
 import YearsStat from 'src/components/YearsStat';
 import useActivities from 'src/hooks/useActivities';
 import useSiteMetadata from 'src/hooks/useSiteMetadata';
-import {IS_CHINESE, MAP_HEIGHT} from 'src/utils/const';
+import { IS_CHINESE } from 'src/utils/const';
 import {
   filterAndSortRuns,
   filterCityRuns,
@@ -36,8 +36,6 @@ const Index = () => {
   const [intervalId, setIntervalId] = useState();
 
   const [viewport, setViewport] = useState({
-    width: '100%',
-    height: MAP_HEIGHT,
     ...bounds,
   });
 
@@ -59,8 +57,6 @@ const Index = () => {
 
     if (viewport.zoom > 3) {
       setViewport({
-        width: '100%',
-        height: MAP_HEIGHT,
         ...bounds,
       });
     }
@@ -89,8 +85,6 @@ const Index = () => {
 
   useEffect(() => {
     setViewport({
-      width: '100%',
-      height: MAP_HEIGHT,
       ...bounds,
     });
   }, [geoData]);

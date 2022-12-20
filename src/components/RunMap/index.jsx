@@ -1,6 +1,6 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import React, { useRef, useCallback } from 'react';
-import ReactMapGL, { Layer, Source } from 'react-map-gl';
+import ReactMapGL, { Layer, Source, FullscreenControl } from 'react-map-gl';
 import useActivities from 'src/hooks/useActivities';
 import {
   IS_CHINESE,
@@ -10,6 +10,7 @@ import {
   COUNTRY_FILL_COLOR,
   USE_DASH_LINE,
   LINE_OPACITY,
+  MAP_HEIGHT,
 } from 'src/utils/const';
 import { geoJsonForMap } from 'src/utils/utils';
 import RunMarker from './RunMaker';
@@ -67,6 +68,8 @@ const RunMap = ({
   return (
     <ReactMapGL
       {...viewport}
+      width='100%'
+      height={MAP_HEIGHT}
       mapStyle="mapbox://styles/mapbox/dark-v10"
       onViewportChange={setViewport}
       ref={mapRefCallback}
@@ -77,6 +80,7 @@ const RunMap = ({
         thisYear={thisYear}
         mapButtonYear={mapButtonYear}
       />
+      <FullscreenControl className={styles.fullscreenButton} />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
           id="province"
