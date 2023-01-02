@@ -1,6 +1,8 @@
 import React from 'react';
 import Stat from 'src/components/Stat';
 import useActivities from 'src/hooks/useActivities';
+import { IS_CHINESE } from 'src/utils/const';
+import { titleForType } from 'src/utils/utils';
 
 const PeriodStat = ({ onClick }) => {
   const { workoutsCounts } = useActivities();
@@ -12,8 +14,8 @@ const PeriodStat = ({ onClick }) => {
         {periodArr.map(([type, times]) => (
           <Stat
             key={type}
-            value={times}
-            description={` ${type}`+"s"}
+            value={`${IS_CHINESE && titleForType(type)} ${times} `}
+            description={type + (times>1 ? "s" : "") }
             citySize={1}
             onClick={() => onClick(type)}
           />

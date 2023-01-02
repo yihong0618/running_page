@@ -155,23 +155,16 @@ const geoJsonForRuns = (runs) => ({
 
 const geoJsonForMap = () => chinaGeojson;
 
-const titleForRun = (run) => {
-  const runDistance = run.distance / 1000;
-  const runHour = +run.start_date_local.slice(11, 13);
-  const type = run.type;
+const titleForType = (type) => {
   switch (type) {
     case 'Run':
-      if (runDistance > 20 && runDistance < 40) {
-        return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
-      }
-      if (runDistance >= 40) {
-        return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
-      }
       return RUN_TITLES.RUN_TITLE;
     case 'Ride':
       return RUN_TITLES.RIDE_TITLE;
     case 'Indoor Ride':
       return RUN_TITLES.INDOOR_RIDE_TITLE;
+    case 'VirtualRide':
+      return RUN_TITLES.VIRTUAL_RIDE_TITLE;
     case 'Hike':
       return RUN_TITLES.HIKE_TITLE;
     case 'Rowing':
@@ -187,6 +180,20 @@ const titleForRun = (run) => {
     default:
       return RUN_TITLES.RUN_TITLE;
   }
+}
+
+const titleForRun = (run) => {
+  const type = run.type;
+  if (type == 'Run'){
+      const runDistance = run.distance / 1000;
+      if (runDistance >= 40) {
+        return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
+      }
+      else if (runDistance > 20) {
+        return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
+      }
+  }
+  return titleForType(type);
 };
 
 const colorFromType = (workoutType) => {
@@ -287,6 +294,7 @@ export {
   geoJsonForRuns,
   geoJsonForMap,
   titleForRun,
+  titleForType,
   filterYearRuns,
   filterCityRuns,
   filterTitleRuns,

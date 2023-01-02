@@ -24,7 +24,7 @@ const CHINESE_INFO_MESSAGE = (yearLength, year) =>
   `户外运动 ${yearLength} 年 ` + ( year === 'Total' ? '' : `，地图展示的是 ${year} 年的轨迹`);
 
 const ENGLISH_INFO_MESSAGE = (yearLength, year) =>
-  `Logged ${yearLength} Years of Outdoor Journey` +  ( year === 'Total' ? '' : `, the map shows routes in ${year}`);
+  `Logged ${yearLength} Years of Outdoor Journey` +  ( year === 'Total' ? '' : `, the map show routes in ${year}`);
 
 // not support English for now
 const CHINESE_LOCATION_INFO_MESSAGE_FIRST =
@@ -39,6 +39,7 @@ const SWIM_TITLE = IS_CHINESE ? '游泳' : 'Swim';
 
 const RIDE_TITLE = IS_CHINESE ? '骑行' : 'Ride';
 const INDOOR_RIDE_TITLE = IS_CHINESE ? '室内骑行' : 'Indoor Ride';
+const VIRTUAL_RIDE_TITLE = IS_CHINESE ? '虚拟骑行' : 'Virtual Ride';
 const HIKE_TITLE = IS_CHINESE ? '徒步' : 'Hike';
 const ROWING_TITLE = IS_CHINESE ? '划船' : 'Rowing';
 const KAYAKING_TITLE = IS_CHINESE ? '皮划艇' : 'Kayaking';
@@ -52,6 +53,7 @@ const RUN_TITLES = {
 
   RIDE_TITLE,
   INDOOR_RIDE_TITLE,
+  VIRTUAL_RIDE_TITLE,
   HIKE_TITLE,
   ROWING_TITLE,
   KAYAKING_TITLE,
