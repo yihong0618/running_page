@@ -13,7 +13,7 @@ timezonefinder
 pyyaml
 aiofiles
 cloudscraper==1.2.58
-python-tcxparser
+git+https://github.com/alenrajsp/tcxreader.git
 rich
 lxml
 eviltransform

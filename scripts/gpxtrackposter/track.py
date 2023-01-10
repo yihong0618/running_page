@@ -13,7 +13,7 @@ import lxml
 import polyline
 import s2sphere as s2
 from rich import print
-from tcxparser import TCXParser
+from tcxreader.tcxreader import TCXReader
 
 from .exceptions import TrackLoadError
 from .utils import parse_datetime_to_local
@@ -63,9 +63,10 @@ class Track:
             self.file_names = [os.path.basename(file_name)]
             # Handle empty tcx files
             # (for example, treadmill runs pulled via garmin-connect-export)
+            tcx = TCXReader()
             if os.path.getsize(file_name) == 0:
                 raise TrackLoadError("Empty TCX file")
-            self._load_tcx_data(TCXParser(file_name), file_name=file_name)
+            self._load_tcx_data(tcx.read(file_name), file_name=file_name)
         except Exception as e:
             print(
                 f"Something went wrong when loading TCX. for file {self.file_names[0]}, we just ignore this file and continue"
@@ -99,7 +100,7 @@ class Track:
 
     def _load_tcx_data(self, tcx, file_name):
         self.length = float(tcx.distance)
-        time_values = tcx.time_objects()
+        time_values = [i.time for i in tcx.trackpoints]
         if not time_values:
             raise TrackLoadError("Track is empty.")
 
@@ -108,7 +109,7 @@ class Track:
         self.run_id = self.__make_run_id(self.start_time)
         self.average_heartrate = tcx.hr_avg
         polyline_container = []
-        position_values = tcx.position_values()
+        position_values = [(i.latitude, i.longitude) for i in tcx.trackpoints]
         if not position_values and int(self.length) == 0:
             raise Exception(
                 f"This {file_name} TCX file do not contain distance and position values we ignore it"
