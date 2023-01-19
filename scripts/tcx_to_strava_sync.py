@@ -5,7 +5,7 @@ import time
 from config import TCX_FOLDER
 from strava_sync import run_strava_sync
 from stravalib.exc import RateLimitTimeout, ActivityUploadFailed
-from tcxparser import TCXParser
+from tcxreader.tcxreader import TCXReader
 
 from utils import make_strava_client, get_strava_last_time, upload_file_to_strava
 
@@ -16,16 +16,17 @@ def get_to_generate_files(last_time):
     and one sorted list for next time upload
     """
     file_names = os.listdir(TCX_FOLDER)
+    tcx = TCXReader()
     tcx_files = [
-        (TCXParser(os.path.join(TCX_FOLDER, i)), os.path.join(TCX_FOLDER, i))
+        (tcx.read(os.path.join(TCX_FOLDER, i)), os.path.join(TCX_FOLDER, i))
         for i in file_names
         if i.endswith(".tcx")
     ]
     tcx_files_dict = {
-        int(i[0].time_objects()[0].timestamp()): i[1]
+        int(i[0].trackpoints[0].time.timestamp()): i[1]
         for i in tcx_files
-        if len(i[0].time_objects()) > 0
-        and int(i[0].time_objects()[0].timestamp()) > last_time
+        if len(i[0].trackpoints) > 0
+        and int(i[0].trackpoints[0].time.timestamp()) > last_time
     }
 
     return sorted(list(tcx_files_dict.keys())), tcx_files_dict

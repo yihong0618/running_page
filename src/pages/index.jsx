@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
+import React, {useEffect, useState} from 'react';
 import Layout from 'src/components/Layout';
 import LocationStat from 'src/components/LocationStat';
 import RunMap from 'src/components/RunMap';
@@ -35,8 +36,6 @@ const Index = () => {
   const [intervalId, setIntervalId] = useState();
 
   const [viewport, setViewport] = useState({
-    width: '100%',
-    height: 400,
     ...bounds,
   });
 
@@ -58,8 +57,6 @@ const Index = () => {
 
     if (viewport.zoom > 3) {
       setViewport({
-        width: '100%',
-        height: 400,
         ...bounds,
       });
     }
@@ -85,8 +82,6 @@ const Index = () => {
 
   useEffect(() => {
     setViewport({
-      width: '100%',
-      height: 500,
       ...bounds,
     });
   }, [geoData]);
@@ -172,11 +167,10 @@ const Index = () => {
   return (
     <Layout>
       <div className="mb5">
-        <div className="w-100">
+        <div className="fl w-30-l">
           <h1 className="f1 fw9 i">
             <a href="/">{siteTitle}</a>
           </h1>
-        </div>
         {viewport.zoom <= 3 && IS_CHINESE ? (
           <LocationStat
             changeYear={changeYear}
@@ -186,6 +180,7 @@ const Index = () => {
         ) : (
           <YearsStat year={year} onClick={changeYear} />
         )}
+        </div>
         <div className="fl w-100 w-70-l">
           <RunMap
             runs={runs}
@@ -211,6 +206,8 @@ const Index = () => {
           )}
         </div>
       </div>
+      {/* Enable Audiences in Vercel Analytics: https://vercel.com/docs/concepts/analytics/audiences/quickstart */}
+      <Analytics />
     </Layout>
   );
 };
