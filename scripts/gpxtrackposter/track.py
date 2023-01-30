@@ -1,17 +1,19 @@
 """Create and maintain info about a given activity track (corresponding to one GPX file)."""
 # Copyright 2016-2019 Florian Pigorsch & Contributors. All rights reserved.
-#
+# 2019-now yihong0618 Florian Pigorsch & Contributors. All rights reserved.
 # Use of this source code is governed by a MIT-style
 # license that can be found in the LICENSE file.
 
 import datetime
-import json
 import os
 from collections import namedtuple
 
 import gpxpy as mod_gpxpy
+import lxml
 import polyline
 import s2sphere as s2
+from rich import print
+from tcxreader.tcxreader import TCXReader
 
 from .exceptions import TrackLoadError
 from .utils import parse_datetime_to_local
@@ -35,8 +37,12 @@ class Track:
         self.moving_dict = {}
         self.run_id = 0
         self.start_latlng = []
+        self.type = "Run"
 
     def load_gpx(self, file_name):
+        """
+        TODO refactor with load_tcx to one function
+        """
         try:
             self.file_names = [os.path.basename(file_name)]
             # Handle empty gpx files
@@ -51,6 +57,21 @@ class Track:
             )
             print(str(e))
             pass
+
+    def load_tcx(self, file_name):
+        try:
+            self.file_names = [os.path.basename(file_name)]
+            # Handle empty tcx files
+            # (for example, treadmill runs pulled via garmin-connect-export)
+            tcx = TCXReader()
+            if os.path.getsize(file_name) == 0:
+                raise TrackLoadError("Empty TCX file")
+            self._load_tcx_data(tcx.read(file_name), file_name=file_name)
+        except Exception as e:
+            print(
+                f"Something went wrong when loading TCX. for file {self.file_names[0]}, we just ignore this file and continue"
+            )
+            print(str(e))
 
     def load_from_db(self, activity):
         # use strava as file name
@@ -73,13 +94,53 @@ class Track:
                 bbox = bbox.union(s2.LatLngRect.from_point(latlng.normalized()))
         return bbox
 
+    @staticmethod
+    def __make_run_id(time_stamp):
+        return int(datetime.datetime.timestamp(time_stamp) * 1000)
+
+    def _load_tcx_data(self, tcx, file_name):
+        self.length = float(tcx.distance)
+        time_values = [i.time for i in tcx.trackpoints]
+        if not time_values:
+            raise TrackLoadError("Track is empty.")
+
+        self.start_time, self.end_time = time_values[0], time_values[-1]
+        moving_time = int(self.end_time.timestamp() - self.start_time.timestamp())
+        self.run_id = self.__make_run_id(self.start_time)
+        self.average_heartrate = tcx.hr_avg
+        polyline_container = []
+        position_values = [(i.latitude, i.longitude) for i in tcx.trackpoints]
+        if not position_values and int(self.length) == 0:
+            raise Exception(
+                f"This {file_name} TCX file do not contain distance and position values we ignore it"
+            )
+        if position_values:
+            line = [s2.LatLng.from_degrees(p[0], p[1]) for p in position_values]
+            self.polylines.append(line)
+            polyline_container.extend([[p[0], p[1]] for p in position_values])
+            self.polyline_container = polyline_container
+            self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                self.start_time, self.end_time, polyline_container[0]
+            )
+            # get start point
+            try:
+                self.start_latlng = start_point(*polyline_container[0])
+            except:
+                pass
+            self.polyline_str = polyline.encode(polyline_container)
+        self.moving_dict = {
+            "distance": self.length,
+            "moving_time": datetime.timedelta(seconds=moving_time),
+            "elapsed_time": datetime.timedelta(
+                seconds=moving_time
+            ),  # FIXME for now make it same as moving time
+            "average_speed": self.length / moving_time if moving_time else 0,
+        }
+
     def _load_gpx_data(self, gpx):
         self.start_time, self.end_time = gpx.get_time_bounds()
         # use timestamp as id
-        self.run_id = int(datetime.datetime.timestamp(self.start_time) * 1000)
-        self.start_time_local, self.end_time_local = parse_datetime_to_local(
-            self.start_time, self.end_time, gpx
-        )
+        self.run_id = self.__make_run_id(self.start_time)
         if self.start_time is None:
             raise TrackLoadError("Track has no start time.")
         if self.end_time is None:
@@ -93,13 +154,22 @@ class Track:
         for t in gpx.tracks:
             for s in t.segments:
                 try:
+                    extensions = [
+                        {
+                            lxml.etree.QName(child).localname: child.text
+                            for child in p.extensions[0]
+                        }
+                        for p in s.points
+                        if p.extensions
+                    ]
                     heart_rate_list.extend(
                         [
-                            int(p.extensions[0].getchildren()[0].text)
-                            for p in s.points
-                            if p.extensions
+                            int(p["hr"]) if p.__contains__("hr") else None
+                            for p in extensions
+                            if extensions
                         ]
                     )
+                    heart_rate_list = list(filter(None, heart_rate_list))
                 except:
                     pass
                 line = [
@@ -113,6 +183,9 @@ class Track:
             self.start_latlng = start_point(*polyline_container[0])
         except:
             pass
+        self.start_time_local, self.end_time_local = parse_datetime_to_local(
+            self.start_time, self.end_time, polyline_container[0]
+        )
         self.polyline_str = polyline.encode(polyline_container)
         self.average_heartrate = (
             sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
@@ -141,60 +214,6 @@ class Track:
                 f"something wrong append this {self.end_time},in files {str(self.file_names)}"
             )
             pass
-
-    def load_cache(self, cache_file_name):
-        try:
-            with open(cache_file_name) as data_file:
-                data = json.load(data_file)
-                self.start_time = datetime.datetime.strptime(
-                    data["start"], "%Y-%m-%d %H:%M:%S"
-                )
-                self.end_time = datetime.datetime.strptime(
-                    data["end"], "%Y-%m-%d %H:%M:%S"
-                )
-                self.start_time_local = datetime.datetime.strptime(
-                    data["start_local"], "%Y-%m-%d %H:%M:%S"
-                )
-                self.end_time_local = datetime.datetime.strptime(
-                    data["end_local"], "%Y-%m-%d %H:%M:%S"
-                )
-                self.length = float(data["length"])
-                self.polylines = []
-                for data_line in data["segments"]:
-                    self.polylines.append(
-                        [
-                            s2.LatLng.from_degrees(float(d["lat"]), float(d["lng"]))
-                            for d in data_line
-                        ]
-                    )
-        except Exception as e:
-            raise TrackLoadError("Failed to load track data from cache.") from e
-
-    def store_cache(self, cache_file_name):
-        """Cache the current track"""
-        dir_name = os.path.dirname(cache_file_name)
-        if not os.path.isdir(dir_name):
-            os.makedirs(dir_name)
-        with open(cache_file_name, "w") as json_file:
-            lines_data = []
-            for line in self.polylines:
-                lines_data.append(
-                    [
-                        {"lat": latlng.lat().degrees, "lng": latlng.lng().degrees}
-                        for latlng in line
-                    ]
-                )
-            json.dump(
-                {
-                    "start": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
-                    "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
-                    "start_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
-                    "end_local": self.end_time_local.strftime("%Y-%m-%d %H:%M:%S"),
-                    "length": self.length,
-                    "segments": lines_data,
-                },
-                json_file,
-            )
 
     @staticmethod
     def _get_moving_data(gpx):
