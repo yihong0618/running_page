@@ -2,23 +2,11 @@ name: Publish GitHub Pages
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push events but only for the master branch
-  push:
-    branches: [ master ]
-    paths:
-      - .github/workflows/gh-pages.yml
-      - package.json
-      - yarn.lock
-      - gatsby-config.js
-      - gatsby-node.js
-      - assets/*.svg
-      - src/**.js
-      - src/**.jsx
-      - src/**.scss
-      - src/**.json
-
-  schedule:
-    - cron: "5 0 * * *"
+  # trigger when the Run Data Sync workflow succeeded
+  workflow_run:
+    workflows: ["Run Data Sync"]
+    types:
+      - completed
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -38,11 +26,11 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: '14'
+          node-version: '16'
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v2
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)

@@ -1,18 +1,17 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import argparse
 import base64
 import json
 import os
 import time
 import zlib
+import math
 from collections import namedtuple
 from datetime import datetime, timedelta
 
 import gpxpy
 import polyline
 import requests
+import eviltransform
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 
@@ -22,6 +21,9 @@ from utils import adjust_time
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
+
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+TRANS_GCJ02_TO_WGS84 = True
 
 
 def login(session, mobile, passowrd):
@@ -84,11 +86,21 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
         r = requests.get(raw_data_url)
         # string strart with `H4sIAAAAAAAA` --> decode and unzip
         run_points_data = decode_runmap_data(r.text)
+        run_points_data_gpx = run_points_data
+        if TRANS_GCJ02_TO_WGS84:
+            run_points_data = [
+                list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
+                for p in run_points_data
+            ]
+            for i, p in enumerate(run_points_data_gpx):
+                p["latitude"] = run_points_data[i][0]
+                p["longitude"] = run_points_data[i][1]
+        else:
+            run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
         if with_download_gpx:
             if str(keep_id) not in old_gpx_ids:
-                gpx_data = parse_points_to_gpx(run_points_data, start_time)
+                gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
                 download_keep_gpx(gpx_data, str(keep_id))
-        run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
     heart_rate = None
     if run_data["heartRate"]:
         heart_rate = run_data["heartRate"].get("averageHeartRate", None)
@@ -102,6 +114,9 @@ def parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_download_gpx=False):
     start_date_local = adjust_time(start_date, tz_name)
     end = datetime.utcfromtimestamp(run_data["endTime"] / 1000)
     end_local = adjust_time(end, tz_name)
+    if not run_data["duration"]:
+        print(f"ID {keep_id} has no total time just ignore please check")
+        return
     d = {
         "id": int(keep_id),
         "name": "run from keep",

@@ -1,6 +1,6 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React from 'react';
-import ReactMapGL, { Layer, Source } from 'react-map-gl';
+import React, { useRef, useCallback } from 'react';
+import ReactMapGL, { Layer, Source, FullscreenControl } from 'react-map-gl';
 import useActivities from 'src/hooks/useActivities';
 import {
   IS_CHINESE,
@@ -9,6 +9,7 @@ import {
   PROVINCE_FILL_COLOR,
   USE_DASH_LINE,
   LINE_OPACITY,
+  MAP_HEIGHT,
 } from 'src/utils/const';
 import { geoJsonForMap } from 'src/utils/utils';
 import RunMarker from './RunMaker';
@@ -25,21 +26,19 @@ const RunMap = ({
   mapButtonYear,
 }) => {
   const { provinces } = useActivities();
-  const addControlHandler = (event) => {
-    const map = event && event.target;
-    // set lauguage to Chinese if you use English please comment it
-    if (map && IS_CHINESE) {
-      map.addControl(
-        new MapboxLanguage({
-          defaultLanguage: 'zh',
-        })
-      );
-      map.setLayoutProperty('country-label-lg', 'text-field', [
-        'get',
-        'name_zh',
-      ]);
-    }
-  };
+  const mapRef = useRef();
+  const mapRefCallback = useCallback(
+    (ref) => {
+      if (ref !== null) {
+        mapRef.current = ref;
+        const map = ref.getMap();
+        if (map && IS_CHINESE) {
+          map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
+        }
+      }
+    },
+    [mapRef]
+  );
   const filterProvinces = provinces.slice();
   // for geojson format
   filterProvinces.unshift('in', 'name');
@@ -66,9 +65,11 @@ const RunMap = ({
   return (
     <ReactMapGL
       {...viewport}
-      mapStyle="mapbox://styles/mapbox/dark-v9"
+      width='100%'
+      height={MAP_HEIGHT}
+      mapStyle="mapbox://styles/mapbox/dark-v10"
       onViewportChange={setViewport}
-      onLoad={addControlHandler}
+      ref={mapRefCallback}
       mapboxApiAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons
@@ -76,6 +77,7 @@ const RunMap = ({
         thisYear={thisYear}
         mapButtonYear={mapButtonYear}
       />
+      <FullscreenControl className={styles.fullscreenButton} />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
           id="province"
