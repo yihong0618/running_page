@@ -40,7 +40,7 @@ class GridDrawer(TracksDrawer):
         )
         offset.x += (size.x - count_x * cell_size - (count_x - 1) * spacing_x) / 2
         offset.y += (size.y - count_y * cell_size - (count_y - 1) * spacing_y) / 2
-        for (index, tr) in enumerate(self.poster.tracks[::-1]):
+        for index, tr in enumerate(self.poster.tracks[::-1]):
             p = XY(index % count_x, index // count_x) * XY(
                 cell_size + spacing_x, cell_size + spacing_y
             )
@@ -58,7 +58,6 @@ class GridDrawer(TracksDrawer):
 
         date_title = f"{str(tr.start_time_local)[:10]} {str_length}km"
         for line in project(tr.bbox(), size, offset, tr.polylines):
-
             distance1 = self.poster.special_distance["special_distance"]
             distance2 = self.poster.special_distance["special_distance2"]
             has_special = distance1 < tr.length / 1000 < distance2
