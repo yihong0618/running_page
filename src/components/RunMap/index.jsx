@@ -17,7 +17,7 @@ import RunMapButtons from './RunMapButtons';
 import styles from './style.module.scss';
 
 //change 'true' to 'false' if you want to hide the road label;
-const RoadLabelDisplay = 'true';
+const RoadLabelDisplay = true;
 const layerList=['road-label',  'waterway-label',  'natural-line-label',  'natural-point-label',  'water-line-label',  'water-point-label',  'poi-label',  'airport-label',  'settlement-subdivision-label',  'settlement-label',  'state-label',  'country-label'];
 
 const RunMap = ({
@@ -38,7 +38,7 @@ const RunMap = ({
         const map = ref.getMap();
         if (map && IS_CHINESE) {
           map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
-          if (RoadLabelDisplay == 'false') { 
+          if (RoadLabelDisplay == false) { 
             // todo delete layers
             map.on('load', () => {
               for(let layerId of layerList){
