@@ -18,6 +18,7 @@ module.exports = {
   },
   plugins: [
     'gatsby-transformer-json',
+    'gatsby-plugin-pnpm',
     'gatsby-plugin-react-helmet',
     {
       resolve: 'gatsby-source-filesystem',
