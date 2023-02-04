@@ -38,9 +38,8 @@ const RunMap = ({
           map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
           if (!ROAD_LABEL_DISPLAY) { 
             // todo delete layers
-            map.on('load', () => {
-              MAP_LAYER_LIST.forEach((layerId) => {map.removeLayer(layerId)})
-          })};
+            map.on('load', () => {MAP_LAYER_LIST.forEach((layerId) => {map.removeLayer(layerId)})});
+          }
         }
       }
     },
