@@ -85,7 +85,6 @@ class JoyrunAuth:
 
 
 class Joyrun:
-
     base_url = "https://api.thejoyrun.com"
 
     def __init__(self, user_name="", identifying_code="", uid=0, sid=""):

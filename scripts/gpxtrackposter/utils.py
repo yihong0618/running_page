@@ -12,7 +12,16 @@ from typing import List, Optional, Tuple
 import colour
 import pytz
 import s2sphere as s2
-from timezonefinder import TimezoneFinder
+
+try:
+    from tzfpy import get_tz
+
+    tf = None
+except:
+    from timezonefinder import TimezoneFinder
+
+    tf = TimezoneFinder()
+
 
 from .value_range import ValueRange
 from .xy import XY
@@ -120,8 +129,12 @@ def parse_datetime_to_local(start_time, end_time, point):
     offset = start_time.utcoffset()
     if offset:
         return start_time + offset, end_time + offset
-    tf = TimezoneFinder()
     lat, lng = point
-    timezone = tf.timezone_at(lng=lng, lat=lat)
+    try:
+        timezone = get_tz(lng=lng, lat=lat)
+    except:
+        # just a little trick when tzfpy support windows will delete this
+        lat, lng = point
+        timezone = tf.timezone_at(lng=lng, lat=lat)
     tc_offset = datetime.now(pytz.timezone(timezone)).utcoffset()
     return start_time + tc_offset, end_time + tc_offset

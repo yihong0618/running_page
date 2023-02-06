@@ -40,7 +40,7 @@
     "data:clean": "rm scripts/data.db GPX_OUT/* activities/* src/static/activities.json",
     "data:download:garmin": "python3 scripts/garmin_sync.py",
     "data:analysis": "python3 scripts/gen_svg.py --from-db --type github --output assets/github.svg",
-    "build": "gatsby build",
+    "build": "gatsby clean && gatsby build",
     "build-prefix": "gatsby build --prefix-paths",
     "develop": "gatsby develop",
     "serve": "gatsby serve",

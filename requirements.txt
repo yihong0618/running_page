@@ -9,7 +9,8 @@ arrow
 geopy
 polyline
 sqlalchemy
-timezonefinder
+tzfpy; platform_system != "Windows"
+timezonefinder; platform_system == "Windows"
 pyyaml
 aiofiles
 cloudscraper==1.2.58
