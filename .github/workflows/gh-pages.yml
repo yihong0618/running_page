@@ -43,7 +43,7 @@ jobs:
       - run: |
           yarn install
       - run: |
-          yarn build --prefix-paths
+          PATH_PREFIX=/${{ github.event.repository.name }} yarn build --prefix-paths
       - run: |
           cp -r assets/ public/static
 
