@@ -3,7 +3,9 @@ import React, { useRef, useCallback } from 'react';
 import ReactMapGL, { Layer, Source, FullscreenControl } from 'react-map-gl';
 import useActivities from 'src/hooks/useActivities';
 import {
+  MAP_LAYER_LIST,
   IS_CHINESE,
+  ROAD_LABEL_DISPLAY,
   MAIN_COLOR,
   MAPBOX_TOKEN,
   PROVINCE_FILL_COLOR,
@@ -34,6 +36,10 @@ const RunMap = ({
         const map = ref.getMap();
         if (map && IS_CHINESE) {
           map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
+          if (!ROAD_LABEL_DISPLAY) { 
+            // todo delete layers
+            map.on('load', () => {MAP_LAYER_LIST.forEach((layerId) => {map.removeLayer(layerId)})});
+          }
         }
       }
     },
