@@ -65,6 +65,7 @@ TYPE_DICT = {
     "RoadTrip": "RoadTrip",
     "flight": "Flight",
     "kayaking": "Kayaking",
+    "Snowboard": "Snowboard",
 }
 
 MAPPING_TYPE = [
@@ -76,6 +77,7 @@ MAPPING_TYPE = [
     "Swim",
     "RoadTrip",
     "Kayaking",
+    "Snowboard",
 ]
 
 STRAVA_GARMIN_TYPE_DICT = {

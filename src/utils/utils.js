@@ -16,7 +16,8 @@ import {
   ROAD_TRIP_COLOR,
   FLIGHT_COLOR,
   RUN_COLOR,
-  KAYAKING_COLOR
+  KAYAKING_COLOR,
+  SNOWBOARD_COLOR,
 } from './const';
 
 const titleForShow = (run) => {
@@ -177,6 +178,8 @@ const titleForType = (type) => {
       return RUN_TITLES.FLIGHT_TITLE;
     case 'Kayaking':
       return RUN_TITLES.KAYAKING_TITLE;
+    case 'Snowboard':
+      return RUN_TITLES.SNOWBOARD_TITLE;
     default:
       return RUN_TITLES.RUN_TITLE;
   }
@@ -217,6 +220,8 @@ const colorFromType = (workoutType) => {
       return FLIGHT_COLOR;
     case 'Kayaking':
       return KAYAKING_COLOR;
+    case 'Snowboard':
+      return SNOWBOARD_COLOR;
     default:
       return MAIN_COLOR;
   }

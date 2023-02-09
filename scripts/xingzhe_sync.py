@@ -151,7 +151,6 @@ class Xingzhe:
             tracks[0].type = track["type"]
             tracks[0].number = track["id"]
             async with aiofiles.open(file_path, "wb") as fb:
-
                 await fb.write(gpx.to_xml(version="1.1").encode("utf8"))
         except Exception as err:
             print(f"Failed to download activity {track}: " + str(err))
