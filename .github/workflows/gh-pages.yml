@@ -1,0 +1,64 @@
+name: Publish GitHub Pages
+
+# Controls when the action will run. 
+on:
+  # trigger when the Run Data Sync workflow succeeded
+  workflow_run:
+    workflows: ["Run Data Sync"]
+    types:
+      - completed
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: '16'
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - run: |
+          yarn install
+      - run: |
+          PATH_PREFIX=/${{ github.event.repository.name }} yarn build --prefix-paths
+      - run: |
+          cp -r assets/ public/static
+
+      - name: GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v2.2.0
+        with:
+          # Git branch where site will be deployed
+          target_branch: gh-pages
+          # Create incremental commit instead of doing push force
+          keep_history: true
+          # Build directory to deploy
+          build_dir: public
+          # Write the given domain name to the CNAME file
+          #fqdn: custom.domain.name # optional
+          # Prevent Jekyll from building the site
+          jekyll: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
