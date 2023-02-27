@@ -58,6 +58,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Jason Tan](https://github.com/Jason-cqtan)     | <https://jason-cqtan.github.io/running_page> | Nike      |
 | [Conge](https://github.com/conge)               | <https://conge.github.io/running_page>       | Strava    |
 | [zHElEARN](https://github.com/zHElEARN)         | <https://workouts.zhelearn.com>              | Strava    |
+| [YeasyHeart](https://github.com/YeasyHeart)     | <https://yeasyheart.github.io/running_page>  | Keep      |
 
 ## How it works
 
