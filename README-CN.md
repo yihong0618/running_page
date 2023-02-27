@@ -58,6 +58,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [cvvz](https://github.com/cvvz)                 | <https://cvvz.github.io/running>             | Strava    |
 | [zHElEARN](https://github.com/zHElEARN)         | <https://workouts.zhelearn.com>              | Strava    |
 | [Rhfeng](https://sport.frh.life)                | <https://sport.frh.life>                     | Garmin-cn |
+| [YeasyHeart](https://github.com/YeasyHeart)     | <https://yeasyheart.github.io/running_page/> | Keep |
 
 ## 它是怎么工作的
 
