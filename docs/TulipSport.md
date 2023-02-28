@@ -1,5 +1,5 @@
-## Github Pages
-### 1.为Github Actions添加代码提交权限
+## GitHub Pages
+### 1.为GitHub Actions添加代码提交权限
 访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持CI将运动数据更新后提交到仓库中。
 
 ### 2.提交配置变更代码
@@ -20,7 +20,7 @@ module.exports = {
   },
 }
 ```
-2. 更新Github CI的配置`./.github/workflows/run_data_sync.yml`中的配置为郁金香模式
+2. 更新GitHub CI的配置`./.github/workflows/run_data_sync.yml`中的配置为郁金香模式
 ```yaml
 env:
   # please change to your own config.
@@ -34,7 +34,7 @@ env:
 ```
 3. 在仓库的`Settings > Secrets and variables > Actions`页面添加名为`TULIPSPORT_TOKEN`的新secrets信息，并配置相应token（[如何获取token？](https://tulipsport.rdshoep.com)）
 
-### 3. 手动触发名为`Run Data Sync`的Github Action，同步运动数据并构建gh_pages分支产物。成功后启动仓库的Github Pages功能（页面`Settings > Pages`），操作后等待构建完成即可访问。
+### 3. 手动触发名为`Run Data Sync`的Github Action，同步运动数据并构建gh_pages分支产物。成功后启动仓库的GitHub Pages功能（页面`Settings > Pages`），操作后等待构建完成即可访问。
 具体配置：
 - Source： `Deploy from a branch`
 - Branch： `gh-pages` && `/(root)`

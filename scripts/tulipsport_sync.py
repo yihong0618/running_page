@@ -89,6 +89,8 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
   average_speed = summary["average_speed"]
   location_country = ""
 
+  # 详情接口具体的内容参考文档链接：https://open.tulipsport.com/document
+  # map_data_list的结构为[ [latitude, longitude, elevation, section, distance, hr, time, cadence], ... ]
   point_list = detail["map_data_list"]
   point_list_length = len(point_list)
   if point_list_length and summary["outdoor"]:
@@ -122,7 +124,8 @@ def find_last_tulipsport_start_time(track_ids):
   tulipsport_ids = [id for id in track_ids if str(id).startswith(TULIPSPORT_FAKE_ID_PREFIX)]
   if tulipsport_ids:
     tulipsport_ids.sort()
-    start_time = datetime.fromtimestamp(int(str(tulipsport_ids[0])[3: -6]), DEFAULT_TIMEZONE)
+    # 从模拟的构造ID（特殊前缀(666) + 活动开始时间的timestamp + 活动距离(单位：米，支持单次活动最大距离为999,999米)）中读取时间信息
+    start_time = datetime.fromtimestamp(int(str(tulipsport_ids[-1])[3: -6]), DEFAULT_TIMEZONE)
   return start_time
 
 def get_new_activities(token, old_tracks_ids):

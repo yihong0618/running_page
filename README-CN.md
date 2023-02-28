@@ -714,6 +714,25 @@ python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
 
 </details>
 
+## GitHub Pages方案配置
+<details>
+<summary>配置流程，<a href='https://github.com/yihong0618/running_page/blob/master/docs/TulipSport.md'>郁金香方案示例</a> </summary>
+
+> 有以下情况的用户建议选择自建服务的方案
+> 1. 目标访问用户的网络不够通畅；
+> 2. 关注数据隐私（ps：外放的页面内也能拿到大部分的数据😄）。
+
+1. 为GitHub Actions添加代码提交权限；
+   访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持CI将运动数据更新后提交到仓库中。
+2. 更新配置并提交代码；
+   1. 更新`./gatsby-config.js`中的`siteMetadata`节点；
+   2. 更新GitHub CI的配置`./.github/workflows/run_data_sync.yml`中的配置；
+   3. 在仓库的`Settings > Secrets and variables > Actions`页面添加对应服务的环境配置信息。
+3. 同步数据并发布GitHub Pages
+   1. 手动触发`Run Data Sync`的Github Action完成数据同步；
+   2. 开通仓库GitHub Pages功能，选择`gh-pages`分支和`/(root)`目录。
+</details>
+
 ## GitHub Actions (Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。)
 
 <details>
