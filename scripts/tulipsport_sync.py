@@ -68,7 +68,7 @@ def get_all_activity_summaries(session, headers, start_time=None):
                         "start_date": start_date,
                         "start_date_local": start_date_local,
                         "end_date": start_date + moving_time,
-                        "start_date_local": start_date_local + moving_time,
+                        "end_date_local": start_date_local + moving_time,
                         "average_heartrate": None,
                         "average_speed": distance / int(summary["moving_time"]),
                         "summary_polyline": "",
