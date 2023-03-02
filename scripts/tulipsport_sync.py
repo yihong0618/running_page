@@ -15,7 +15,7 @@ import requests
 import eviltransform
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
-
+from xml.etree import ElementTree
 from utils import adjust_time, adjust_time_to_utc
 
 # need to test
@@ -155,7 +155,7 @@ def find_last_tulipsport_start_time(track_ids):
     return start_time
 
 
-def get_new_activities(token, old_tracks_ids):
+def get_new_activities(token, old_tracks_ids, with_gpx=False):
     s = requests.Session()
     headers = {"Authorization": token}
     activity_summary_list = get_all_activity_summaries(
@@ -168,6 +168,8 @@ def get_new_activities(token, old_tracks_ids):
     ]
     print(f"{len(activity_summary_list)} new activities to generate")
     tracks = []
+    if with_gpx and not os.path.exists(GPX_FOLDER):
+        os.mkdir(GPX_FOLDER)
     old_gpx_ids = os.listdir(GPX_FOLDER)
     old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
     for activity_summary in activity_summary_list:
@@ -179,9 +181,64 @@ def get_new_activities(token, old_tracks_ids):
                 activity_summary, activity_detail
             )
             tracks.append(track)
+            if with_gpx and activity_summary["id"] not in old_gpx_ids:
+                save_activity_gpx(activity_summary, activity_detail, track)
         except Exception as e:
             print(f"Something wrong paring tulipsport id {activity_id} " + str(e))
     return tracks
+
+
+def save_activity_gpx(summary, detail, track):
+    if not summary["outdoor"]:
+        return
+    gpx = gpxpy.gpx.GPX()
+    gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+    gpx_track = gpxpy.gpx.GPXTrack()
+    gpx_track.name = track.name
+    gpx.tracks.append(gpx_track)
+
+    # 详情接口具体的内容参考文档链接：https://open.tulipsport.com/document
+    # map_data_list的结构为[ [latitude, longitude, elevation, section, distance, hr, time, cadence], ... ]
+    point_list = detail["map_data_list"]
+    last_section = ""
+    avg_hr = int(detail["avg_hr"])
+    avg_cadence = int(detail["avg_cadence"])
+    for point in point_list:
+        cur_section = point[3]
+        if last_section != cur_section:
+            gpx_segment = gpxpy.gpx.GPXTrackSegment()
+            gpx_track.segments.append(gpx_segment)
+            last_section = cur_section
+        gpx_point = gpxpy.gpx.GPXTrackPoint(
+            latitude=float(point[0]),
+            longitude=float(point[1]),
+            elevation=float(point[2]),
+            time=adjust_time_to_utc(
+                datetime.fromisoformat(point[6] + TIMEZONE_OFFSET), TIMEZONE_NAME
+            ),
+        )
+        if avg_hr > 0 or avg_cadence > 0:
+            extension_list = []
+            if avg_hr > 0:
+                extension_list.append(f"<gpxtpx:hr>{int(point[5])}</gpxtpx:hr>")
+            if avg_cadence > 0:
+                extension_list.append(f"<gpxtpx:cad>{int(point[7])}</gpxtpx:cad>")
+            gpx_extension = ElementTree.fromstring(
+                f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">{"".join(extension_list)}</gpxtpx:TrackPointExtension>"""
+            )
+            gpx_point.extensions.append(gpx_extension)
+
+        gpx_segment.points.append(gpx_point)
+
+    activity_id = summary["id"]
+    try:
+        print(f"saving tulipsport activity {str(activity_id)} gpx")
+        file_path = os.path.join(GPX_FOLDER, str(activity_id) + ".gpx")
+        with open(file_path, "w") as fb:
+            fb.write(gpx.to_xml())
+    except:
+        print(f"saving tulipsort activity {activity_id} gpx occurs errors")
+        pass
 
 
 # 郁金香运动的活动ID采用UUID模式，而DB主键使用long类型，无法有效存储，所以采用构造个人唯一的活动ID
@@ -194,10 +251,10 @@ def build_tulipsport_int_activity_id(activity):
     return TULIPSPORT_FAKE_ID_PREFIX + timestamp_str + distance_str
 
 
-def sync_tulipsport_activites(token):
+def sync_tulipsport_activites(token, with_gpx=False):
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
-    new_tracks = get_new_activities(token, old_tracks_ids)
+    new_tracks = get_new_activities(token, old_tracks_ids, with_gpx)
     generator.sync_from_app(new_tracks)
 
     activities_list = generator.load()
@@ -208,5 +265,11 @@ def sync_tulipsport_activites(token):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("token", help="TulipSport Open Platform's accessToken")
+    parser.add_argument(
+        "--with-gpx",
+        dest="with_gpx",
+        action="store_true",
+        help="get all data save to gpx",
+    )
     options = parser.parse_args()
-    sync_tulipsport_activites(options.token)
+    sync_tulipsport_activites(options.token, options.with_gpx)
