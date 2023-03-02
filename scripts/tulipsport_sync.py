@@ -202,7 +202,9 @@ def save_activity_gpx(summary, detail, track):
     point_list = detail["map_data_list"]
     last_section = ""
     avg_hr = int(detail["avg_hr"]) if detail.__contains__("avg_hr") else 0
-    avg_cadence = int(detail["avg_cadence"]) if detail.__contains__("avg_cadence") else 0
+    avg_cadence = (
+        int(detail["avg_cadence"]) if detail.__contains__("avg_cadence") else 0
+    )
     for point in point_list:
         cur_section = point[3]
         if last_section != cur_section:
