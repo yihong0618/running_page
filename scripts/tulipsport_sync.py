@@ -184,7 +184,7 @@ def get_new_activities(token, old_tracks_ids, with_gpx=False):
             if with_gpx and activity_summary["id"] not in old_gpx_ids:
                 save_activity_gpx(activity_summary, activity_detail, track)
         except Exception as e:
-            print(f"Something wrong paring tulipsport id {activity_id} " + str(e))
+            print(f"Something wrong parsing tulipsport id {activity_id} " + str(e))
     return tracks
 
 
@@ -201,8 +201,8 @@ def save_activity_gpx(summary, detail, track):
     # map_data_list的结构为[ [latitude, longitude, elevation, section, distance, hr, time, cadence], ... ]
     point_list = detail["map_data_list"]
     last_section = ""
-    avg_hr = int(detail["avg_hr"])
-    avg_cadence = int(detail["avg_cadence"])
+    avg_hr = int(detail["avg_hr"]) if detail["avg_hr"] else 0
+    avg_cadence = int(detail["avg_cadence"]) if detail["avg_cadence"] else 0
     for point in point_list:
         cur_section = point[3]
         if last_section != cur_section:
