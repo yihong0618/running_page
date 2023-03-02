@@ -120,7 +120,7 @@ jobs:
       - name: Run sync Tulipsport script
         if: env.RUN_TYPE == 'tulipsport'
         run: |
-          python scripts/tulipsport_sync.py ${{ secrets.TULIPSPORT_TOKEN }}
+          python scripts/tulipsport_sync.py ${{ secrets.TULIPSPORT_TOKEN }} --with-gpx
 
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
