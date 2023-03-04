@@ -93,6 +93,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Keep](#Keep)**
 - **[悦跑圈](#joyrun悦跑圈，因悦跑圈限制单个设备原因，无法自动化)**
 - **[咕咚](#codoon咕咚，因咕咚限制单个设备原因，无法自动化)**
+- **[郁金香运动](#tulipsport)**
 - **[GPX](#GPX)**
 - **[TCX](#TCX)**
 - **[Tcx+Strava(upload all tcx data to strava)](#TCX_to_Strava)**
@@ -365,6 +366,24 @@ TRANS_GCJ02_TO_WGS84 = True
 TRANS_END_DATE = "2014-03-24"
 ```
 
+</details>
+
+### TulipSport
+
+<details>
+<summary>获取您的郁金香运动数据</summary>
+
+> 郁金香运动数据的获取方式采用开放平台授权模式，通过访问[RunningPage授权页面](https://tulipsport.rdshoep.com)获取账号TOKEN(不会过期，只能访问2021年之后的数据)，并在仓库的GitHub Actions环境配置中添加`TULIPSPORT_TOKEN`配置。
+
+```python
+python3(python) scripts/tulipsport_sync.py ${tulipsport_token}
+```
+
+示例：
+
+```python
+python3(python) scripts/tulipsport_sync.py nLgy****RyahI
+```
 </details>
 
 ### Garmin
@@ -705,13 +724,17 @@ python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
 <details>
 <summary> 部署到 GitHub Pages </summary>
 
-1. 配置 GitHub Action。如需使用自定义域名，可以修改 [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml) 中的 `fqdn`（默认已注释掉）
-
-2. 修改 `gatsby-config.js`，更新 `pathPrefix`。【如果使用自定义域名，可跳过这一步】
-
-3. 在项目的 `Actions -> Workflows -> All Workflows` 中选择 Publish GitHub Pages，点击 `Run workflow`
-
-4. 在项目的 `Settings -> GitHub Pages -> Source` 部分，选择 `Branch: gh-pages` 并点击 `Save`。
+1. 为GitHub Actions添加代码提交权限  
+   访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持CI将运动数据更新后提交到仓库中。
+2. 更新配置并提交代码
+   1. 更新[./gatsby-config.js](./gatsby-config.js#L3)中的`siteMetadata`节点；  
+      （按需）如果启用自定义域名模式或者变更Fork后的仓库名称，请变更`pathPrefix`的值。
+   2. 更新GitHub CI的配置 [.github/workflows/run_data_sync.yml](.github/workflows/run_data_sync.yml#L24) 中的配置；
+   3. （按需）如需使用自定义域名，可以修改 [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml#L60) 中的 `fqdn`（默认已注释掉）
+   4. 在仓库的`Settings > Secrets and variables > Actions`页面添加对应服务的环境配置信息，参考不同平台[配置](#支持)。
+3. 同步数据并发布GitHub Pages
+   1. 手动触发`Run Data Sync`的Github Action完成数据同步，完成后会自动触发`Publish GitHub Pages`的任务执行，等待执行完成；
+   2. 开通仓库GitHub Pages功能，选择`gh-pages`分支和`/(root)`目录。
 
 </details>
 
