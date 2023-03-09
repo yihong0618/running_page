@@ -1,18 +1,18 @@
 module.exports = {
   pathPrefix: process.env.PATH_PREFIX || '/',
   siteMetadata: {
-    siteTitle: 'Running Page',
-    siteUrl: 'http://www.uc920.top',
+    siteTitle: '随风飞翔',
+    siteUrl: 'https://www.uc920.top',
     logo: 'https://s3.bmp.ovh/imgs/2022/05/19/413e00efb5ef8bf5.jpg',
     description: 'Personal site and blog',
     navLinks: [
       {
         name: 'Blog',
-        url: 'http://www.uc920.top',
+        url: 'https://www.uc920.top',
       },
       {
         name: 'About',
-        url: 'http://www.uc920.top/about/',
+        url: 'https://www.uc920.top/about/',
       },
     ],
   },
