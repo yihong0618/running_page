@@ -51,7 +51,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [sun0225SUN](https://github.com/sun0225SUN)     | <https://run.sunguoqi.com>                   | Nike      |
 | [Zhan](https://www.zlog.in/about)               | <https://run.zlog.in>                        | Nike      |
 | [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
-| [hanpei](https://running.nexts.top)             | <https://running.nexts.top>    
+| [hanpei](https://running.nexts.top)             | <https://running.nexts.top>
 | [liugezhou](https://github.com/liugezhou)       | <https://run.liugezhou.online>               | Strava    |
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
 | [Jason Tan](https://github.com/Jason-cqtan)     | <https://jason-cqtan.github.io/running_page> | Nike      |
@@ -113,19 +113,19 @@ yarn develop
 
 访问 <http://localhost:8000/> 查看
 
-## Docker 
+## Docker
 ```
 #构建
 # NRC
 docker build -t running_page:latest . --build-arg app=NRC --build-arg nike_refresh_token=""
 # Garmin
-docker build -t running_page:latest . --build-arg app=Garmin --build-arg email=""  --build-arg password="" 
+docker build -t running_page:latest . --build-arg app=Garmin --build-arg email=""  --build-arg password=""
 # Garmin-CN
-docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password="" 
+docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password=""
 # Strava
-docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token=""
 #Nike_to_Strava
-docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token=""
 
 #启动
 docker run -itd -p 80:80   running_page:latest
@@ -245,7 +245,7 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 如果您得到的运动路线与实际路线对比有整体偏移，可以修改代码中的参数进行修正
 
-> 注：Keep目前采用的是GCJ-02坐标系，因此导致得到运动数据在使用WGS-84坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
+> 注：Keep 目前采用的是 GCJ-02 坐标系，因此导致得到运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
 
 - 修改 `scripts/keep_sync.py` 文件中的参数：
 
@@ -348,7 +348,7 @@ python3(python) scripts/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth
 
 如果您得到的运动路线与实际路线对比有整体偏移，可以修改代码中的参数进行修正
 
-> 注：咕咚最初采用GCJ-02坐标系，在2014年3月份左右升级为WGS-84坐标系，导致升级之前的运动数据在使用WGS-84坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
+> 注：咕咚最初采用 GCJ-02 坐标系，在 2014 年 3 月份左右升级为 WGS-84 坐标系，导致升级之前的运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
 
 - 修改 `scripts/codoon_sync.py` 文件中的参数：
 
@@ -517,7 +517,7 @@ python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_
 <br>
 
 1. 完成 strava 的步骤
-2. 在项目根目录下执行:
+2. 在项目根目录下执行：
 
 ```python
 python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresch_token}
@@ -540,7 +540,7 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
 <br>
 
 1. 完成 nike 和 strava 的步骤
-2. 在项目根目录下执行:
+2. 在项目根目录下执行：
 
 ```python
 python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresch_token}
@@ -562,7 +562,7 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 <br>
 
 1. 完成 garmin 和 strava 的步骤
-2. 在项目根目录下执行:
+2. 在项目根目录下执行：
 
 ```python
 python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresch_token} ${garmin_email} ${garmin_password} --is-cn
