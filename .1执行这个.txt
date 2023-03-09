@@ -1,0 +1,9 @@
+python scripts/codoon_sync.py 手机号 密码 --with-gpx;
+
+python scripts/gen_svg.py --from-db --title "Running Record" --type github --athlete "有趣4499" --special-distance 5 --special-distance2 6 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5;
+python scripts/gen_svg.py --from-db --title "Running Route" --type grid --athlete "有趣4499"  --output assets/grid.svg --min-distance 3.0 --special-color yellow --special-color2 red --special-distance 5 --special-distance2 6 --use-localtime;
+
+python scripts/gen_svg.py --from-db --type circular --use-localtime;
+
+yarn develop;
+
