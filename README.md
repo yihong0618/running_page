@@ -21,6 +21,10 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 ## [Runner's Page Show](https://github.com/yihong0618/running_page/issues/12)
 
+<details>
+<summary>Running page runners</summary>
+
+
 | Runner                                          | page                                         | App       |
 | ----------------------------------------------- | ---------------------------------------------|-----------|
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
@@ -59,6 +63,10 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Conge](https://github.com/conge)               | <https://conge.github.io/running_page>       | Strava    |
 | [zHElEARN](https://github.com/zHElEARN)         | <https://workouts.zhelearn.com>              | Strava    |
 | [Ym9i](https://github.com/Ym9i)                 | <https://bobrun.vercel.app/>                 | Strava    |
+| [jianchengwang](https://github.com/jianchengwang)   | <https://jianchengwang.github.io/running_page>     | Suunto |
+| [fxbin](https://github.com/fxbin)   | <https://fxbin.github.io/sport-records/>     | Keep |
+
+</details>
 
 ## How it works
 

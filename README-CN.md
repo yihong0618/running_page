@@ -17,6 +17,9 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 ## [大家的跑步主页展示](https://github.com/yihong0618/running_page/issues/12)
 
+<details>
+<summary>Running page runners</summary>
+
 | Runner                                          | page                                         | App       |
 | ----------------------------------------------- | ---------------------------------------------|-----------|
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
@@ -59,6 +62,10 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [zHElEARN](https://github.com/zHElEARN)         | <https://workouts.zhelearn.com>              | Strava    |
 | [Rhfeng](https://sport.frh.life)                | <https://sport.frh.life>                     | Garmin-cn |
 | [Ym9i](https://github.com/Ym9i)                 | <https://bobrun.vercel.app/>                 | Strava    |
+| [jianchengwang](https://github.com/jianchengwang)   | <https://jianchengwang.github.io/running_page>     | Suunto |
+| [fxbin](https://github.com/fxbin)   | <https://fxbin.github.io/sport-records/>     | Keep |
+
+</details>
 
 ## 它是怎么工作的
 
