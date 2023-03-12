@@ -138,6 +138,7 @@ jobs:
 
       - name: Push new runs
         run: |
+          git update-index --chmod=+x build.cmd
           git config --local user.email "${{ env.GITHUB_EMAIL }}"
           git config --local user.name "${{ env.GITHUB_NAME }}"
           git add .
