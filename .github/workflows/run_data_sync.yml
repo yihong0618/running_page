@@ -17,17 +17,18 @@ on:
       - scripts/gpx_sync.py
       - scripts/tcx_sync.py
       - scripts/garmin_to_strava_sync.py
+      - scripts/codoon_sync.py
       - requirements.txt
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn, Please change the 'pass' it to your own
-  ATHLETE: yihong0618
-  TITLE: Yihong0618 Running
-  MIN_GRID_DISTANCE: 10 # change min distance here
-  TITLE_GRID: Over 10km Runs # also here
-  GITHUB_NAME: yihong0618
-  GITHUB_EMAIL: zouzou0208@gmail.com
+  RUN_TYPE: codoon # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn, Please change the 'pass' it to your own
+  ATHLETE: 有趣4499
+  TITLE: Running Route
+  MIN_GRID_DISTANCE: 3 # change min distance here
+  TITLE_GRID: Over 3km Runs # also here
+  GITHUB_NAME: shensl4499
+  GITHUB_EMAIL: 1097046794@qq.com
 
 jobs:
   sync:
@@ -69,6 +70,11 @@ jobs:
         run: |
           python scripts/nike_to_strava_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
 
+      - name: Run sync Codoon script
+        if: env.RUN_TYPE == 'codoon'
+        run: |
+          python scripts/codoon_sync.py ${{ secrets.CODOON_MOBILE }} ${{ secrets.CODOON_PASSWORD }} --with-gpx
+          
       - name: Run sync Keep script
         if: env.RUN_TYPE == 'keep'
         run: |
