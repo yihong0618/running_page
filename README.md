@@ -65,6 +65,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Ym9i](https://github.com/Ym9i)                 | <https://bobrun.vercel.app/>                 | Strava    |
 | [jianchengwang](https://github.com/jianchengwang)   | <https://jianchengwang.github.io/running_page>     | Suunto |
 | [fxbin](https://github.com/fxbin)   | <https://fxbin.github.io/sport-records/>     | Keep |
+| [shensl4499](https://github.com/shensl4499) | <https://waner.run> | codoon |
 
 </details>
 
@@ -605,6 +606,8 @@ The following steps need to be taken
 <br>
 
 ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
+
+4. Go to repository's `Settings -> Code and automation -> Actions ->General`, Scroll to the bottom, find `Workflow permissions`, choose the first option `Read and write permissions`, click `Save`.
 
 </details>
 
