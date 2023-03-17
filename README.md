@@ -622,7 +622,8 @@ The following steps need to be taken
 - [ ] tests
 - [ ] support the world map
 - [ ] support multiple types, like hiking, biking~
-
+- [ ] support for Zeep life
+  
 # Contribution
 
 - Any Issues PR welcome.
