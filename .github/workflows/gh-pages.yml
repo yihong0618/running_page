@@ -57,7 +57,7 @@ jobs:
           # Build directory to deploy
           build_dir: public
           # Write the given domain name to the CNAME file
-          #fqdn: custom.domain.name # optional
+          fqdn: workout.520wa.com
           # Prevent Jekyll from building the site
           jekyll: false
         env:
