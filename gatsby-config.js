@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: process.env.PATH_PREFIX || '/',
+  pathPrefix: '',
   siteMetadata: {
     siteTitle: '2Tu',
     siteUrl: 'https://workout.520wa.com',
