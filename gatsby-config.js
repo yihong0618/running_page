@@ -7,11 +7,7 @@ module.exports = {
     description: 'haowei93 running site',
     navLinks: [
       {
-        name: 'Blog',
-        url: 'https://haowei93.github.io',
-      },
-      {
-        name: 'About',
+        name: 'about',
         url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
       },
     ],
