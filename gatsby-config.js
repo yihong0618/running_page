@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: '/running',
+  pathPrefix: '/',
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'https://haowei93.github.io',
