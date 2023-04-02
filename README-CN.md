@@ -65,6 +65,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [jianchengwang](https://github.com/jianchengwang)   | <https://jianchengwang.github.io/running_page>     | Suunto |
 | [fxbin](https://github.com/fxbin)   | <https://fxbin.github.io/sport-records/>     | Keep |
 | [shensl4499](https://github.com/shensl4499) | <https://waner.run> | codoon |
+| [haowei93](https://github.com/haowei93) | <https://haowei93.github.io/ > | gpx |
 
 </details>
 
