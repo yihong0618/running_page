@@ -530,6 +530,8 @@ curl -X POST https://www.strava.com/oauth/token \
 7. 同步数据至 Strava
    在项目根目录执行：
 
+> 第一次同步Strava数据时需要更改在strava_sync.py中的第12行代码False改为True，运行完成后，再改为False。 
+
 ```python
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
 ```
