@@ -137,9 +137,9 @@ docker build -t running_page:latest . --build-arg app=Garmin --build-arg email="
 # Garmin-CN
 docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password="" 
 # Strava
-docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token="" 
 #Nike_to_Strava
-docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token="" 
 
 #启动
 docker run -itd -p 80:80   running_page:latest
@@ -504,7 +504,7 @@ http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f347
 1dab37edd9970971fb502c9efdd087f4f3471e6
 ```
 
-![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png) 6. 使用 Client_id、Client_secret、Code 请求 refresch_token
+![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png) 6. 使用 Client_id、Client_secret、Code 请求 refresh_token
 在 `终端/iTerm` 中执行：
 
 ```
@@ -525,13 +525,13 @@ curl -X POST https://www.strava.com/oauth/token \
 -F grant_type=authorization_code
 ```
 
-![get_refresch_token](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_refresch_token.png)
+![get_refresh_token](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_refresh_token.png)
 
 7. 同步数据至 Strava
    在项目根目录执行：
 
 ```python
-python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token}
+python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
 
 其他资料参见
@@ -553,7 +553,7 @@ python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_
 3. 在项目根目录下执行:
 
 ```python
-python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresch_token}
+python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
@@ -580,7 +580,7 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 2. 在项目根目录下执行:
 
 ```python
-python3(python) scripts/gpx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresch_token}
+python3(python) scripts/gpx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
@@ -606,7 +606,7 @@ python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx --all
 2. 在项目根目录下执行:
 
 ```python
-python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresch_token}
+python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
@@ -629,7 +629,7 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 2. 在项目根目录下执行:
 
 ```python
-python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresch_token} ${garmin_email} ${garmin_password} --is-cn
+python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_email} ${garmin_password} --is-cn
 ```
 
 示例：
