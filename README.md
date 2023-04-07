@@ -366,6 +366,8 @@ curl -X POST https://www.strava.com/oauth/token \
 
 7. Sync `Strava` data
 
+> The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running. 
+
 ```python
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
