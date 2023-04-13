@@ -40,14 +40,24 @@ const formatPace = (d) => {
   return `${minutes}'${seconds.toFixed(0).toString().padStart(2, '0')}"`;
 };
 
-const formatRunTime = (distance,pace) => {
-  if (Number.isNaN(distance) || Number.isNaN(pace)) {
-    return '0min';
+const convertMovingTime2Sec = (moving_time) => {
+  if (!moving_time) {
+    return 0;
   }
-  const formatPace = (1000.0 / 60.0) * (1.0 / pace);
-  const minutes = Math.floor(formatPace * distance);
+  // moving_time : '2 days, 12:34:56' or '12:34:56';
+  const splits = moving_time.split(', ');
+  const days = splits.length == 2 ? parseInt(splits[0]) : 0;
+  const time = splits.splice(-1)[0]
+  const [hours, minutes, seconds] = time.split(':').map(Number);
+  const totalSeconds = (((days * 24) + hours) * 60 + minutes) * 60 + seconds;
+  return totalSeconds;
+}
+
+const formatRunTime = (moving_time) => {
+  const totalSeconds = convertMovingTime2Sec(moving_time)
+  const seconds = totalSeconds % 60
+  const minutes = (totalSeconds-seconds) / 60
   if (minutes === 0) {
-    const seconds = Math.floor((formatPace * distance - minutes) * 60.0);
     return seconds + 's';
   }
   return minutes + 'min';
@@ -310,4 +320,5 @@ export {
   filterTypeRuns,
   colorFromType,
   formatRunTime,
+  convertMovingTime2Sec,
 };
