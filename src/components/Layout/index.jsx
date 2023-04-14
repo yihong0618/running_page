@@ -22,7 +22,7 @@ const Layout = ({ children }) => {
         />
       </Helmet>
       <Header title={siteTitle} />
-      <div className="pa3 pa5-l">{children}</div>
+      <div className="pa3 pa4-l">{children}</div>
     </div>
   );
 };
