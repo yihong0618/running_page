@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: process.env.PATH_PREFIX || '/',
+  pathPrefix: '/',
   siteMetadata: {
     siteTitle: 'ChenSoul Running',
     siteUrl: 'https://chensoul.com',

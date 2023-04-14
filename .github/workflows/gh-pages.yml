@@ -43,7 +43,7 @@ jobs:
       - run: |
           yarn install
       - run: |
-          PATH_PREFIX=/ yarn build --prefix-paths
+          PATH_PREFIX=/${{ github.event.repository.name }} yarn build --prefix-paths
       - run: |
           cp -r assets/ public/static
 
@@ -57,7 +57,7 @@ jobs:
           # Build directory to deploy
           build_dir: public
           # Write the given domain name to the CNAME file
-          fqdn: run.chensoul.com # optional
+          # fqdn: run.chensoul.com # optional
           # Prevent Jekyll from building the site
           jekyll: false
         env:
