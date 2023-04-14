@@ -1,10 +1,10 @@
 name: Publish GitHub Pages
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # trigger when the Run Data Sync workflow succeeded
   workflow_run:
-    workflows: ["Run Data Sync"]
+    workflows: [ "Run Data Sync" ]
     types:
       - completed
 
@@ -43,7 +43,6 @@ jobs:
       - run: |
           yarn install
       - run: |
-          # PATH_PREFIX=/${{ github.event.repository.name }} yarn build --prefix-paths
           PATH_PREFIX=/ yarn build --prefix-paths
       - run: |
           cp -r assets/ public/static
