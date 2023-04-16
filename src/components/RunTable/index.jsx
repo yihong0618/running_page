@@ -41,11 +41,11 @@ const RunTable = ({
   const sortDateFuncClick =
     sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
   const sortFuncMap = new Map([
+    ['Date', sortDateFuncClick],
     ['KM', sortKMFunc],
     ['Pace', sortPaceFunc],
     ['BPM', sortBPMFunc],
     ['Time', sortRunTimeFunc],
-    ['Date', sortDateFuncClick],
   ]);
   const handleClick = (e) => {
     const funcName = e.target.innerHTML;
@@ -67,12 +67,12 @@ const RunTable = ({
       <table className={styles.runTable} cellSpacing="0" cellPadding="0">
         <thead>
           <tr>
-            <th />
             {Array.from(sortFuncMap.keys()).map((k) => (
               <th key={k} onClick={(e) => handleClick(e)}>
                 {k}
               </th>
             ))}
+            <th />
           </tr>
         </thead>
         <tbody>

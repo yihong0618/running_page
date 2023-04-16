@@ -34,12 +34,12 @@ const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
         locateActivity(run);
       }}
     >
-      <td>{titleForRun(run)}</td>
+      <td className={styles.runDate}>{run.start_date_local}</td>
       <td>{distance}</td>
       {pace && <td>{paceParts}</td>}
       <td>{heartRate && heartRate.toFixed(0)}</td>
       <td>{runTime}</td>
-      <td className={styles.runDate}>{run.start_date_local}</td>
+      <td>{titleForRun(run)}</td>
     </tr>
   );
 };
