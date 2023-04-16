@@ -24,8 +24,8 @@ env:
   RUN_TYPE: strava # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
   ATHLETE: chensoul
   TITLE: ChenSoul Running
-  MIN_GRID_DISTANCE: 3 # change min distance here
-  TITLE_GRID: Over 3km Runs # also here
+  MIN_GRID_DISTANCE: 5 # change min distance here
+  TITLE_GRID: Over 5km Runs # also here
   GITHUB_NAME: chensoul
   GITHUB_EMAIL: chensoul.eth@gmail.com
 
