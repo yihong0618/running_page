@@ -25,10 +25,14 @@ const YearStat = ({ year, onClick }) => {
   let paceNullCount = 0;
   let heartRate = 0;
   let heartRateNullCount = 0;
+  let totalMetersAvail = 0;
+  let totalSecondsAvail = 0;
   runs.forEach((run) => {
     sumDistance += run.distance || 0;
     if (run.average_speed) {
       pace += run.average_speed;
+      totalMetersAvail += run.distance || 0;
+      totalSecondsAvail += (run.distance || 0) / run.average_speed;
     } else {
       paceNullCount++;
     }
@@ -42,7 +46,7 @@ const YearStat = ({ year, onClick }) => {
     }
   });
   sumDistance = (sumDistance / 1000.0).toFixed(1);
-  const avgPace = formatPace(pace / (runs.length - paceNullCount));
+  const avgPace = formatPace(totalMetersAvail / totalSecondsAvail);
   const hasHeartRate = !(heartRate === 0);
   const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
     0
