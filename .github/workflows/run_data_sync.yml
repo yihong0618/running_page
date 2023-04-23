@@ -21,13 +21,13 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
-  ATHLETE: yihong0618
-  TITLE: Yihong0618 Running
+  RUN_TYPE: strava # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
+  ATHLETE: Edward
+  TITLE: Edward Running
   MIN_GRID_DISTANCE: 10 # change min distance here
-  TITLE_GRID: Over 10km Runs # also here
-  GITHUB_NAME: yihong0618
-  GITHUB_EMAIL: zouzou0208@gmail.com
+  TITLE_GRID: Over 5km Runs # also here
+  GITHUB_NAME: edwardshh1988
+  GITHUB_EMAIL: shh120011@163.com
 
 jobs:
   sync:
