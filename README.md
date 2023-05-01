@@ -17,7 +17,7 @@
   <img src="https://user-images.githubusercontent.com/15976103/98808834-c02f1d80-2457-11eb-9a7c-70e91faa5e30.gif" alt="demo" width="800">
 </p>
 
-English | [简体中文](https://github.com/yihong0618/running_page/blob/master/README-CN.md) | [Wiki](https://mfydev.github.io/Running-Page-Wiki/)
+English | [简体中文](./README-CN.md) | [Wiki](https://mfydev.github.io/Running-Page-Wiki/)
 
 ## [Runner's Page Show](https://github.com/yihong0618/running_page/issues/12)
 
