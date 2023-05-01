@@ -66,19 +66,6 @@ const locationForRun = (run) => {
   if (location) {
     // Only for Chinese now
     // should fiter 臺灣
-    if(location.indexOf('臺灣') > -1){
-      const taiwan = '台湾';
-      location = location.replace('臺灣', taiwan);
-      const _locArr = location.split(',').map(item=>item.trim());
-      const _locArrLen = _locArr.length;
-      // directly repalce last item with 中国
-      _locArr[_locArrLen-1] = '中国';
-      // if location not contain '台湾省', insert it before zip code(posistion is _locArrLen-2)
-      if(_locArr.indexOf(`${taiwan}省`) === -1){
-        _locArr.splice(_locArrLen-2, 0, `${taiwan}省`)
-      }
-      location = _locArr.join(',');
-    }
     const cityMatch = location.match(/[\u4e00-\u9fa5]{2,}(市|自治州)/);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
     if (cityMatch) {
