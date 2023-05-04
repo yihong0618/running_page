@@ -14,7 +14,7 @@ timezonefinder; platform_system == "Windows"
 pyyaml
 aiofiles
 cloudscraper==1.2.58
-git+https://github.com/alenrajsp/tcxreader.git
+tcxreader
 rich
 lxml
 eviltransform
