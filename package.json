@@ -30,7 +30,7 @@
     "sass-mq": "^6.0.0",
     "styled-components": "^5.3.5",
     "tachyons": "^4.12.0",
-    "tachyons-sass": "https://github.com/tachyons-css/tachyons-sass.git",
+    "tachyons-sass": "git+https://github.com/tachyons-css/tachyons-sass.git",
     "viewport-mercator-project": "^7.0.4",
     "webpack": "^5.73.0"
   },
