@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Helmet} from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import Header from 'src/components/Header';
 import useSiteMetadata from 'src/hooks/useSiteMetadata';
 import 'src/styles/index.scss';
 import styles from './style.module.scss';
 
-const Layout = ({children}) => {
-  const {siteTitle, description} = useSiteMetadata();
+const Layout = ({ children }) => {
+  const { siteTitle, description } = useSiteMetadata();
 
   return (
     <div>
-      <Helmet bodyAttributes={{class: styles.body}}>
+      <Helmet bodyAttributes={{ class: styles.body }}>
         <html lang="en" />
         <title>{siteTitle}</title>
         <meta name="description" content={description} />
