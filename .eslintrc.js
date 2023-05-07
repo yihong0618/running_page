@@ -23,5 +23,6 @@ module.exports = {
   },
   rules: {
     'prettier/prettier': 'off',
+    'react/prop-types': 'off',
   },
 };
