@@ -46,7 +46,7 @@
     "serve": "gatsby serve",
     "serve-prefix": "gatsby serve --prefix-paths",
     "lint": "eslint --ext .js,.jsx src --fix",
-    "check": "npx prettier --write *.{js,jsx,scss,json,md,yaml}",
+    "check": "npx prettier --write {*,src/**/*}.{js,jsx,scss,json,md,yaml}",
     "ci": "yarn run check && yarn run build && yarn run test"
   },
   "engineStrict": true,
@@ -61,13 +61,10 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^8.17.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.30.0",
-    "eslint-plugin-react-hooks": "^4.6.0"
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "prettier": "2.8.8"
   },
   "volta": {
     "node": "16.18.1",
