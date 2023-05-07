@@ -22,7 +22,7 @@
     "gcoord": "^0.3.2",
     "mapbox-gl": "^2.8.2",
     "prop-types": "^15.8.1",
-    "react": "^18.0.0",
+    "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-map-gl": "^5.1.22",
@@ -71,11 +71,6 @@
     "react-is": "^18.2.0",
     "react-server-dom-webpack": "^0.0.1",
     "typescript": "^5.0.4"
-  },
-  "overrides": {
-    "react-server-dom-webpack@0.0.0-experimental-c8b778b7f-20220825": {
-      "react": "^18.0.0"
-    }
   },
   "volta": {
     "node": "16.18.1",
