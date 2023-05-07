@@ -1,15 +1,15 @@
-import { Link } from 'gatsby';
+import {Link} from 'gatsby';
 import React from 'react';
 import useSiteMetadata from 'src/hooks/useSiteMetadata';
 
 const Header = () => {
-  const { logo, siteUrl, navLinks } = useSiteMetadata();
+  const {logo, siteUrl, navLinks} = useSiteMetadata();
 
   return (
     <div>
       <nav
         className="db flex justify-between w-100 ph5-l"
-        style={{ marginTop: '3rem' }}
+        style={{marginTop: '3rem'}}
       >
         <div className="dib w-25 v-mid">
           <Link to={siteUrl} className="link dim">
