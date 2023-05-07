@@ -69,11 +69,12 @@
     "graphql": "15.0.0",
     "prettier": "2.8.8",
     "react-is": "^18.2.0",
+    "react-server-dom-webpack": "^0.0.1",
     "typescript": "^5.0.4"
   },
   "overrides": {
     "react-server-dom-webpack@0.0.0-experimental-c8b778b7f-20220825": {
-      "react": "^17.0.2"
+      "react": "^18.0.0"
     }
   },
   "volta": {
