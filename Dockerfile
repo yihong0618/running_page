@@ -25,7 +25,7 @@ ARG email
 ARG password
 ARG client_id
 ARG client_secret
-ARG refresch_token
+ARG refresh_token
 ARG YOUR_NAME
 
 WORKDIR /root/running_page
@@ -40,9 +40,9 @@ RUN DUMMY=${DUMMY}; \
     elif [ "$app" = "Garmin-CN" ] ; then \
          python3 scripts/garmin_sync.py ${email} ${password}  --is-cn ; \
     elif [ "$app" = "Strava" ] ; then \
-        python3 scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token};\
+        python3 scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token};\
     elif [ "$app" = "Nike_to_Strava" ] ; then \
-        python3  scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${refresch_token};\
+        python3  scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${refresh_token};\
     else \
         echo "Unknown app" ; \
     fi
