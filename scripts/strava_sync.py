@@ -13,13 +13,21 @@ def run_strava_sync(client_id, client_secret, refresh_token):
     generator.sync(True)
 
     activities_list = generator.load()
-    with open(JSON_FILE, 'w') as f:
+    with open(JSON_FILE, "w") as f:
         json.dump(activities_list, f)
 
-    run_data = [[d["start_date_local"], d["name"], d["distance"], d["moving_time"], d["location_country"]] for d in
-                activities_list]
+    run_data = [
+        [
+            d["start_date_local"],
+            d["name"],
+            d["distance"],
+            d["moving_time"],
+            d["location_country"],
+        ]
+        for d in activities_list
+    ]
 
-    with open(CSV_FILE, 'w', newline='') as f:
+    with open(CSV_FILE, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerows(run_data)
 
