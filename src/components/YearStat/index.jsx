@@ -21,8 +21,8 @@ const YearStat = ({ year, onClick }) => {
   }
   let sumDistance = 0;
   let streak = 0;
-  let pace = 0;
-  let paceNullCount = 0;
+  let pace = 0; // eslint-disable-line no-unused-vars
+  let paceNullCount = 0; // eslint-disable-line no-unused-vars
   let heartRate = 0;
   let heartRateNullCount = 0;
   let totalMetersAvail = 0;
@@ -45,7 +45,7 @@ const YearStat = ({ year, onClick }) => {
       streak = Math.max(streak, run.streak);
     }
   });
-  sumDistance = (sumDistance / 1000.0).toFixed(1);
+  sumDistance = parseFloat((sumDistance / 1000.0).toFixed(1));
   const avgPace = formatPace(totalMetersAvail / totalSecondsAvail);
   const hasHeartRate = !(heartRate === 0);
   const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
