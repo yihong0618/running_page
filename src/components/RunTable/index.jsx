@@ -71,7 +71,6 @@ const RunTable = ({
                 {k}
               </th>
             ))}
-            <th />
           </tr>
         </thead>
         <tbody>
