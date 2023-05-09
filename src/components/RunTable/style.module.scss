@@ -4,7 +4,11 @@
 
   /* 当屏幕宽度小于 700px 时 */
   .runTable th:nth-child(4),
-  .runTable td:nth-child(4) {
+  .runTable td:nth-child(4),
+  .runTable th:nth-child(5),
+  .runTable td:nth-child(5),
+  .runTable th:nth-child(6),
+  .runTable td:nth-child(6) {
     display: none;
     /* 隐藏第四列 */
   }
@@ -17,7 +21,7 @@
 
   thead {
     color: $light;
-    text-align: right;
+    text-align: center;
 
     th {
       padding: 0.5rem;

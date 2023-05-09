@@ -8,7 +8,7 @@ import SVGStat from 'src/components/SVGStat';
 import YearsStat from 'src/components/YearsStat';
 import useActivities from 'src/hooks/useActivities';
 import useSiteMetadata from 'src/hooks/useSiteMetadata';
-import { IS_CHINESE } from 'src/utils/const';
+// import { IS_CHINESE } from 'src/utils/const';
 import {
   filterAndSortRuns,
   filterCityRuns,
