@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { MAIN_COLOR } from 'src/utils/const';
-import { sortDateFunc, sortDateFuncReverse } from 'src/utils/utils';
+import {
+  sortDateFunc,
+  sortDateFuncReverse,
+  convertMovingTime2Sec,
+} from 'src/utils/utils';
 import RunRow from './RunRow';
 import styles from './style.module.scss';
 
@@ -24,19 +28,11 @@ const RunTable = ({
       ? a.average_heartrate - b.average_heartrate
       : b.average_heartrate - a.average_heartrate;
   const sortRunTimeFunc = (a, b) => {
-    if (Number.isNaN(a.distance) || Number.isNaN(b.distance)
-      || Number.isNaN(a.average_speed) || Number.isNaN(b.average_speed)) {
-      return 0;
-    }
-    const aDistance = (a.distance / 1000.0).toFixed(1);
-    const bDistance = (b.distance / 1000.0).toFixed(1);
-    const aPace = (1000.0 / 60.0) * (1.0 / a.average_speed);
-    const bPace = (1000.0 / 60.0) * (1.0 / b.average_speed);
-    if (sortFuncInfo === 'Time') {
-      return aDistance * aPace - bDistance * bPace;
-    } else {
-      return bDistance * bPace - aDistance * aPace;
-    }
+    const aTotalSeconds = convertMovingTime2Sec(a.moving_time);
+    const bTotalSeconds = convertMovingTime2Sec(b.moving_time);
+    return sortFuncInfo === 'Time'
+      ? aTotalSeconds - bTotalSeconds
+      : bTotalSeconds - aTotalSeconds;
   };
   const sortDateFuncClick =
     sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;

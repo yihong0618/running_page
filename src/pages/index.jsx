@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from 'src/components/Layout';
 import LocationStat from 'src/components/LocationStat';
 import RunMap from 'src/components/RunMap';
@@ -50,7 +50,6 @@ const Index = () => {
   };
 
   const changeYear = (y) => {
-
     const isChanged = y === year;
     // default year
     setYear(y);
