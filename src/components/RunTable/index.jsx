@@ -46,6 +46,7 @@ const RunTable = ({
     ['Pace', sortPaceFunc],
     ['BPM', sortBPMFunc],
     ['Time', sortRunTimeFunc],
+    ['Type', undefined],
   ]);
   const handleClick = (e) => {
     const funcName = e.target.innerHTML;
@@ -64,7 +65,9 @@ const RunTable = ({
 
   return (
     <div className={styles.tableContainer}>
-      <table className={styles.runTable} cellSpacing="0" cellPadding="0">
+      <table
+          className={styles.runTable}
+             cellSpacing="0" cellPadding="0">
         <thead>
           <tr>
             {Array.from(sortFuncMap.keys()).map((k) => (

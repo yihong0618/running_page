@@ -9,7 +9,7 @@ import LocationSummary from './LocationSummary';
 import PeriodStat from './PeriodStat';
 
 const LocationStat = ({ changeYear, changeCity, changeTitle }) => (
-  <div className="fl w-100 w-30-l pb5 pr5-l">
+  <div className="fl w-100 pb5 pr5-l">
     <section className="pb4" style={{ paddingBottom: '0rem' }}>
       <p style={{ lineHeight: 1.8 }}>
         {CHINESE_LOCATION_INFO_MESSAGE_FIRST}
@@ -18,8 +18,6 @@ const LocationStat = ({ changeYear, changeCity, changeTitle }) => (
         {CHINESE_LOCATION_INFO_MESSAGE_SECOND}
         .
         <br />
-        <br />
-        Yesterday you said tomorrow.
       </p>
     </section>
     <hr color="red" />
