@@ -65,8 +65,9 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [jianchengwang](https://github.com/jianchengwang) | <https://jianchengwang.github.io/running_page> | Suunto    |
 | [fxbin](https://github.com/fxbin)                 | <https://fxbin.github.io/sport-records/>       | Keep      |
 | [shensl4499](https://github.com/shensl4499)       | <https://waner.run>                            | codoon    |
-| [haowei93](https://github.com/haowei93)           | <<https://haowei93.github.io/> >               | gpx       |
+| [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx       |
 | [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava    |
+| [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep      |
 
 </details>
 
