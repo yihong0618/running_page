@@ -3,7 +3,7 @@ module.exports = {
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'https://hco3o.xyz/running_page',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
+    logo: 'https://github.com/hco3o/cloudimg/blob/master/QQ%E5%9B%BE%E7%89%8720230513162838.jpg?raw=true',
     description: 'Personal site and blog',
     navLinks: [
       {
