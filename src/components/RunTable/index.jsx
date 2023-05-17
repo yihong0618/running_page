@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { MAIN_COLOR } from 'src/utils/const';
+<<<<<<< HEAD
 import { sortDateFunc, sortDateFuncReverse, convertMovingTime2Sec } from 'src/utils/utils';
+=======
+import {
+  sortDateFunc,
+  sortDateFuncReverse,
+  convertMovingTime2Sec,
+} from 'src/utils/utils';
+>>>>>>> upstream/master
 import RunRow from './RunRow';
 import styles from './style.module.scss';
 
@@ -24,11 +32,19 @@ const RunTable = ({
       ? a.average_heartrate - b.average_heartrate
       : b.average_heartrate - a.average_heartrate;
   const sortRunTimeFunc = (a, b) => {
+<<<<<<< HEAD
     const aTotalSeconds = convertMovingTime2Sec(a.moving_time)
     const bTotalSeconds = convertMovingTime2Sec(b.moving_time)
     return sortFuncInfo === 'Time'
       ? aTotalSeconds - bTotalSeconds
       : bTotalSeconds - aTotalSeconds
+=======
+    const aTotalSeconds = convertMovingTime2Sec(a.moving_time);
+    const bTotalSeconds = convertMovingTime2Sec(b.moving_time);
+    return sortFuncInfo === 'Time'
+      ? aTotalSeconds - bTotalSeconds
+      : bTotalSeconds - aTotalSeconds;
+>>>>>>> upstream/master
   };
   const sortDateFuncClick =
     sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;

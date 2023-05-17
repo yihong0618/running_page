@@ -1,6 +1,6 @@
 import React from 'react';
 import { MAIN_COLOR } from 'src/utils/const';
-import { formatPace, titleForRun, formatRunTime  } from 'src/utils/utils';
+import { formatPace, titleForRun, formatRunTime } from 'src/utils/utils';
 import styles from './style.module.scss';
 
 const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
