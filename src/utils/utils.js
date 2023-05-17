@@ -35,18 +35,6 @@ const convertMovingTime2Sec = (moving_time) => {
   // moving_time : '2 days, 12:34:56' or '12:34:56';
   const splits = moving_time.split(', ');
   const days = splits.length == 2 ? parseInt(splits[0]) : 0;
-<<<<<<< HEAD
-  const time = splits.splice(-1)[0]
-  const [hours, minutes, seconds] = time.split(':').map(Number);
-  const totalSeconds = (((days * 24) + hours) * 60 + minutes) * 60 + seconds;
-  return totalSeconds;
-}
-
-const formatRunTime = (moving_time) => {
-  const totalSeconds = convertMovingTime2Sec(moving_time)
-  const seconds = totalSeconds % 60
-  const minutes = (totalSeconds-seconds) / 60
-=======
   const time = splits.splice(-1)[0];
   const [hours, minutes, seconds] = time.split(':').map(Number);
   const totalSeconds = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
@@ -57,7 +45,6 @@ const formatRunTime = (moving_time) => {
   const totalSeconds = convertMovingTime2Sec(moving_time);
   const seconds = totalSeconds % 60;
   const minutes = (totalSeconds - seconds) / 60;
->>>>>>> upstream/master
   if (minutes === 0) {
     return seconds + 's';
   }

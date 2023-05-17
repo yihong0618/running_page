@@ -24,53 +24,6 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 <details>
 <summary>Running page runners</summary>
 
-<<<<<<< HEAD
-
-| Runner                                          | page                                         | App       |
-| ----------------------------------------------- | ---------------------------------------------|-----------|
-| [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
-| [shaonianche](https://github.com/shaonianche)   | <https://run.duanfei.org>                    | Strava    |
-| [yihong0618](https://github.com/yihong0618)     | <https://yihong.run>                         | Nike      |
-| [superleeyom](https://github.com/superleeyom)   | <https://running.leeyom.top>                 | Nike      |
-| [geekplux](https://github.com/geekplux)         | <https://activities.geekplux.com>            | Nike      |
-| [guanlan](https://github.com/guanlan)           | <https://grun.vercel.app>                    | Strava    |
-| [tuzimoe](https://github.com/tuzimoe)           | <https://run.tuzi.moe>                       | Nike      |
-| [ben_29](https://github.com/ben-29)             | <https://running.ben29.xyz>                  | Strava    |
-| [kcllf](https://github.com/kcllf)               | <https://running-tau.vercel.app>             | Garmin-cn |
-| [mq](https://github.com/MQ-0707)                | <https://running-iota.vercel.app>            | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan) | <https://running-page-psi.vercel.app>        | Keep      |
-| [yvetterowe](https://github.com/yvetterowe)     | <https://run.haoluo.io>                      | Strava    |
-| [love-exercise](https://github.com/KaiOrange)   | <https://run.kai666666.top>                  | Keep      |
-| [zstone12](https://github.com/zstone12)         | <https://running-page.zstone12.vercel.app>   | Keep      |
-| [Lax](https://github.com/Lax)                   | <https://lax.github.io/running>              | Keep      |
-| [lusuzi](https://github.com/lusuzi)             | <https://running.lusuzi.vercel.app>          | Nike      |
-| [wh1994](https://github.com/wh1994)             | <https://run4life.fun>                       | Garmin    |
-| [liuyihui](https://github.com/YiHui-Liu)        | <https://run.foolishfox.cn>                  | Keep      |
-| [sunyunxian](https://github.com/sunyunxian)     | <https://sunyunxian.github.io/running_page>  | Strava    |
-| [AhianZhang](https://github.com/AhianZhang)     | <https://running.ahianzhang.com>             | Nike      |
-| [L1cardo](https://github.com/L1cardo)           | <https://run.licardo.cn>                     | Nike      |
-| [luckylele666](https://github.com/luckylele666) | <https://0000928.xyz>                        | Strava    |
-| [MFYDev](https://github.com/MFYDev)             | <https://mfydev.run>                         | Garmin-cn |
-| [Eished](https://github.com/eished)             | <https://run.iknow.fun>                      | Keep      |
-| [Liuxin](https://github.com/liuxindtc)          | <https://liuxin.run>                         | Nike      |
-| [loucx](https://github.com/loucx)               | <https://loucx.github.io/running>            | Nike      |
-| [winf42](https://github.com/winf42)             | <https://winf42.github.io>                   | Garmin-cn |
-| [sun0225SUN](https://github.com/sun0225SUN)     | <https://run.sunguoqi.com>                   | Nike      |
-| [Zhan](https://www.zlog.in/about/)              | <https://run.zlog.in>                        | Nike      |
-| [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
-| [hanpei](https://running.nexts.top)             | <https://running.nexts.top>                  | Garmin-cn |
-| [liugezhou](https://github.com/liugezhou)       | <https://run.liugezhou.online>               | Strava    |
-| [Jason Tan](https://github.com/Jason-cqtan)     | <https://jason-cqtan.github.io/running_page> | Nike      |
-| [Conge](https://github.com/conge)               | <https://conge.github.io/running_page>       | Strava    |
-| [zHElEARN](https://github.com/zHElEARN)         | <https://workouts.zhelearn.com>              | Strava    |
-| [Ym9i](https://github.com/Ym9i)                 | <https://bobrun.vercel.app/>                 | Strava    |
-| [jianchengwang](https://github.com/jianchengwang)   | <https://jianchengwang.github.io/running_page>     | Suunto |
-| [fxbin](https://github.com/fxbin)   | <https://fxbin.github.io/sport-records/>     | Keep |
-| [shensl4499](https://github.com/shensl4499) | <https://waner.run> | codoon |
-| [haowei93](https://github.com/haowei93) | <https://haowei93.github.io/ > | gpx |
-| [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/> | Strava |
-
-=======
 | Runner                                            | page                                           | App       |
 | ------------------------------------------------- | ---------------------------------------------- | --------- |
 | [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava    |
@@ -115,7 +68,6 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx       |
 | [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava    |
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep      |
->>>>>>> upstream/master
 
 </details>
 
@@ -178,15 +130,9 @@ docker build -t running_page:latest . --build-arg app=Garmin --build-arg email="
 # Garmin-CN
 docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password=""
 # Strava
-<<<<<<< HEAD
-docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token="" 
-#Nike_to_Strava
-docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token="" 
-=======
 docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
 #Nike_to_Strava
 docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
->>>>>>> upstream/master
 
 #run
 docker run -itd -p 80:80   running_page:latest
@@ -421,11 +367,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 7. Sync `Strava` data
 
-<<<<<<< HEAD
-> The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running. 
-=======
 > The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running.
->>>>>>> upstream/master
 
 ```python
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
