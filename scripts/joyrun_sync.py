@@ -246,7 +246,9 @@ class Joyrun:
                 )
                 download_joyrun_gpx(gpx_data, str(joyrun_id))
         try:
-            heart_rate_list = eval(run_data["heartrate"]) if run_data["heartrate"] else None
+            heart_rate_list = (
+                eval(run_data["heartrate"]) if run_data["heartrate"] else None
+            )
         except:
             print(f"Heart Rate: can not eval for {str(heart_rate_list)}")
         heart_rate = None
