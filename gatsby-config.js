@@ -3,7 +3,7 @@ module.exports = {
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'https://hco3o.xyz/running_page',
-    logo: 'https://gitee.com/rloldl/cloudimg/raw/master/QQ%E5%9B%BE%E7%89%8720230513162838.jpg',
+    logo: 'https://github.com/hco3o/cloudimg/blob/master/QQ%E5%9B%BE%E7%89%8720230513162838.jpg?raw=true',
     description: 'Personal site and blog',
     navLinks: [
       {
