@@ -88,10 +88,10 @@ const locationForRun = (run) => {
     if (countryMatch) {
       [country] = countryMatch;
     }
-  }
 
-  if (location.includes('闵行区')) {
-    city = '上海市';
+    if (location.includes('闵行区')) {
+      city = '上海市';
+    }
   }
 
   if (MUNICIPALITY_CITIES_ARR.includes(city)) {
