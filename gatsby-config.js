@@ -7,8 +7,6 @@ module.exports = {
     siteUrl: 'https://chenle.run',
     logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
     description: 'Running Archive',
-    navLinks: [
-    ],
   },
   plugins: [
     'gatsby-transformer-json',
