@@ -17,9 +17,8 @@
   display: inline-block;
   position: relative;
   cursor: pointer;
-  width: 7%;
-  padding: 1.3rem;
-  margin-top: .1rem;
+  padding: 1.3rem 0.4rem;
+  margin-top: 0.1rem;
   font-size: 1rem;
   text-align: center;
   color: white;
@@ -27,8 +26,8 @@
 }
 
 .fullscreenButton {
-  top:0rem;
-  right:0rem;
+  top: 0rem;
+  right: 0rem;
   opacity: 0.3;
   padding: 1.2rem;
 }
