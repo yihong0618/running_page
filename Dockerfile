@@ -2,7 +2,11 @@
 FROM python:3.10.5-slim AS develop-py
 WORKDIR /root/running_page
 COPY ./requirements.txt /root/running_page/requirements.txt
-RUN pip3 install -i https://mirrors.aliyun.com/pypi/simple/ pip -U \
+RUN apt-get update \
+        && apt-get install -y --no-install-recommends git \
+        && apt-get purge -y --auto-remove \
+        && rm -rf /var/lib/apt/lists/* \
+        && pip3 install -i https://mirrors.aliyun.com/pypi/simple/ pip -U \
         && pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/ \
         && pip3 install -r requirements.txt
 
@@ -21,7 +25,7 @@ ARG email
 ARG password
 ARG client_id
 ARG client_secret
-ARG refresch_token
+ARG refresh_token
 ARG YOUR_NAME
 
 WORKDIR /root/running_page
@@ -36,9 +40,9 @@ RUN DUMMY=${DUMMY}; \
     elif [ "$app" = "Garmin-CN" ] ; then \
          python3 scripts/garmin_sync.py ${email} ${password}  --is-cn ; \
     elif [ "$app" = "Strava" ] ; then \
-        python3 scripts/strava_sync.py ${client_id} ${client_secret} ${refresch_token};\
+        python3 scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token};\
     elif [ "$app" = "Nike_to_Strava" ] ; then \
-        python3  scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${refresch_token};\
+        python3  scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${refresh_token};\
     else \
         echo "Unknown app" ; \
     fi
