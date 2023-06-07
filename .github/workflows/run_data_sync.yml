@@ -95,7 +95,7 @@ jobs:
       - name: Run sync Garmin CN script
         if: env.RUN_TYPE == 'garmin_cn'
         run: |
-          python scripts/garmin_sync.py ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
+          python scripts/garmin_sync.py ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn --only-run
 
       - name: Run sync Only GPX script
         if: env.RUN_TYPE == 'only_gpx'
