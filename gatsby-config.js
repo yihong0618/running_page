@@ -10,7 +10,7 @@ module.exports = {
     navLinks: [
       {
         name: 'Blog',
-        url: 'https://efish2002.github.io/running_page/',
+        url: 'https://github.com/efish2002/running_page/wiki',
       },
       {
         name: 'About',
