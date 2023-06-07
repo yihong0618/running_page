@@ -69,6 +69,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava    |
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep      |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn |
+| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
 
 </details>
 
