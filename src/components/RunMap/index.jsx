@@ -77,7 +77,8 @@ const RunMap = ({
       {...viewport}
       width="100%"
       height={MAP_HEIGHT}
-      mapStyle="mapbox://styles/mapbox/dark-v10"
+      // mapStyle="mapbox://styles/mapbox/dark-v10"
+      mapStyle="mapbox://styles/gaohao526/climhvcjn015b01qhb3ek9ann"
       onViewportChange={setViewport}
       ref={mapRefCallback}
       mapboxApiAccessToken={MAPBOX_TOKEN}
