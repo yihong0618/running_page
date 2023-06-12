@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from 'src/components/Layout';
 import LocationStat from 'src/components/LocationStat';
 import RunMap from 'src/components/RunMap';
@@ -50,7 +50,6 @@ const Index = () => {
   };
 
   const changeYear = (y) => {
-
     const isChanged = y === year;
     // default year
     setYear(y);
@@ -171,15 +170,15 @@ const Index = () => {
           <h1 className="f1 fw9 i">
             <a href="/">{siteTitle}</a>
           </h1>
-        {viewport.zoom <= 3 && IS_CHINESE ? (
-          <LocationStat
-            changeYear={changeYear}
-            changeCity={changeCity}
-            changeTitle={changeTitle}
-          />
-        ) : (
-          <YearsStat year={year} onClick={changeYear} />
-        )}
+          {viewport.zoom <= 3 && IS_CHINESE ? (
+            <LocationStat
+              changeYear={changeYear}
+              changeCity={changeCity}
+              changeTitle={changeTitle}
+            />
+          ) : (
+            <YearsStat year={year} onClick={changeYear} />
+          )}
         </div>
         <div className="fl w-100 w-70-l">
           <RunMap

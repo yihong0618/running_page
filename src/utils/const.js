@@ -9,11 +9,20 @@ const MUNICIPALITY_CITIES_ARR = [
   '香港特别行政区',
   '澳门特别行政区',
 ];
-const MAP_LAYER_LIST=['road-label',  'waterway-label',  'natural-line-label',  
-                      'natural-point-label',  'water-line-label',  'water-point-label',  
-                      'poi-label',  'airport-label',  'settlement-subdivision-label',  
-                      'settlement-label',  'state-label',  'country-label',
-                     ];
+const MAP_LAYER_LIST = [
+  'road-label',
+  'waterway-label',
+  'natural-line-label',
+  'natural-point-label',
+  'water-line-label',
+  'water-point-label',
+  'poi-label',
+  'airport-label',
+  'settlement-subdivision-label',
+  'settlement-label',
+  'state-label',
+  'country-label',
+];
 
 // styling: set to `true` if you want dash-line route
 const USE_DASH_LINE = true;
@@ -30,7 +39,7 @@ const USE_ANIMATION_FOR_GRID = false;
 const CHINESE_INFO_MESSAGE = (yearLength, year) => {
   const yearStr = year === 'Total' ? '所有' : ` ${year} `;
   return `我用 App 记录自己跑步 ${yearLength} 年了，下面列表展示的是${yearStr}的数据`;
-}
+};
 const ENGLISH_INFO_MESSAGE = (yearLength, year) =>
   `Running Journey with ${yearLength} Years, the table shows year ${year} data`;
 

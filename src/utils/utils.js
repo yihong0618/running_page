@@ -1,8 +1,8 @@
 import * as mapboxPolyline from '@mapbox/polyline';
 import gcoord from 'gcoord';
-import { WebMercatorViewport } from 'react-map-gl'
-import { chinaGeojson } from '../static/run_countries';
-import { chinaCities } from '../static/city';
+import { WebMercatorViewport } from 'react-map-gl';
+import { chinaGeojson } from 'src/static/run_countries';
+import { chinaCities } from 'src/static/city';
 import { MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES } from './const';
 
 const titleForShow = (run) => {
@@ -35,16 +35,16 @@ const convertMovingTime2Sec = (moving_time) => {
   // moving_time : '2 days, 12:34:56' or '12:34:56';
   const splits = moving_time.split(', ');
   const days = splits.length == 2 ? parseInt(splits[0]) : 0;
-  const time = splits.splice(-1)[0]
+  const time = splits.splice(-1)[0];
   const [hours, minutes, seconds] = time.split(':').map(Number);
-  const totalSeconds = (((days * 24) + hours) * 60 + minutes) * 60 + seconds;
+  const totalSeconds = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
   return totalSeconds;
-}
+};
 
 const formatRunTime = (moving_time) => {
-  const totalSeconds = convertMovingTime2Sec(moving_time)
-  const seconds = totalSeconds % 60
-  const minutes = (totalSeconds-seconds) / 60
+  const totalSeconds = convertMovingTime2Sec(moving_time);
+  const seconds = totalSeconds % 60;
+  const minutes = (totalSeconds - seconds) / 60;
   if (minutes === 0) {
     return seconds + 's';
   }
@@ -71,7 +71,7 @@ const locationForRun = (run) => {
     if (cityMatch) {
       [city] = cityMatch;
       if (!cities.includes(city)) {
-        city = ''
+        city = '';
       }
     }
     if (provinceMatch) {
@@ -108,7 +108,9 @@ const pathForRun = (run) => {
     const c = mapboxPolyline.decode(run.summary_polyline);
     // reverse lat long for mapbox
     c.forEach((arr) => {
-      [arr[0], arr[1]] = !NEED_FIX_MAP ? [arr[1], arr[0]] : gcoord.transform([arr[1], arr[0]], gcoord.GCJ02, gcoord.WGS84);
+      [arr[0], arr[1]] = !NEED_FIX_MAP
+        ? [arr[1], arr[0]]
+        : gcoord.transform([arr[1], arr[0]], gcoord.GCJ02, gcoord.WGS84);
     });
     return c;
   } catch (err) {
