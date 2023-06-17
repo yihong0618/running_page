@@ -70,6 +70,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep      |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn |
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX    |
 
 </details>
 
