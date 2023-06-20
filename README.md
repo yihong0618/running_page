@@ -20,7 +20,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 ## [Runner's Page Show](https://github.com/yihong0618/running_page/issues/12)
 
 | Runner                                          | page                                         | App       |
-| ----------------------------------------------- | ---------------------------------------------|-----------|
+| ----------------------------------------------- | -------------------------------------------- | --------- |
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
 | [shaonianche](https://github.com/shaonianche)   | <https://run.duanfei.org>                    | Strava    |
 | [yihong0618](https://github.com/yihong0618)     | <https://yihong.run>                         | Nike      |
@@ -103,19 +103,20 @@ yarn develop
 
 Open your browser and visit <http://localhost:8000/>
 
-## Docker 
+## Docker
+
 ```
 #build
 # NRC
 docker build -t running_page:latest . --build-arg app=NRC --build-arg nike_refresh_token=""
 # Garmin
-docker build -t running_page:latest . --build-arg app=Garmin --build-arg email=""  --build-arg password="" 
+docker build -t running_page:latest . --build-arg app=Garmin --build-arg email=""  --build-arg password=""
 # Garmin-CN
-docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password="" 
+docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password=""
 # Strava
-docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token=""
 #Nike_to_Strava
-docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token="" 
+docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresch_token=""
 
 #run
 docker run -itd -p 80:80   running_page:latest
@@ -205,7 +206,7 @@ python3(python) scripts/tcx_sync.py
 <summary>Get your <code>Garmin</code> data</summary>
 <br>
 If you only want to sync `type running` add args --only-run
-If you only want `tcx` files add args --tcx 
+If you only want `tcx` files add args --tcx
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
@@ -362,7 +363,6 @@ References：
 
 </details>
 
-
 ### TCX_to_Strava
 
 <details>
@@ -420,12 +420,12 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 ```python
 python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresch_token} ${garmin_email} ${garmin_password} --is-cn
 ```
+
 e.g.
 
 ```python
 python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
-
 
 ### Total Data Analysis
 

@@ -18,7 +18,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 ## [大家的跑步主页展示](https://github.com/yihong0618/running_page/issues/12)
 
 | Runner                                          | page                                         | App       |
-| ----------------------------------------------- | ---------------------------------------------|-----------|
+| ----------------------------------------------- | -------------------------------------------- | --------- |
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
 | [shaonianche](https://github.com/shaonianche)   | <https://run.duanfei.org>                    | Strava    |
 | [yihong0618](https://github.com/yihong0618)     | <https://yihong.run>                         | Nike      |
@@ -51,12 +51,12 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [sun0225SUN](https://github.com/sun0225SUN)     | <https://run.sunguoqi.com>                   | Nike      |
 | [Zhan](https://www.zlog.in/about)               | <https://run.zlog.in>                        | Nike      |
 | [Dennis](https://run.domon.cn)                  | <https://run.domon.cn>                       | Garmin-cn |
-| [hanpei](https://running.nexts.top)             | <https://running.nexts.top>
+| [hanpei](https://running.nexts.top)             | <https://running.nexts.top>                  |
 | [liugezhou](https://github.com/liugezhou)       | <https://run.liugezhou.online>               | Strava    |
 | [zhubao315](https://github.com/zhubao315)       | <https://zhubao315.github.io/running>        | Strava    |
 | [Jason Tan](https://github.com/Jason-cqtan)     | <https://jason-cqtan.github.io/running_page> | Nike      |
-| [Conge](https://github.com/conge)               | <https://conge.github.io/running_page>       | Strava      |
-| [cvvz](https://github.com/cvvz)                 | <https://cvvz.github.io/running>             | Strava      |
+| [Conge](https://github.com/conge)               | <https://conge.github.io/running_page>       | Strava    |
+| [cvvz](https://github.com/cvvz)                 | <https://cvvz.github.io/running>             | Strava    |
 
 ## 它是怎么工作的
 
@@ -114,6 +114,7 @@ yarn develop
 访问 <http://localhost:8000/> 查看
 
 ## Docker
+
 ```
 #构建
 # NRC
@@ -134,7 +135,6 @@ docker run -itd -p 80:80   running_page:latest
 访问 ip:80 查看
 
 ```
-
 
 ## 替换 `src/utils/const.js` 文件中的 Mapbox token
 
@@ -266,6 +266,7 @@ TRANS_GCJ02_TO_WGS84 = True
 确保自己的账号能用手机号 + 验证码登陆
 
 点击获取验证码
+
 > 注：不要在手机输入验证码，拿到验证码就好，用这个验证码放到下方命令中
 
 ![image](https://user-images.githubusercontent.com/15976103/102352588-e3af3000-3fe2-11eb-8131-14946b0262eb.png)
@@ -371,7 +372,6 @@ TRANS_END_DATE = "2014-03-24"
 如果你只想同步跑步数据增加命令 --only-run
 如果你想同步 `tcx` 格式，增加命令 --tcx
 
-
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
 ```
@@ -460,7 +460,7 @@ https://www.strava.com/oauth/authorize?client_id=${your_id}&response_type=code&r
 ![get_all_permissions](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_all_permissions.png)
 
 5. 提取授权后返回链接中的 code 值
-例如：
+   例如：
 
 ```
 http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f3471e6e&scope=read,activity:write,activity:read_all,profile:write,profile:read_all,read_all
@@ -531,7 +531,6 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
 
 </details>
 
-
 ### Nike+Strava
 
 <details>
@@ -575,7 +574,6 @@ python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
 
 </details>
-
 
 ### Total Data Analysis
 
