@@ -26,7 +26,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.9.0",
-    "tailwind-merge": "^1.13.2"
+    "tailwind-merge": "^1.13.2",
+    "@headlessui/react": "^1.7.15"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.3.0",
@@ -47,7 +48,7 @@
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "lint-staged": "^12.5.0",
-    "next-router-mock": "^0.7.5",
+    "next-router-mock": "^0.8.0",
     "next-sitemap": "^2.5.28",
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
@@ -57,7 +58,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "eslint --max-warnings=10",
+      "eslint --max-warnings=1",
       "prettier -w"
     ],
     "**/*.{json,css,scss,md,webmanifest}": [
