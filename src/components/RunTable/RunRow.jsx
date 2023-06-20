@@ -4,7 +4,7 @@ import { formatPace, titleForRun, colorFromType, formatRunTime } from 'src/utils
 import styles from './style.module.scss';
 
 const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
-  const distance = (run.distance / 1000.0).toFixed(1);
+  const distance = (run.distance / 1000.0).toFixed(2);
   const pace = run.average_speed;
 
   const paceParts = pace ? formatPace(pace) : null;

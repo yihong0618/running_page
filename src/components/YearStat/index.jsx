@@ -30,10 +30,10 @@ const YearStat = ({ year, onClick }) => {
     sumDistance += run.distance || 0;
     if (run.average_speed) {
       if(workoutsCounts[run.type]){
-        var [oriCount, oriAvgSpd, oriDistance] = workoutsCounts[run.type]
-        workoutsCounts[run.type] = [oriCount + 1, oriAvgSpd + run.average_speed, oriDistance + run.distance]
+        var [oriCount, oriSecondsAvail, oriMetersAvail] = workoutsCounts[run.type]
+        workoutsCounts[run.type] = [oriCount + 1, oriSecondsAvail + (run.distance || 0) / run.average_speed, oriMetersAvail + (run.distance || 0)]
       }else{
-        workoutsCounts[run.type] = [1, run.average_speed, run.distance]
+        workoutsCounts[run.type] = [1, (run.distance || 0) / run.average_speed, run.distance]
       }
     }
     if (run.average_heartrate) {
@@ -73,8 +73,8 @@ const YearStat = ({ year, onClick }) => {
           <WorkoutStat
             value={count[0]}
             description={` ${type}`+"s"}
-            // pace={formatPace(count[1] / count[0])}
-            distance={(count[2]/1000).toFixed(0)}
+            // pace={formatPace(count[2] / count[1])}
+            distance={(count[2] / 1000.0).toFixed(0)}
           />
         ))}
         <Stat
@@ -86,7 +86,7 @@ const YearStat = ({ year, onClick }) => {
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
         )}
       </section>
-      {hovered && (
+      {year !== "Total" && hovered && (
         <React.Suspense fallback="loading...">
           <YearSVG className={styles.yearSVG} />
         </React.Suspense>

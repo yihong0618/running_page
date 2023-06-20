@@ -9,11 +9,20 @@ const MUNICIPALITY_CITIES_ARR = [
   '香港特别行政区',
   '澳门特别行政区',
 ];
-const MAP_LAYER_LIST=['road-label',  'waterway-label',  'natural-line-label',  
-                      'natural-point-label',  'water-line-label',  'water-point-label',  
-                      'poi-label',  'airport-label',  'settlement-subdivision-label',  
-                      'settlement-label',  'state-label',  'country-label',
-                     ];
+const MAP_LAYER_LIST = [
+  'road-label',
+  'waterway-label',
+  'natural-line-label',
+  'natural-point-label',
+  'water-line-label',
+  'water-point-label',
+  'poi-label',
+  'airport-label',
+  'settlement-subdivision-label',
+  'settlement-label',
+  'state-label',
+  'country-label',
+];
 
 // styling: set to `true` if you want dash-line route
 const USE_DASH_LINE = true;

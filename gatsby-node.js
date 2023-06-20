@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   const typeDefs = `
