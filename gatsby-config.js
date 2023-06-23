@@ -3,18 +3,18 @@
 module.exports = {
   pathPrefix: process.env.PATH_PREFIX || '/',
   siteMetadata: {
-    siteTitle: 'Running Page',
+    siteTitle: "Hola!!!!!!!!!!! I'm Tianhui! Welcome to my outdoors journey~",
     siteUrl: 'https://yihong.run',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
-    description: 'Personal site and blog',
+    logo: 'https://avatars.githubusercontent.com/u/45302287?v=4',
+    description: 'Data visualization of running / biking / hiking of Tianhui over the years',
     navLinks: [
       {
-        name: 'Blog',
-        url: 'https://yihong.run/running',
+        name: 'LinkedIn',
+        url: 'https://www.linkedin.com/in/tianhui-xu-844855175/',
       },
       {
-        name: 'About',
-        url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
+        name: 'About Me',
+        url: 'https://github.com/TianhuiXu',
       },
     ],
   },
