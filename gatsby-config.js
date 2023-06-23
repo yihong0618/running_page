@@ -5,7 +5,7 @@ module.exports = {
   siteMetadata: {
     siteTitle: 'Run CJ Run',
     siteUrl: 'https://run.chongnuoji.com',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
+    logo: 'https://chongnuoji.com/wp-content/uploads/2021/03/NEW_CJ_200px.webp',
     description: 'Personal site and blog',
     navLinks: [
        {
