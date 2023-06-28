@@ -83,7 +83,7 @@ const locationForRun = (run) => {
 
     if (cityMatch) {
       [city] = cityMatch;
-	  city = cities.find(value => cityMatch.includes(value));
+	    city = cities.find(value => cityMatch.includes(value));
 	  
       if (!city) {
         city = '';
