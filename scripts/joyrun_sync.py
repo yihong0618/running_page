@@ -169,7 +169,14 @@ class Joyrun:
             return []
         try:
             # eval is bad but easy maybe change it later
-            points = eval(content.replace("-", ","))
+            # TODO fix this
+            # just an easy way to fix joyrun issue, need to refactor this shit
+            # -[34132812,-118126177]- contains `-` so I just fix it by replace
+            try:
+                points = eval(content.replace("]-[", "],["))
+            except Exception as e:
+                print(str(e))
+                print(f"Points: {str(points)} can not eval")
             points = [[p[0] / 1000000, p[1] / 1000000] for p in points]
         except Exception as e:
             print(str(e))
@@ -238,7 +245,12 @@ class Joyrun:
                     run_points_data, start_time, end_time
                 )
                 download_joyrun_gpx(gpx_data, str(joyrun_id))
-        heart_rate_list = eval(run_data["heartrate"]) if run_data["heartrate"] else None
+        try:
+            heart_rate_list = (
+                eval(run_data["heartrate"]) if run_data["heartrate"] else None
+            )
+        except:
+            print(f"Heart Rate: can not eval for {str(heart_rate_list)}")
         heart_rate = None
         if heart_rate_list:
             heart_rate = int(sum(heart_rate_list) / len(heart_rate_list))

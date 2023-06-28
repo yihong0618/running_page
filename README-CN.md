@@ -68,6 +68,10 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx       |
 | [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava    |
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep      |
+| [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn |
+| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX    |
+| [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro/>                     | Garmin    |
 
 </details>
 
