@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { MAIN_COLOR } from 'src/utils/const';
 import {
   sortDateFunc,
   sortDateFuncReverse,
@@ -43,18 +42,13 @@ const RunTable = ({
     ['Time', sortRunTimeFunc],
     ['Date', sortDateFuncClick],
   ]);
+
   const handleClick = (e) => {
     const funcName = e.target.innerHTML;
-    if (sortFuncInfo === funcName) {
-      setSortFuncInfo('');
-    } else {
-      setSortFuncInfo(funcName);
-    }
-    const f = sortFuncMap.get(e.target.innerHTML);
-    if (runIndex !== -1) {
-      const el = document.getElementsByClassName(styles.runRow);
-      el[runIndex].style.color = MAIN_COLOR;
-    }
+    const f = sortFuncMap.get(funcName);
+
+    setRunIndex(-1)
+    setSortFuncInfo(sortFuncInfo === funcName ? '' : funcName);
     setActivity(runs.sort(f));
   };
 
@@ -65,19 +59,19 @@ const RunTable = ({
           <tr>
             <th />
             {Array.from(sortFuncMap.keys()).map((k) => (
-              <th key={k} onClick={(e) => handleClick(e)}>
+              <th key={k} onClick={handleClick}>
                 {k}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {runs.map((run) => (
+          {runs.map((run, elementIndex) => (
             <RunRow
-              runs={runs}
-              run={run}
               key={run.run_id}
+              elementIndex={elementIndex}
               locateActivity={locateActivity}
+              run={run}
               runIndex={runIndex}
               setRunIndex={setRunIndex}
             />
