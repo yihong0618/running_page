@@ -9,7 +9,6 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }) =>
   const heartRate = run.average_heartrate;
   const runTime = formatRunTime(run.moving_time);
   const handleClick = (e) => {
-    console.log(runIndex, elementIndex)
     if (runIndex === elementIndex) return;
     setRunIndex(elementIndex);
     locateActivity(run.start_date_local.slice(0, 10));
