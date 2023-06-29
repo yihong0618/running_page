@@ -72,6 +72,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
 | [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX    |
 | [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro/>                     | Garmin    |
+| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun    |
 
 </details>
 
