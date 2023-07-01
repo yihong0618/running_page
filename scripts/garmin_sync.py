@@ -219,7 +219,7 @@ class Garmin:
                 r.raise_for_status()
         await self.req.aclose()
 
-    async def upload_activities_original(self, datas, use_fake_garmin_device):
+    async def upload_activities_original(self, datas, use_fake_garmin_device=False):
         print(
             "start upload activities to garmin!!!, use_fake_garmin_device:",
             use_fake_garmin_device,
