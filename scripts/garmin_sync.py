@@ -21,6 +21,7 @@ from io import BytesIO
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 from utils import make_activities_file
+from garmin_device_adaptor import wrap_device_info
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -218,8 +219,11 @@ class Garmin:
                 r.raise_for_status()
         await self.req.aclose()
 
-    async def upload_activities_original(self, datas):
-        print("start upload activities to garmin!!!")
+    async def upload_activities_original(self, datas, use_fake_garmin_device=False):
+        print(
+            "start upload activities to garmin!!!, use_fake_garmin_device:",
+            use_fake_garmin_device,
+        )
         if not self.is_login:
             self.login()
         for data in datas:
@@ -228,7 +232,12 @@ class Garmin:
                 for chunk in data.content:
                     f.write(chunk)
             f = open(data.filename, "rb")
-            files = {"data": (data.filename, BytesIO(f.read()))}
+            # wrap fake garmin device to origin fit file, current not support gpx file
+            if use_fake_garmin_device:
+                file_body = wrap_device_info(f)
+            else:
+                file_body = BytesIO(f.read())
+            files = {"data": (data.filename, file_body)}
 
             try:
                 res = await self.req.post(

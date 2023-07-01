@@ -36,7 +36,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [ben_29](https://github.com/ben-29)               | <https://running.ben29.xyz>                    | Strava    |
 | [kcllf](https://github.com/kcllf)                 | <https://running-tau.vercel.app>               | Garmin-cn |
 | [mq](https://github.com/MQ-0707)                  | <https://running-iota.vercel.app>              | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://running-page-psi.vercel.app>          | Keep      |
+| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://zhaohongxuan.github.io/workouts>      | Strava    |
 | [yvetterowe](https://github.com/yvetterowe)       | <https://run.haoluo.io>                        | Strava    |
 | [love-exercise](https://github.com/KaiOrange)     | <https://run.kai666666.top>                    | Keep      |
 | [zstone12](https://github.com/zstone12)           | <https://running-page.zstone12.vercel.app>     | Keep      |
@@ -502,6 +502,16 @@ if your garmin account region is **China**, you need to execute the command:
 
 ```python
 python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+```
+
+If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc. 
+
+<img width="830" alt="image" src="https://github.com/yihong0618/running_page/assets/8613196/b5076942-3133-4c89-ad66-a828211667dc">
+
+the final command will be:
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
 ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
