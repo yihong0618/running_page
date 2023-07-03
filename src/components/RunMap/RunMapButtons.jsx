@@ -8,21 +8,19 @@ const RunMapButtons = ({ changeYear, thisYear }) => {
   yearsButtons.push('Total');
 
   return (
-    <div>
-      <ul className={styles.buttons}>
-        {yearsButtons.map((year) => (
-          <li
-            key={`${year}button`}
-            className={styles.button + ` ${year === thisYear ? styles.selected : ''}`}
-            onClick={() => {
-              changeYear(year);
-            }}
-          >
-            {year}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className={styles.buttons}>
+      {yearsButtons.map((year) => (
+        <li
+          key={`${year}button`}
+          className={styles.button + ` ${year === thisYear ? styles.selected : ''}`}
+          onClick={() => {
+            changeYear(year);
+          }}
+        >
+          {year}
+        </li>
+      ))}
+    </ul>
   );
 };
 

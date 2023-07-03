@@ -142,42 +142,40 @@ const Index = () => {
 
   return (
     <Layout>
-      <div className="mb5">
-        <div className="fl w-30-l">
-          <h1 className="f1 fw9 i">
-            <a href="/">{siteTitle}</a>
-          </h1>
-          {viewport.zoom <= 3 && IS_CHINESE ? (
-            <LocationStat
-              changeYear={changeYear}
-              changeCity={changeCity}
-              changeTitle={changeTitle}
-            />
-          ) : (
-            <YearsStat year={year} onClick={changeYear} />
-          )}
-        </div>
-        <div className="fl w-100 w-70-l">
-          <RunMap
-            title={title}
-            viewport={viewport}
-            geoData={geoData}
-            setViewport={setViewport}
+      <div className="fl w-30-l">
+        <h1 className="f1 fw9 i">
+          <a href="/">{siteTitle}</a>
+        </h1>
+        {viewport.zoom <= 3 && IS_CHINESE ? (
+          <LocationStat
             changeYear={changeYear}
-            thisYear={year}
+            changeCity={changeCity}
+            changeTitle={changeTitle}
           />
-          {year === 'Total' ? (
-            <SVGStat />
-          ) : (
-            <RunTable
-              runs={runs}
-              locateActivity={locateActivity}
-              setActivity={setActivity}
-              runIndex={runIndex}
-              setRunIndex={setRunIndex}
-            />
-          )}
-        </div>
+        ) : (
+          <YearsStat year={year} onClick={changeYear} />
+        )}
+      </div>
+      <div className="fl w-100 w-70-l">
+        <RunMap
+          title={title}
+          viewport={viewport}
+          geoData={geoData}
+          setViewport={setViewport}
+          changeYear={changeYear}
+          thisYear={year}
+        />
+        {year === 'Total' ? (
+          <SVGStat />
+        ) : (
+          <RunTable
+            runs={runs}
+            locateActivity={locateActivity}
+            setActivity={setActivity}
+            runIndex={runIndex}
+            setRunIndex={setRunIndex}
+          />
+        )}
       </div>
       {/* Enable Audiences in Vercel Analytics: https://vercel.com/docs/concepts/analytics/audiences/quickstart */}
       <Analytics />
