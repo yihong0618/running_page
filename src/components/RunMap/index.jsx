@@ -94,6 +94,9 @@ const RunMap = ({
       onViewportChange={setViewport}
       ref={mapRefCallback}
       mapboxApiAccessToken={MAPBOX_TOKEN}
+        onLoad={() => {
+    terrainPlugin.onAdd(mapRef.current.getMap());
+  }}
     >
       <RunMapButtons
         changeYear={changeYear}
