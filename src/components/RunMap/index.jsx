@@ -17,7 +17,7 @@ import { geoJsonForMap } from 'src/utils/utils';
 import RunMarker from './RunMaker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.scss';
-
+import MapboxGL from 'mapbox-gl';
 const RunMap = ({
   title,
   viewport,
