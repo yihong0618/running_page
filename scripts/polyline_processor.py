@@ -8,8 +8,13 @@ IGNORE_POLYLINE = (
     if os.getenv("IGNORE_POLYLINE")
     else []
 )
-IGNORE_RANGE = int(os.getenv("IGNORE_RANGE", "0")) / 1000
-IGNORE_START_END_RANGE = int(os.getenv("IGNORE_START_END_RANGE", "0")) / 1000
+
+try:
+    IGNORE_RANGE = int(os.getenv("IGNORE_RANGE", "0")) / 1000
+    IGNORE_START_END_RANGE = int(os.getenv("IGNORE_START_END_RANGE", "0")) / 1000
+except ValueError:
+    print("IGNORE_RANGE or IGNORE_START_END_RANGE is not a number")
+    exit(1)
 
 
 def point_distance_in_range(
@@ -40,7 +45,7 @@ def filter_out(polyline_str):
             continue
 
         new_pl.append(point)
-    if len(new_pl) == 0:
+    if not new_pl:
         return None
 
     return polyline.encode(new_pl)
