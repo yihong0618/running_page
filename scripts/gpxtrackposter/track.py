@@ -15,11 +15,15 @@ import s2sphere as s2
 from rich import print
 from tcxreader.tcxreader import TCXReader
 
+from polyline_processor import filter_out
+
 from .exceptions import TrackLoadError
 from .utils import parse_datetime_to_local
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
+
+IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
 
 
 class Track:
@@ -82,7 +86,8 @@ class Track:
         self.start_time_local = start_time
         self.end_time = start_time + activity.elapsed_time
         self.length = float(activity.distance)
-        summary_polyline = activity.summary_polyline
+        if not IGNORE_BEFORE_SAVING:
+            summary_polyline = filter_out(activity.summary_polyline)
         polyline_data = polyline.decode(summary_polyline) if summary_polyline else []
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
 

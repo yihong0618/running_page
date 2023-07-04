@@ -200,6 +200,22 @@ const USE_DASH_LINE = true;
 const LINE_OPACITY = 0.4;
 ```
 
+- 隐私保护：
+
+设置下面环境变量：
+
+```shell
+IGNORE_START_END_RANGE = 200 # 忽略每个 polyline 的起点和终点的距离（单位：米）。
+
+IGNORE_RANGE = 200 # 忽略下面 polyline 中每个点的距离（单位：米）。
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # 包含要忽略的点的折线。 
+
+# 在保存到数据库之前进行过滤，你会丢失一些数据，但可以保护你的隐私，如果你使用的是公共仓库，建议设置为1。设置为 0 或不设置可关闭。
+IGNORE_BEFORE_SAVING = 1
+```
+
+你可一用[这个](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
+
 ## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据，[别忘了在 `total` 页面生成可视化 SVG](#total-data-analysis)
 
 ### GPX
