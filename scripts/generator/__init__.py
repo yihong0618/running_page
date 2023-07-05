@@ -42,7 +42,7 @@ class Generator:
         self.client.access_token = response["access_token"]
         print("Access ok")
 
-    def sync(self, force: bool = False):
+    def sync(self, force, only_run=False):
         self.check_access()
 
         print("Start syncing")
@@ -57,18 +57,17 @@ class Generator:
             else:
                 filters = {"before": datetime.datetime.utcnow()}
 
-        for run_activity in self.client.get_activities(**filters):
-            if run_activity.type == "Run":
-                if IGNORE_BEFORE_SAVING:
-                    run_activity.summary_polyline = filter_out(
-                        run_activity.summary_polyline
-                    )
-                created = update_or_create_activity(self.session, run_activity)
-                if created:
-                    sys.stdout.write("+")
-                else:
-                    sys.stdout.write(".")
-                sys.stdout.flush()
+        for activity in self.client.get_activities(**filters):
+            if only_run and activity.type != "Run":
+                continue
+            if IGNORE_BEFORE_SAVING:
+                activity.summary_polyline = filter_out(activity.summary_polyline)
+            created = update_or_create_activity(self.session, activity)
+            if created:
+                sys.stdout.write("+")
+            else:
+                sys.stdout.write(".")
+            sys.stdout.flush()
         self.session.commit()
 
     def sync_from_data_dir(self, data_dir, file_suffix="gpx"):
