@@ -3,11 +3,15 @@ import polyline
 import os
 from haversine import haversine
 
-IGNORE_POLYLINE = (
-    polyline.decode(os.getenv("IGNORE_POLYLINE"))
-    if os.getenv("IGNORE_POLYLINE")
-    else []
-)
+try:
+    IGNORE_POLYLINE = (
+        polyline.decode(os.getenv("IGNORE_POLYLINE"))
+        if os.getenv("IGNORE_POLYLINE")
+        else []
+    )
+except Exception:
+    print("IGNORE_POLYLINE is not a valid polyline")
+    exit(1)
 
 try:
     IGNORE_RANGE = int(os.getenv("IGNORE_RANGE", "0")) / 1000
@@ -29,22 +33,48 @@ def point_in_list_points_range(
     return any([point_distance_in_range(point, p, distance) for p in points])
 
 
+def range_hidding(polyline: List[Tuple[float]], points: List[Tuple[float]], distance: int) -> List[Tuple[float]]:
+    new_polyline = []
+    for point in polyline:
+        if point_in_list_points_range(point, points, distance):
+            continue
+        new_polyline.append(point)
+    return new_polyline
+
+
+def start_end_hidding(
+    polyline: List[Tuple[float]], distance: int
+) -> List[Tuple[float]]:
+    start_index, end_index = 0, len(polyline) - 1
+
+    starting_distance = 0
+    for i in range(1, len(polyline)):
+        starting_distance += haversine(polyline[i], polyline[i - 1])
+        if starting_distance > distance:
+            start_index = i
+            break
+
+    ending_distance = 0
+    for i in range(len(polyline) - 2, -1, -1):
+        ending_distance += haversine(polyline[i], polyline[i + 1])
+        if ending_distance > distance:
+            end_index = i
+            break
+
+    if start_index >= end_index:
+        return []
+
+    return polyline[start_index : end_index + 1]
+
+
 def filter_out(polyline_str):
     pl = polyline.decode(polyline_str)
     if not pl:
         return polyline_str
-    start_point, end_point = pl[0], pl[-1]
-
-    new_pl = []
-    for point in pl:
-        if point_in_list_points_range(
-            point, [start_point, end_point], IGNORE_START_END_RANGE
-        ):
-            continue
-        if point_in_list_points_range(point, IGNORE_POLYLINE, IGNORE_RANGE):
-            continue
-
-        new_pl.append(point)
+    
+    new_pl = start_end_hidding(pl, IGNORE_START_END_RANGE)
+    new_pl = range_hidding(new_pl, IGNORE_POLYLINE, IGNORE_RANGE)
+    
     if not new_pl:
         return None
 

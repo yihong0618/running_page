@@ -205,12 +205,12 @@ const LINE_OPACITY = 0.4;
 设置下面环境变量：
 
 ```shell
-IGNORE_START_END_RANGE = 200 # 忽略每个 polyline 的起点和终点的距离（单位：米）。
+IGNORE_START_END_RANGE = 200 # 忽略每个 polyline 的起点和终点的长度（单位：米）。
 
-IGNORE_RANGE = 200 # 忽略下面 polyline 中每个点的距离（单位：米）。
+IGNORE_RANGE = 200 # 忽略下面 polyline 中每个点的距离的圆圈（单位：米）。
 IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # 包含要忽略的点的折线。 
 
-# 在保存到数据库之前进行过滤，你会丢失一些数据，但可以保护你的隐私，如果你使用的是公共仓库，建议设置为1。设置为 0 或不设置可关闭。
+# 在保存到数据库之前进行过滤，你会丢失一些数据，但可以保护你的隐私，如果你使用的是公共仓库，建议设置为1。不设置可关闭。
 IGNORE_BEFORE_SAVING = 1
 ```
 
