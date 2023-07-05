@@ -192,6 +192,22 @@ const USE_DASH_LINE = true;
 const LINE_OPACITY = 0.4;
 ```
 
+- privacy protection
+
+setting flowing env:
+```shell
+IGNORE_START_END_RANGE = 200 # ignore distance for each polyline start and end.
+
+IGNORE_RANGE = 200 # ignore meters for each point in below polyline. 
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # a polyline include point you want to ignore. 
+
+# Do filter before saving to database, you will lose some data, but you can protect your privacy, when you using public repo. enable for set 1, disable via unset.
+IGNORE_BEFORE_SAVING = 
+```
+
+You can using [this](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
+
+
 ## Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
 
 ### GPX

@@ -1,4 +1,5 @@
 import datetime
+import os
 import sys
 
 import arrow
@@ -6,7 +7,12 @@ import stravalib
 from gpxtrackposter import track_loader
 from sqlalchemy import func
 
+from polyline_processor import filter_out
+
 from .db import Activity, init_db, update_or_create_activity
+
+
+IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
 
 
 class Generator:
@@ -53,6 +59,10 @@ class Generator:
 
         for run_activity in self.client.get_activities(**filters):
             if run_activity.type == "Run":
+                if IGNORE_BEFORE_SAVING:
+                    run_activity.summary_polyline = filter_out(
+                        run_activity.summary_polyline
+                    )
                 created = update_or_create_activity(self.session, run_activity)
                 if created:
                     sys.stdout.write("+")
@@ -120,6 +130,8 @@ class Generator:
                     streak = 1
                 activity.streak = streak
                 last_date = date
+                if not IGNORE_BEFORE_SAVING:
+                    activity.summary_polyline = filter_out(activity.summary_polyline)
                 activity_list.append(activity.to_dict())
 
         return activity_list
