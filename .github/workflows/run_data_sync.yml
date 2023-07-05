@@ -26,8 +26,8 @@ env:
   TITLE: Yihong0618 Running
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Runs # also here
-  GITHUB_NAME: yihong0618
-  GITHUB_EMAIL: zouzou0208@gmail.com
+  GITHUB_NAME: yihong0618 # change to yours
+  GITHUB_EMAIL: zouzou0208@gmail.com # change to yours
 
   # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
   IGNORE_START_END_RANGE: 10 # Unit meter
@@ -41,16 +41,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
 
-      # from pdm
+      # from pdm and install dep
       - name: Set Variables
         id: set_variables
         run: |
+          sudo apt-get install build-dep python3-lxml
           echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_OUTPUT
           echo "PIP_CACHE=$(pip cache dir)" >> $GITHUB_OUTPUT
 
