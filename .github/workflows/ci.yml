@@ -19,7 +19,7 @@ jobs:
       - name: Set Variables and install dep
         id: set_variables
         run: |
-          sudo apt-get install libxml2-dev libxslt-dev python-dev 
+          sudo apt-get install libxml2-dev libxslt-dev python3-dev 
           echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_OUTPUT
           echo "PIP_CACHE=$(pip cache dir)" >> $GITHUB_OUTPUT
       - name: Cache PIP
