@@ -33,7 +33,9 @@ def point_in_list_points_range(
     return any([point_distance_in_range(point, p, distance) for p in points])
 
 
-def range_hidding(polyline: List[Tuple[float]], points: List[Tuple[float]], distance: int) -> List[Tuple[float]]:
+def range_hidding(
+    polyline: List[Tuple[float]], points: List[Tuple[float]], distance: int
+) -> List[Tuple[float]]:
     new_polyline = []
     for point in polyline:
         if point_in_list_points_range(point, points, distance):
@@ -71,10 +73,10 @@ def filter_out(polyline_str):
     pl = polyline.decode(polyline_str)
     if not pl:
         return polyline_str
-    
+
     new_pl = start_end_hidding(pl, IGNORE_START_END_RANGE)
     new_pl = range_hidding(new_pl, IGNORE_POLYLINE, IGNORE_RANGE)
-    
+
     if not new_pl:
         return None
 
