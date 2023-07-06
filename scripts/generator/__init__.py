@@ -23,6 +23,7 @@ class Generator:
         self.client_id = ""
         self.client_secret = ""
         self.refresh_token = ""
+        self.only_run = False
 
     def set_strava_config(self, client_id, client_secret, refresh_token):
         self.client_id = client_id
@@ -42,7 +43,7 @@ class Generator:
         self.client.access_token = response["access_token"]
         print("Access ok")
 
-    def sync(self, force, only_run=False):
+    def sync(self, force):
         self.check_access()
 
         print("Start syncing")
@@ -58,7 +59,7 @@ class Generator:
                 filters = {"before": datetime.datetime.utcnow()}
 
         for activity in self.client.get_activities(**filters):
-            if only_run and activity.type != "Run":
+            if self.only_run and activity.type != "Run":
                 continue
             if IGNORE_BEFORE_SAVING:
                 activity.summary_polyline = filter_out(activity.summary_polyline)
@@ -113,25 +114,26 @@ class Generator:
         streak = 0
         last_date = None
         for activity in activities:
+            if self.only_run and activity.type != "Run":
+                continue
             # Determine running streak.
-            if activity.type == "Run":
-                date = datetime.datetime.strptime(
-                    activity.start_date_local, "%Y-%m-%d %H:%M:%S"
-                ).date()
-                if last_date is None:
-                    streak = 1
-                elif date == last_date:
-                    pass
-                elif date == last_date + datetime.timedelta(days=1):
-                    streak += 1
-                else:
-                    assert date > last_date
-                    streak = 1
-                activity.streak = streak
-                last_date = date
-                if not IGNORE_BEFORE_SAVING:
-                    activity.summary_polyline = filter_out(activity.summary_polyline)
-                activity_list.append(activity.to_dict())
+            date = datetime.datetime.strptime(
+                activity.start_date_local, "%Y-%m-%d %H:%M:%S"
+            ).date()
+            if last_date is None:
+                streak = 1
+            elif date == last_date:
+                pass
+            elif date == last_date + datetime.timedelta(days=1):
+                streak += 1
+            else:
+                assert date > last_date
+                streak = 1
+            activity.streak = streak
+            last_date = date
+            if not IGNORE_BEFORE_SAVING:
+                activity.summary_polyline = filter_out(activity.summary_polyline)
+            activity_list.append(activity.to_dict())
 
         return activity_list
 
