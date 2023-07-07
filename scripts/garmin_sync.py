@@ -12,6 +12,7 @@ import re
 import sys
 import time
 import traceback
+import zipfile
 
 import aiofiles
 import cloudscraper
@@ -182,6 +183,10 @@ class Garmin:
 
     async def download_activity(self, activity_id, file_type="gpx"):
         url = f"{self.modern_url}/proxy/download-service/export/{file_type}/activity/{activity_id}"
+        if file_type == "fit":
+            url = (
+                f"{self.modern_url}/proxy/download-service/files/activity/{activity_id}"
+            )
         logger.info(f"Download activity from {url}")
         response = await self.req.get(url, headers=self.headers)
         response.raise_for_status()
@@ -295,8 +300,21 @@ async def download_garmin_data(client, activity_id, file_type="gpx"):
     try:
         file_data = await client.download_activity(activity_id, file_type=file_type)
         file_path = os.path.join(folder, f"{activity_id}.{file_type}")
+        need_unzip = False
+        if file_type == "fit":
+            file_path = os.path.join(folder, f"{activity_id}.zip")
+            need_unzip = True
         async with aiofiles.open(file_path, "wb") as fb:
             await fb.write(file_data)
+        if need_unzip:
+            zip_file = zipfile.ZipFile(file_path, "r")
+            for file_info in zip_file.infolist():
+                zip_file.extract(file_info, folder)
+                os.rename(
+                    os.path.join(folder, f"{activity_id}_ACTIVITY.fit"),
+                    os.path.join(folder, f"{activity_id}.fit"),
+                )
+            os.remove(file_path)
     except:
         print(f"Failed to download activity {activity_id}: ")
         traceback.print_exc()
@@ -372,6 +390,14 @@ if __name__ == "__main__":
         dest="download_file_type",
         action="store_const",
         const="tcx",
+        default="gpx",
+        help="to download personal documents or ebook",
+    )
+    parser.add_argument(
+        "--fit",
+        dest="download_file_type",
+        action="store_const",
+        const="fit",
         default="gpx",
         help="to download personal documents or ebook",
     )
