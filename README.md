@@ -244,7 +244,10 @@ python3(python) scripts/tcx_sync.py
 <summary>Get your <code>Garmin</code> data</summary>
 <br>
 If you only want to sync `type running` add args --only-run
+
 If you only want `tcx` files add args --tcx
+
+If you only want `fit` files add args --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
@@ -270,7 +273,10 @@ python3(python) scripts/garmin_sync.py example@gmail.com example --only-run
 <summary>Get your <code>Garmin-CN</code> data</summary>
 <br>
 If you only want to sync `type running` add args --only-run
+
 If you only want `tcx` files add args --tcx
+
+If you only want `fit` files add args --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn

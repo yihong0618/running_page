@@ -427,7 +427,10 @@ python3(python) scripts/tulipsport_sync.py nLgy****RyahI
 <summary>获取您的 Garmin 数据</summary>
 <br>
 如果你只想同步跑步数据增加命令 --only-run
+
 如果你想同步 `tcx` 格式，增加命令 --tcx
+
+如果你想同步 `fit` 格式，增加命令 --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
@@ -446,7 +449,11 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 <details>
 <summary>获取您的 Garmin-CN 数据</summary>
 
-> 如果你只想同步跑步数据请增加 --only-run
+如果你只想同步跑步数据请增加 --only-run
+
+如果你想同步 `tcx` 格式，增加命令 --tcx
+
+如果你想同步 `fit` 格式，增加命令 --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
