@@ -3,7 +3,7 @@ name: Run Data Sync
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
   push:
     branches:
       - master
@@ -26,8 +26,14 @@ env:
   TITLE: Workouts
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Workouts # also here
-  GITHUB_NAME: ben_29
-  GITHUB_EMAIL: ben_29@live.com
+  GITHUB_NAME: ben_29  # change to yours
+  GITHUB_EMAIL: ben_29@live.com # change to yours
+
+  # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
+  IGNORE_START_END_RANGE: 0 # Unit meter
+  # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
+  IGNORE_POLYLINE: ""
+  IGNORE_RANGE: 0 # Unit meter
 
 jobs:
   sync:
@@ -35,16 +41,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
 
-      # from pdm
+      # from pdm and install dep
       - name: Set Variables
         id: set_variables
         run: |
+          sudo apt-get install libxml2-dev libxslt-dev python3-dev
           echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_OUTPUT
           echo "PIP_CACHE=$(pip cache dir)" >> $GITHUB_OUTPUT
 
@@ -78,6 +85,7 @@ jobs:
         if: env.RUN_TYPE == 'strava'
         run: |
           python scripts/strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
+        # python scripts/garmin_sync.py ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} --only-run --is-cn
 
       - name: Run sync Codoon script
         if: env.RUN_TYPE == 'codoon'
@@ -96,6 +104,8 @@ jobs:
         if: env.RUN_TYPE == 'garmin_cn'
         run: |
           python scripts/garmin_sync.py ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} --is-cn
+        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # python scripts/garmin_sync.py ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} --only-run --is-cn
 
       - name: Run sync Only GPX script
         if: env.RUN_TYPE == 'only_gpx'
