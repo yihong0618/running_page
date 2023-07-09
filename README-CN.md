@@ -119,6 +119,11 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
 
+## 视频教程
+
+- https://www.youtube.com/watch?v=reLiY9p8EJk
+- youtube.com/watch?v=VdNkFxTX5QQ
+
 ## 下载
 
 ```
