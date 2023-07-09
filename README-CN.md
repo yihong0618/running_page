@@ -122,7 +122,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 ## 视频教程
 
 - https://www.youtube.com/watch?v=reLiY9p8EJk
-- youtube.com/watch?v=VdNkFxTX5QQ
+- https://www.youtube.com/watch?v=VdNkFxTX5QQ
 
 ## 下载
 
