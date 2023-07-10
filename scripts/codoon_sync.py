@@ -24,7 +24,7 @@ from config import (
 )
 from generator import Generator
 
-from utils import adjust_time_to_utc, adjust_timestemp_to_utc, to_date
+from utils import adjust_time_to_utc, adjust_timestamp_to_utc, to_date
 
 import numpy as np
 import xml.etree.ElementTree as ET
@@ -233,7 +233,7 @@ def tcx_job(run_data):
     # get single bpm
     if own_heart_rate != None:
         for single_time, single_bpm in own_heart_rate.items():
-            single_time = adjust_timestemp_to_utc(single_time, str(get_localzone()))
+            single_time = adjust_timestamp_to_utc(single_time, str(get_localzone()))
             # set bpm data
             fit_array = set_array(fit_array, single_time, single_bpm, None, None, None)
     # get single track point
