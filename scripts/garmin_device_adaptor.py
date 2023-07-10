@@ -62,13 +62,5 @@ def do_wrap_device_info(origin_file):
     builder.add(message)
 
     modified_file = builder.build()
-    # modified_file.to_csv("/Users/hank.zhao/Developer/workouts/test/output.csv")
     print("wrap garmin device info sucess, product id:", GARMIN_DEVICE_PRODUCT_ID)
     return modified_file.to_bytes()
-
-
-if __name__ == "__main__":
-    # for test
-    input_fit_path = "/Users/hank.zhao/Developer/workouts/test/test.fit"
-    f = open(input_fit_path, "rb")
-    wrap_device_info(f)
