@@ -113,6 +113,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[郁金香运动](#tulipsport)**
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
+- **[FIT](#fit)**
 - **[Tcx+Strava(upload all tcx data to strava)](#tcx_to_strava)**
 - **[Gpx+Strava(upload all tcx data to strava)](#gpx_to_strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
@@ -248,6 +249,20 @@ python3(python) scripts/gpx_sync.py
 
 ```python
 python3(python) scripts/tcx_sync.py
+```
+
+</details>
+
+### FIT
+
+<details>
+<summary>Make your <code>FIT</code> data</summary>
+<br>
+
+把其它软件生成的 fit files 拷贝到 FIT_OUT 之后运行
+
+```python
+python3(python) scripts/fit_sync.py
 ```
 
 </details>
@@ -812,6 +827,17 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
    ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
 
 </details>
+
+# Fit 文件
+
+测试发现，不同厂商在写fit文件的时候有略微差异。
+
+已调试设备：
+
+- [x] 佳明手表
+- [x] 迈金码表
+
+如果发现自己的fit文件解析有问题。可以提issue。
 
 # TODO
 

@@ -101,6 +101,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Strava](#strava)**
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
+- **[FIT](#fit)**
 - **[Nike_to_Strava(Using NRC Run, Strava backup data)](#nike_to_strava)**
 - **[Tcx_to_Strava(upload all tcx data to strava)](#tcx_to_strava)**
 - **[Gpx_to_Strava(upload all gpx data to strava)](#gpx_to_strava)**
@@ -234,6 +235,20 @@ Copy all your tcx files to TCX_OUT or new tcx files
 
 ```python
 python3(python) scripts/tcx_sync.py
+```
+
+</details>
+
+### FIT
+
+<details>
+<summary>Make your <code>FIT</code> data</summary>
+<br>
+
+Copy all your tcx files to FIT_OUT or new fit files
+
+```python
+python3(python) scripts/fit_sync.py
 ```
 
 </details>
@@ -654,6 +669,13 @@ The following steps need to be taken
 4. Go to repository's `Settings -> Code and automation -> Actions ->General`, Scroll to the bottom, find `Workflow permissions`, choose the first option `Read and write permissions`, click `Save`.
 
 </details>
+
+# Fit file
+
+supported manufacturer：
+
+- [x] Garmin
+- [x] magene
 
 # TODO
 
