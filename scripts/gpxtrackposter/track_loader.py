@@ -36,6 +36,7 @@ def load_tcx_file(file_name):
     t.load_tcx(file_name)
     return t
 
+
 def load_fit_file(file_name):
     """Load an individual FIT file as a track by using Track.load_fit()"""
     t = Track()
