@@ -28,8 +28,6 @@ from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
 from fit_tool.profile.messages.file_id_message import FileIdMessage
 from fit_tool.profile.profile_type import Sport
 
-from garmin_fit_sdk.profile import Profile as GarminProfile
-
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
