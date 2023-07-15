@@ -386,6 +386,12 @@ if __name__ == "__main__":
         help="if is only for running",
     )
     parser.add_argument(
+        "--only-download",
+        dest="only_download",
+        action="store_true",
+        help="if is only for download personal documents",
+    )
+    parser.add_argument(
         "--tcx",
         dest="download_file_type",
         action="store_const",
@@ -409,6 +415,7 @@ if __name__ == "__main__":
     )
     file_type = options.download_file_type
     is_only_running = options.only_run
+    is_only_download = options.only_download
     if email == None or password == None:
         print("Missing argument nor valid configuration file")
         sys.exit(1)
@@ -431,4 +438,5 @@ if __name__ == "__main__":
         )
     )
     loop.run_until_complete(future)
-    make_activities_file(SQL_FILE, folder, JSON_FILE, file_suffix=file_type)
+    if not is_only_download:
+        make_activities_file(SQL_FILE, folder, JSON_FILE, file_suffix=file_type)
