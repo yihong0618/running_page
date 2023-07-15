@@ -51,7 +51,7 @@ jobs:
       - name: Set Variables
         id: set_variables
         run: |
-          sudo apt-get install libxml2-dev libxslt-dev python3-dev 
+          sudo apt-get install libxml2-dev libxslt-dev python3-dev
           echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_OUTPUT
           echo "PIP_CACHE=$(pip cache dir)" >> $GITHUB_OUTPUT
 
@@ -150,5 +150,5 @@ jobs:
           git config --local user.email "${{ env.GITHUB_EMAIL }}"
           git config --local user.name "${{ env.GITHUB_NAME }}"
           git add .
-          git commit -m 'update new runs' || echo "nothing to commit"
+          git commit -m '[skip ci] update new runs' || echo "nothing to commit"
           git push || echo "nothing to push"
