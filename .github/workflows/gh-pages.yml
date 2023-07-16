@@ -9,9 +9,6 @@ on:
   workflow_run:
     workflows:
       - "Run Data Sync"
-      - "Run Fit File Data Sync"
-      - "Run GPX File Data Sync"
-      - "Run TCX File Data Sync"
     types:
       - completed
 
