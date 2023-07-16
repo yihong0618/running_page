@@ -3,6 +3,9 @@ name: Publish GitHub Pages
 # Controls when the action will run.
 on:
   # trigger when the Run Data Sync workflow succeeded
+  push:
+    paths:
+      - src/**
   workflow_run:
     workflows:
       - "Run Data Sync"
