@@ -4,7 +4,11 @@ name: Publish GitHub Pages
 on:
   # trigger when the Run Data Sync workflow succeeded
   workflow_run:
-    workflows: ["Run Data Sync"]
+    workflows:
+      - "Run Data Sync"
+      - "Run Fit File Data Sync"
+      - "Run GPX File Data Sync"
+      - "Run TCX File Data Sync"
     types:
       - completed
 
