@@ -1,42 +1,28 @@
 import React from 'react';
-import { MAIN_COLOR } from 'src/utils/const';
 import { formatPace, titleForRun, formatRunTime } from 'src/utils/utils';
 import styles from './style.module.scss';
+import { element } from 'prop-types';
 
-const RunRow = ({ runs, run, locateActivity, runIndex, setRunIndex }) => {
+const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }) => {
   const distance = (run.distance / 1000.0).toFixed(2);
-  const pace = run.average_speed;
-
-  const paceParts = pace ? formatPace(pace) : null;
-
+  const paceParts = run.average_speed ? formatPace(run.average_speed) : null;
   const heartRate = run.average_heartrate;
-
   const runTime = formatRunTime(run.moving_time);
-
-  // change click color
-  const handleClick = (e, runs, run) => {
-    const elementIndex = runs.indexOf(run);
-    e.target.parentElement.style.color = 'red';
-
-    const elements = document.getElementsByClassName(styles.runRow);
-    if (runIndex !== -1 && elementIndex !== runIndex) {
-      elements[runIndex].style.color = MAIN_COLOR;
-    }
+  const handleClick = (e) => {
+    if (runIndex === elementIndex) return;
     setRunIndex(elementIndex);
+    locateActivity(run.start_date_local.slice(0, 10));
   };
 
   return (
     <tr
-      className={styles.runRow}
+      className={`${styles.runRow} ${runIndex === elementIndex ? styles.selected : ''}`}
       key={run.start_date_local}
-      onClick={(e) => {
-        handleClick(e, runs, run);
-        locateActivity(run);
-      }}
+      onClick={handleClick}
     >
       <td>{titleForRun(run)}</td>
       <td>{distance}</td>
-      {pace && <td>{paceParts}</td>}
+      {paceParts && <td>{paceParts}</td>}
       <td>{heartRate && heartRate.toFixed(0)}</td>
       <td>{runTime}</td>
       <td className={styles.runDate}>{run.start_date_local}</td>

@@ -36,7 +36,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [ben_29](https://github.com/ben-29)               | <https://running.ben29.xyz>                    | Strava    |
 | [kcllf](https://github.com/kcllf)                 | <https://running-tau.vercel.app>               | Garmin-cn |
 | [mq](https://github.com/MQ-0707)                  | <https://running-iota.vercel.app>              | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://running-page-psi.vercel.app>          | Keep      |
+| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://zhaohongxuan.github.io/workouts>      | Strava    |
 | [yvetterowe](https://github.com/yvetterowe)       | <https://run.haoluo.io>                        | Strava    |
 | [love-exercise](https://github.com/KaiOrange)     | <https://run.kai666666.top>                    | Keep      |
 | [zstone12](https://github.com/zstone12)           | <https://running-page.zstone12.vercel.app>     | Keep      |
@@ -71,6 +71,9 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn |
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
 | [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX    |
+| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun    |
+| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike|
+
 
 </details>
 
@@ -189,6 +192,22 @@ const USE_DASH_LINE = true;
 const LINE_OPACITY = 0.4;
 ```
 
+- privacy protection
+
+setting flowing env:
+```shell
+IGNORE_START_END_RANGE = 200 # ignore distance for each polyline start and end.
+
+IGNORE_RANGE = 200 # ignore meters for each point in below polyline. 
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # a polyline include point you want to ignore. 
+
+# Do filter before saving to database, you will lose some data, but you can protect your privacy, when you using public repo. enable for set 1, disable via unset.
+IGNORE_BEFORE_SAVING = 
+```
+
+You can using [this](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
+
+
 ## Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
 
 ### GPX
@@ -225,7 +244,10 @@ python3(python) scripts/tcx_sync.py
 <summary>Get your <code>Garmin</code> data</summary>
 <br>
 If you only want to sync `type running` add args --only-run
+
 If you only want `tcx` files add args --tcx
+
+If you only want `fit` files add args --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
@@ -251,7 +273,10 @@ python3(python) scripts/garmin_sync.py example@gmail.com example --only-run
 <summary>Get your <code>Garmin-CN</code> data</summary>
 <br>
 If you only want to sync `type running` add args --only-run
+
 If you only want `tcx` files add args --tcx
+
+If you only want `fit` files add args --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
@@ -371,6 +396,7 @@ curl -X POST https://www.strava.com/oauth/token \
 7. Sync `Strava` data
 
 > The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running.
+If you only want to sync `type running` add args --only-run
 
 ```python
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
@@ -500,6 +526,16 @@ if your garmin account region is **China**, you need to execute the command:
 
 ```python
 python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+```
+
+If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc. 
+
+<img width="830" alt="image" src="https://github.com/yihong0618/running_page/assets/8613196/b5076942-3133-4c89-ad66-a828211667dc">
+
+the final command will be:
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
 ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**

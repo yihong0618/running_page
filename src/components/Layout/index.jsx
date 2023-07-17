@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
   const { siteTitle, description } = useSiteMetadata();
 
   return (
-    <div>
+    <>
       <Helmet bodyAttributes={{ class: styles.body }}>
         <html lang="en" />
         <title>{siteTitle}</title>
@@ -22,8 +22,8 @@ const Layout = ({ children }) => {
         />
       </Helmet>
       <Header />
-      <div className="pa3 pa5-l">{children}</div>
-    </div>
+      <div className="pa3 pa5-l mb5 cf">{children}</div>
+    </>
   );
 };
 

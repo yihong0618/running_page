@@ -58,6 +58,18 @@ const scrollToMap = () => {
   window.scroll(rect.left + window.scrollX, rect.top + window.scrollY);
 };
 
+const pattern = /([\u4e00-\u9fa5]{2,}(市|自治州))/g;
+const extractLocations = (str) => {
+  const locations = [];
+  let match;
+  
+  while ((match = pattern.exec(str)) !== null) {
+    locations.push(match[0]);
+  }
+  
+  return locations;
+};
+
 const cities = chinaCities.map((c) => c.name);
 // what about oversea?
 const locationForRun = (run) => {
@@ -66,11 +78,14 @@ const locationForRun = (run) => {
   if (location) {
     // Only for Chinese now
     // should fiter 臺灣
-    const cityMatch = location.match(/[\u4e00-\u9fa5]{2,}(市|自治州)/);
+    const cityMatch = extractLocations(location);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
+
     if (cityMatch) {
       [city] = cityMatch;
-      if (!cities.includes(city)) {
+	    city = cities.find(value => cityMatch.includes(value));
+	  
+      if (!city) {
         city = '';
       }
     }

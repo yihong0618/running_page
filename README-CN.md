@@ -32,7 +32,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [ben_29](https://github.com/ben-29)               | <https://running.ben29.xyz>                    | Strava    |
 | [kcllf](https://github.com/kcllf)                 | <https://running-tau.vercel.app>               | Garmin-cn |
 | [mq](https://github.com/MQ-0707)                  | <https://running-iota.vercel.app>              | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://running-page-psi.vercel.app>          | Keep      |
+| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://zhaohongxuan.github.io/workouts>      | Strava    |
 | [yvetterowe](https://github.com/yvetterowe)       | <https://run.haoluo.io>                        | Strava    |
 | [love-exercise](https://github.com/KaiOrange)     | <https://run.kai666666.top>                    | Keep      |
 | [zstone12](https://github.com/zstone12)           | <https://running-page.zstone12.vercel.app>     | Keep      |
@@ -72,6 +72,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
 | [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX    |
 | [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro/>                     | Garmin    |
+| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun    |
+| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike|
 
 </details>
 
@@ -116,6 +118,11 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
+
+## 视频教程
+
+- https://www.youtube.com/watch?v=reLiY9p8EJk
+- https://www.youtube.com/watch?v=VdNkFxTX5QQ
 
 ## 下载
 
@@ -198,6 +205,22 @@ const USE_DASH_LINE = true;
 // styling: 透明度：[0, 1]
 const LINE_OPACITY = 0.4;
 ```
+
+- 隐私保护：
+
+设置下面环境变量：
+
+```shell
+IGNORE_START_END_RANGE = 200 # 忽略每个 polyline 的起点和终点的长度（单位：米）。
+
+IGNORE_RANGE = 200 # 忽略下面 polyline 中每个点的距离的圆圈（单位：米）。
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # 包含要忽略的点的折线。 
+
+# 在保存到数据库之前进行过滤，你会丢失一些数据，但可以保护你的隐私，如果你使用的是公共仓库，建议设置为1。不设置可关闭。
+IGNORE_BEFORE_SAVING = 1
+```
+
+你可一用[这个](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
 
 ## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据，[别忘了在 `total` 页面生成可视化 SVG](#total-data-analysis)
 
@@ -409,7 +432,10 @@ python3(python) scripts/tulipsport_sync.py nLgy****RyahI
 <summary>获取您的 Garmin 数据</summary>
 <br>
 如果你只想同步跑步数据增加命令 --only-run
+
 如果你想同步 `tcx` 格式，增加命令 --tcx
+
+如果你想同步 `fit` 格式，增加命令 --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
@@ -428,7 +454,11 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 <details>
 <summary>获取您的 Garmin-CN 数据</summary>
 
-> 如果你只想同步跑步数据请增加 --only-run
+如果你只想同步跑步数据请增加 --only-run
+
+如果你想同步 `tcx` 格式，增加命令 --tcx
+
+如果你想同步 `fit` 格式，增加命令 --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
@@ -539,6 +569,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 > 第一次同步 Strava 数据时需要更改在 strava_sync.py 中的第 12 行代码 False 改为 True，运行完成后，再改为 False。
 
+如果你只想同步跑步数据增加命令 --only-run
 ```python
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
@@ -666,6 +697,17 @@ python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }}
 
 ```python
 python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+```
+
+如果要在同步到Garmin的运动记录中添加Garmin设备信息，需要添加`--use_fake_garmin_device`参数，这将在同步的Garmin锻炼记录中添加一个Garmin设备（默认情况下为 `Garmin Forerunner 245`，您可以在`garmin_device_adaptor.py`中更改设备信息），运动记录中有了设备信息之后就可以同步到其他APP中，比如数字心动（攒上马积分）这类不能通过Apple Watch同步的APP，当然也可以同步到Keep，悦跑圈，咕咚等APP。
+
+<img width="830" alt="image" src="https://github.com/yihong0618/running_page/assets/8613196/b5076942-3133-4c89-ad66-a828211667dc">
+
+
+最终执行的命令如下：
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
 注意：**首次初始化的时候，如果你有大量的 strava 跑步数据，可能有些数据会上传失败，只需要多重试几次即可。**
