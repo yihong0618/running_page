@@ -8,11 +8,11 @@ const LocationSummary = () => {
   return (
     <div style={{ cursor: 'pointer' }}>
       <section>
-        {years && <Stat value={`${years.length}`} description=" 年里我跑过" />}
-        {countries && <Stat value={countries.length} description=" 个国家" />}
-        {provinces && <Stat value={provinces.length} description=" 个省份" />}
+        {years && <Stat value={`${years.length}`} description=" Years" />}
+        {countries && <Stat value={countries.length} description=" Countries" />}
+        {provinces && <Stat value={provinces.length} description=" Provinces" />}
         {cities && (
-          <Stat value={Object.keys(cities).length} description=" 个城市" />
+          <Stat value={Object.keys(cities).length} description=" Cities" />
         )}
       </section>
       <hr color="red" />
