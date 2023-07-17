@@ -275,7 +275,6 @@ class Track:
         self.polylines.append(_polylines)
         self.polyline_str = polyline.encode(self.polyline_container)
 
-
     def append(self, other):
         """Append other track to self."""
         self.end_time = other.end_time
