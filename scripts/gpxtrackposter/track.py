@@ -225,59 +225,56 @@ class Track:
         _polylines = []
         self.polyline_container = []
 
-        try:
-            for record in fit.records:
-                message = record.message
+        for record in fit.records:
+            message = record.message
 
-                if isinstance(message, RecordMessage):
-                    if message.position_lat and message.position_long:
-                        _polylines.append(
-                            s2.LatLng.from_degrees(
-                                message.position_lat, message.position_long
-                            )
+            if isinstance(message, RecordMessage):
+                if message.position_lat and message.position_long:
+                    _polylines.append(
+                        s2.LatLng.from_degrees(
+                            message.position_lat, message.position_long
                         )
-                        self.polyline_container.append(
-                            [message.position_lat, message.position_long]
-                        )
-                elif isinstance(message, SessionMessage):
-                    self.start_time = datetime.datetime.utcfromtimestamp(
-                        message.start_time / 1000
                     )
-                    self.run_id = message.start_time
-                    self.end_time = datetime.datetime.utcfromtimestamp(
-                        (message.start_time + message.total_elapsed_time * 1000) / 1000
+                    self.polyline_container.append(
+                        [message.position_lat, message.position_long]
                     )
-                    self.length = message.total_distance
-                    self.average_heartrate = (
-                        message.avg_heart_rate if message.avg_heart_rate != 0 else None
-                    )
-                    self.type = Sport(message.sport).name.lower()
+            elif isinstance(message, SessionMessage):
+                self.start_time = datetime.datetime.utcfromtimestamp(
+                    message.start_time / 1000
+                )
+                self.run_id = message.start_time
+                self.end_time = datetime.datetime.utcfromtimestamp(
+                    (message.start_time + message.total_elapsed_time * 1000) / 1000
+                )
+                self.length = message.total_distance
+                self.average_heartrate = (
+                    message.avg_heart_rate if message.avg_heart_rate != 0 else None
+                )
+                self.type = Sport(message.sport).name.lower()
 
-                    # moving_dict
-                    self.moving_dict["distance"] = message.total_distance
-                    self.moving_dict["moving_time"] = datetime.timedelta(
-                        seconds=message.total_moving_time
-                        if message.total_moving_time
-                        else message.total_timer_time
-                    )
-                    self.moving_dict["elapsed_time"] = datetime.timedelta(
-                        seconds=message.total_elapsed_time
-                    )
-                    self.moving_dict["average_speed"] = (
-                        message.enhanced_avg_speed
-                        if message.enhanced_avg_speed
-                        else message.avg_speed
-                    )
+                # moving_dict
+                self.moving_dict["distance"] = message.total_distance
+                self.moving_dict["moving_time"] = datetime.timedelta(
+                    seconds=message.total_moving_time
+                    if message.total_moving_time
+                    else message.total_timer_time
+                )
+                self.moving_dict["elapsed_time"] = datetime.timedelta(
+                    seconds=message.total_elapsed_time
+                )
+                self.moving_dict["average_speed"] = (
+                    message.enhanced_avg_speed
+                    if message.enhanced_avg_speed
+                    else message.avg_speed
+                )
 
-            self.start_time_local, self.end_time_local = parse_datetime_to_local(
-                self.start_time, self.end_time, self.polyline_container[0]
-            )
-            self.start_latlng = start_point(*self.polyline_container[0])
-            self.polylines.append(_polylines)
-            self.polyline_str = polyline.encode(self.polyline_container)
-        except Exception as e:
-            print(e)
-            pass
+        self.start_time_local, self.end_time_local = parse_datetime_to_local(
+            self.start_time, self.end_time, self.polyline_container[0]
+        )
+        self.start_latlng = start_point(*self.polyline_container[0])
+        self.polylines.append(_polylines)
+        self.polyline_str = polyline.encode(self.polyline_container)
+
 
     def append(self, other):
         """Append other track to self."""

@@ -8,5 +8,5 @@ from config import JSON_FILE, SQL_FILE, FIT_FOLDER
 from utils import make_activities_file
 
 if __name__ == "__main__":
-    print("only sync gpx files in FIT_OUT")
+    print("only sync fit files in FIT_OUT")
     make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, "fit")
