@@ -2,6 +2,7 @@ import os
 from config import SYNCED_FILE_NAME
 import json
 
+
 def save_synced_data_file_list(data_dir: str, file_list: list):
     data_dir = os.path.abspath(data_dir)
     synced_json_file = os.path.join(data_dir, SYNCED_FILE_NAME)
