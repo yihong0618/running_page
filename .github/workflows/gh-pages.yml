@@ -23,6 +23,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Cache Data Files
+        uses: actions/cache@v2
+        with:
+          path: |
+            FIT_OUT
+            GPX_OUT
+            TCX_OUT
+            activities
+            assets
+            scripts/data.db
+          key: data-files
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.4
         with:
