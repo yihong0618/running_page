@@ -12,6 +12,10 @@ from polyline_processor import filter_out
 from .db import Activity, init_db, update_or_create_activity
 
 
+sys.path.append("..")
+import utils
+
+
 IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
 
 
@@ -78,13 +82,19 @@ class Generator:
         if not tracks:
             print("No tracks found.")
             return
+
+        synced_files = []
+
         for t in tracks:
             created = update_or_create_activity(self.session, t.to_namedtuple())
             if created:
                 sys.stdout.write("+")
+                synced_files.extend(t.file_names)
             else:
                 sys.stdout.write(".")
             sys.stdout.flush()
+
+        utils.save_synced_data_file_list(data_dir, synced_files)
 
         self.session.commit()
 
@@ -93,10 +103,12 @@ class Generator:
             print("No tracks found.")
             return
         print("Syncing tracks '+' means new track '.' means update tracks")
+        synced_files = []
         for t in app_tracks:
             created = update_or_create_activity(self.session, t)
             if created:
                 sys.stdout.write("+")
+                synced_files.extend(t.file_names)
             else:
                 sys.stdout.write(".")
             sys.stdout.flush()
