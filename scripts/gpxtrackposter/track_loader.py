@@ -20,7 +20,7 @@ from .exceptions import ParameterError, TrackLoadError
 from .track import Track
 from .year_range import YearRange
 
-import utils
+from synced_data_file_logger import load_synced_file_list
 
 log = logging.getLogger(__name__)
 
@@ -169,7 +169,7 @@ class TrackLoader:
 
     @staticmethod
     def _list_data_files(data_dir, file_suffix):
-        synced_files = utils.load_synced_file_list(data_dir)
+        synced_files = load_synced_file_list(data_dir)
         data_dir = os.path.abspath(data_dir)
         if not os.path.isdir(data_dir):
             raise ParameterError(f"Not a directory: {data_dir}")

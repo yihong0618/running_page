@@ -13,7 +13,7 @@ from .db import Activity, init_db, update_or_create_activity
 
 
 sys.path.append("..")
-import utils
+from synced_data_file_logger import save_synced_data_file_list
 
 
 IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
@@ -94,7 +94,7 @@ class Generator:
                 sys.stdout.write(".")
             sys.stdout.flush()
 
-        utils.save_synced_data_file_list(data_dir, synced_files)
+        save_synced_data_file_list(data_dir, synced_files)
 
         self.session.commit()
 
