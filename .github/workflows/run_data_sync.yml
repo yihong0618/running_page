@@ -31,10 +31,10 @@ env:
   GITHUB_EMAIL: enum@foxmail.com
 
   # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
-  IGNORE_START_END_RANGE:  # Unit meter
+  IGNORE_START_END_RANGE: 0 # Unit meter
   # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
   IGNORE_POLYLINE: "ktjrFoemeU~IorGq}DeB"
-  IGNORE_RANGE:  # Unit meter
+  IGNORE_RANGE: 0 # Unit meter
 
 jobs:
   sync:
