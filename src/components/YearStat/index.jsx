@@ -62,11 +62,7 @@ const YearStat = ({ year, onClick }) => {
         <Stat value={runs.length} description=" Runs" />
         <Stat value={sumDistance} description=" KM" />
         <Stat value={avgPace} description=" Avg Pace" />
-        <Stat
-          value={`${streak} day`}
-          description=" Streak"
-          className="mb0 pb0"
-        />
+        <Stat value={`${streak} day`} description=" Streak" />
         {hasHeartRate && (
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
         )}
