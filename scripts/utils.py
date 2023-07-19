@@ -23,10 +23,10 @@ def adjust_time_to_utc(time, tz_name):
     return time - tc_offset
 
 
-def adjust_timestemp_to_utc(timestemp, tz_name):
+def adjust_timestamp_to_utc(timestamp, tz_name):
     tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
     delta = int(tc_offset.total_seconds())
-    return int(timestemp) - delta
+    return int(timestamp) - delta
 
 
 def to_date(ts):

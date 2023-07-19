@@ -37,6 +37,13 @@ def load_tcx_file(file_name):
     return t
 
 
+def load_fit_file(file_name):
+    """Load an individual FIT file as a track by using Track.load_fit()"""
+    t = Track()
+    t.load_fit(file_name)
+    return t
+
+
 class TrackLoader:
     """
     Attributes:
@@ -55,6 +62,7 @@ class TrackLoader:
         self.load_func_dict = {
             "gpx": load_gpx_file,
             "tcx": load_tcx_file,
+            "fit": load_fit_file,
         }
 
     def load_tracks(self, data_dir, file_suffix):
