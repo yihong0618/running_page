@@ -1,7 +1,6 @@
 import json
 import time
 from datetime import datetime
-from config import SYNCED_FILE_NAME
 
 import pytz
 import os

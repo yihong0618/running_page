@@ -11,8 +11,6 @@ from polyline_processor import filter_out
 
 from .db import Activity, init_db, update_or_create_activity
 
-
-sys.path.append("..")
 from synced_data_file_logger import save_synced_data_file_list
 
 
