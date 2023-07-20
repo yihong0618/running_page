@@ -74,6 +74,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun    |
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike|
 | [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava    |
+| [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn |
 
 
 </details>
