@@ -35,7 +35,7 @@ const RunMap = ({
         mapRef.current = ref;
         const map = ref.getMap();
         if (map && IS_CHINESE) {
-          map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
+          map.addControl(new MapboxLanguage({ defaultLanguage: 'en-US' }));
           if (!ROAD_LABEL_DISPLAY) {
             // todo delete layers
             map.on('load', () => {
