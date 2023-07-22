@@ -92,7 +92,7 @@ class Generator:
                 sys.stdout.write(".")
             sys.stdout.flush()
 
-        save_synced_data_file_list(data_dir, synced_files)
+        save_synced_data_file_list(synced_files)
 
         self.session.commit()
 
