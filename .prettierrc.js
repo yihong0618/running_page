@@ -1,6 +1,12 @@
+'use strict';
+
 module.exports = {
-    trailingComma: 'es5',
-    tabWidth: 4,
-    semi: false,
-    singleQuote: true,
+	bracketSpacing: false,
+	singleQuote: true,
+	jsxBracketSameLine: true,
+	trailingComma: 'es5',
+	printWidth: 80,
+	tabWidth: 2,
+	parser: 'flow',
+	arrowParens: 'avoid',
 };
