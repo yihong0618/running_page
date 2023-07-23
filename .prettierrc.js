@@ -9,4 +9,5 @@ module.exports = {
 	tabWidth: 2,
 	parser: 'flow',
 	arrowParens: 'avoid',
+	semi: false
 };

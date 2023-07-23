@@ -4,24 +4,25 @@
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.4.3",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.39",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^3.4.0"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -36,17 +37,13 @@
     ]
   },
   "devDependencies": {
-    "@rollup/plugin-terser": "^0.4.3",
-    "autoprefixer": "^10.4.14",
-    "eslint": "^7.32.0 || ^8.2.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-import": "2.25.3",
-    "eslint-plugin-jsx-a11y": "6.5.1",
-    "postcss": "^8.4.27",
+    "@typescript-eslint/eslint-plugin": "5.52.0",
+    "eslint": "8.0.1",
+    "eslint-config-standard-with-typescript": "^37.0.0",
+    "eslint-plugin-import": "2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "6.0.0",
     "prettier": "^3.0.0",
-    "svgo": "^3.0.2",
-    "tailwindcss": "^3.3.3",
-    "typescript": "4.1.6",
-    "workbox-background-sync": "6.6.0"
+    "typescript": "4.1.6"
   }
 }

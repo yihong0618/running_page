@@ -1,23 +1,38 @@
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
+  "env": {
+    "browser": true,
+    "es2021": true
   },
-  extends: 'airbnb',
-  overrides: [
-    {
-      env: {
-        node: true,
-      },
-      files: ['.eslintrc.{js,cjs}'],
-      parserOptions: {
-        sourceType: 'script',
-      },
-    },
+  "extends": [
+    "standard-with-typescript",
+    "plugin:react/recommended"
   ],
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
+  "overrides": [
+    {
+      "env": {
+        "node": true
+      },
+      "files": [
+        ".eslintrc.{js,cjs}"
+      ],
+      "parserOptions": {
+        "sourceType": "script"
+      }
+    }
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
-  rules: {},
-};
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+  },
+  "settings": {
+    react: {
+      version: 'detect'
+    }
+  }
+}
