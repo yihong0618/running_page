@@ -142,7 +142,7 @@ docker run -itd -p 80:80   running_page:latest
 
 ```javascript
 const MAPBOX_TOKEN =
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+  "pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q";
 ```
 
 ### 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.js`
