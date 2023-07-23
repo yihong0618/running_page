@@ -10,7 +10,7 @@ RUN apt-get update \
         && pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/ \
         && pip3 install -r requirements.txt
 
-FROM node:14  AS develop-node
+FROM node:16  AS develop-node
 WORKDIR /root/running_page
 COPY ./package.json /root/running_page/package.json
 COPY ./yarn.lock /root/running_page/yarn.lock
