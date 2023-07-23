@@ -1,68 +1,44 @@
 {
-  "name": "running-page",
-  "description": "running-page",
-  "version": "2.0.0",
+  "name": "my-app",
+  "version": "0.1.0",
   "private": true,
-  "author": "Yi Hong <zouzou0208@gmail.com>",
-  "license": "MIT",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "eslint src --fix && pnpm format",
-    "lint:strict": "eslint src --max-warnings=0 ",
-    "typecheck": "tsc --noEmit --incremental false",
-    "test:watch": "jest --watch",
-    "test": "jest",
-    "format": "prettier -w .",
-    "format:check": "prettier -c .",
-    "postbuild": "next-sitemap --config next-sitemap.config.js",
-    "prepare": "husky install"
-  },
   "dependencies": {
-    "clsx": "^1.2.1",
-    "next": "^13.4.6",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.9.0",
-    "tailwind-merge": "^1.13.2",
-    "@headlessui/react": "^1.7.15"
+    "react-scripts": "5.0.1",
+    "web-vitals": "^3.4.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
-    "@commitlint/cli": "^16.3.0",
-    "@commitlint/config-conventional": "^16.2.4",
-    "@svgr/webpack": "^6.5.1",
-    "@tailwindcss/forms": "^0.5.3",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@types/react": "^18.2.13",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
-    "@typescript-eslint/parser": "^5.60.0",
-    "autoprefixer": "^10.4.14",
-    "eslint": "^8.43.0",
-    "eslint-config-next": "^13.4.6",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
-    "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^7.0.4",
-    "jest": "^27.5.1",
-    "lint-staged": "^12.5.0",
-    "next-router-mock": "^0.8.0",
-    "next-sitemap": "^2.5.28",
-    "postcss": "^8.4.24",
-    "prettier": "^2.8.8",
-    "prettier-plugin-tailwindcss": "^0.1.13",
-    "tailwindcss": "^3.3.2",
-    "typescript": "^4.9.5"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "eslint --max-warnings=1",
-      "prettier -w"
-    ],
-    "**/*.{json,css,scss,md,webmanifest}": [
-      "prettier -w"
-    ]
+    "@rollup/plugin-terser": "^0.4.3",
+    "svgo": "^3.0.2",
+    "typescript": "4.1.6",
+    "workbox-background-sync": "6.6.0"
   }
 }
