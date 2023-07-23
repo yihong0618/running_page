@@ -21,6 +21,10 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    ".eslintrc.js"
+  ],
+  "exclude": [
+    "**/*.svg"
   ]
 }
