@@ -1,15 +1,17 @@
 import { Analytics } from '@vercel/analytics/react';
 import React, { useEffect, useState } from 'react';
-import Layout from 'src/components/Layout';
-import LocationStat from 'src/components/LocationStat';
-import RunMap from 'src/components/RunMap';
-import RunTable from 'src/components/RunTable';
-import SVGStat from 'src/components/SVGStat';
-import YearsStat from 'src/components/YearsStat';
-import useActivities from 'src/hooks/useActivities';
-import useSiteMetadata from 'src/hooks/useSiteMetadata';
-import { IS_CHINESE } from 'src/utils/const';
+import Layout from '@/components/Layout';
+import LocationStat from '@/components/LocationStat';
+import RunMap from '@/components/RunMap';
+import RunTable from '@/components/RunTable';
+import SVGStat from '@/components/SVGStat';
+import YearsStat from '@/components/YearsStat';
+import useActivities from '@/hooks/useActivities';
+import useSiteMetadata from '@/hooks/useSiteMetadata';
+import { IS_CHINESE } from '@/utils/const';
 import {
+  Activity,
+  IViewport,
   filterAndSortRuns,
   filterCityRuns,
   filterTitleRuns,
@@ -19,7 +21,7 @@ import {
   scrollToMap,
   sortDateFunc,
   titleForShow,
-} from 'src/utils/utils';
+} from '@/utils/utils';
 
 const Index = () => {
   const { siteTitle } = useSiteMetadata();
@@ -33,50 +35,57 @@ const Index = () => {
   const [geoData, setGeoData] = useState(geoJsonForRuns(runs));
   // for auto zoom
   const bounds = getBoundsForGeoData(geoData);
-  const [intervalId, setIntervalId] = useState();
+  const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
 
-  const [viewport, setViewport] = useState({
+  const [viewport, setViewport] = useState<IViewport>({
     ...bounds,
   });
 
-  const changeByItem = (item, name, func, isChanged) => {
+  const changeByItem = (
+    item: string,
+    name: string,
+    func: (_run: Activity, _value: string) => boolean
+  ) => {
     scrollToMap();
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
     setTitle(`${item} ${name} Running Heatmap`);
   };
 
-  const changeYear = (y) => {
-    const isChanged = y === year;
+  const changeYear = (y: string) => {
     // default year
     setYear(y);
 
-    if (viewport.zoom > 3) {
+    if ((viewport.zoom ?? 0) > 3) {
       setViewport({
         ...bounds,
       });
     }
 
-    changeByItem(y, 'Year', filterYearRuns, isChanged);
+    changeByItem(y, 'Year', filterYearRuns);
     clearInterval(intervalId);
   };
 
-  const changeCity = (city) => {
-    changeByItem(city, 'City', filterCityRuns, false);
+  const changeCity = (city: string) => {
+    changeByItem(city, 'City', filterCityRuns);
   };
 
-  const changeTitle = (title) => {
-    changeByItem(title, 'Title', filterTitleRuns, false);
+  const changeTitle = (title: string) => {
+    changeByItem(title, 'Title', filterTitleRuns);
   };
 
-  const locateActivity = (runDate) => {
-    const activitiesOnDate = runs.filter((r) => r.start_date_local.slice(0, 10) === runDate);
+  const locateActivity = (runDate: string) => {
+    const activitiesOnDate = runs.filter(
+      (r) => r.start_date_local.slice(0, 10) === runDate
+    );
 
     if (!activitiesOnDate.length) {
       return;
     }
 
-    const sortedActivities = activitiesOnDate.sort((a, b) => b.distance - a.distance);
+    const sortedActivities = activitiesOnDate.sort(
+      (a, b) => b.distance - a.distance
+    );
     const info = sortedActivities[0];
 
     if (!info) {
@@ -117,27 +126,29 @@ const Index = () => {
       return;
     }
 
-    let svgStat = document.getElementById('svgStat')
+    let svgStat = document.getElementById('svgStat');
     if (!svgStat) {
-      return
+      return;
     }
     svgStat.addEventListener('click', (e) => {
-      const target = e.target;
+      const target = e.target as HTMLElement;
       if (target) {
-        const tagName = target.tagName.toLowerCase()
+        const tagName = target.tagName.toLowerCase();
 
-        if ((tagName === 'rect' &&
-          parseFloat(target.getAttribute('width')) === 2.6 &&
-          parseFloat(target.getAttribute('height')) === 2.6 &&
-          target.getAttribute('fill') !== '#444444'
-        ) || (
-            tagName === 'polyline'
-          )) {
-          const [runDate] = target.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [`${+thisYear + 1}`];
-          locateActivity(runDate)
+        if (
+          (tagName === 'rect' &&
+            parseFloat(target.getAttribute('width') as string) === 2.6 &&
+            parseFloat(target.getAttribute('height') as string) === 2.6 &&
+            target.getAttribute('fill') !== '#444444') ||
+          tagName === 'polyline'
+        ) {
+          const [runDate] = target.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
+            `${+thisYear + 1}`,
+          ];
+          locateActivity(runDate);
         }
       }
-    })
+    });
   }, [year]);
 
   return (
@@ -146,7 +157,7 @@ const Index = () => {
         <h1 className="f1 fw9 i">
           <a href="/">{siteTitle}</a>
         </h1>
-        {viewport.zoom <= 3 && IS_CHINESE ? (
+        {(viewport.zoom ?? 0) <= 3 && IS_CHINESE ? (
           <LocationStat
             changeYear={changeYear}
             changeCity={changeCity}

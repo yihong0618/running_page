@@ -31,8 +31,7 @@
     "styled-components": "^5.3.5",
     "tachyons": "^4.12.0",
     "tachyons-sass": "git+https://github.com/tachyons-css/tachyons-sass.git",
-    "viewport-mercator-project": "^7.0.4",
-    "webpack": "^5.73.0"
+    "viewport-mercator-project": "^7.0.4"
   },
   "license": "MIT",
   "private": true,
@@ -45,9 +44,9 @@
     "develop": "gatsby develop",
     "serve": "gatsby serve",
     "serve-prefix": "gatsby serve --prefix-paths",
-    "lint": "eslint --ext .js,.jsx src --fix",
-    "check": "npx prettier --write {*,src/**/*}.{js,jsx,scss,json,md,yaml}",
-    "ci": "yarn run check && yarn run build && yarn run test"
+    "lint": "eslint --ext .ts,.tsx src --fix",
+    "check": "npx prettier --write src/**/*.{scss,json,ts,tsx} *.{md,yaml,json,ts,js}",
+    "ci": "yarn run check && yarn run lint && yarn run build && yarn run test"
   },
   "engineStrict": true,
   "browserslist": "defaults, not ie 11",
@@ -59,10 +58,13 @@
     "url": "https://github.com/yihong0618/running_page"
   },
   "devDependencies": {
+    "@types/mapbox__polyline": "^1.0.2",
+    "@types/node": "^20.3.3",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
     "@types/react-helmet": "^6.1.6",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
-    "babel-eslint": "^10.1.0",
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -71,7 +73,7 @@
     "prettier": "2.8.8",
     "react-is": "^18.2.0",
     "react-server-dom-webpack": "^0.0.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.6"
   },
   "volta": {
     "node": "18.16.0",

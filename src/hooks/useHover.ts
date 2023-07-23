@@ -1,8 +1,10 @@
 import { useState } from 'react';
 
-const useHover = () => {
-  const [hovered, setHovered] = useState();
-  const [timer, setTimer] = useState();
+type HoverHook = [boolean, { onMouseOver: () => void; onMouseOut: () => void }];
+
+const useHover = (): HoverHook => {
+  const [hovered, setHovered] = useState(false);
+  const [timer, setTimer] = useState<NodeJS.Timeout>();
 
   const eventHandlers = {
     onMouseOver() {

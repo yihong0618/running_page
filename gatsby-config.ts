@@ -1,6 +1,6 @@
-/* eslint-disable no-undef */
-// eslint-disable-next-line no-undef
-module.exports = {
+import type { GatsbyConfig } from 'gatsby';
+
+const config: GatsbyConfig = {
   pathPrefix: process.env.PATH_PREFIX || '/',
   siteMetadata: {
     siteTitle: 'Running Page',
@@ -45,7 +45,10 @@ module.exports = {
     {
       resolve: 'gatsby-alias-imports',
       options: {
-        rootFolder: '.',
+        aliases: {
+          '@': 'src/',
+          '@assets': 'assets/',
+        },
       },
     },
     {
@@ -81,3 +84,5 @@ module.exports = {
     },
   ],
 };
+
+export default config;

@@ -1,17 +1,17 @@
 import React from 'react';
-import Stat from 'src/components/Stat';
-import useActivities from 'src/hooks/useActivities';
-import useHover from 'src/hooks/useHover';
-import { formatPace } from 'src/utils/utils';
+import Stat from '@/components/Stat';
+import useActivities from '@/hooks/useActivities';
+import useHover from '@/hooks/useHover';
+import { formatPace } from '@/utils/utils';
 import styles from './style.module.scss';
 
-const YearStat = ({ year, onClick }) => {
+const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) => void }) => {
   let { activities: runs, years } = useActivities();
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component
   const YearSVG = React.lazy(() =>
-    import(`assets/year_${year}.svg`).catch(() => ({
+    import(`@assets/year_${year}.svg`).catch(() => ({
       default: () => <div />,
     }))
   );

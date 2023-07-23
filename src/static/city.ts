@@ -1,4 +1,11 @@
-const chinaCities = [
+interface ICity {
+  code: string;
+  name: string;
+  province: string;
+  city?: string;
+}
+
+export const chinaCities: ICity[] = [
   {
     code: '130100',
     name: '石家庄市',
@@ -2192,5 +2199,3 @@ const chinaCities = [
     province: '82',
   },
 ];
-
-export { chinaCities };

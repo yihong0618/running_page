@@ -1,9 +1,9 @@
 import React from 'react';
-import Stat from 'src/components/Stat';
-import useActivities from 'src/hooks/useActivities';
+import Stat from '@/components/Stat';
+import useActivities from '@/hooks/useActivities';
 
 // only support China for now
-const CitiesStat = ({ onClick }) => {
+const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
   const { cities } = useActivities();
 
   const citiesArr = Object.entries(cities);

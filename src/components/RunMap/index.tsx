@@ -1,7 +1,7 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import React, { useRef, useCallback } from 'react';
-import ReactMapGL, { Layer, Source, FullscreenControl } from 'react-map-gl';
-import useActivities from 'src/hooks/useActivities';
+import ReactMapGL, { Layer, Source, FullscreenControl, MapRef } from 'react-map-gl';
+import useActivities from '@/hooks/useActivities';
 import {
   MAP_LAYER_LIST,
   IS_CHINESE,
@@ -12,11 +12,22 @@ import {
   USE_DASH_LINE,
   LINE_OPACITY,
   MAP_HEIGHT,
-} from 'src/utils/const';
-import { geoJsonForMap } from 'src/utils/utils';
+} from '@/utils/const';
+import { Coordinate, IViewport, geoJsonForMap } from '@/utils/utils';
 import RunMarker from './RunMaker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.scss';
+import { FeatureCollection } from 'geojson';
+import { RPGeometry } from '@/static/run_countries';
+
+interface IRunMapProps {
+  title: string;
+  viewport: IViewport;
+  setViewport: (_viewport: IViewport) => void;
+  changeYear: (_year: string) => void;
+  geoData: FeatureCollection<RPGeometry>;
+  thisYear: string;
+}
 
 const RunMap = ({
   title,
@@ -25,11 +36,11 @@ const RunMap = ({
   changeYear,
   geoData,
   thisYear,
-}) => {
+}: IRunMapProps) => {
   const { provinces } = useActivities();
-  const mapRef = useRef();
+  const mapRef = useRef<MapRef>();
   const mapRefCallback = useCallback(
-    (ref) => {
+    (ref: MapRef) => {
       if (ref !== null) {
         mapRef.current = ref;
         const map = ref.getMap();
@@ -52,7 +63,7 @@ const RunMap = ({
   // for geojson format
   filterProvinces.unshift('in', 'name');
 
-  const isBigMap = viewport.zoom <= 3;
+  const isBigMap = (viewport.zoom ?? 0) <= 3;
   if (isBigMap && IS_CHINESE) {
     geoData = geoJsonForMap();
   }
@@ -60,12 +71,12 @@ const RunMap = ({
   const isSingleRun =
     geoData.features.length === 1 &&
     geoData.features[0].geometry.coordinates.length;
-  let startLon;
-  let startLat;
-  let endLon;
-  let endLat;
+  let startLon = 0;
+  let startLat = 0;
+  let endLon = 0;
+  let endLat = 0;
   if (isSingleRun) {
-    const points = geoData.features[0].geometry.coordinates;
+    const points = geoData.features[0].geometry.coordinates as Coordinate[];
     [startLon, startLat] = points[0];
     [endLon, endLat] = points[points.length - 1];
   }

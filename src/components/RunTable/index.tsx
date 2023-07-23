@@ -3,9 +3,20 @@ import {
   sortDateFunc,
   sortDateFuncReverse,
   convertMovingTime2Sec,
-} from 'src/utils/utils';
+  Activity,
+} from '@/utils/utils';
 import RunRow from './RunRow';
 import styles from './style.module.scss';
+
+interface IRunTableProperties {
+  runs: Activity[];
+  locateActivity: (_date: string) => void;
+  setActivity: (_runs: Activity[]) => void;
+  runIndex: number;
+  setRunIndex: (_index: number) => void;
+}
+
+type SortFunc = (_a: Activity, _b: Activity) => number;
 
 const RunTable = ({
   runs,
@@ -13,20 +24,21 @@ const RunTable = ({
   setActivity,
   runIndex,
   setRunIndex,
-}) => {
+}: IRunTableProperties) => {
   const [sortFuncInfo, setSortFuncInfo] = useState('');
   // TODO refactor?
-  const sortKMFunc = (a, b) =>
+  const sortKMFunc: SortFunc = (a, b) =>
     sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance;
-  const sortPaceFunc = (a, b) =>
+  const sortPaceFunc: SortFunc = (a, b) =>
     sortFuncInfo === 'Pace'
       ? a.average_speed - b.average_speed
       : b.average_speed - a.average_speed;
-  const sortBPMFunc = (a, b) =>
-    sortFuncInfo === 'BPM'
-      ? a.average_heartrate - b.average_heartrate
-      : b.average_heartrate - a.average_heartrate;
-  const sortRunTimeFunc = (a, b) => {
+  const sortBPMFunc: SortFunc = (a, b) => {
+    return sortFuncInfo === 'BPM'
+      ? a.average_heartrate ?? 0 - (b.average_heartrate ?? 0)
+      : b.average_heartrate ?? 0 - (a.average_heartrate ?? 0);
+  }
+  const sortRunTimeFunc: SortFunc = (a, b) => {
     const aTotalSeconds = convertMovingTime2Sec(a.moving_time);
     const bTotalSeconds = convertMovingTime2Sec(b.moving_time);
     return sortFuncInfo === 'Time'
@@ -43,8 +55,8 @@ const RunTable = ({
     ['Date', sortDateFuncClick],
   ]);
 
-  const handleClick = (e) => {
-    const funcName = e.target.innerHTML;
+  const handleClick: React.MouseEventHandler<HTMLElement> = (e) => {
+    const funcName = (e.target as HTMLElement).innerHTML;
     const f = sortFuncMap.get(funcName);
 
     setRunIndex(-1)

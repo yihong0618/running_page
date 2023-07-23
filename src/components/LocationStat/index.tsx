@@ -1,14 +1,20 @@
 import React from 'react';
-import YearStat from 'src/components/YearStat';
+import YearStat from '@/components/YearStat';
 import {
   CHINESE_LOCATION_INFO_MESSAGE_FIRST,
   CHINESE_LOCATION_INFO_MESSAGE_SECOND,
-} from 'src/utils/const';
+} from '@/utils/const';
 import CitiesStat from './CitiesStat';
 import LocationSummary from './LocationSummary';
 import PeriodStat from './PeriodStat';
 
-const LocationStat = ({ changeYear, changeCity, changeTitle }) => (
+interface ILocationStatProps {
+  changeYear: (_year: string) => void;
+  changeCity: (_city: string) => void;
+  changeTitle: (_title: string) => void;
+}
+
+const LocationStat = ({ changeYear, changeCity, changeTitle }: ILocationStatProps) => (
   <div className="w-100 w-100-l pb5 pr5-l">
     <section className="pb4" style={{ paddingBottom: '0rem' }}>
       <p style={{ lineHeight: 1.8 }}>

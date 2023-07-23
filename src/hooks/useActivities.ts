@@ -1,8 +1,14 @@
 import { useStaticQuery, graphql } from 'gatsby';
-import { locationForRun, titleForRun } from 'src/utils/utils';
+import { locationForRun, titleForRun, Activity } from '@/utils/utils';
+
+interface IActivityResult {
+  allActivitiesJson: {
+    nodes: Activity[];
+  };
+}
 
 const useActivities = () => {
-  const { allActivitiesJson } = useStaticQuery(
+  const { allActivitiesJson } = useStaticQuery<IActivityResult>(
     graphql`
       query AllActivities {
         allActivitiesJson {
@@ -27,11 +33,11 @@ const useActivities = () => {
   );
 
   const activities = allActivitiesJson.nodes;
-  const cities = {};
-  const runPeriod = {};
-  const provinces = new Set();
-  const countries = new Set();
-  let years = new Set();
+  const cities: Record<string, number> = {};
+  const runPeriod: Record<string, number> = {};
+  const provinces: Set<string> = new Set();
+  const countries: Set<string> = new Set();
+  let years: Set<string> = new Set();
   let thisYear = '';
 
   activities.forEach((run) => {
@@ -55,12 +61,12 @@ const useActivities = () => {
     years.add(year);
   });
 
-  years = [...years].sort().reverse();
-  if (years) [thisYear] = years; // set current year as first one of years array
+  let yearsArray = [...years].sort().reverse();
+  if (years) [thisYear] = yearsArray; // set current year as first one of years array
 
   return {
     activities,
-    years,
+    years: yearsArray,
     countries: [...countries],
     provinces: [...provinces],
     cities,
