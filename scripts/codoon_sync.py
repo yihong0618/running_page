@@ -57,6 +57,13 @@ client_id = "099cce28c05f6c39ad5e04e51ed60704"
 # for multi sports
 TYPE_DICT = {
     0: "Hike",
+    1: "Run",
+    2: "Ride",
+}
+
+# for tcx type
+TCX_TYPE_DICT = {
+    0: "Hike",
     1: "Running",
     2: "Ride",
 }
@@ -143,7 +150,7 @@ def tcx_output(fit_array, run_data):
     activities = ET.Element("Activities")
     training_center_database.append(activities)
     # sport type
-    sports_type = TYPE_DICT.get(run_data["sports_type"])
+    sports_type = TCX_TYPE_DICT.get(run_data["sports_type"])
     # activity
     activity = ET.Element("Activity", {"Sport": sports_type})
     activities.append(activity)
