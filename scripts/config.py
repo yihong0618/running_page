@@ -18,6 +18,7 @@ FOLDER_DICT = {
 }
 SQL_FILE = os.path.join(parent, "scripts", "data.db")
 JSON_FILE = os.path.join(parent, "src", "static", "activities.json")
+SYNCED_FILE = os.path.join(parent, "imported.json")
 
 # TODO: Move into nike_sync
 BASE_URL = "https://api.nike.com/sport/v3/me"

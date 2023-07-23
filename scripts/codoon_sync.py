@@ -57,7 +57,7 @@ client_id = "099cce28c05f6c39ad5e04e51ed60704"
 # for multi sports
 TYPE_DICT = {
     0: "Hike",
-    1: "Run",
+    1: "Running",
     2: "Ride",
 }
 
