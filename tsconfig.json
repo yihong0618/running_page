@@ -22,7 +22,8 @@
   },
   "include": [
     "src",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    "vite.config.ts"
   ],
   "exclude": [
     "**/*.svg"
