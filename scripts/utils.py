@@ -3,7 +3,6 @@ import time
 from datetime import datetime
 
 import pytz
-import os
 
 try:
     from rich import print

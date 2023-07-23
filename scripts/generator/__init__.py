@@ -87,9 +87,9 @@ class Generator:
             created = update_or_create_activity(self.session, t.to_namedtuple())
             if created:
                 sys.stdout.write("+")
-                synced_files.extend(t.file_names)
             else:
                 sys.stdout.write(".")
+            synced_files.extend(t.file_names)
             sys.stdout.flush()
 
         save_synced_data_file_list(synced_files)
@@ -106,9 +106,9 @@ class Generator:
             created = update_or_create_activity(self.session, t)
             if created:
                 sys.stdout.write("+")
-                synced_files.extend(t.file_names)
             else:
                 sys.stdout.write(".")
+            synced_files.extend(t.file_names)
             sys.stdout.flush()
 
         self.session.commit()
