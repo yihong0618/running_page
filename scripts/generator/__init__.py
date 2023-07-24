@@ -108,7 +108,8 @@ class Generator:
                 sys.stdout.write("+")
             else:
                 sys.stdout.write(".")
-            synced_files.extend(t.file_names)
+            if "file_names" in t:
+                synced_files.extend(t.file_names)
             sys.stdout.flush()
 
         self.session.commit()
