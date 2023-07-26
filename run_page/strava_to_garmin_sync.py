@@ -1,15 +1,14 @@
 import argparse
 import asyncio
 from datetime import datetime, timedelta
-from io import BytesIO
 from xml.etree import ElementTree
 
 import gpxpy
 import gpxpy.gpx
-from config import STRAVA_GARMIN_TYPE_DICT
+from stravaweblib import WebClient, DataFormat
+
 from garmin_sync import Garmin
 from strava_sync import run_strava_sync
-
 from utils import make_strava_client
 
 
@@ -73,31 +72,34 @@ def make_gpx_from_points(title, points_dict_list):
     return gpx.to_xml()
 
 
-async def upload_to_activities(garmin_client, strava_client):
+async def upload_to_activities(
+    garmin_client, strava_client, strava_web_client, format, use_fake_garmin_device
+):
     last_activity = await garmin_client.get_activities(0, 1)
     if not last_activity:
+        print("no garmin activity")
         filters = {}
     else:
         # is this startTimeGMT must have ?
         after_datetime_str = last_activity[0]["startTimeGMT"]
         after_datetime = datetime.strptime(after_datetime_str, "%Y-%m-%d %H:%M:%S")
+        print("garmin last activity date: ", after_datetime)
         filters = {"after": after_datetime}
     strava_activities = list(strava_client.get_activities(**filters))
     files_list = []
+    print("strava activities size: ", len(strava_activities))
+    if not strava_activities:
+        print("no strava activity")
+        return files_list
+
     # strava rate limit
-    for i in strava_activities[:50]:
-        start_time = i.start_date
-        activity_type = i.type
-        # strava steams types info from strava api doc
-        types = ["time", "latlng", "altitude", "heartrate", "velocity_smooth", "temp"]
-        s = strava_client.get_activity_streams(i.id, types=types, resolution="medium")
-        points = generate_strava_run_points(start_time, s)
-        if points:
-            garmin_type = STRAVA_GARMIN_TYPE_DICT.get(activity_type, "running")
-            gpx_doc = make_gpx_from_points("test", points)
-            file = BytesIO(bytes(gpx_doc, "utf8"))
-            files_list.append((file, garmin_type))
-    await garmin_client.upload_activities(files_list)
+    for i in strava_activities[: len(strava_activities)]:
+        try:
+            data = strava_web_client.get_activity_data(i.id, fmt=format)
+            files_list.append(data)
+        except Exception as ex:
+            print("get strava data error: ", ex)
+    await garmin_client.upload_activities_original(files_list, use_fake_garmin_device)
     return files_list
 
 
@@ -108,11 +110,19 @@ if __name__ == "__main__":
     parser.add_argument("strava_refresh_token", help="strava refresh token")
     parser.add_argument("garmin_email", nargs="?", help="email of garmin")
     parser.add_argument("garmin_password", nargs="?", help="password of garmin")
+    parser.add_argument("strava_email", nargs="?", help="email of strava")
+    parser.add_argument("strava_password", nargs="?", help="password of strava")
     parser.add_argument(
         "--is-cn",
         dest="is_cn",
         action="store_true",
         help="if garmin accout is cn",
+    )
+    parser.add_argument(
+        "--use_fake_garmin_device",
+        action="store_true",
+        default=False,
+        help="whether to use a faked Garmin device",
     )
     options = parser.parse_args()
     strava_client = make_strava_client(
@@ -120,14 +130,30 @@ if __name__ == "__main__":
         options.strava_client_secret,
         options.strava_refresh_token,
     )
+    strava_web_client = WebClient(
+        access_token=strava_client.access_token,
+        email=options.strava_email,
+        password=options.strava_password,
+    )
     garmin_auth_domain = "CN" if options.is_cn else ""
 
-    garmin_client = Garmin(
-        options.garmin_email, options.garmin_password, garmin_auth_domain
-    )
-    loop = asyncio.get_event_loop()
-    future = asyncio.ensure_future(upload_to_activities(garmin_client, strava_client))
-    loop.run_until_complete(future)
+    try:
+        garmin_client = Garmin(
+            options.garmin_email, options.garmin_password, garmin_auth_domain
+        )
+        loop = asyncio.get_event_loop()
+        future = asyncio.ensure_future(
+            upload_to_activities(
+                garmin_client,
+                strava_client,
+                strava_web_client,
+                DataFormat.ORIGINAL,
+                options.use_fake_garmin_device,
+            )
+        )
+        loop.run_until_complete(future)
+    except Exception as err:
+        print(err)
 
     # Run the strava sync
     run_strava_sync(

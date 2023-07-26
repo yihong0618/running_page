@@ -12,13 +12,17 @@ import re
 import sys
 import time
 import traceback
+import zipfile
 
 import aiofiles
 import cloudscraper
 import httpx
 from config import JSON_FILE, SQL_FILE, FOLDER_DICT, config
+from io import BytesIO
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 from utils import make_activities_file
+from garmin_device_adaptor import wrap_device_info
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -68,12 +72,14 @@ class Garmin:
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
             "origin": self.URL_DICT.get("SSO_URL_ORIGIN"),
+            "nk": "NT",
         }
         self.is_only_running = is_only_running
         self.upload_url = self.URL_DICT.get("UPLOAD_URL")
         self.activity_url = self.URL_DICT.get("ACTIVITY_URL")
         self.is_login = False
 
+    @retry(stop=stop_after_attempt(5), wait=wait_fixed(30))
     def login(self):
         """
         Login to portal
@@ -177,6 +183,10 @@ class Garmin:
 
     async def download_activity(self, activity_id, file_type="gpx"):
         url = f"{self.modern_url}/proxy/download-service/export/{file_type}/activity/{activity_id}"
+        if file_type == "fit":
+            url = (
+                f"{self.modern_url}/proxy/download-service/files/activity/{activity_id}"
+            )
         logger.info(f"Download activity from {url}")
         response = await self.req.get(url, headers=self.headers)
         response.raise_for_status()
@@ -212,6 +222,43 @@ class Garmin:
                     headers=encoding_headers,
                 )
                 r.raise_for_status()
+        await self.req.aclose()
+
+    async def upload_activities_original(self, datas, use_fake_garmin_device=False):
+        print(
+            "start upload activities to garmin!!!, use_fake_garmin_device:",
+            use_fake_garmin_device,
+        )
+        if not self.is_login:
+            self.login()
+        for data in datas:
+            print(data.filename)
+            with open(data.filename, "wb") as f:
+                for chunk in data.content:
+                    f.write(chunk)
+            f = open(data.filename, "rb")
+            # wrap fake garmin device to origin fit file, current not support gpx file
+            if use_fake_garmin_device:
+                file_body = wrap_device_info(f)
+            else:
+                file_body = BytesIO(f.read())
+            files = {"data": (data.filename, file_body)}
+
+            try:
+                res = await self.req.post(
+                    self.upload_url, files=files, headers={"nk": "NT"}
+                )
+                os.remove(data.filename)
+                f.close()
+            except Exception as e:
+                print(str(e))
+                # just pass for now
+                continue
+            try:
+                resp = res.json()["detailedImportResult"]
+                print("garmin upload success: ", resp)
+            except Exception as e:
+                print("garmin upload failed: ", e)
         await self.req.aclose()
 
 
@@ -253,8 +300,21 @@ async def download_garmin_data(client, activity_id, file_type="gpx"):
     try:
         file_data = await client.download_activity(activity_id, file_type=file_type)
         file_path = os.path.join(folder, f"{activity_id}.{file_type}")
+        need_unzip = False
+        if file_type == "fit":
+            file_path = os.path.join(folder, f"{activity_id}.zip")
+            need_unzip = True
         async with aiofiles.open(file_path, "wb") as fb:
             await fb.write(file_data)
+        if need_unzip:
+            zip_file = zipfile.ZipFile(file_path, "r")
+            for file_info in zip_file.infolist():
+                zip_file.extract(file_info, folder)
+                os.rename(
+                    os.path.join(folder, f"{activity_id}_ACTIVITY.fit"),
+                    os.path.join(folder, f"{activity_id}.fit"),
+                )
+            os.remove(file_path)
     except:
         print(f"Failed to download activity {activity_id}: ")
         traceback.print_exc()
@@ -330,6 +390,14 @@ if __name__ == "__main__":
         dest="download_file_type",
         action="store_const",
         const="tcx",
+        default="gpx",
+        help="to download personal documents or ebook",
+    )
+    parser.add_argument(
+        "--fit",
+        dest="download_file_type",
+        action="store_const",
+        const="fit",
         default="gpx",
         help="to download personal documents or ebook",
     )

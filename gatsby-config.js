@@ -1,5 +1,7 @@
+/* eslint-disable no-undef */
+// eslint-disable-next-line no-undef
 module.exports = {
-  pathPrefix: '/running_page', // Change to `/running_page` when running on github pages
+  pathPrefix: process.env.PATH_PREFIX || '/',
   siteMetadata: {
     siteTitle: 'Running Page',
     siteUrl: 'https://yihong.run',
@@ -19,6 +21,15 @@ module.exports = {
   plugins: [
     'gatsby-transformer-json',
     'gatsby-plugin-react-helmet',
+    'gatsby-plugin-offline',
+
+    {
+      resolve: 'gatsby-plugin-vercel',
+      options: {
+        // (optional) Prints metrics in the console when true
+        debug: false,
+      },
+    },
     {
       resolve: 'gatsby-source-filesystem',
       options: {
@@ -34,7 +45,7 @@ module.exports = {
     {
       resolve: 'gatsby-alias-imports',
       options: {
-        rootFolder: './',
+        rootFolder: '.',
       },
     },
     {
@@ -66,32 +77,6 @@ module.exports = {
         theme_color: '#e1e1e1',
         display: 'standalone',
         icon: 'src/images/favicon.png', // This path is relative to the root of the site.
-      },
-    },
-    {
-      resolve: `gatsby-plugin-offline`,
-      options: {
-        runtimeCaching: [
-          {
-            urlPattern: /^https?:.*\/icons\/.*\.png/,
-            handler: `CacheFirst`,
-          },
-          {
-            urlPattern:
-              /^https?:.*\.(png|jpg|jpeg|webp|svg|gif|tiff|js|woff|woff2|json|css)$/,
-            handler: `StaleWhileRevalidate`,
-          },
-          {
-            urlPattern: /^https?:\/\/api\.mapbox\.com\//,
-            handler: `StaleWhileRevalidate`,
-          },
-          {
-            urlPattern: /^https?:.*\/page-data\/.*\.json/,
-            handler: `StaleWhileRevalidate`,
-          },
-        ],
-        skipWaiting: true,
-        clientsClaim: true,
       },
     },
   ],

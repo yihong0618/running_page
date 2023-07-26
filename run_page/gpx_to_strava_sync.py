@@ -2,10 +2,10 @@ import argparse
 import os
 import time
 
-from config import TCX_FOLDER
+import gpxpy as mod_gpxpy
+from config import GPX_FOLDER
 from strava_sync import run_strava_sync
 from stravalib.exc import RateLimitTimeout, ActivityUploadFailed
-from tcxreader.tcxreader import TCXReader
 
 from utils import make_strava_client, get_strava_last_time, upload_file_to_strava
 
@@ -15,26 +15,31 @@ def get_to_generate_files(last_time):
     reuturn to values one dict for upload
     and one sorted list for next time upload
     """
-    file_names = os.listdir(TCX_FOLDER)
-    tcx = TCXReader()
-    tcx_files = [
-        (tcx.read(os.path.join(TCX_FOLDER, i)), os.path.join(TCX_FOLDER, i))
-        for i in file_names
-        if i.endswith(".tcx")
-    ]
-    tcx_files_dict = {
-        int(i[0].trackpoints[0].time.timestamp()): i[1]
-        for i in tcx_files
-        if len(i[0].trackpoints) > 0
-        and int(i[0].trackpoints[0].time.timestamp()) > last_time
+    file_names = os.listdir(GPX_FOLDER)
+    gpx_files = []
+    for f in file_names:
+        if f.endswith(".gpx"):
+            file_path = os.path.join(GPX_FOLDER, f)
+            with open(file_path, "r") as r:
+                try:
+                    gpx = mod_gpxpy.parse(r)
+                except Exception as e:
+                    print(f"Something is wring with {file_path} err: {str(e)}")
+                    continue
+                # if gpx file has no start time we ignore it.
+                if gpx.get_time_bounds()[0]:
+                    gpx_files.append((gpx, file_path))
+    gpx_files_dict = {
+        int(i[0].get_time_bounds()[0].timestamp()): i[1]
+        for i in gpx_files
+        if int(i[0].get_time_bounds()[0].timestamp()) > last_time
     }
-
-    return sorted(list(tcx_files_dict.keys())), tcx_files_dict
+    return sorted(list(gpx_files_dict.keys())), gpx_files_dict
 
 
 if __name__ == "__main__":
-    if not os.path.exists(TCX_FOLDER):
-        os.mkdir(TCX_FOLDER)
+    if not os.path.exists(GPX_FOLDER):
+        os.mkdir(GPX_FOLDER)
     parser = argparse.ArgumentParser()
     parser.add_argument("client_id", help="strava client id")
     parser.add_argument("client_secret", help="strava client secret")
@@ -47,26 +52,26 @@ if __name__ == "__main__":
     )
     options = parser.parse_args()
     # upload new tcx to strava
-    print("Need to load all tcx files maybe take some time")
+    print("Need to load all gpx files maybe take some time")
+    last_time = 0
     client = make_strava_client(
         options.client_id, options.client_secret, options.strava_refresh_token
     )
-    last_time = 0
     if not options.all:
         last_time = get_strava_last_time(client, is_milliseconds=False)
     to_upload_time_list, to_upload_dict = get_to_generate_files(last_time)
     index = 1
+    print(f"{len(to_upload_time_list)} gpx files is going to upload")
     for i in to_upload_time_list:
-        tcx_file = to_upload_dict.get(i)
+        gpx_file = to_upload_dict.get(i)
         try:
-            upload_file_to_strava(client, tcx_file, "tcx")
+            upload_file_to_strava(client, gpx_file, "gpx")
         except RateLimitTimeout as e:
             timeout = e.timeout
-            print(f"Strava API Rate Limit Timeout. Retry in {timeout} seconds")
-            print()
+            print(f"Strava API Rate Limit Timeout. Retry in {timeout} seconds\n")
             time.sleep(timeout)
             # try previous again
-            upload_file_to_strava(client, tcx_file, "tcx")
+            upload_file_to_strava(client, gpx_file, "gpx")
 
         except ActivityUploadFailed as e:
             print(f"Upload faild error {str(e)}")

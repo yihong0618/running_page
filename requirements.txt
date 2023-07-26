@@ -1,4 +1,4 @@
-httpx==0.15.4
+httpx>=0.15.0,<=0.15.5
 gpxpy==1.4.2
 stravalib
 appdirs>=1.4.0
@@ -9,11 +9,18 @@ arrow
 geopy
 polyline
 sqlalchemy
-timezonefinder
+tzfpy; platform_system != "Windows"
+timezonefinder; platform_system == "Windows"
 pyyaml
 aiofiles
 cloudscraper==1.2.58
-python-tcxparser
+git+https://github.com/alenrajsp/tcxreader.git
 rich
 lxml
 eviltransform
+stravaweblib
+tenacity
+numpy
+tzlocal
+fit-tool
+haversine==2.8.0

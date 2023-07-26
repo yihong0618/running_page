@@ -13,13 +13,25 @@ import lxml
 import polyline
 import s2sphere as s2
 from rich import print
-from tcxparser import TCXParser
+from tcxreader.tcxreader import TCXReader
+from polyline_processor import filter_out
 
 from .exceptions import TrackLoadError
 from .utils import parse_datetime_to_local
 
+from fit_tool.fit_file import FitFile
+from fit_tool.profile.messages.software_message import SoftwareMessage
+from fit_tool.profile.messages.record_message import RecordMessage
+from fit_tool.profile.messages.session_message import SessionMessage
+from fit_tool.profile.messages.activity_message import ActivityMessage
+from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
+from fit_tool.profile.messages.file_id_message import FileIdMessage
+from fit_tool.profile.profile_type import Sport
+
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
+
+IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
 
 
 class Track:
@@ -37,6 +49,7 @@ class Track:
         self.moving_dict = {}
         self.run_id = 0
         self.start_latlng = []
+        self.type = "Run"
 
     def load_gpx(self, file_name):
         """
@@ -62,12 +75,29 @@ class Track:
             self.file_names = [os.path.basename(file_name)]
             # Handle empty tcx files
             # (for example, treadmill runs pulled via garmin-connect-export)
+            tcx = TCXReader()
             if os.path.getsize(file_name) == 0:
                 raise TrackLoadError("Empty TCX file")
-            self._load_tcx_data(TCXParser(file_name))
+            self._load_tcx_data(tcx.read(file_name), file_name=file_name)
         except Exception as e:
             print(
                 f"Something went wrong when loading TCX. for file {self.file_names[0]}, we just ignore this file and continue"
+            )
+            print(str(e))
+
+    def load_fit(self, file_name):
+        try:
+            self.file_names = [os.path.basename(file_name)]
+            # Handle empty fit files
+            # (for example, treadmill runs pulled via garmin-connect-export)
+            if os.path.getsize(file_name) == 0:
+                raise TrackLoadError("Empty FIT file")
+
+            fit = FitFile.from_file(file_name)
+            self._load_fit_data(fit)
+        except Exception as e:
+            print(
+                f"Something went wrong when loading FIT. for file {self.file_names[0]}, we just ignore this file and continue"
             )
             print(str(e))
 
@@ -80,7 +110,8 @@ class Track:
         self.start_time_local = start_time
         self.end_time = start_time + activity.elapsed_time
         self.length = float(activity.distance)
-        summary_polyline = activity.summary_polyline
+        if not IGNORE_BEFORE_SAVING:
+            summary_polyline = filter_out(activity.summary_polyline)
         polyline_data = polyline.decode(summary_polyline) if summary_polyline else []
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
 
@@ -96,9 +127,9 @@ class Track:
     def __make_run_id(time_stamp):
         return int(datetime.datetime.timestamp(time_stamp) * 1000)
 
-    def _load_tcx_data(self, tcx):
+    def _load_tcx_data(self, tcx, file_name):
         self.length = float(tcx.distance)
-        time_values = tcx.time_objects()
+        time_values = [i.time for i in tcx.trackpoints]
         if not time_values:
             raise TrackLoadError("Track is empty.")
 
@@ -107,20 +138,25 @@ class Track:
         self.run_id = self.__make_run_id(self.start_time)
         self.average_heartrate = tcx.hr_avg
         polyline_container = []
-        position_values = tcx.position_values()
-        line = [s2.LatLng.from_degrees(p[0], p[1]) for p in position_values]
-        self.polylines.append(line)
-        polyline_container.extend([[p[0], p[1]] for p in position_values])
-        self.polyline_container = polyline_container
-        self.start_time_local, self.end_time_local = parse_datetime_to_local(
-            self.start_time, self.end_time, polyline_container[0]
-        )
-        # get start point
-        try:
-            self.start_latlng = start_point(*polyline_container[0])
-        except:
-            pass
-        self.polyline_str = polyline.encode(polyline_container)
+        position_values = [(i.latitude, i.longitude) for i in tcx.trackpoints]
+        if not position_values and int(self.length) == 0:
+            raise Exception(
+                f"This {file_name} TCX file do not contain distance and position values we ignore it"
+            )
+        if position_values:
+            line = [s2.LatLng.from_degrees(p[0], p[1]) for p in position_values]
+            self.polylines.append(line)
+            polyline_container.extend([[p[0], p[1]] for p in position_values])
+            self.polyline_container = polyline_container
+            self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                self.start_time, self.end_time, polyline_container[0]
+            )
+            # get start point
+            try:
+                self.start_latlng = start_point(*polyline_container[0])
+            except:
+                pass
+            self.polyline_str = polyline.encode(polyline_container)
         self.moving_dict = {
             "distance": self.length,
             "moving_time": datetime.timedelta(seconds=moving_time),
@@ -184,6 +220,60 @@ class Track:
             sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
         )
         self.moving_dict = self._get_moving_data(gpx)
+
+    def _load_fit_data(self, fit: FitFile):
+        _polylines = []
+        self.polyline_container = []
+
+        for record in fit.records:
+            message = record.message
+
+            if isinstance(message, RecordMessage):
+                if message.position_lat and message.position_long:
+                    _polylines.append(
+                        s2.LatLng.from_degrees(
+                            message.position_lat, message.position_long
+                        )
+                    )
+                    self.polyline_container.append(
+                        [message.position_lat, message.position_long]
+                    )
+            elif isinstance(message, SessionMessage):
+                self.start_time = datetime.datetime.utcfromtimestamp(
+                    message.start_time / 1000
+                )
+                self.run_id = message.start_time
+                self.end_time = datetime.datetime.utcfromtimestamp(
+                    (message.start_time + message.total_elapsed_time * 1000) / 1000
+                )
+                self.length = message.total_distance
+                self.average_heartrate = (
+                    message.avg_heart_rate if message.avg_heart_rate != 0 else None
+                )
+                self.type = Sport(message.sport).name.lower()
+
+                # moving_dict
+                self.moving_dict["distance"] = message.total_distance
+                self.moving_dict["moving_time"] = datetime.timedelta(
+                    seconds=message.total_moving_time
+                    if message.total_moving_time
+                    else message.total_timer_time
+                )
+                self.moving_dict["elapsed_time"] = datetime.timedelta(
+                    seconds=message.total_elapsed_time
+                )
+                self.moving_dict["average_speed"] = (
+                    message.enhanced_avg_speed
+                    if message.enhanced_avg_speed
+                    else message.avg_speed
+                )
+
+        self.start_time_local, self.end_time_local = parse_datetime_to_local(
+            self.start_time, self.end_time, self.polyline_container[0]
+        )
+        self.start_latlng = start_point(*self.polyline_container[0])
+        self.polylines.append(_polylines)
+        self.polyline_str = polyline.encode(self.polyline_container)
 
     def append(self, other):
         """Append other track to self."""

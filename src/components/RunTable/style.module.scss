@@ -1,8 +1,17 @@
 @import '../../styles/variables.scss';
 
+@media only screen and (max-width: 700px) {
+
+  /* 当屏幕宽度小于 700px 时 */
+  .runTable th:nth-child(4),
+  .runTable td:nth-child(4) {
+    display: none;
+    /* 隐藏第四列 */
+  }
+}
+
 .runTable {
   width: 100%;
-  min-width: 700px;
   font-variant: tabular-nums;
   margin: 2rem 0 5rem 0;
 
@@ -32,6 +41,10 @@
   }
 }
 
+.selected {
+  color: red;
+}
+
 .tableContainer {
   width: 100%;
   overflow-x: scroll;
@@ -40,4 +53,3 @@
 .runDate {
   color: $light;
 }
-
