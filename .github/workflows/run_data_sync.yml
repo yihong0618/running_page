@@ -36,6 +36,7 @@ env:
   IGNORE_RANGE: 10 # Unit meter
   SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercal, check the README
   DATA_CACHE_PREFIX: "track_data"
+  BUILD_GH_PAGES: false
 
 jobs:
   sync:
@@ -44,6 +45,7 @@ jobs:
     outputs:
       SAVE_DATA_IN_GITHUB_CACHE: ${{ steps.set_output.outputs.SAVE_DATA_IN_GITHUB_CACHE }}
       DATA_CACHE_PREFIX: ${{ steps.set_output.outputs.DATA_CACHE_PREFIX }}
+      BUILD_GH_PAGES: ${{ steps.set_output.outputs.BUILD_GH_PAGES }
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -182,9 +184,10 @@ jobs:
         run: |
           echo "SAVE_DATA_IN_GITHUB_CACHE=${{ env.SAVE_DATA_IN_GITHUB_CACHE }}" >> "$GITHUB_OUTPUT"
           echo "DATA_CACHE_PREFIX=${{ env.DATA_CACHE_PREFIX }}" >> "$GITHUB_OUTPUT"
+          echo "BUILD_GH_PAGES=${{ env.BUILD_GH_PAGES }}" >> "$GITHUB_OUTPUT"
 
   publish_github_pages:
-    if: needs.sync.result == 'success'
+    if: needs.sync.result == 'success' && needs.sync.outputs.BUILD_GH_PAGES == 'true'
     name: Build and publish Github Pages
     uses: ./.github/workflows/gh-pages.yml
     with:
