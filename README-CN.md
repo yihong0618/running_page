@@ -851,6 +851,8 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
   ![Branch name](https://user-images.githubusercontent.com/413855/255508137-ef742815-8418-419a-86b4-6756ff68e1db.png)
 
+3. `run_data_sync.yml`中的`BUILD_GH_PAGES`设置为`true`
+
 </details>
 
 # Fit 文件
