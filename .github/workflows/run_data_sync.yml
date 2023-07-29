@@ -45,7 +45,8 @@ jobs:
     outputs:
       SAVE_DATA_IN_GITHUB_CACHE: ${{ steps.set_output.outputs.SAVE_DATA_IN_GITHUB_CACHE }}
       DATA_CACHE_PREFIX: ${{ steps.set_output.outputs.DATA_CACHE_PREFIX }}
-      BUILD_GH_PAGES: ${{ steps.set_output.outputs.BUILD_GH_PAGES }
+      BUILD_GH_PAGES: ${{ steps.set_output.outputs.BUILD_GH_PAGES }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
