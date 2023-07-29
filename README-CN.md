@@ -823,10 +823,35 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 1. 更改成你的 app type 及 info
    ![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
+
 2. 在 repo Settings > Secrets 中增加你的 secret (只添加你需要的即可)
+
    ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
    我的 secret 如下
    ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
+
+</details>
+
+## 把数据文件放在github cache中
+
+<details>
+<summary>把数据文件放在github cache中</summary>
+
+`run_data_sync.yml`中的`SAVE_DATA_IN_GITHUB_CACHE`设置为`true`时，可以把脚本抓取和中间产生的数据文件放到github action cache中。这样可以让你的github commit历史和目录保持干净。
+
+如果你用github pages部署建议把这个值设置成`true`。
+
+如果你使用`Vervel`，需要在vercel后台进行下面几步操作：
+
+1. 在`General`的`Build & Development Settings`的Framework Preset选择Other，然后把override全部打开，命令行内容全部设置成空。
+
+  ![General](https://user-images.githubusercontent.com/413855/255507920-76932fb9-61d6-423e-92e2-2e92b5bbd432.png)
+
+2. 在Git模块中，`Production Branch`的Branch name填入`gh-pages`
+
+  ![Branch name](https://user-images.githubusercontent.com/413855/255508137-ef742815-8418-419a-86b4-6756ff68e1db.png)
+
+3. `run_data_sync.yml`中的`BUILD_GH_PAGES`设置为`true`
 
 </details>
 
