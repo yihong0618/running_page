@@ -133,7 +133,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## 安装及测试 (node >= 12 and <= 14 python >= 3.7)
+## 安装及测试 (node >= 14.15.0 python >= 3.7)
 
 ```
 pip3 install -r requirements.txt
