@@ -1,10 +1,17 @@
-import EndSvg from 'assets/end.svg';
-import StartSvg from 'assets/start.svg';
+import EndSvg from '@assets/end.svg';
+import StartSvg from '@assets/start.svg';
 import React from 'react';
 import { Marker } from 'react-map-gl';
 import styles from './style.module.scss';
 
-const RunMarker = ({ startLon, startLat, endLon, endLat }) => {
+interface IRunMarkerProperties {
+  startLon: number;
+  startLat: number;
+  endLon: number;
+  endLat: number;
+}
+
+const RunMarker = ({ startLon, startLat, endLon, endLat }: IRunMarkerProperties) => {
   const size = 20;
   return (
     <>

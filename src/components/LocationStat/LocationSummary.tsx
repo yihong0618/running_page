@@ -1,6 +1,6 @@
 import React from 'react';
-import Stat from 'src/components/Stat';
-import useActivities from 'src/hooks/useActivities';
+import Stat from '@/components/Stat';
+import useActivities from '@/hooks/useActivities';
 
 // only support China for now
 const LocationSummary = () => {
@@ -8,12 +8,12 @@ const LocationSummary = () => {
   return (
     <div style={{ cursor: 'pointer' }}>
       <section>
-        {years && <Stat value={`${years.length}`} description=" 年里我跑过" />}
-        {countries && <Stat value={countries.length} description=" 个国家" />}
-        {provinces && <Stat value={provinces.length} description=" 个省份" />}
-        {cities && (
+        {years ? <Stat value={`${years.length}`} description=" 年里我跑过" /> : null}
+        {countries ? <Stat value={countries.length} description=" 个国家" /> : null}
+        {provinces ? <Stat value={provinces.length} description=" 个省份" /> : null}
+        {cities ? (
           <Stat value={Object.keys(cities).length} description=" 个城市" />
-        )}
+        ) : null}
       </section>
       <hr color="red" />
     </div>

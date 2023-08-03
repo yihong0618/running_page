@@ -1,9 +1,9 @@
 import React from 'react';
-import YearStat from 'src/components/YearStat';
-import useActivities from 'src/hooks/useActivities';
-import { INFO_MESSAGE } from 'src/utils/const';
+import YearStat from '@/components/YearStat';
+import useActivities from '@/hooks/useActivities';
+import { INFO_MESSAGE } from '@/utils/const';
 
-const YearsStat = ({ year, onClick }) => {
+const YearsStat = ({ year, onClick }: { year: string, onClick: (_year: string) => void }) => {
   const { years } = useActivities();
   // make sure the year click on front
   let yearsArrayUpdate = years.slice();
@@ -24,7 +24,8 @@ const YearsStat = ({ year, onClick }) => {
       {yearsArrayUpdate.map((year) => (
         <YearStat key={year} year={year} onClick={onClick} />
       ))}
-      {yearsArrayUpdate.hasOwnProperty('Total') ? (
+      {// eslint-disable-next-line no-prototype-builtins
+      yearsArrayUpdate.hasOwnProperty('Total') ? (
         <YearStat key="Total" year="Total" onClick={onClick} />
       ) : (
         <div />

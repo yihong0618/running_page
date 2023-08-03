@@ -24,58 +24,57 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 <details>
 <summary>Running page runners</summary>
 
-| Runner                                            | page                                           | App       |
-| ------------------------------------------------- | ---------------------------------------------- | --------- |
-| [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava    |
-| [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava    |
-| [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike      |
-| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Nike      |
-| [geekplux](https://github.com/geekplux)           | <https://activities.geekplux.com>              | Nike      |
-| [guanlan](https://github.com/guanlan)             | <https://grun.vercel.app>                      | Strava    |
-| [tuzimoe](https://github.com/tuzimoe)             | <https://run.tuzi.moe>                         | Nike      |
-| [ben_29](https://github.com/ben-29)               | <https://running.ben29.xyz>                    | Strava    |
-| [kcllf](https://github.com/kcllf)                 | <https://running-tau.vercel.app>               | Garmin-cn |
-| [mq](https://github.com/MQ-0707)                  | <https://running-iota.vercel.app>              | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://zhaohongxuan.github.io/workouts>      | Strava    |
-| [yvetterowe](https://github.com/yvetterowe)       | <https://run.haoluo.io>                        | Strava    |
-| [love-exercise](https://github.com/KaiOrange)     | <https://run.kai666666.top>                    | Keep      |
-| [zstone12](https://github.com/zstone12)           | <https://running-page.zstone12.vercel.app>     | Keep      |
-| [Lax](https://github.com/Lax)                     | <https://lax.github.io/running>                | Keep      |
-| [lusuzi](https://github.com/lusuzi)               | <https://running.lusuzi.vercel.app>            | Nike      |
-| [wh1994](https://github.com/wh1994)               | <https://run4life.fun>                         | Garmin    |
-| [liuyihui](https://github.com/YiHui-Liu)          | <https://run.foolishfox.cn>                    | Keep      |
-| [sunyunxian](https://github.com/sunyunxian)       | <https://sunyunxian.github.io/running_page>    | Strava    |
-| [AhianZhang](https://github.com/AhianZhang)       | <https://running.ahianzhang.com>               | Nike      |
-| [L1cardo](https://github.com/L1cardo)             | <https://run.licardo.cn>                       | Nike      |
-| [luckylele666](https://github.com/luckylele666)   | <https://0000928.xyz>                          | Strava    |
-| [MFYDev](https://github.com/MFYDev)               | <https://mfydev.run>                           | Garmin-cn |
-| [Eished](https://github.com/eished)               | <https://run.iknow.fun>                        | Keep      |
-| [Liuxin](https://github.com/liuxindtc)            | <https://liuxin.run>                           | Nike      |
-| [loucx](https://github.com/loucx)                 | <https://loucx.github.io/running>              | Nike      |
-| [winf42](https://github.com/winf42)               | <https://winf42.github.io>                     | Garmin-cn |
-| [sun0225SUN](https://github.com/sun0225SUN)       | <https://run.sunguoqi.com>                     | Nike      |
-| [Zhan](https://www.zlog.in/about/)                | <https://run.zlog.in>                          | Nike      |
-| [Dennis](https://run.domon.cn)                    | <https://run.domon.cn>                         | Garmin-cn |
-| [hanpei](https://running.nexts.top)               | <https://running.nexts.top>                    | Garmin-cn |
-| [liugezhou](https://github.com/liugezhou)         | <https://run.liugezhou.online>                 | Strava    |
-| [Jason Tan](https://github.com/Jason-cqtan)       | <https://jason-cqtan.github.io/running_page>   | Nike      |
-| [Conge](https://github.com/conge)                 | <https://conge.github.io/running_page>         | Strava    |
-| [zHElEARN](https://github.com/zHElEARN)           | <https://workouts.zhelearn.com>                | Strava    |
-| [Ym9i](https://github.com/Ym9i)                   | <https://bobrun.vercel.app/>                   | Strava    |
-| [jianchengwang](https://github.com/jianchengwang) | <https://jianchengwang.github.io/running_page> | Suunto    |
-| [fxbin](https://github.com/fxbin)                 | <https://fxbin.github.io/sport-records/>       | Keep      |
-| [shensl4499](https://github.com/shensl4499)       | <https://waner.run>                            | codoon    |
-| [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx       |
-| [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava    |
-| [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep      |
-| [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn |
-| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX    |
-| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun    |
-| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike|
-| [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava    |
-| [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn |
-
+| Runner                                            | page                                           | App         |
+| ------------------------------------------------- | ---------------------------------------------- | ----------- |
+| [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava      |
+| [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava      |
+| [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike        |
+| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Nike        |
+| [geekplux](https://github.com/geekplux)           | <https://activities.geekplux.com>              | Nike        |
+| [guanlan](https://github.com/guanlan)             | <https://grun.vercel.app>                      | Strava      |
+| [tuzimoe](https://github.com/tuzimoe)             | <https://run.tuzi.moe>                         | Nike        |
+| [ben_29](https://github.com/ben-29)               | <https://running.ben29.xyz>                    | Strava      |
+| [kcllf](https://github.com/kcllf)                 | <https://running-tau.vercel.app>               | Garmin-cn   |
+| [mq](https://github.com/MQ-0707)                  | <https://running-iota.vercel.app>              | Keep        |
+| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://zhaohongxuan.github.io/workouts>      | Strava      |
+| [yvetterowe](https://github.com/yvetterowe)       | <https://run.haoluo.io>                        | Strava      |
+| [love-exercise](https://github.com/KaiOrange)     | <https://run.kai666666.top>                    | Keep        |
+| [zstone12](https://github.com/zstone12)           | <https://running-page.zstone12.vercel.app>     | Keep        |
+| [Lax](https://github.com/Lax)                     | <https://lax.github.io/running>                | Keep        |
+| [lusuzi](https://github.com/lusuzi)               | <https://running.lusuzi.vercel.app>            | Nike        |
+| [wh1994](https://github.com/wh1994)               | <https://run4life.fun>                         | Garmin      |
+| [liuyihui](https://github.com/YiHui-Liu)          | <https://run.foolishfox.cn>                    | Keep        |
+| [sunyunxian](https://github.com/sunyunxian)       | <https://sunyunxian.github.io/running_page>    | Strava      |
+| [AhianZhang](https://github.com/AhianZhang)       | <https://running.ahianzhang.com>               | Nike        |
+| [L1cardo](https://github.com/L1cardo)             | <https://run.licardo.cn>                       | Nike        |
+| [luckylele666](https://github.com/luckylele666)   | <https://0000928.xyz>                          | Strava      |
+| [MFYDev](https://github.com/MFYDev)               | <https://mfydev.run>                           | Garmin-cn   |
+| [Eished](https://github.com/eished)               | <https://run.iknow.fun>                        | Keep        |
+| [Liuxin](https://github.com/liuxindtc)            | <https://liuxin.run>                           | Nike        |
+| [loucx](https://github.com/loucx)                 | <https://loucx.github.io/running>              | Nike        |
+| [winf42](https://github.com/winf42)               | <https://winf42.github.io>                     | Garmin-cn   |
+| [sun0225SUN](https://github.com/sun0225SUN)       | <https://run.sunguoqi.com>                     | Nike        |
+| [Zhan](https://www.zlog.in/about/)                | <https://run.zlog.in>                          | Nike        |
+| [Dennis](https://run.domon.cn)                    | <https://run.domon.cn>                         | Garmin-cn   |
+| [hanpei](https://running.nexts.top)               | <https://running.nexts.top>                    | Garmin-cn   |
+| [liugezhou](https://github.com/liugezhou)         | <https://run.liugezhou.online>                 | Strava      |
+| [Jason Tan](https://github.com/Jason-cqtan)       | <https://jason-cqtan.github.io/running_page>   | Nike        |
+| [Conge](https://github.com/conge)                 | <https://conge.github.io/running_page>         | Strava      |
+| [zHElEARN](https://github.com/zHElEARN)           | <https://workouts.zhelearn.com>                | Strava      |
+| [Ym9i](https://github.com/Ym9i)                   | <https://bobrun.vercel.app/>                   | Strava      |
+| [jianchengwang](https://github.com/jianchengwang) | <https://jianchengwang.github.io/running_page> | Suunto      |
+| [fxbin](https://github.com/fxbin)                 | <https://fxbin.github.io/sport-records/>       | Keep        |
+| [shensl4499](https://github.com/shensl4499)       | <https://waner.run>                            | codoon      |
+| [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx         |
+| [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava      |
+| [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
+| [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
+| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX      |
+| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
+| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
+| [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
+| [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
 
 </details>
 
@@ -198,18 +197,18 @@ const LINE_OPACITY = 0.4;
 - privacy protection
 
 setting flowing env:
+
 ```shell
 IGNORE_START_END_RANGE = 200 # ignore distance for each polyline start and end.
 
-IGNORE_RANGE = 200 # ignore meters for each point in below polyline. 
-IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # a polyline include point you want to ignore. 
+IGNORE_RANGE = 200 # ignore meters for each point in below polyline.
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # a polyline include point you want to ignore.
 
 # Do filter before saving to database, you will lose some data, but you can protect your privacy, when you using public repo. enable for set 1, disable via unset.
-IGNORE_BEFORE_SAVING = 
+IGNORE_BEFORE_SAVING =
 ```
 
 You can using [this](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
-
 
 ## Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
 
@@ -413,7 +412,7 @@ curl -X POST https://www.strava.com/oauth/token \
 7. Sync `Strava` data
 
 > The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running.
-If you only want to sync `type running` add args --only-run
+> If you only want to sync `type running` add args --only-run
 
 ```python
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
@@ -545,7 +544,7 @@ if your garmin account region is **China**, you need to execute the command:
 python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
-If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc. 
+If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc.
 
 <img width="830" alt="image" src="https://github.com/yihong0618/running_page/assets/8613196/b5076942-3133-4c89-ad66-a828211667dc">
 
@@ -691,7 +690,7 @@ supported manufacturer：
 - [ ] support the world map
 - [ ] support multiple types, like hiking, biking~
 - [ ] support for Zeep life
-  
+
 # Contribution
 
 - Any Issues PR welcome.

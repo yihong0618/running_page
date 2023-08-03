@@ -1,8 +1,8 @@
 import React from 'react';
-import Stat from 'src/components/Stat';
-import useActivities from 'src/hooks/useActivities';
+import Stat from '@/components/Stat';
+import useActivities from '@/hooks/useActivities';
 
-const PeriodStat = ({ onClick }) => {
+const PeriodStat = ({ onClick }: { onClick: (_period: string) => void }) => {
   const { runPeriod } = useActivities();
 
   const periodArr = Object.entries(runPeriod);

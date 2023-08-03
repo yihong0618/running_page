@@ -1,4 +1,8 @@
-const chinaGeojson = {
+import { FeatureCollection, LineString, Polygon, MultiPolygon } from 'geojson';
+
+export type RPGeometry = LineString | Polygon | MultiPolygon;
+
+export const chinaGeojson: FeatureCollection<RPGeometry> = {
   type: 'FeatureCollection',
   features: [
     {
@@ -3211,5 +3215,3 @@ const chinaGeojson = {
     },
   ],
 };
-
-export { chinaGeojson };

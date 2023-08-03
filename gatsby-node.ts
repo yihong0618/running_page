@@ -1,7 +1,9 @@
-// eslint-disable-next-line no-undef
-exports.createSchemaCustomization = ({ actions }) => {
-  const { createTypes } = actions;
-  const typeDefs = `
+import type { GatsbyNode } from 'gatsby';
+
+export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] =
+  ({ actions }) => {
+    const { createTypes } = actions;
+    const typeDefs = `
     type ActivitiesJson implements Node @dontInfer {
       id: String
       distance: Float
@@ -18,5 +20,5 @@ exports.createSchemaCustomization = ({ actions }) => {
       summary_polyline: String
     }
   `;
-  createTypes(typeDefs);
-};
+    createTypes(typeDefs);
+  };

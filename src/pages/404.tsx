@@ -1,6 +1,6 @@
 import React from 'react';
-import Layout from 'src/components/Layout';
-import useSiteMetadata from 'src/hooks/useSiteMetadata';
+import Layout from '@/components/Layout';
+import useSiteMetadata from '@/hooks/useSiteMetadata';
 
 const NotFoundPage = () => {
   const { siteUrl } = useSiteMetadata();
