@@ -118,7 +118,7 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## Installation and testing (node >= 12 and <= 14 python >= 3.7)
+## Installation and testing (node >= 14.15.0 python >= 3.7)
 
 ```
 pip3 install -r requirements.txt
