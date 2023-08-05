@@ -74,5 +74,5 @@ class GridDrawer(TracksDrawer):
                 stroke_linejoin="round",
                 stroke_linecap="round",
             )
-            polyline.set_desc(title=date_title)
+            polyline.set_desc(title=date_title, desc=tr.run_id)
             dr.add(polyline)
