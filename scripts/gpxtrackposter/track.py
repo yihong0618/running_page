@@ -114,6 +114,7 @@ class Track:
             summary_polyline = filter_out(activity.summary_polyline)
         polyline_data = polyline.decode(summary_polyline) if summary_polyline else []
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
+        self.run_id = activity.run_id
 
     def bbox(self):
         """Compute the smallest rectangle that contains the entire track (border box)."""

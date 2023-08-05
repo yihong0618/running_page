@@ -69,22 +69,22 @@ const Index = () => {
     changeByItem(title, 'Title', filterTitleRuns, false);
   };
 
-  const locateActivity = (runDate) => {
-    const activitiesOnDate = runs.filter((r) => r.start_date_local.slice(0, 10) === runDate);
+  const locateActivity = (runIds) => {
+    const ids = new Set(runIds)
 
-    if (!activitiesOnDate.length) {
+    const selectedRuns = runs.filter((r) => ids.has(r.run_id));
+
+    if (!selectedRuns.length) {
       return;
     }
 
-    const sortedActivities = activitiesOnDate.sort((a, b) => b.distance - a.distance);
-    const info = sortedActivities[0];
+    const lastRun = selectedRuns.sort(sortDateFunc)[0];
 
-    if (!info) {
+    if (!lastRun) {
       return;
     }
-
-    setGeoData(geoJsonForRuns([info]));
-    setTitle(titleForShow(info));
+    setGeoData(geoJsonForRuns(selectedRuns));
+    setTitle(titleForShow(lastRun));
     clearInterval(intervalId);
     scrollToMap();
   };
@@ -126,15 +126,27 @@ const Index = () => {
       if (target) {
         const tagName = target.tagName.toLowerCase()
 
-        if ((tagName === 'rect' &&
+        // click the github-stat style svg
+        if (tagName === 'rect' &&
           parseFloat(target.getAttribute('width')) === 2.6 &&
           parseFloat(target.getAttribute('height')) === 2.6 &&
-          target.getAttribute('fill') !== '#444444'
-        ) || (
-            tagName === 'polyline'
-          )) {
+          target.getAttribute('fill') !== '#444444') {
+
           const [runDate] = target.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [`${+thisYear + 1}`];
-          locateActivity(runDate)
+          const runIDsOnDate = runs.filter((r) => r.start_date_local.slice(0, 10) === runDate).map((r) => r.run_id)
+          if (!runIDsOnDate.length) {
+            return
+          }
+          locateActivity(runIDsOnDate)
+
+        } else if (tagName === 'polyline') { // click the route grid svg
+          const desc = target.getElementsByTagName('desc')[0]
+          if (!desc) { return }
+          const run_id = Number(desc.innerHTML)
+          if (!run_id) {
+            return
+          }
+          locateActivity([run_id])
         }
       }
     })
