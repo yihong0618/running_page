@@ -120,7 +120,7 @@ class Generator:
                 sys.stdout.write("+")
             else:
                 sys.stdout.write(".")
-            if t.__contains__("file_names"):
+            if "file_names" in t:
                 synced_files.extend(t.file_names)
             sys.stdout.flush()
 

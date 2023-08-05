@@ -21,7 +21,7 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
+  RUN_TYPE: pass # support strava/nike/garmin/garmin_cn/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
   ATHLETE: ben_29
   TITLE: Workouts
   MIN_GRID_DISTANCE: 10 # change min distance here
@@ -34,37 +34,53 @@ env:
   # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
   IGNORE_POLYLINE: ""
   IGNORE_RANGE: 0 # Unit meter
+  SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercal, check the README
+  DATA_CACHE_PREFIX: "track_data"
+  BUILD_GH_PAGES: false
 
 jobs:
   sync:
     name: Sync
     runs-on: ubuntu-latest
+    outputs:
+      SAVE_DATA_IN_GITHUB_CACHE: ${{ steps.set_output.outputs.SAVE_DATA_IN_GITHUB_CACHE }}
+      DATA_CACHE_PREFIX: ${{ steps.set_output.outputs.DATA_CACHE_PREFIX }}
+      BUILD_GH_PAGES: ${{ steps.set_output.outputs.BUILD_GH_PAGES }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Set up Python
+        id: setup_python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: "3.10"
+          cache: pip
+          cache-dependency-path: 'requirements.txt'
 
-      # from pdm and install dep
-      - name: Set Variables
-        id: set_variables
-        run: |
-          sudo apt-get install libxml2-dev libxslt-dev python3-dev
-          echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_OUTPUT
-          echo "PIP_CACHE=$(pip cache dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache PIP
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.set_variables.outputs.PIP_CACHE }}
-          key: Ubuntu-pip-${{ steps.set_variables.outputs.PY }}
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
-        if: steps.pip-cache.outputs.cache-hit != 'true'
+
+      - name: Cache Data Files
+        if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
+        uses: actions/cache@v3
+        with:
+          path: |
+            activities
+            assets
+            GPX_OUT
+            TCX_OUT
+            FIT_OUT
+            Workouts
+            scripts/data.db
+            src/static/activities.json
+            imported.json
+          key: ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-
+            ${{ env.DATA_CACHE_PREFIX }}-
 
       - name: Run sync Nike script
         if: env.RUN_TYPE == 'nike'
@@ -112,6 +128,16 @@ jobs:
         run: |
           python scripts/gpx_sync.py
 
+      - name: Run sync Only FIT script
+        if: env.RUN_TYPE == 'only_fit'
+        run: |
+          python scripts/fit_sync.py
+
+      - name: Run sync Only TCX script
+        if: env.RUN_TYPE == 'only_tcx'
+        run: |
+          python scripts/tcx_sync.py
+
       - name: Run sync Strava to Garmin(Run with strava(or others upload to strava) data backup in Garmin)
         if: env.RUN_TYPE == 'strava_to_garmin'
         run: |
@@ -146,9 +172,27 @@ jobs:
           python scripts/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Workouts" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
 
       - name: Push new runs
+        if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
         run: |
           git config --local user.email "${{ env.GITHUB_EMAIL }}"
           git config --local user.name "${{ env.GITHUB_NAME }}"
           git add .
           git commit -m 'Add new workouts' || echo "nothing to commit"
           git push || echo "nothing to push"
+
+      - name: Set Output
+        id: set_output
+        run: |
+          echo "SAVE_DATA_IN_GITHUB_CACHE=${{ env.SAVE_DATA_IN_GITHUB_CACHE }}" >> "$GITHUB_OUTPUT"
+          echo "DATA_CACHE_PREFIX=${{ env.DATA_CACHE_PREFIX }}" >> "$GITHUB_OUTPUT"
+          echo "BUILD_GH_PAGES=${{ env.BUILD_GH_PAGES }}" >> "$GITHUB_OUTPUT"
+
+  publish_github_pages:
+    if: needs.sync.result == 'success' && needs.sync.outputs.BUILD_GH_PAGES == 'true'
+    name: Build and publish Github Pages
+    uses: ./.github/workflows/gh-pages.yml
+    with:
+      save_data_in_github_cache: ${{needs.sync.outputs.SAVE_DATA_IN_GITHUB_CACHE == 'true'}}
+      data_cache_prefix: ${{needs.sync.outputs.DATA_CACHE_PREFIX}}
+    needs:
+      - sync
