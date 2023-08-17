@@ -85,11 +85,10 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 ## Features
 
 1. GitHub Actions manages automatic synchronization of runs and generation of new pages.
-2. Gatsby-generated static pages, fast
-3. Support for Vercel (recommended) and GitHub Pages automated deployment
-4. React Hooks
-5. Mapbox for map display
-6. Supports most sports apps such as nike strava...
+2. Support for Vercel (recommended) and GitHub Pages automated deployment
+3. React Hooks
+4. Mapbox for map display
+5. Supports most sports apps such as nike strava...
 
 > automatically backup gpx data for easy backup and uploading to other software.<br>
 > Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
@@ -164,7 +163,7 @@ const MAPBOX_TOKEN =
 
 ## Custom your page
 
-- Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
+- Find `src/static/site-metadata.ts` in the repository directory, find the following content, and change it to what you want.
 
 ```javascript
 siteMetadata: {
@@ -617,7 +616,7 @@ For more display effects, see:
 
 2. After clicking `Begin setup`, modify Project's `Build settings`.
 
-3. Select `Framework preset` to `Gatsby`
+3. Select `Framework preset` to `Create React App`
 
 4. Scroll down, click `Environment variables`, then variable below:
 
@@ -632,7 +631,7 @@ For more display effects, see:
 
 1. If you are using a custom domain for GitHub Pages, open [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml), change `fqdn` value to the domain name of your site.
 
-2. (_Skip this step if you're **NOT** using a custom domain_) Modify `gatsby-config.js`, change `pathPrefix` value to the root path. If the repository name is `running_page`, the value will be `/running_page`.
+2. (_Skip this step if you're **NOT** using a custom domain_) Modify `.github/workflows/gh-pages.yml`, change `PATH_PREFIX` value to the root path. If the repository name is `running_page`, the value will be `/running_page`.
 
 3. Go to repository's `Actions -> Workflows -> All Workflows`, choose `Publish GitHub Pages` from the left panel, click `Run workflow`. Make sure the workflow runs without errors, and `gh-pages` branch is created.
 

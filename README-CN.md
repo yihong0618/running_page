@@ -86,11 +86,10 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 ## 特性
 
 1. GitHub Actions 管理自动同步跑步进程及自动生成新的页面
-2. Gatsby 生成的静态网页，速度快
-3. 支持 Vercel(推荐) 和 GitHub Pages 自动部署
-4. React Hooks
-5. Mapbox 进行地图展示
-6. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep 等，自动备份 gpx 数据，方便备份及上传到其它软件
+2. 支持 Vercel(推荐) 和 GitHub Pages 自动部署
+3. React Hooks
+4. Mapbox 进行地图展示
+5. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep 等，自动备份 gpx 数据，方便备份及上传到其它软件
 
 > 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里（建议本地同步，之后 actions 选择正在用的 app）
 
@@ -179,7 +178,7 @@ const MAPBOX_TOKEN =
 
 ## 一些个性化选项
 
-- 在仓库目录下找到 `gatsby-config.js`，找到以下内容并修改成你自己想要的。
+- 在仓库目录下找到 `src/static/site-metadata.ts`，找到以下内容并修改成你自己想要的。
 
 ```javascript
 siteMetadata: {
@@ -786,7 +785,7 @@ python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
 
 2. 点击 `Begin setup` 后，修改项目的 `Build settings`。
 
-3. 在 `Framework preset` 中选择 `Gatsby` 框架。
+3. 在 `Framework preset` 中选择 `Create React App` 框架。
 
 4. 向下滚动，点击 `Environment variables` 修改变量如下：
 
@@ -802,7 +801,7 @@ python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
 1. 为 GitHub Actions 添加代码提交权限
    访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
 2. 更新配置并提交代码
-   1. 更新[./gatsby-config.js](./gatsby-config.js#L3)中的`siteMetadata`节点；
+   1. 更新[./src/static/site-metadata.ts](./src/static/site-metadata.ts#L12)中的`data`对象；
       （按需）如果启用自定义域名模式或者变更 Fork 后的仓库名称，请变更`pathPrefix`的值。
    2. 更新 GitHub CI 的配置 [.github/workflows/run_data_sync.yml](.github/workflows/run_data_sync.yml#L24) 中的配置；
    3. （按需）如需使用自定义域名，可以修改 [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml#L60) 中的 `fqdn`（默认已注释掉）

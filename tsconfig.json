@@ -107,8 +107,6 @@
   },
   "include": [
     "./src/**/*",
-    "./gatsby-node.ts",
-    "./gatsby-config.ts",
     "./plugins/**/*",
     "vite-env.d.ts"
   ]

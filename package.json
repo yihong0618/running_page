@@ -32,10 +32,8 @@
     "data:download:garmin": "python3 scripts/garmin_sync.py",
     "data:analysis": "python3 scripts/gen_svg.py --from-db --type github --output assets/github.svg",
     "build": "vite build",
-    "build-prefix": "gatsby build --prefix-paths",
     "develop": "vite dev",
     "serve": "vite serve",
-    "serve-prefix": "gatsby serve --prefix-paths",
     "lint": "eslint --ext .ts,.tsx src --fix",
     "check": "prettier --write src/main.tsx src/**/*.{scss,json,ts,tsx} *.{md,yaml,json,ts,js}",
     "ci": "yarn run check && yarn run lint && yarn run build && yarn run test"
