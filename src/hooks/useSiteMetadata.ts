@@ -1,40 +1,5 @@
-import { graphql, useStaticQuery } from 'gatsby';
+import siteMetadata from '@/static/site-metadata';
 
-interface ISiteMetadataResult {
-  site: {
-    siteMetadata: {
-      siteTitle: string;
-      siteUrl: string;
-      description: string;
-      logo: string;
-      navLinks: {
-        name: string;
-        url: string;
-      }[];
-    };
-  };
-}
-
-const useSiteMetadata = () => {
-  const { site } = useStaticQuery<ISiteMetadataResult>(
-    graphql`
-      query SiteMetaData {
-        site {
-          siteMetadata {
-            siteTitle
-            siteUrl
-            description
-            logo
-            navLinks {
-              name
-              url
-            }
-          }
-        }
-      }
-    `
-  );
-  return site.siteMetadata;
-};
+const useSiteMetadata = () => siteMetadata;
 
 export default useSiteMetadata;

@@ -11,6 +11,7 @@
     // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
 
     /* Language and Environment */
+    "types": ["vite/client", "vite-plugin-svgr/client"],
     "target": "esnext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     "lib": [
       "dom",
@@ -108,6 +109,7 @@
     "./src/**/*",
     "./gatsby-node.ts",
     "./gatsby-config.ts",
-    "./plugins/**/*"
+    "./plugins/**/*",
+    "vite-env.d.ts"
   ]
 }
