@@ -1,38 +1,7 @@
-import { useStaticQuery, graphql } from 'gatsby';
-import { locationForRun, titleForRun, Activity } from '@/utils/utils';
-
-interface IActivityResult {
-  allActivitiesJson: {
-    nodes: Activity[];
-  };
-}
+import { locationForRun, titleForRun } from '@/utils/utils';
+import activities from '@/static/activities.json';
 
 const useActivities = () => {
-  const { allActivitiesJson } = useStaticQuery<IActivityResult>(
-    graphql`
-      query AllActivities {
-        allActivitiesJson {
-          nodes {
-            id
-            distance
-            name
-            run_id
-            moving_time
-            type
-            average_speed
-            average_heartrate
-            location_country
-            start_date
-            start_date_local
-            streak
-            summary_polyline
-          }
-        }
-      }
-    `
-  );
-
-  const activities = allActivitiesJson.nodes;
   const cities: Record<string, number> = {};
   const runPeriod: Record<string, number> = {};
   const provinces: Set<string> = new Set();

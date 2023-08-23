@@ -1,4 +1,4 @@
-import { Link } from 'gatsby';
+import { Link } from 'react-router-dom';
 import React from 'react';
 import useSiteMetadata from '@/hooks/useSiteMetadata';
 

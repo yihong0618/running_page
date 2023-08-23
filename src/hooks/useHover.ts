@@ -4,7 +4,7 @@ type HoverHook = [boolean, { onMouseOver: () => void; onMouseOut: () => void }];
 
 const useHover = (): HoverHook => {
   const [hovered, setHovered] = useState(false);
-  const [timer, setTimer] = useState<NodeJS.Timeout>();
+  const [timer, setTimer] = useState<number>();
 
   const eventHandlers = {
     onMouseOver() {

@@ -43,9 +43,9 @@ jobs:
       - run: |
           yarn install
       - run: |
-          PATH_PREFIX=/${{ github.event.repository.name }} yarn build --prefix-paths
-      - run: |
-          cp -r assets/ public/static
+          yarn build
+        env:
+          PATH_PREFIX: /
 
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2.2.0
@@ -55,7 +55,7 @@ jobs:
           # Create incremental commit instead of doing push force
           keep_history: true
           # Build directory to deploy
-          build_dir: public
+          build_dir: build
           # Write the given domain name to the CNAME file
           #fqdn: custom.domain.name # optional
           # Prevent Jekyll from building the site

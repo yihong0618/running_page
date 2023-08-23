@@ -35,7 +35,7 @@ const Index = () => {
   const [geoData, setGeoData] = useState(geoJsonForRuns(runs));
   // for auto zoom
   const bounds = getBoundsForGeoData(geoData);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
+  const [intervalId, setIntervalId] = useState<number>();
 
   const [viewport, setViewport] = useState<IViewport>({
     ...bounds,

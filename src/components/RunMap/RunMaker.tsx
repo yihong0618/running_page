@@ -1,5 +1,5 @@
-import EndSvg from '@assets/end.svg';
-import StartSvg from '@assets/start.svg';
+import { ReactComponent as EndSvg } from '@assets/end.svg';
+import { ReactComponent as StartSvg } from '@assets/start.svg';
 import React from 'react';
 import { Marker } from 'react-map-gl';
 import styles from './style.module.scss';
