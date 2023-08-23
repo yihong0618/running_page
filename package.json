@@ -41,7 +41,7 @@
   "engineStrict": true,
   "browserslist": "defaults, not ie 11",
   "engines": {
-    "node": ">=14.15.0"
+    "node": ">=18.17.1"
   },
   "repository": {
     "type": "git",
@@ -60,8 +60,5 @@
     "prettier": "2.8.8",
     "typescript": "^5.1.6"
   },
-  "volta": {
-    "node": "18.16.0",
-    "yarn": "1.22.19"
-  }
+  "packageManager": "pnpm@8.6.12"
 }
