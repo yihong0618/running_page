@@ -24,9 +24,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.4
+        uses: actions/setup-node@v3.8.1
         with:
-          node-version: "16"
+          node-version: "18"
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -41,14 +41,14 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - run: |
-          yarn install
+          pnpm install
       - run: |
-          yarn build
+          pnpm build
         env:
           PATH_PREFIX: /
 
       - name: GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v2.2.0
+        uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           # Git branch where site will be deployed
           target_branch: gh-pages

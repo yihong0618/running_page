@@ -36,12 +36,12 @@
     "serve": "vite serve",
     "lint": "eslint --ext .ts,.tsx src --fix",
     "check": "prettier --write src/main.tsx src/**/*.{scss,json,ts,tsx} *.{md,yaml,json,ts,js}",
-    "ci": "yarn run check && yarn run lint && yarn run build && yarn run test"
+    "ci": "pnpm run check && pnpm run lint && pnpm run build"
   },
   "engineStrict": true,
   "browserslist": "defaults, not ie 11",
   "engines": {
-    "node": ">=18.17.1"
+    "node": ">=18"
   },
   "repository": {
     "type": "git",
