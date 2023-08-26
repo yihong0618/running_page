@@ -42,11 +42,8 @@ const Index = () => {
   const changeByItem = (item, name, func, isChanged) => {
     scrollToMap();
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
-    // if the year not change, we do not need to setYear
-    if (!isChanged) {
-      setRunIndex(-1);
-      setTitle(`${item} ${name} Running Heatmap`);
-    }
+    setRunIndex(-1);
+    setTitle(`${item} ${name} Running Heatmap`);
   };
 
   const changeYear = (y) => {
@@ -72,9 +69,22 @@ const Index = () => {
     changeByItem(title, 'Title', filterTitleRuns, false);
   };
 
-  const locateActivity = (run) => {
-    setGeoData(geoJsonForRuns([run]));
-    setTitle(titleForShow(run));
+  const locateActivity = (runIds) => {
+    const ids = new Set(runIds)
+
+    const selectedRuns = runs.filter((r) => ids.has(r.run_id));
+
+    if (!selectedRuns.length) {
+      return;
+    }
+
+    const lastRun = selectedRuns.sort(sortDateFunc)[0];
+
+    if (!lastRun) {
+      return;
+    }
+    setGeoData(geoJsonForRuns(selectedRuns));
+    setTitle(titleForShow(lastRun));
     clearInterval(intervalId);
     scrollToMap();
   };
@@ -102,108 +112,82 @@ const Index = () => {
     setIntervalId(id);
   }, [runs]);
 
-  // TODO refactor
   useEffect(() => {
     if (year !== 'Total') {
       return;
     }
 
-    let rectArr = document.querySelectorAll('rect');
-
-    if (rectArr.length !== 0) {
-      rectArr = Array.from(rectArr).slice(1);
+    let svgStat = document.getElementById('svgStat')
+    if (!svgStat) {
+      return
     }
+    svgStat.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target) {
+        const tagName = target.tagName.toLowerCase()
 
-    rectArr.forEach((rect) => {
-      const rectColor = rect.getAttribute('fill');
+        // click the github-stat style svg
+        if (tagName === 'rect' &&
+          parseFloat(target.getAttribute('width')) === 2.6 &&
+          parseFloat(target.getAttribute('height')) === 2.6 &&
+          target.getAttribute('fill') !== '#444444') {
 
-      // not run has no click event
-      if (rectColor !== '#444444') {
-        const runDate = rect.innerHTML;
-        // ingnore the error
-        const [runName] = runDate.match(/\d{4}-\d{1,2}-\d{1,2}/) || [];
-        const runLocate = runs
-          .filter((r) => r.start_date_local.slice(0, 10) === runName)
-          .sort((a, b) => b.distance - a.distance)[0];
+          const [runDate] = target.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [`${+thisYear + 1}`];
+          const runIDsOnDate = runs.filter((r) => r.start_date_local.slice(0, 10) === runDate).map((r) => r.run_id)
+          if (!runIDsOnDate.length) {
+            return
+          }
+          locateActivity(runIDsOnDate)
 
-        // do not add the event next time
-        // maybe a better way?
-        if (runLocate) {
-          rect.addEventListener(
-            'click',
-            () => locateActivity(runLocate),
-            false
-          );
+        } else if (tagName === 'polyline') { // click the route grid svg
+          const desc = target.getElementsByTagName('desc')[0]
+          if (!desc) { return }
+          const run_id = Number(desc.innerHTML)
+          if (!run_id) {
+            return
+          }
+          locateActivity([run_id])
         }
       }
-    });
-    let polylineArr = document.querySelectorAll('polyline');
-
-    if (polylineArr.length !== 0) {
-      polylineArr = Array.from(polylineArr).slice(1);
-    }
-
-    // add picked runs svg event
-    polylineArr.forEach((polyline) => {
-      // not run has no click event
-      const runDate = polyline.innerHTML;
-      // `${+thisYear + 1}` ==> 2021
-      const [runName] = runDate.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
-        `${+thisYear + 1}`,
-      ];
-      const run = runs
-        .filter((r) => r.start_date_local.slice(0, 10) === runName)
-        .sort((a, b) => b.distance - a.distance)[0];
-
-      // do not add the event next time
-      // maybe a better way?
-      if (run) {
-        polyline.addEventListener('click', () => locateActivity(run), false);
-      }
-    });
+    })
   }, [year]);
 
   return (
     <Layout>
-      <div className="mb5">
-        <div className="fl w-30-l">
-          <h1 className="f1 fw9 i">
-            <a href="/">{siteTitle}</a>
-          </h1>
-          {viewport.zoom <= 3 && IS_CHINESE ? (
-            <LocationStat
-              changeYear={changeYear}
-              changeCity={changeCity}
-              changeTitle={changeTitle}
-            />
-          ) : (
-            <YearsStat year={year} onClick={changeYear} />
-          )}
-        </div>
-        <div className="fl w-100 w-70-l">
-          <RunMap
-            runs={runs}
-            year={year}
-            title={title}
-            viewport={viewport}
-            geoData={geoData}
-            setViewport={setViewport}
+      <div className="fl w-30-l">
+        <h1 className="f1 fw9 i">
+          <a href="/">{siteTitle}</a>
+        </h1>
+        {viewport.zoom <= 3 && IS_CHINESE ? (
+          <LocationStat
             changeYear={changeYear}
-            thisYear={year}
+            changeCity={changeCity}
+            changeTitle={changeTitle}
           />
-          {year === 'Total' ? (
-            <SVGStat />
-          ) : (
-            <RunTable
-              runs={runs}
-              year={year}
-              locateActivity={locateActivity}
-              setActivity={setActivity}
-              runIndex={runIndex}
-              setRunIndex={setRunIndex}
-            />
-          )}
-        </div>
+        ) : (
+          <YearsStat year={year} onClick={changeYear} />
+        )}
+      </div>
+      <div className="fl w-100 w-70-l">
+        <RunMap
+          title={title}
+          viewport={viewport}
+          geoData={geoData}
+          setViewport={setViewport}
+          changeYear={changeYear}
+          thisYear={year}
+        />
+        {year === 'Total' ? (
+          <SVGStat />
+        ) : (
+          <RunTable
+            runs={runs}
+            locateActivity={locateActivity}
+            setActivity={setActivity}
+            runIndex={runIndex}
+            setRunIndex={setRunIndex}
+          />
+        )}
       </div>
       {/* Enable Audiences in Vercel Analytics: https://vercel.com/docs/concepts/analytics/audiences/quickstart */}
       <Analytics />
