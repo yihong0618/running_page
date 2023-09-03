@@ -6,7 +6,7 @@ const Header = () => {
   const { logo, siteUrl, navLinks } = useSiteMetadata();
 
   return (
-    <div>
+    <>
       <nav
         className="db flex justify-between w-100 ph5-l"
         style={{ marginTop: '3rem' }}
@@ -30,7 +30,7 @@ const Header = () => {
           ))}
         </div>
       </nav>
-    </div>
+    </>
   );
 };
 
