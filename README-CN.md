@@ -32,7 +32,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [ben_29](https://github.com/ben-29)               | <https://running.ben29.xyz>                    | Strava    |
 | [kcllf](https://github.com/kcllf)                 | <https://running-tau.vercel.app>               | Garmin-cn |
 | [mq](https://github.com/MQ-0707)                  | <https://running-iota.vercel.app>              | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://running-page-psi.vercel.app>          | Keep      |
+| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://zhaohongxuan.github.io/workouts>      | Strava    |
 | [yvetterowe](https://github.com/yvetterowe)       | <https://run.haoluo.io>                        | Strava    |
 | [love-exercise](https://github.com/KaiOrange)     | <https://run.kai666666.top>                    | Keep      |
 | [zstone12](https://github.com/zstone12)           | <https://running-page.zstone12.vercel.app>     | Keep      |
@@ -68,6 +68,14 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx       |
 | [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava    |
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep      |
+| [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn |
+| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX    |
+| [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro/>                     | Garmin    |
+| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun    |
+| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike|
+| [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava    |
+| [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn |
 
 </details>
 
@@ -107,11 +115,17 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[郁金香运动](#tulipsport)**
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
+- **[FIT](#fit)**
 - **[Tcx+Strava(upload all tcx data to strava)](#tcx_to_strava)**
 - **[Gpx+Strava(upload all tcx data to strava)](#gpx_to_strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
+
+## 视频教程
+
+- https://www.youtube.com/watch?v=reLiY9p8EJk
+- https://www.youtube.com/watch?v=VdNkFxTX5QQ
 
 ## 下载
 
@@ -119,7 +133,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## 安装及测试 (node >= 12 and <= 14 python >= 3.7)
+## 安装及测试 (node >= 14.15.0 python >= 3.7)
 
 ```
 pip3 install -r requirements.txt
@@ -195,6 +209,22 @@ const USE_DASH_LINE = true;
 const LINE_OPACITY = 0.4;
 ```
 
+- 隐私保护：
+
+设置下面环境变量：
+
+```shell
+IGNORE_START_END_RANGE = 200 # 忽略每个 polyline 的起点和终点的长度（单位：米）。
+
+IGNORE_RANGE = 200 # 忽略下面 polyline 中每个点的距离的圆圈（单位：米）。
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # 包含要忽略的点的折线。 
+
+# 在保存到数据库之前进行过滤，你会丢失一些数据，但可以保护你的隐私，如果你使用的是公共仓库，建议设置为1。不设置可关闭。
+IGNORE_BEFORE_SAVING = 1
+```
+
+你可一用[这个](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
+
 ## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据，[别忘了在 `total` 页面生成可视化 SVG](#total-data-analysis)
 
 ### GPX
@@ -221,6 +251,20 @@ python3(python) scripts/gpx_sync.py
 
 ```python
 python3(python) scripts/tcx_sync.py
+```
+
+</details>
+
+### FIT
+
+<details>
+<summary>Make your <code>FIT</code> data</summary>
+<br>
+
+把其它软件生成的 fit files 拷贝到 FIT_OUT 之后运行
+
+```python
+python3(python) scripts/fit_sync.py
 ```
 
 </details>
@@ -405,7 +449,10 @@ python3(python) scripts/tulipsport_sync.py nLgy****RyahI
 <summary>获取您的 Garmin 数据</summary>
 <br>
 如果你只想同步跑步数据增加命令 --only-run
+
 如果你想同步 `tcx` 格式，增加命令 --tcx
+
+如果你想同步 `fit` 格式，增加命令 --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password}
@@ -424,7 +471,11 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 <details>
 <summary>获取您的 Garmin-CN 数据</summary>
 
-> 如果你只想同步跑步数据请增加 --only-run
+如果你只想同步跑步数据请增加 --only-run
+
+如果你想同步 `tcx` 格式，增加命令 --tcx
+
+如果你想同步 `fit` 格式，增加命令 --fit
 
 ```python
 python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
@@ -535,6 +586,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 > 第一次同步 Strava 数据时需要更改在 strava_sync.py 中的第 12 行代码 False 改为 True，运行完成后，再改为 False。
 
+如果你只想同步跑步数据增加命令 --only-run
 ```python
 python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
@@ -664,6 +716,17 @@ python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }}
 python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
+如果要在同步到Garmin的运动记录中添加Garmin设备信息，需要添加`--use_fake_garmin_device`参数，这将在同步的Garmin锻炼记录中添加一个Garmin设备（默认情况下为 `Garmin Forerunner 245`，您可以在`garmin_device_adaptor.py`中更改设备信息），运动记录中有了设备信息之后就可以同步到其他APP中，比如数字心动（攒上马积分）这类不能通过Apple Watch同步的APP，当然也可以同步到Keep，悦跑圈，咕咚等APP。
+
+<img width="830" alt="image" src="https://github.com/yihong0618/running_page/assets/8613196/b5076942-3133-4c89-ad66-a828211667dc">
+
+
+最终执行的命令如下：
+
+```python
+python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
+```
+
 注意：**首次初始化的时候，如果你有大量的 strava 跑步数据，可能有些数据会上传失败，只需要多重试几次即可。**
 
 </details>
@@ -760,12 +823,48 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 1. 更改成你的 app type 及 info
    ![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
+
 2. 在 repo Settings > Secrets 中增加你的 secret (只添加你需要的即可)
+
    ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
    我的 secret 如下
    ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
 
 </details>
+
+## 把数据文件放在github cache中
+
+<details>
+<summary>把数据文件放在github cache中</summary>
+
+`run_data_sync.yml`中的`SAVE_DATA_IN_GITHUB_CACHE`设置为`true`时，可以把脚本抓取和中间产生的数据文件放到github action cache中。这样可以让你的github commit历史和目录保持干净。
+
+如果你用github pages部署建议把这个值设置成`true`。
+
+如果你使用`Vervel`，需要在vercel后台进行下面几步操作：
+
+1. 在`General`的`Build & Development Settings`的Framework Preset选择Other，然后把override全部打开，命令行内容全部设置成空。
+
+  ![General](https://user-images.githubusercontent.com/413855/255507920-76932fb9-61d6-423e-92e2-2e92b5bbd432.png)
+
+2. 在Git模块中，`Production Branch`的Branch name填入`gh-pages`
+
+  ![Branch name](https://user-images.githubusercontent.com/413855/255508137-ef742815-8418-419a-86b4-6756ff68e1db.png)
+
+3. `run_data_sync.yml`中的`BUILD_GH_PAGES`设置为`true`
+
+</details>
+
+# Fit 文件
+
+测试发现，不同厂商在写fit文件的时候有略微差异。
+
+已调试设备：
+
+- [x] 佳明手表
+- [x] 迈金码表
+
+如果发现自己的fit文件解析有问题。可以提issue。
 
 # TODO
 

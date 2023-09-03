@@ -7,7 +7,7 @@ import styles from './style.module.scss';
 const RunMarker = ({ startLon, startLat, endLon, endLat }) => {
   const size = 20;
   return (
-    <div>
+    <>
       <Marker key="maker_start" longitude={startLon} latitude={startLat}>
         <div
           style={{
@@ -28,7 +28,7 @@ const RunMarker = ({ startLon, startLat, endLon, endLat }) => {
           <EndSvg className={styles.locationSVG} />
         </div>
       </Marker>
-    </div>
+    </>
   );
 };
 

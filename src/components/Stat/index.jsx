@@ -5,8 +5,8 @@ const divStyle = {
   fontWeight: '700',
 };
 
-const Stat = ({ value, description, className, citySize, onClick }) => (
-  <div className={`${className} pb2 w-100`} onClick={onClick}>
+const Stat = ({ value, description, className = 'pb2 w-100', citySize, onClick }) => (
+  <div className={`${className}`} onClick={onClick}>
     <span className={`f${citySize || 1} fw9 i`} style={divStyle}>
       {intComma(value)}
     </span>
