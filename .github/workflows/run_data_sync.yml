@@ -39,10 +39,7 @@ env:
   DATA_CACHE_PREFIX: "track_data"
   BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
 
-<<<<<<< HEAD
-=======
 
->>>>>>> yihong0618-master
 jobs:
   sync:
     name: Sync
