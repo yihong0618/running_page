@@ -75,6 +75,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike|
 | [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava    |
 | [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn |
+| [Echo](https://github.com/donghao526)             | <https://donghao526.github.io/running>         | JoyRun    | 
 
 
 </details>
