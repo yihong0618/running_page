@@ -161,6 +161,7 @@ class Joyrun:
         )
         if not r.ok:
             raise Exception("get runs records error")
+        print(r.json())
         return [i["fid"] for i in r.json()["datas"]]
 
     @staticmethod
