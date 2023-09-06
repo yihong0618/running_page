@@ -51,8 +51,8 @@ jobs:
       BUILD_GH_PAGES: ${{ steps.set_output.outputs.BUILD_GH_PAGES }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+     # - name: Checkout
+     #   uses: actions/checkout@v3
 
       - name: Set up Python
         id: setup_python
