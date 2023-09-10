@@ -6,7 +6,7 @@ except:
     raise Exception("please install pandas run: pip3 install pandas")
 from math import floor
 
-data = sqlite3.connect("scripts/data.db")
+data = sqlite3.connect("run_page/data.db")
 df = pd.read_sql_query("SELECT * FROM activities", data)
 
 

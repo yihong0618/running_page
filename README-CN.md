@@ -235,7 +235,7 @@ IGNORE_BEFORE_SAVING = 1
 把其它软件生成的 gpx files 拷贝到 GPX_OUT 之后运行
 
 ```python
-python3(python) scripts/gpx_sync.py
+python3(python) run_page/gpx_sync.py
 ```
 
 </details>
@@ -249,7 +249,7 @@ python3(python) scripts/gpx_sync.py
 把其它软件生成的 tcx files 拷贝到 TCX_OUT 之后运行
 
 ```python
-python3(python) scripts/tcx_sync.py
+python3(python) run_page/tcx_sync.py
 ```
 
 </details>
@@ -263,7 +263,7 @@ python3(python) scripts/tcx_sync.py
 把其它软件生成的 fit files 拷贝到 FIT_OUT 之后运行
 
 ```python
-python3(python) scripts/fit_sync.py
+python3(python) run_page/fit_sync.py
 ```
 
 </details>
@@ -276,25 +276,25 @@ python3(python) scripts/fit_sync.py
 > 确保自己的账号能用手机号 + 密码登陆 (不要忘记添加 secret 和更改自己的账号，在 GitHub Actions 中), 注：海外手机号需要换成国内 +86 的手机号
 
 ```python
-python3(python) scripts/keep_sync.py ${your mobile} ${your password}
+python3(python) run_page/keep_sync.py ${your mobile} ${your password}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/keep_sync.py 13333xxxx example
+python3(python) run_page/keep_sync.py 13333xxxx example
 ```
 
 > 注：我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
-python3(python) scripts/keep_sync.py ${your mobile} ${your password} --with-gpx
+python3(python) run_page/keep_sync.py ${your mobile} ${your password} --with-gpx
 ```
 
 示例：
 
 ```python
-python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
+python3(python) run_page/keep_sync.py 13333xxxx example --with-gpx
 ```
 
 </details>
@@ -306,7 +306,7 @@ python3(python) scripts/keep_sync.py 13333xxxx example --with-gpx
 
 > 注：Keep 目前采用的是 GCJ-02 坐标系，因此导致得到运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
 
-- 修改 `scripts/keep_sync.py` 文件中的参数：
+- 修改 `run_page/keep_sync.py` 文件中的参数：
 
 ```python
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
@@ -331,25 +331,25 @@ TRANS_GCJ02_TO_WGS84 = True
 ![image](https://user-images.githubusercontent.com/15976103/102352588-e3af3000-3fe2-11eb-8131-14946b0262eb.png)
 
 ```python
-python3(python) scripts/joyrun_sync.py ${your mobile} ${your 验证码}
+python3(python) run_page/joyrun_sync.py ${your mobile} ${your 验证码}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/joyrun_sync.py 13333xxxx xxxx
+python3(python) run_page/joyrun_sync.py 13333xxxx xxxx
 ```
 
 > 注：我增加了 joyrun 可以导出 gpx 功能，执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
-python3(python) scripts/joyrun_sync.py ${your mobile} ${your 验证码} --with-gpx
+python3(python) run_page/joyrun_sync.py ${your mobile} ${your 验证码} --with-gpx
 ```
 
 示例：
 
 ```python
-python3(python) scripts/joyrun_sync.py 13333xxxx example --with-gpx
+python3(python) run_page/joyrun_sync.py 13333xxxx example --with-gpx
 ```
 
 > 注：因为验证码有过期时间，我增加了 cookie uid sid 登陆的方式，uid 及 sid 在您登陆过程中会在控制台打印出来
@@ -359,7 +359,7 @@ python3(python) scripts/joyrun_sync.py 13333xxxx example --with-gpx
 示例：
 
 ```python
-python3(python) scripts/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx --from-uid-sid --with-gpx
+python3(python) run_page/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx --from-uid-sid --with-gpx
 ```
 
 </details>
@@ -370,25 +370,25 @@ python3(python) scripts/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx --
 <summary>获取您的咕咚数据</summary>
 
 ```python
-python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password}
+python3(python) run_page/codoon_sync.py ${your mobile or email} ${your password}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/codoon_sync.py 13333xxxx xxxx
+python3(python) run_page/codoon_sync.py 13333xxxx xxxx
 ```
 
 > 注：我增加了 Codoon 可以导出 gpx 功能，执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
-python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password} --with-gpx
+python3(python) run_page/codoon_sync.py ${your mobile or email} ${your password} --with-gpx
 ```
 
 示例：
 
 ```python
-python3(python) scripts/codoon_sync.py 13333xxxx xxxx --with-gpx
+python3(python) run_page/codoon_sync.py 13333xxxx xxxx --with-gpx
 ```
 
 > 注：因为登录 token 有过期时间限制，我增加了 refresh_token&user_id 登陆的方式，refresh_token 及 user_id 在您登陆过程中会在控制台打印出来
@@ -398,7 +398,7 @@ python3(python) scripts/codoon_sync.py 13333xxxx xxxx --with-gpx
 示例：
 
 ```python
-python3(python) scripts/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth-token
+python3(python) run_page/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth-token
 ```
 
 </details>
@@ -410,7 +410,7 @@ python3(python) scripts/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth
 
 > 注：咕咚最初采用 GCJ-02 坐标系，在 2014 年 3 月份左右升级为 WGS-84 坐标系，导致升级之前的运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
 
-- 修改 `scripts/codoon_sync.py` 文件中的参数：
+- 修改 `run_page/codoon_sync.py` 文件中的参数：
 
 > 注：TRANS_END_DATE 需要根据您的实际情况设定，程序会修正这一天之前的运动记录
 
@@ -431,13 +431,13 @@ TRANS_END_DATE = "2014-03-24"
 > 郁金香运动数据的获取方式采用开放平台授权模式，通过访问[RunningPage 授权页面](https://tulipsport.rdshoep.com)获取账号 TOKEN(不会过期，只能访问 2021 年之后的数据)，并在仓库的 GitHub Actions 环境配置中添加`TULIPSPORT_TOKEN`配置。
 
 ```python
-python3(python) scripts/tulipsport_sync.py ${tulipsport_token}
+python3(python) run_page/tulipsport_sync.py ${tulipsport_token}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/tulipsport_sync.py nLgy****RyahI
+python3(python) run_page/tulipsport_sync.py nLgy****RyahI
 ```
 
 </details>
@@ -454,13 +454,13 @@ python3(python) scripts/tulipsport_sync.py nLgy****RyahI
 如果你想同步 `fit` 格式，增加命令 --fit
 
 ```python
-python3(python) scripts/garmin_sync.py ${your email} ${your password}
+python3(python) run_page/garmin_sync.py ${your email} ${your password}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example
+python3(python) run_page/garmin_sync.py example@gmail.com example
 ```
 
 </details>
@@ -477,19 +477,19 @@ python3(python) scripts/garmin_sync.py example@gmail.com example
 如果你想同步 `fit` 格式，增加命令 --fit
 
 ```python
-python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
+python3(python) run_page/garmin_sync.py ${your email} ${your password} --is-cn
 ```
 
 示例：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
+python3(python) run_page/garmin_sync.py example@gmail.com example --is-cn
 ```
 
 仅同步跑步数据：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn --only-run
+python3(python) run_page/garmin_sync.py example@gmail.com example --is-cn --only-run
 ```
 
 </details>
@@ -509,13 +509,13 @@ python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn --only-
 ![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png) 3. 在项目根目录下执行：
 
 ```python
-python3(python) scripts/nike_sync.py ${nike refresh_token}
+python3(python) run_page/nike_sync.py ${nike refresh_token}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
+python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 ```
 
 ![example img](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/nike_sync_%20example.png)
@@ -588,7 +588,7 @@ curl -X POST https://www.strava.com/oauth/token \
 如果你只想同步跑步数据增加命令 --only-run
 
 ```python
-python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
+python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
 
 其他资料参见
@@ -610,15 +610,15 @@ python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_t
 3. 在项目根目录下执行：
 
 ```python
-python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresh_token}
+python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
 或
-python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. 如果你已经上传过需要跳过判断增加参数 `--all`
@@ -637,15 +637,15 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 3. 在项目根目录下执行：
 
 ```python
-python3(python) scripts/gpx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresh_token}
+python3(python) run_page/gpx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx
+python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx
 或
-python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx --all
+python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 3. 如果你已经上传过需要跳过判断增加参数 `--all`
@@ -663,13 +663,13 @@ python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx --all
 2. 在项目根目录下执行：
 
 ```python
-python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
+python3(python) run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
+python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 ```
 
 </details>
@@ -685,13 +685,13 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 2. 在项目根目录下执行：
 
 ```python
-python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_email} ${garmin_password} --is-cn
+python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_email} ${garmin_password} --is-cn
 ```
 
 示例：
 
 ```python
-python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
+python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
 
 </details>
@@ -707,13 +707,13 @@ python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 2. 在项目根目录下执行：
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 ```
 
 如果你的佳明账号是中国区，执行如下的命令：
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
 如果要在同步到 Garmin 的运动记录中添加 Garmin 设备信息，需要添加`--use_fake_garmin_device`参数，这将在同步的 Garmin 锻炼记录中添加一个 Garmin 设备（默认情况下为 `Garmin Forerunner 245`，您可以在`garmin_device_adaptor.py`中更改设备信息），运动记录中有了设备信息之后就可以同步到其他 APP 中，比如数字心动（攒上马积分）这类不能通过 Apple Watch 同步的 APP，当然也可以同步到 Keep，悦跑圈，咕咚等 APP。
@@ -723,7 +723,7 @@ python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }}
 最终执行的命令如下：
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
 注意：**首次初始化的时候，如果你有大量的 strava 跑步数据，可能有些数据会上传失败，只需要多重试几次即可。**
@@ -741,17 +741,17 @@ python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }}
 > 注：感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为 special-color2, --min-distance 10.0 用来筛选 10km 以上的)
 
 ```
-python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+python3(python) run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
 
 ```
-python3(python) scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+python3(python) run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
 ```
 
 生成年度环形数据
 
 ```
-python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
+python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 ```
 
 更多展示效果参见：

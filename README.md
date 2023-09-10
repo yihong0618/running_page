@@ -1,5 +1,7 @@
 ## 注：如果是之前 clone 或 Fork 的朋友 vercel 显示 404 可能需要更新下代码
 
+## 注 2: 下面的 python3(python) 代表 python3 或者 python, 提醒下不熟悉编程的朋友
+
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
 </p>
@@ -220,7 +222,7 @@ You can using [this](https://developers.google.com/maps/documentation/utilities/
 Copy all your gpx files to GPX_OUT or new gpx files
 
 ```python
-python3(python) scripts/gpx_sync.py
+python3(python) run_page/gpx_sync.py
 ```
 
 </details>
@@ -234,7 +236,7 @@ python3(python) scripts/gpx_sync.py
 Copy all your tcx files to TCX_OUT or new tcx files
 
 ```python
-python3(python) scripts/tcx_sync.py
+python3(python) run_page/tcx_sync.py
 ```
 
 </details>
@@ -248,7 +250,7 @@ python3(python) scripts/tcx_sync.py
 Copy all your tcx files to FIT_OUT or new fit files
 
 ```python
-python3(python) scripts/fit_sync.py
+python3(python) run_page/fit_sync.py
 ```
 
 </details>
@@ -265,19 +267,19 @@ If you only want `tcx` files add args --tcx
 If you only want `fit` files add args --fit
 
 ```python
-python3(python) scripts/garmin_sync.py ${your email} ${your password}
+python3(python) run_page/garmin_sync.py ${your email} ${your password}
 ```
 
 example：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example
+python3(python) run_page/garmin_sync.py example@gmail.com example
 ```
 
 only-run：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example --only-run
+python3(python) run_page/garmin_sync.py example@gmail.com example --only-run
 ```
 
 </details>
@@ -294,13 +296,13 @@ If you only want `tcx` files add args --tcx
 If you only want `fit` files add args --fit
 
 ```python
-python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
+python3(python) run_page/garmin_sync.py ${your email} ${your password} --is-cn
 ```
 
 example：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
+python3(python) run_page/garmin_sync.py example@gmail.com example --is-cn
 ```
 
 </details>
@@ -326,13 +328,13 @@ Get Nike's `refresh_token`
 3. Execute in the root directory:
 
 ```python
-python3(python) scripts/nike_sync.py ${nike refresh_token}
+python3(python) run_page/nike_sync.py ${nike refresh_token}
 ```
 
 example：
 
 ```python
-python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
+python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 ```
 
 ![example img](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/nike_sync_%20example.png)
@@ -414,7 +416,7 @@ curl -X POST https://www.strava.com/oauth/token \
 > If you only want to sync `type running` add args --only-run
 
 ```python
-python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
+python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
 
 References：
@@ -437,15 +439,15 @@ References：
 3. Execute in the root directory:
 
 ```python
-python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
+python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
 ```python
-python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
 or
-python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -464,15 +466,15 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 3. Execute in the root directory:
 
 ```python
-python3(python) scripts/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
+python3(python) run_page/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
 ```python
-python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx
+python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx
 or
-python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -490,13 +492,13 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 2. Execute in the root directory:
 
 ```python
-python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
+python3(python) run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 example：
 
 ```python
-python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
+python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 ```
 
 </details>
@@ -512,13 +514,13 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 2. Execute in the root directory:
 
 ```python
-python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_email} ${garmin_password} --is-cn
+python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_email} ${garmin_password} --is-cn
 ```
 
 e.g.
 
 ```python
-python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
+python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
 
 </details>
@@ -534,13 +536,13 @@ python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 2. Execute in the root directory:
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 ```
 
 if your garmin account region is **China**, you need to execute the command:
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
 If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc.
@@ -550,7 +552,7 @@ If you want to add Garmin Device during sync, you should add `--use_fake_garmin_
 the final command will be:
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
 ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
@@ -567,17 +569,17 @@ ps: **when initializing for the first time, if you have a large amount of strava
 - Display of results:[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
 ```
-python scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
 
 ```
-python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+python run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
 ```
 
 Generate year circular svg show
 
 ```
-python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
+python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 ```
 
 For more display effects, see:

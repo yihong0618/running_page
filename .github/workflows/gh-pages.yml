@@ -4,7 +4,7 @@ name: Publish GitHub Pages
 on:
   # trigger when the Run Data Sync workflow succeeded
   workflow_run:
-    workflows: ["Run Data Sync"]
+    workflows: ['Run Data Sync']
     types:
       - completed
 
@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: '18'
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
@@ -62,7 +62,7 @@ jobs:
           # Create incremental commit instead of doing push force
           keep_history: true
           # Build directory to deploy
-          build_dir: build
+          build_dir: dist
           # Write the given domain name to the CNAME file
           #fqdn: custom.domain.name # optional
           # Prevent Jekyll from building the site
