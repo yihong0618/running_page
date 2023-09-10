@@ -3,10 +3,10 @@ name: Sync GraminCN To Strava
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '15 * * * *'
   push:
     branches:
-      - master
+      - strava_sync
     paths:
       - scripts/garmin_to_strava_sync.py
       - requirements.txt
