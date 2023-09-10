@@ -136,8 +136,8 @@ git clone https://github.com/yihong0618/running_page.git --depth=1
 
 ```
 pip3 install -r requirements.txt
-yarn install
-yarn develop
+npm install -g corepack && corepack enable && pnpm install
+pnpm develop
 ```
 
 访问 <http://localhost:8000/> 查看

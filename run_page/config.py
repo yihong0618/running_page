@@ -16,7 +16,7 @@ FOLDER_DICT = {
     "tcx": TCX_FOLDER,
     "fit": FIT_FOLDER,
 }
-SQL_FILE = os.path.join(parent, "scripts", "data.db")
+SQL_FILE = os.path.join(parent, "run_page", "data.db")
 JSON_FILE = os.path.join(parent, "src", "static", "activities.json")
 SYNCED_FILE = os.path.join(parent, "imported.json")
 
