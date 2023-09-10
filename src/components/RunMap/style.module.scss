@@ -30,10 +30,12 @@
 }
 
 .fullscreenButton {
+  display: inline-block;
+  position: absolute;
   top: 0rem;
   right: 0rem;
   opacity: 0.3;
-  padding: 1.2rem;
+  padding: 0.8rem;
 }
 
 .runTitle {
