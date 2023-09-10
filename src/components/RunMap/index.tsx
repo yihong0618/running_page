@@ -1,6 +1,11 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import React, { useRef, useCallback } from 'react';
-import ReactMapGL, { Layer, Source, FullscreenControl, MapRef } from 'react-map-gl';
+import ReactMapGL, {
+  Layer,
+  Source,
+  FullscreenControl,
+  MapRef,
+} from 'react-map-gl';
 import useActivities from '@/hooks/useActivities';
 import {
   MAP_LAYER_LIST,
@@ -92,10 +97,7 @@ const RunMap = ({
       ref={mapRefCallback}
       mapboxApiAccessToken={MAPBOX_TOKEN}
     >
-      <RunMapButtons
-        changeYear={changeYear}
-        thisYear={thisYear}
-      />
+      <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
       <FullscreenControl className={styles.fullscreenButton} />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
