@@ -622,8 +622,6 @@ For more display effects, see:
 
 4. Scroll down, click `Environment variables`, then variable below:
 
-   > Variable name = `PYTHON_VERSION`, Value = `3.7`
-
 5. Click `Save and Deploy`
 
 </details>
@@ -633,11 +631,9 @@ For more display effects, see:
 
 1. If you are using a custom domain for GitHub Pages, open [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml), change `fqdn` value to the domain name of your site.
 
-2. (_Skip this step if you're **NOT** using a custom domain_) Modify `.github/workflows/gh-pages.yml`, change `PATH_PREFIX` value to the root path. If the repository name is `running_page`, the value will be `/running_page`.
+2. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
 3. Go to repository's `Actions -> Workflows -> All Workflows`, choose `Publish GitHub Pages` from the left panel, click `Run workflow`. Make sure the workflow runs without errors, and `gh-pages` branch is created.
-
-4. Go to repository's `Settings -> GitHub Pages -> Source`, choose `Branch: gh-pages`, click `Save`.
 
 </details>
 

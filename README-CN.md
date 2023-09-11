@@ -808,7 +808,7 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
    4. 在仓库的`Settings > Secrets and variables > Actions`页面添加对应服务的环境配置信息，参考不同平台[配置](#支持)。
 3. 同步数据并发布 GitHub Pages
    1. 手动触发`Run Data Sync`的 Github Action 完成数据同步，完成后会自动触发`Publish GitHub Pages`的任务执行，等待执行完成；
-   2. 开通仓库 GitHub Pages 功能，选择`gh-pages`分支和`/(root)`目录。
+   2. 开通仓库 GitHub Pages 功能，选择`GitHub Actions`
 
 </details>
 
