@@ -79,7 +79,7 @@ if __name__ == "__main__":
         time.sleep(1)
 
     # Run the strava sync
-    if len(new_ids) > 0: 
+    if len(new_ids) > 0:
         run_strava_sync(
             options.strava_client_id,
             options.strava_client_secret,
