@@ -79,8 +79,9 @@ if __name__ == "__main__":
         time.sleep(1)
 
     # Run the strava sync
-    run_strava_sync(
-        options.strava_client_id,
-        options.strava_client_secret,
-        options.strava_refresh_token,
-    )
+    if len(new_ids) > 0: 
+        run_strava_sync(
+            options.strava_client_id,
+            options.strava_client_secret,
+            options.strava_refresh_token,
+        )
