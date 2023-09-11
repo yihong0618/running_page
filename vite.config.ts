@@ -10,6 +10,6 @@ export default defineConfig({
   base: process.env.PATH_PREFIX || '/',
   build: {
     manifest: true,
-    outDir: './build',
+    outDir: './dist', // for user easy to use, vercel use default dir -> dist
   },
 });
