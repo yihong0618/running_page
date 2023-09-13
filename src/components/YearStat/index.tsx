@@ -7,7 +7,7 @@ import useHover from '@/hooks/useHover';
 import { yearStats } from '@assets/index'
 
 const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) => void }) => {
-  let { activities: runs, years } = useActivities();
+  let [{ activities: runs, years }] = useActivities();
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component

@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
 import RunMap from '@/components/RunMap';
@@ -25,16 +25,26 @@ import {
 
 const Index = () => {
   const { siteTitle } = useSiteMetadata();
-  const { activities, thisYear } = useActivities();
+  const [{ activities, thisYear }] = useActivities();
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
-  const [runs, setActivity] = useState(
-    filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc)
-  );
+
+  useEffect(() => {
+    setYear(thisYear);
+  }, [thisYear]);
+
+  const [runs, setRuns] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    setRuns(filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc));
+  }, [activities, year]);
+
   const [title, setTitle] = useState('');
-  const [geoData, setGeoData] = useState(geoJsonForRuns(runs));
+  const [geoData, setGeoData] = useState(geoJsonForRuns([]));
   // for auto zoom
-  const bounds = getBoundsForGeoData(geoData);
+  const bounds = useMemo(() => {
+    return geoData.features.length > 0 ? getBoundsForGeoData(geoData) : {};
+  }, [geoData])
   const [intervalId, setIntervalId] = useState<number>();
 
   const [viewport, setViewport] = useState<IViewport>({
@@ -47,7 +57,7 @@ const Index = () => {
     func: (_run: Activity, _value: string) => boolean
   ) => {
     scrollToMap();
-    setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
+    setRuns(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
     setTitle(`${item} ${name} Running Heatmap`);
   };
@@ -119,6 +129,7 @@ const Index = () => {
       i += sliceNume;
     }, 100);
     setIntervalId(id);
+    return () => clearInterval(id);
   }, [runs]);
 
   useEffect(() => {
@@ -182,7 +193,7 @@ const Index = () => {
           <RunTable
             runs={runs}
             locateActivity={locateActivity}
-            setActivity={setActivity}
+            setActivity={setRuns}
             runIndex={runIndex}
             setRunIndex={setRunIndex}
           />

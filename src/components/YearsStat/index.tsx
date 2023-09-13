@@ -4,7 +4,7 @@ import useActivities from '@/hooks/useActivities';
 import { INFO_MESSAGE } from '@/utils/const';
 
 const YearsStat = ({ year, onClick }: { year: string, onClick: (_year: string) => void }) => {
-  const { years } = useActivities();
+  const [{ years }] = useActivities();
   // make sure the year click on front
   let yearsArrayUpdate = years.slice();
   yearsArrayUpdate.push('Total');

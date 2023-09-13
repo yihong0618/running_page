@@ -3,7 +3,7 @@ import useActivities from '@/hooks/useActivities';
 import styles from './style.module.scss';
 
 const RunMapButtons = ({ changeYear, thisYear }: { changeYear: (_year: string) => void, thisYear: string }) => {
-  const { years } = useActivities();
+  const [{ years }] = useActivities();
   const yearsButtons = years.slice();
   yearsButtons.push('Total');
 

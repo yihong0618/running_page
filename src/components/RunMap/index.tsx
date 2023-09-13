@@ -1,5 +1,5 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useMemo } from 'react';
 import ReactMapGL, {
   Layer,
   Source,
@@ -18,12 +18,14 @@ import {
   LINE_OPACITY,
   MAP_HEIGHT,
 } from '@/utils/const';
-import { Coordinate, IViewport, geoJsonForMap } from '@/utils/utils';
+import { Coordinate, IViewport } from '@/utils/utils';
 import RunMarker from './RunMaker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.scss';
 import { FeatureCollection } from 'geojson';
 import { RPGeometry } from '@/static/run_countries';
+import useChinaGeoJson from '@/hooks/useChinaGeo';
+import Loading from '../Loading';
 
 interface IRunMapProps {
   title: string;
@@ -42,7 +44,7 @@ const RunMap = ({
   geoData,
   thisYear,
 }: IRunMapProps) => {
-  const { provinces } = useActivities();
+  const [{ provinces }, loading] = useActivities();
   const mapRef = useRef<MapRef>();
   const mapRefCallback = useCallback(
     (ref: MapRef) => {
@@ -69,26 +71,38 @@ const RunMap = ({
   filterProvinces.unshift('in', 'name');
 
   const isBigMap = (viewport.zoom ?? 0) <= 3;
-  if (isBigMap && IS_CHINESE) {
-    geoData = geoJsonForMap();
-  }
+  const chinaGeo = useChinaGeoJson();
 
-  const isSingleRun =
-    geoData.features.length === 1 &&
-    geoData.features[0].geometry.coordinates.length;
-  let startLon = 0;
-  let startLat = 0;
-  let endLon = 0;
-  let endLat = 0;
-  if (isSingleRun) {
-    const points = geoData.features[0].geometry.coordinates as Coordinate[];
-    [startLon, startLat] = points[0];
-    [endLon, endLat] = points[points.length - 1];
-  }
+  const geoDataForMap = useMemo(() => {
+    return isBigMap && IS_CHINESE ? chinaGeo : geoData;
+  }, [isBigMap, chinaGeo, geoData]);
+
+  const isSingleRun = useMemo(() => {
+    return (
+      geoDataForMap?.features.length === 1 &&
+      geoDataForMap?.features[0].geometry.coordinates.length
+    );
+  }, [geoDataForMap]);
+
+  const markerGeo = useMemo(() => {
+    let startLon = 0;
+    let startLat = 0;
+    let endLon = 0;
+    let endLat = 0;
+    if (isSingleRun) {
+      const points = geoDataForMap?.features[0].geometry.coordinates as (Coordinate[] | undefined);
+      if (typeof points !== 'undefined') {
+        [startLon, startLat] = points[0];
+        [endLon, endLat] = points[points.length - 1];
+      }
+    }
+    return { startLon, startLat, endLon, endLat };
+  }, [geoDataForMap, isSingleRun]);
+
   let dash = USE_DASH_LINE && !isSingleRun ? [2, 2] : [2, 0];
 
   return (
-    <ReactMapGL
+    loading ? <Loading /> : <ReactMapGL
       {...viewport}
       width="100%"
       height={MAP_HEIGHT}
@@ -99,7 +113,7 @@ const RunMap = ({
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
       <FullscreenControl className={styles.fullscreenButton} />
-      <Source id="data" type="geojson" data={geoData}>
+      <Source id="data" type="geojson" data={geoDataForMap}>
         <Layer
           id="province"
           type="fill"
@@ -123,14 +137,7 @@ const RunMap = ({
           }}
         />
       </Source>
-      {isSingleRun && (
-        <RunMarker
-          startLat={startLat}
-          startLon={startLon}
-          endLat={endLat}
-          endLon={endLon}
-        />
-      )}
+      {isSingleRun && <RunMarker {...markerGeo} />}
       <span className={styles.runTitle}>{title}</span>
     </ReactMapGL>
   );

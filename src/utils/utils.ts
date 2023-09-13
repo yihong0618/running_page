@@ -1,7 +1,6 @@
 import * as mapboxPolyline from '@mapbox/polyline';
 import gcoord from 'gcoord';
 import { WebMercatorViewport } from 'react-map-gl';
-import { chinaGeojson } from '@/static/run_countries';
 import { chinaCities } from '@/static/city';
 import { MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES } from './const';
 import { FeatureCollection, LineString } from 'geojson';
@@ -174,7 +173,6 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
   }),
 });
 
-const geoJsonForMap = () => chinaGeojson;
 
 const titleForRun = (run: Activity): string => {
   const runDistance = run.distance / 1000;
@@ -285,7 +283,6 @@ export {
   intComma,
   pathForRun,
   geoJsonForRuns,
-  geoJsonForMap,
   titleForRun,
   filterYearRuns,
   filterCityRuns,

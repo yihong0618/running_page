@@ -1,7 +1,17 @@
-import { locationForRun, titleForRun } from '@/utils/utils';
-import activities from '@/static/activities.json';
+import { locationForRun, titleForRun, Activity } from '@/utils/utils';
+import { useEffect, useState } from 'react';
 
-const useActivities = () => {
+const emptyStat = {
+  activities: [],
+  years: [],
+  countries: [],
+  provinces: [],
+  cities: {},
+  runPeriod: {},
+  thisYear: '',
+}
+
+const analyzeActivities = (activities: Activity[]) => {
   const cities: Record<string, number> = {};
   const runPeriod: Record<string, number> = {};
   const provinces: Set<string> = new Set();
@@ -43,5 +53,21 @@ const useActivities = () => {
     thisYear,
   };
 };
+
+type Stat = ReturnType<typeof analyzeActivities>;
+
+function useActivities(): [Stat, boolean] {
+  const [data, setData] = useState<Stat>(emptyStat);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    import('@/static/activities.json').then((res) => {
+      setData(analyzeActivities(res.default));
+      setLoading(false);
+    });
+  }, []);
+
+  return [data, loading];
+}
 
 export default useActivities;
