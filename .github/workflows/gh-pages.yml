@@ -11,10 +11,23 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build_and_deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -47,25 +60,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - run: |
-          pnpm install
-      - run: |
-          pnpm build
-        env:
-          PATH_PREFIX: /
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build
+        run: PATH_PREFIX=/${{ github.event.repository.name }} pnpm build
 
-      - name: GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v3.1.0
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          # Git branch where site will be deployed
-          target_branch: gh-pages
-          # Create incremental commit instead of doing push force
-          keep_history: true
-          # Build directory to deploy
-          build_dir: dist
-          # Write the given domain name to the CNAME file
-          #fqdn: custom.domain.name # optional
-          # Prevent Jekyll from building the site
-          jekyll: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Upload dist repository
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
