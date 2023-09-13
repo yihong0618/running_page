@@ -32,6 +32,7 @@
     "data:download:garmin": "python3 run_page/garmin_sync.py",
     "data:analysis": "python3 run_page/gen_svg.py --from-db --type github --output assets/github.svg",
     "build": "vite build",
+    "bund": "bunx --bun vite build",
     "develop": "vite dev",
     "serve": "vite serve",
     "lint": "eslint --ext .ts,.tsx src --fix",
