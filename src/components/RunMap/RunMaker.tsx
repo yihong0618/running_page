@@ -11,11 +11,21 @@ interface IRunMarkerProperties {
   endLat: number;
 }
 
-const RunMarker = ({ startLon, startLat, endLon, endLat }: IRunMarkerProperties) => {
-  const size = 20;
+const RunMarker = ({
+  startLon,
+  startLat,
+  endLon,
+  endLat,
+}: IRunMarkerProperties) => {
+  const size = 5;
   return (
     <>
-      <Marker key="maker_start" longitude={startLon} latitude={startLat}>
+      <Marker
+        key="maker_start"
+        longitude={startLon}
+        latitude={startLat}
+        pitchAlignment="viewport"
+      >
         <div
           style={{
             transform: `translate(${-size / 2}px,${-size}px)`,

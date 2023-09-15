@@ -37,7 +37,7 @@ const RunTable = ({
     return sortFuncInfo === 'BPM'
       ? a.average_heartrate ?? 0 - (b.average_heartrate ?? 0)
       : b.average_heartrate ?? 0 - (a.average_heartrate ?? 0);
-  }
+  };
   const sortRunTimeFunc: SortFunc = (a, b) => {
     const aTotalSeconds = convertMovingTime2Sec(a.moving_time);
     const bTotalSeconds = convertMovingTime2Sec(b.moving_time);
@@ -59,7 +59,7 @@ const RunTable = ({
     const funcName = (e.target as HTMLElement).innerHTML;
     const f = sortFuncMap.get(funcName);
 
-    setRunIndex(-1)
+    setRunIndex(-1);
     setSortFuncInfo(sortFuncInfo === funcName ? '' : funcName);
     setActivity(runs.sort(f));
   };

@@ -11,7 +11,7 @@ import useSiteMetadata from '@/hooks/useSiteMetadata';
 import { IS_CHINESE } from '@/utils/const';
 import {
   Activity,
-  IViewport,
+  IViewState,
   filterAndSortRuns,
   filterCityRuns,
   filterTitleRuns,
@@ -37,7 +37,7 @@ const Index = () => {
   const bounds = getBoundsForGeoData(geoData);
   const [intervalId, setIntervalId] = useState<number>();
 
-  const [viewport, setViewport] = useState<IViewport>({
+  const [viewState, setViewState] = useState<IViewState>({
     ...bounds,
   });
 
@@ -56,8 +56,8 @@ const Index = () => {
     // default year
     setYear(y);
 
-    if ((viewport.zoom ?? 0) > 3) {
-      setViewport({
+    if ((viewState.zoom ?? 0) > 3) {
+      setViewState({
         ...bounds,
       });
     }
@@ -99,7 +99,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    setViewport({
+    setViewState({
       ...bounds,
     });
   }, [geoData]);
@@ -157,7 +157,7 @@ const Index = () => {
         <h1 className="f1 fw9 i">
           <a href="/">{siteTitle}</a>
         </h1>
-        {(viewport.zoom ?? 0) <= 3 && IS_CHINESE ? (
+        {(viewState.zoom ?? 0) <= 3 && IS_CHINESE ? (
           <LocationStat
             changeYear={changeYear}
             changeCity={changeCity}
@@ -170,9 +170,9 @@ const Index = () => {
       <div className="fl w-100 w-70-l">
         <RunMap
           title={title}
-          viewport={viewport}
+          viewState={viewState}
           geoData={geoData}
-          setViewport={setViewport}
+          setViewState={setViewState}
           changeYear={changeYear}
           thisYear={year}
         />

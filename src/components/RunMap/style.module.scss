@@ -9,6 +9,9 @@
 }
 
 .buttons {
+  position: absolute;
+  top: 10px;
+  left: 10px;
   margin: 0 auto;
   padding-right: 70px;
 }
@@ -30,10 +33,10 @@
 }
 
 .fullscreenButton {
-  display: inline-block;
-  position: absolute;
   top: 0rem;
   right: 0rem;
+  display: inline-block;
+  position: absolute;
   opacity: 0.3;
   padding: 0.8rem;
 }
