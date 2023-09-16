@@ -88,16 +88,27 @@ class TrackLoader:
         # filter out tracks with length < min_length
         return [t for t in tracks if t.length >= self.min_length]
 
-    def load_tracks_from_db(self, sql_file, is_grid=False):
+    def load_tracks_from_db(self, sql_file, is_grid=False, is_circular=False):
         session = init_db(sql_file)
         if is_grid:
             activities = (
                 session.query(Activity)
                 .filter(Activity.summary_polyline != "")
+                .filter(Activity.type.not_in(["Flight"]))
+                .order_by(Activity.start_date_local)
+            )
+        elif is_circular:
+            activities = (
+                session.query(Activity)
+                .filter(Activity.type.not_in(["RoadTrip", "Flight"]))
                 .order_by(Activity.start_date_local)
             )
         else:
-            activities = session.query(Activity).order_by(Activity.start_date_local)
+            activities = (
+                session.query(Activity)
+                .filter(Activity.type.not_in(["Flight"]))
+                .order_by(Activity.start_date_local)
+            )
         tracks = []
         for activity in activities:
             t = Track()
