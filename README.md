@@ -25,8 +25,8 @@ This project is based on [running_page](https://github.com/yihong0618/running_pa
 - Modify `TYPE_DICT` & `MAPPING_TYPE` in `scripts/config.py`
 - Add Type Name and add it into `RUN_TITLES` in `src/utils/const.js`
 - Modify `colorFromType` & `titleForRun` in `src/utils/util.js`
-
 - see [commit](https://github.com/ben-29/workouts_page/commit/bfb6e9da4f72bdbdec669c42bdd10062558039cd)
+- or comment [here](https://github.com/ben-29/workouts_page/issues/20)
 
 ---
 

@@ -60,6 +60,7 @@ const HIKE_TITLE = IS_CHINESE ? '徒步' : 'Hike';
 const ROWING_TITLE = IS_CHINESE ? '划船' : 'Rowing';
 const KAYAKING_TITLE = IS_CHINESE ? '皮划艇' : 'Kayaking';
 const SNOWBOARD_TITLE = IS_CHINESE ? '单板滑雪' : 'Snowboard';
+const SKI_TITLE = IS_CHINESE ? '双板滑雪' : 'Ski';
 const ROAD_TRIP_TITLE = IS_CHINESE ? '自驾' : 'RoadTrip';
 const FLIGHT_TITLE = IS_CHINESE ? '飞行' : 'Flight';
 
@@ -78,6 +79,7 @@ const RUN_TITLES = {
   ROAD_TRIP_TITLE,
   FLIGHT_TITLE,
   SNOWBOARD_TITLE,
+  SKI_TITLE,
 };
 
 export {
