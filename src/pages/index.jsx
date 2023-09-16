@@ -25,7 +25,7 @@ import {
 const Index = () => {
   const { siteTitle } = useSiteMetadata();
   const { activities, thisYear } = useActivities();
-  const [year, setYear] = useState('Total');
+  const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [runs, setActivity] = useState(
     filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc)
@@ -131,7 +131,7 @@ const Index = () => {
       if (target) {
         const tagName = target.tagName.toLowerCase()
 
-        // 点击的是 github 样式 svg
+        // click the github-stat style svg
         if (tagName === 'rect' &&
           parseFloat(target.getAttribute('width')) === 2.6 &&
           parseFloat(target.getAttribute('height')) === 2.6 &&
@@ -144,7 +144,7 @@ const Index = () => {
           }
           locateActivity(runIDsOnDate)
 
-        } else if (tagName === 'polyline') { // 点击的是路线缩略图
+        } else if (tagName === 'polyline') { // click the route grid svg
           const desc = target.getElementsByTagName('desc')[0]
           if (!desc) { return }
           const run_id = Number(desc.innerHTML)
