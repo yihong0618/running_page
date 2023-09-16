@@ -3,7 +3,7 @@ import Stat from 'src/components/Stat';
 import WorkoutStat from 'src/components/WorkoutStat';
 import useActivities from 'src/hooks/useActivities';
 import useHover from 'src/hooks/useHover';
-import { formatPace } from 'src/utils/utils';
+import { formatPace, colorFromType } from 'src/utils/utils';
 import styles from './style.module.scss';
 
 const YearStat = ({ year, onClick }) => {
@@ -75,6 +75,7 @@ const YearStat = ({ year, onClick }) => {
             description={` ${type}`+"s"}
             // pace={formatPace(count[2] / count[1])}
             distance={(count[2] / 1000.0).toFixed(0)}
+            // color={colorFromType(type)}
           />
         ))}
         <Stat
