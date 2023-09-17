@@ -16,7 +16,7 @@ const Layout = ({ children }: React.PropsWithChildren) => {
         <meta name="description" content={description} />
         <meta name="keywords" content="running" />
         <meta
-          name="viewport"
+          name="viewState"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
       </Helmet>

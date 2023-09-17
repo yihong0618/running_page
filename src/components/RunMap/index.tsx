@@ -1,11 +1,6 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import React, { useRef, useCallback } from 'react';
-import ReactMapGL, {
-  Layer,
-  Source,
-  FullscreenControl,
-  MapRef,
-} from 'react-map-gl';
+import Map, { Layer, Source, FullscreenControl, MapRef } from 'react-map-gl';
 import useActivities from '@/hooks/useActivities';
 import {
   MAP_LAYER_LIST,
@@ -18,17 +13,18 @@ import {
   LINE_OPACITY,
   MAP_HEIGHT,
 } from '@/utils/const';
-import { Coordinate, IViewport, geoJsonForMap } from '@/utils/utils';
+import { Coordinate, IViewState, geoJsonForMap } from '@/utils/utils';
 import RunMarker from './RunMaker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.scss';
 import { FeatureCollection } from 'geojson';
 import { RPGeometry } from '@/static/run_countries';
+import './mapbox.css';
 
 interface IRunMapProps {
   title: string;
-  viewport: IViewport;
-  setViewport: (_viewport: IViewport) => void;
+  viewState: IViewState;
+  setViewState: (_viewState: IViewState) => void;
   changeYear: (_year: string) => void;
   geoData: FeatureCollection<RPGeometry>;
   thisYear: string;
@@ -36,8 +32,8 @@ interface IRunMapProps {
 
 const RunMap = ({
   title,
-  viewport,
-  setViewport,
+  viewState,
+  setViewState,
   changeYear,
   geoData,
   thisYear,
@@ -68,7 +64,7 @@ const RunMap = ({
   // for geojson format
   filterProvinces.unshift('in', 'name');
 
-  const isBigMap = (viewport.zoom ?? 0) <= 3;
+  const isBigMap = (viewState.zoom ?? 0) <= 3;
   if (isBigMap && IS_CHINESE) {
     geoData = geoJsonForMap();
   }
@@ -86,19 +82,33 @@ const RunMap = ({
     [endLon, endLat] = points[points.length - 1];
   }
   let dash = USE_DASH_LINE && !isSingleRun ? [2, 2] : [2, 0];
+  const onMove = React.useCallback(({ viewState }) => {
+    setViewState(viewState);
+  }, []);
+  const style: React.CSSProperties = {
+    width: '100%',
+    height: MAP_HEIGHT,
+    '& .mapboxgl-children': {
+      display: 'none',
+    },
+  };
+  const fullscreenButton: React.CSSProperties = {
+    position: 'absolute',
+    marginTop: '29.2px',
+    right: '10px',
+    opacity: 0.3,
+  };
 
   return (
-    <ReactMapGL
-      {...viewport}
-      width="100%"
-      height={MAP_HEIGHT}
+    <Map
+      viewState={{ ...viewState }}
+      onMove={onMove}
+      style={style}
       mapStyle="mapbox://styles/mapbox/dark-v10"
-      onViewportChange={setViewport}
       ref={mapRefCallback}
-      mapboxApiAccessToken={MAPBOX_TOKEN}
+      mapboxAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
-      <FullscreenControl className={styles.fullscreenButton} />
       <Source id="data" type="geojson" data={geoData}>
         <Layer
           id="province"
@@ -116,6 +126,7 @@ const RunMap = ({
             'line-width': isBigMap ? 1 : 2,
             'line-dasharray': dash,
             'line-opacity': isSingleRun ? 1 : LINE_OPACITY,
+            'line-blur': 1,
           }}
           layout={{
             'line-join': 'round',
@@ -132,7 +143,8 @@ const RunMap = ({
         />
       )}
       <span className={styles.runTitle}>{title}</span>
-    </ReactMapGL>
+      <FullscreenControl style={fullscreenButton} />
+    </Map>
   );
 };
 
