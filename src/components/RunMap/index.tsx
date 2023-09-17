@@ -1,7 +1,6 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import React, { useRef, useCallback } from 'react';
 import Map, { Layer, Source, FullscreenControl, MapRef } from 'react-map-gl';
-import * as turf from '@turf/turf';
 import useActivities from '@/hooks/useActivities';
 import {
   MAP_LAYER_LIST,
@@ -93,15 +92,21 @@ const RunMap = ({
       display: 'none',
     },
   };
+  const fullscreenButton: React.CSSProperties = {
+    position: 'absolute',
+    marginTop: '29.2px',
+    right: '10px',
+    opacity: 0.3,
+  };
 
   return (
     <Map
       viewState={{ ...viewState }}
       onMove={onMove}
       style={style}
-      mapStyle="mapbox://styles/mapbox/dark-v9"
+      mapStyle="mapbox://styles/mapbox/dark-v10"
       ref={mapRefCallback}
-      mapboxAccessToken="pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q"
+      mapboxAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
       <Source id="data" type="geojson" data={geoData}>
@@ -121,6 +126,7 @@ const RunMap = ({
             'line-width': isBigMap ? 1 : 2,
             'line-dasharray': dash,
             'line-opacity': isSingleRun ? 1 : LINE_OPACITY,
+            'line-blur': 1,
           }}
           layout={{
             'line-join': 'round',
@@ -137,7 +143,7 @@ const RunMap = ({
         />
       )}
       <span className={styles.runTitle}>{title}</span>
-      <FullscreenControl />
+      <FullscreenControl style={fullscreenButton} />
     </Map>
   );
 };
