@@ -88,9 +88,6 @@ const RunMap = ({
   const style: React.CSSProperties = {
     width: '100%',
     height: MAP_HEIGHT,
-    '& .mapboxgl-children': {
-      display: 'none',
-    },
   };
   const fullscreenButton: React.CSSProperties = {
     position: 'absolute',

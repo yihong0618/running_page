@@ -132,7 +132,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## 安装及测试 (node >= 12 and <= 14 python >= 3.7)
+## 安装及测试 (node >= 14.15.0 python >= 3.7)
 
 ```
 pip3 install -r requirements.txt
@@ -822,10 +822,23 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 1. 更改成你的 app type 及 info
    ![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
+
 2. 在 repo Settings > Secrets 中增加你的 secret (只添加你需要的即可)
+
    ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
    我的 secret 如下
    ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
+
+</details>
+
+## 把数据文件放在 github cache 中
+
+<details>
+<summary>把数据文件放在github cache中</summary>
+
+`run_data_sync.yml`中的`SAVE_DATA_IN_GITHUB_CACHE`设置为`true`时，可以把脚本抓取和中间产生的数据文件放到 github action cache 中。这样可以让你的 github commit 历史和目录保持干净。
+
+如果你用 github pages 部署建议把这个值设置成`true`。
 
 </details>
 
@@ -855,7 +868,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 - [x] 完善前端代码
 - [x] better actions
 - [ ] tests
-- [ ] 支持不同的运动类型
+- [x] 支持不同的运动类型
 
 # 参与项目
 
@@ -898,3 +911,5 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 Strava API Rate Limit Exceeded. Retry after 100 seconds
 Strava API Rate Limit Timeout. Retry in 799.491622 seconds
 ```
+
+### vercel git 如果想 ignpre gh-pages 可以在 settings -> build -> Ignored Build Step -> Custom 输入命令 `if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;`

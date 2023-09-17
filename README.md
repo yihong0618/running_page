@@ -77,6 +77,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
 | [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
 | [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
+| [Echo](https://github.com/donghao526)             | <https://donghao526.github.io/running>         | JoyRun      |
 
 </details>
 
@@ -118,7 +119,7 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## Installation and testing (node >= 12 and <= 14 python >= 3.7)
+## Installation and testing (node >= 14.15.0 python >= 3.7)
 
 ```
 pip3 install -r requirements.txt
@@ -668,6 +669,17 @@ The following steps need to be taken
 
 </details>
 
+## Storing Data Files in GitHub Cache
+
+<details>
+<summary>Storing Data Files in GitHub Cache</summary>
+
+When `SAVE_DATA_IN_GITHUB_CACHE` is set to `true` in the `run_data_sync.yml` file, the script can store fetched and intermediate data files in the GitHub Action cache. This helps keep your GitHub commit history and directory clean.
+
+If you are deploying using GitHub Pages, it is recommended to set this value to `true`, and set `BUILD_GH_PAGES` to true.
+
+</details>
+
 # Fit file
 
 supported manufacturer：
@@ -726,3 +738,5 @@ Just enjoy it~
 Strava API Rate Limit Exceeded. Retry after 100 seconds
 Strava API Rate Limit Timeout. Retry in 799.491622 seconds
 ```
+
+### vercel git ignpre gh-pages: you can change settings -> build -> Ignored Build Step -> Custom command `if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;`

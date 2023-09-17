@@ -2,14 +2,26 @@ name: Publish GitHub Pages
 
 # Controls when the action will run.
 on:
-  # trigger when the Run Data Sync workflow succeeded
-  workflow_run:
-    workflows: ['Run Data Sync']
-    types:
-      - completed
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      save_data_in_github_cache:
+        required: true
+        type: boolean
+        default: false
+      data_cache_prefix:
+        required: true
+        type: string
+        default: track_data
+  workflow_call:
+    inputs:
+      save_data_in_github_cache:
+        required: true
+        type: boolean
+        default: false
+      data_cache_prefix:
+        required: true
+        type: string
+        default: track_data
 
 permissions:
   contents: read
@@ -35,6 +47,25 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+
+      - name: Cache Data Files
+        if: inputs.save_data_in_github_cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            activities
+            assets
+            GPX_OUT
+            TCX_OUT
+            FIT_OUT
+            Workouts
+            scripts/data.db
+            src/static/activities.json
+            imported.json
+          key: ${{ inputs.data_cache_prefix }}-${{ github.sha }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ inputs.data_cache_prefix }}-${{ github.sha }}-
+            ${{ inputs.data_cache_prefix }}-
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
