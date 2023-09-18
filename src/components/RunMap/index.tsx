@@ -82,7 +82,7 @@ const RunMap = ({
     [endLon, endLat] = points[points.length - 1];
   }
   let dash = USE_DASH_LINE && !isSingleRun ? [2, 2] : [2, 0];
-  const onMove = React.useCallback(({ viewState }) => {
+  const onMove = React.useCallback(({ viewState }: {viewState: IViewState}) => {
     setViewState(viewState);
   }, []);
   const style: React.CSSProperties = {
@@ -98,7 +98,7 @@ const RunMap = ({
 
   return (
     <Map
-      viewState={{ ...viewState }}
+      { ...viewState }
       onMove={onMove}
       style={style}
       mapStyle="mapbox://styles/mapbox/dark-v10"
