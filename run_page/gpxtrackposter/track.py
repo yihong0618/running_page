@@ -12,21 +12,20 @@ import gpxpy as mod_gpxpy
 import lxml
 import polyline
 import s2sphere as s2
-from rich import print
-from tcxreader.tcxreader import TCXReader
-from polyline_processor import filter_out
-
-from .exceptions import TrackLoadError
-from .utils import parse_datetime_to_local
-
 from fit_tool.fit_file import FitFile
-from fit_tool.profile.messages.software_message import SoftwareMessage
-from fit_tool.profile.messages.record_message import RecordMessage
-from fit_tool.profile.messages.session_message import SessionMessage
 from fit_tool.profile.messages.activity_message import ActivityMessage
 from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
 from fit_tool.profile.messages.file_id_message import FileIdMessage
+from fit_tool.profile.messages.record_message import RecordMessage
+from fit_tool.profile.messages.session_message import SessionMessage
+from fit_tool.profile.messages.software_message import SoftwareMessage
 from fit_tool.profile.profile_type import Sport
+from polyline_processor import filter_out
+from rich import print
+from tcxreader.tcxreader import TCXReader
+
+from .exceptions import TrackLoadError
+from .utils import parse_datetime_to_local
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
@@ -61,7 +60,7 @@ class Track:
             # (for example, treadmill runs pulled via garmin-connect-export)
             if os.path.getsize(file_name) == 0:
                 raise TrackLoadError("Empty GPX file")
-            with open(file_name, "r") as file:
+            with open(file_name, "r", encoding="utf-8", errors="ignore") as file:
                 self._load_gpx_data(mod_gpxpy.parse(file))
         except Exception as e:
             print(
