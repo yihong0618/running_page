@@ -70,6 +70,7 @@ TYPE_DICT = {
     "flight": "Flight",
     "kayaking": "Kayaking",
     "Snowboard": "Snowboard",
+    "resort_skiing_snowboarding_ws": "Ski",
     "Ski": "Ski",
 }
 
