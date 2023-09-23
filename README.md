@@ -1,6 +1,8 @@
-## 注：如果是之前 clone 或 Fork 的朋友 vercel 显示 404 可能需要更新下代码
+## note1: clone or Fork before vercel 404 need to pull the latest code
 
-## 注 2: 下面的 python3(python) 代表 python3 或者 python, 提醒下不熟悉编程的朋友
+## note2: python3(python) in README means python3 python,
+
+## note3: use v2.0 need change vercel setting from gatsby to vercel
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />

@@ -1,3 +1,9 @@
+## note1: clone or Fork before vercel 404 need to pull the latest code
+
+## note2: python3(python) in README means python3 python,
+
+## note3: use v2.0 need change vercel setting from gatsby to vercel
+
 ![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
 
 # [这里是白银越野赛全部 21 位逝者的故事](https://github.com/yihong0618/running_page/issues/135)
