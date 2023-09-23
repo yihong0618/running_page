@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-undef
 module.exports = {
+  parser: '@typescript-eslint/parser',
   env: {
     browser: true,
     es2021: true,
@@ -24,5 +25,9 @@ module.exports = {
   rules: {
     'prettier/prettier': 'off',
     'react/prop-types': 'off',
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+  },
+  globals: {
+    NodeJS: true,
   },
 };

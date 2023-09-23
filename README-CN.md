@@ -1,3 +1,5 @@
+## note: use v2.0 need change vercel setting from gatsby to vercel
+
 # [打造个人户外运动主页](http://workouts.ben29.xyz)
 
 ![screenshot](https://user-images.githubusercontent.com/6956444/163125711-24d0ad99-490d-4c04-b89f-5b7fe776eb38.png)
@@ -35,25 +37,25 @@
 <summary>获取您的咕咚数据</summary>
 
 ```python
-python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password}
+python3(python) run_page/codoon_sync.py ${your mobile or email} ${your password}
 ```
 
 示例：
 
 ```python
-python3(python) scripts/codoon_sync.py 13333xxxx xxxx
+python3(python) run_page/codoon_sync.py 13333xxxx xxxx
 ```
 
 > 注：我增加了 Codoon 可以导出 gpx 功能, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```python
-python3(python) scripts/codoon_sync.py ${your mobile or email} ${your password} --with-gpx
+python3(python) run_page/codoon_sync.py ${your mobile or email} ${your password} --with-gpx
 ```
 
 示例：
 
 ```python
-python3(python) scripts/codoon_sync.py 13333xxxx xxxx --with-gpx
+python3(python) run_page/codoon_sync.py 13333xxxx xxxx --with-gpx
 ```
 
 > 注：因为登录 token 有过期时间限制，我增加了 refresh_token&user_id 登陆的方式， refresh_token 及 user_id 在您登陆过程中会在控制台打印出来
@@ -63,7 +65,7 @@ python3(python) scripts/codoon_sync.py 13333xxxx xxxx --with-gpx
 示例：
 
 ```python
-python3(python) scripts/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth-token
+python3(python) run_page/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth-token
 ```
 
 </details>
