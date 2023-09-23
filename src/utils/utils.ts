@@ -191,7 +191,7 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
 
 const geoJsonForMap = () => chinaGeojson;
 
-const titleForType = (run: Activity): string => {
+const titleForType = (type: string): string => {
   switch (type) {
     case 'Run':
       return RUN_TITLES.RUN_TITLE;
@@ -222,7 +222,7 @@ const titleForType = (run: Activity): string => {
   }
 }
 
-const titleForRun = (run: Activity): string => {
+const titleForRun = (run: string): string => {
   const type = run.type;
   if (type == 'Run'){
       const runDistance = run.distance / 1000;

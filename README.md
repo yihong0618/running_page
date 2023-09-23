@@ -1,4 +1,4 @@
-## note: use v2.0 need change vercel setting from gatsby to vercel
+## note: use v2.0 need change vercel setting from Gatsby to Vite
 
 # [Create a personal workouts home page](http://workouts.ben29.xyz)
 

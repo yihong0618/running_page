@@ -1,4 +1,4 @@
-## note: use v2.0 need change vercel setting from gatsby to vercel
+## note: use v2.0 need change vercel setting from Gatsby to Vite
 
 # [打造个人户外运动主页](http://workouts.ben29.xyz)
 

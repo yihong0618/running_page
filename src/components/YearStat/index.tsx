@@ -67,6 +67,7 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
         <Stat value={year} description=" Journey" />
         { sumDistance > 0 &&
           <WorkoutStat
+            key='total'
             value={runs.length}
             description={" Total"}
             distance={(sumDistance / 1000.0).toFixed(0)}
@@ -74,6 +75,7 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
         }
         { workoutsArr.map(([type, count]) => (
           <WorkoutStat
+            key={type}
             value={count[0]}
             description={` ${type}`+"s"}
             // pace={formatPace(count[2] / count[1])}
