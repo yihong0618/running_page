@@ -617,15 +617,19 @@ For more display effects, see:
 <summary> Use <code> Cloudflare </code> to deploy </summary>
 <br>
 
-1. Click `Create a project` in `Pages` to connect to your Repo.
+1. Login to [Cloudflare dashboard](https://dash.cloudflare.com).
 
-2. After clicking `Begin setup`, modify Project's `Build settings`.
+2. Click `Workers & Pages` on the left side.
 
-3. Select `Framework preset` to `Create React App`
+3. Click `Create application` and select `Pages` tab, connect your GitHub account and select `running_page` Repo, then click `Begin setup`.
 
-4. Scroll down, click `Environment variables`, then variable below:
+4. Scroll down to `Build settings`, choose `Create React App` from `Framework preset`, and set `Build output directory` to `dist`.
 
-5. Click `Save and Deploy`
+5. Scroll down, click `Environment variables (advanced)`, then add a variable like below:
+
+   > Variable name = `PYTHON_VERSION`, Value = `3.7`
+
+6. Click `Save and Deploy`
 
 </details>
 
