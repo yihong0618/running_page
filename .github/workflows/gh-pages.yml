@@ -59,7 +59,7 @@ jobs:
             TCX_OUT
             FIT_OUT
             Workouts
-            scripts/data.db
+            run_page/data.db
             src/static/activities.json
             imported.json
           key: ${{ inputs.data_cache_prefix }}-${{ github.sha }}-${{ github.run_id }}
