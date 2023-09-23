@@ -85,7 +85,7 @@ def parse_raw_data_to_nametuple(
     ):
         raw_data_url = run_data.get("rawDataURL")
         r = session.get(raw_data_url)
-        if r.status_code == 200:
+        if r.ok:
             # string strart with `H4sIAAAAAAAA` --> decode and unzip
             run_points_data = decode_runmap_data(r.text)
             run_points_data_gpx = run_points_data
