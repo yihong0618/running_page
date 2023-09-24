@@ -1,8 +1,8 @@
 ## note1: clone or Fork before vercel 404 need to pull the latest code
 
-## note2: python3(python) in README means python3 python,
+## note2: python3(python) in README means python3 python
 
-## note3: use v2.0 need change vercel setting from gatsby to vercel
+## note3: use v2.0 need change vercel setting from gatsby to vite.
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
@@ -121,7 +121,7 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## Installation and testing (node >= 14.15.0 python >= 3.7)
+## Installation and testing (node >= 16 python >= 3.8)
 
 ```
 pip3 install -r requirements.txt
@@ -129,7 +129,7 @@ npm install -g corepack && corepack enable && pnpm install
 pnpm develop
 ```
 
-Open your browser and visit <http://localhost:8000/>
+Open your browser and visit <http://localhost:5173/>
 
 ## Docker
 
