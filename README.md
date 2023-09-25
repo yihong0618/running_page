@@ -1,4 +1,8 @@
-## 注：如果是之前 clone 或 Fork 的朋友 vercel 显示 404 可能需要更新下代码
+## note1: clone or Fork before vercel 404 need to pull the latest code
+
+## note2: python3(python) in README means python3 python
+
+## note3: use v2.0 need change vercel setting from gatsby to vite.
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
@@ -24,58 +28,58 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 <details>
 <summary>Running page runners</summary>
 
-| Runner                                            | page                                           | App       |
-| ------------------------------------------------- | ---------------------------------------------- | --------- |
-| [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava    |
-| [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava    |
-| [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike      |
-| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Nike      |
-| [geekplux](https://github.com/geekplux)           | <https://activities.geekplux.com>              | Nike      |
-| [guanlan](https://github.com/guanlan)             | <https://grun.vercel.app>                      | Strava    |
-| [tuzimoe](https://github.com/tuzimoe)             | <https://run.tuzi.moe>                         | Nike      |
-| [ben_29](https://github.com/ben-29)               | <https://running.ben29.xyz>                    | Strava    |
-| [kcllf](https://github.com/kcllf)                 | <https://running-tau.vercel.app>               | Garmin-cn |
-| [mq](https://github.com/MQ-0707)                  | <https://running-iota.vercel.app>              | Keep      |
-| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://zhaohongxuan.github.io/workouts>      | Strava    |
-| [yvetterowe](https://github.com/yvetterowe)       | <https://run.haoluo.io>                        | Strava    |
-| [love-exercise](https://github.com/KaiOrange)     | <https://run.kai666666.top>                    | Keep      |
-| [zstone12](https://github.com/zstone12)           | <https://running-page.zstone12.vercel.app>     | Keep      |
-| [Lax](https://github.com/Lax)                     | <https://lax.github.io/running>                | Keep      |
-| [lusuzi](https://github.com/lusuzi)               | <https://running.lusuzi.vercel.app>            | Nike      |
-| [wh1994](https://github.com/wh1994)               | <https://run4life.fun>                         | Garmin    |
-| [liuyihui](https://github.com/YiHui-Liu)          | <https://run.foolishfox.cn>                    | Keep      |
-| [sunyunxian](https://github.com/sunyunxian)       | <https://sunyunxian.github.io/running_page>    | Strava    |
-| [AhianZhang](https://github.com/AhianZhang)       | <https://running.ahianzhang.com>               | Nike      |
-| [L1cardo](https://github.com/L1cardo)             | <https://run.licardo.cn>                       | Nike      |
-| [luckylele666](https://github.com/luckylele666)   | <https://0000928.xyz>                          | Strava    |
-| [MFYDev](https://github.com/MFYDev)               | <https://mfydev.run>                           | Garmin-cn |
-| [Eished](https://github.com/eished)               | <https://run.iknow.fun>                        | Keep      |
-| [Liuxin](https://github.com/liuxindtc)            | <https://liuxin.run>                           | Nike      |
-| [loucx](https://github.com/loucx)                 | <https://loucx.github.io/running>              | Nike      |
-| [winf42](https://github.com/winf42)               | <https://winf42.github.io>                     | Garmin-cn |
-| [sun0225SUN](https://github.com/sun0225SUN)       | <https://run.sunguoqi.com>                     | Nike      |
-| [Zhan](https://www.zlog.in/about/)                | <https://run.zlog.in>                          | Nike      |
-| [Dennis](https://run.domon.cn)                    | <https://run.domon.cn>                         | Garmin-cn |
-| [hanpei](https://running.nexts.top)               | <https://running.nexts.top>                    | Garmin-cn |
-| [liugezhou](https://github.com/liugezhou)         | <https://run.liugezhou.online>                 | Strava    |
-| [Jason Tan](https://github.com/Jason-cqtan)       | <https://jason-cqtan.github.io/running_page>   | Nike      |
-| [Conge](https://github.com/conge)                 | <https://conge.github.io/running_page>         | Strava    |
-| [zHElEARN](https://github.com/zHElEARN)           | <https://workouts.zhelearn.com>                | Strava    |
-| [Ym9i](https://github.com/Ym9i)                   | <https://bobrun.vercel.app/>                   | Strava    |
-| [jianchengwang](https://github.com/jianchengwang) | <https://jianchengwang.github.io/running_page> | Suunto    |
-| [fxbin](https://github.com/fxbin)                 | <https://fxbin.github.io/sport-records/>       | Keep      |
-| [shensl4499](https://github.com/shensl4499)       | <https://waner.run>                            | codoon    |
-| [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx       |
-| [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava    |
-| [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep      |
-| [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn |
-| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX    |
-| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun    |
-| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike|
-| [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava    |
-| [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn |
-
+| Runner                                            | page                                           | App         |
+| ------------------------------------------------- | ---------------------------------------------- | ----------- |
+| [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava      |
+| [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava      |
+| [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike        |
+| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Nike        |
+| [geekplux](https://github.com/geekplux)           | <https://activities.geekplux.com>              | Nike        |
+| [guanlan](https://github.com/guanlan)             | <https://grun.vercel.app>                      | Strava      |
+| [tuzimoe](https://github.com/tuzimoe)             | <https://run.tuzi.moe>                         | Nike        |
+| [ben_29](https://github.com/ben-29)               | <https://running.ben29.xyz>                    | Strava      |
+| [kcllf](https://github.com/kcllf)                 | <https://running-tau.vercel.app>               | Garmin-cn   |
+| [mq](https://github.com/MQ-0707)                  | <https://running-iota.vercel.app>              | Keep        |
+| [zhaohongxuan](https://github.com/zhaohongxuan)   | <https://zhaohongxuan.github.io/workouts>      | Strava      |
+| [yvetterowe](https://github.com/yvetterowe)       | <https://run.haoluo.io>                        | Strava      |
+| [love-exercise](https://github.com/KaiOrange)     | <https://run.kai666666.top>                    | Keep        |
+| [zstone12](https://github.com/zstone12)           | <https://running-page.zstone12.vercel.app>     | Keep        |
+| [Lax](https://github.com/Lax)                     | <https://lax.github.io/running>                | Keep        |
+| [lusuzi](https://github.com/lusuzi)               | <https://running.lusuzi.vercel.app>            | Nike        |
+| [wh1994](https://github.com/wh1994)               | <https://run4life.fun>                         | Garmin      |
+| [liuyihui](https://github.com/YiHui-Liu)          | <https://run.foolishfox.cn>                    | Keep        |
+| [sunyunxian](https://github.com/sunyunxian)       | <https://sunyunxian.github.io/running_page>    | Strava      |
+| [AhianZhang](https://github.com/AhianZhang)       | <https://running.ahianzhang.com>               | Nike        |
+| [L1cardo](https://github.com/L1cardo)             | <https://run.licardo.cn>                       | Nike        |
+| [luckylele666](https://github.com/luckylele666)   | <https://0000928.xyz>                          | Strava      |
+| [MFYDev](https://github.com/MFYDev)               | <https://mfydev.run>                           | Garmin-cn   |
+| [Eished](https://github.com/eished)               | <https://run.iknow.fun>                        | Keep        |
+| [Liuxin](https://github.com/liuxindtc)            | <https://liuxin.run>                           | Nike        |
+| [loucx](https://github.com/loucx)                 | <https://loucx.github.io/running>              | Nike        |
+| [winf42](https://github.com/winf42)               | <https://winf42.github.io>                     | Garmin-cn   |
+| [sun0225SUN](https://github.com/sun0225SUN)       | <https://run.sunguoqi.com>                     | Nike        |
+| [Zhan](https://www.zlog.in/about/)                | <https://run.zlog.in>                          | Nike        |
+| [Dennis](https://run.domon.cn)                    | <https://run.domon.cn>                         | Garmin-cn   |
+| [hanpei](https://running.nexts.top)               | <https://running.nexts.top>                    | Garmin-cn   |
+| [liugezhou](https://github.com/liugezhou)         | <https://run.liugezhou.online>                 | Strava      |
+| [Jason Tan](https://github.com/Jason-cqtan)       | <https://jason-cqtan.github.io/running_page>   | Nike        |
+| [Conge](https://github.com/conge)                 | <https://conge.github.io/running_page>         | Strava      |
+| [zHElEARN](https://github.com/zHElEARN)           | <https://workouts.zhelearn.com>                | Strava      |
+| [Ym9i](https://github.com/Ym9i)                   | <https://bobrun.vercel.app/>                   | Strava      |
+| [jianchengwang](https://github.com/jianchengwang) | <https://jianchengwang.github.io/running_page> | Suunto      |
+| [fxbin](https://github.com/fxbin)                 | <https://fxbin.github.io/sport-records/>       | Keep        |
+| [shensl4499](https://github.com/shensl4499)       | <https://waner.run>                            | codoon      |
+| [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx         |
+| [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava      |
+| [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
+| [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
+| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX      |
+| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
+| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
+| [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
+| [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
+| [Echo](https://github.com/donghao526)             | <https://donghao526.github.io/running>         | JoyRun      |
 
 </details>
 
@@ -86,11 +90,10 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 ## Features
 
 1. GitHub Actions manages automatic synchronization of runs and generation of new pages.
-2. Gatsby-generated static pages, fast
-3. Support for Vercel (recommended) and GitHub Pages automated deployment
-4. React Hooks
-5. Mapbox for map display
-6. Supports most sports apps such as nike strava...
+2. Support for Vercel (recommended) and GitHub Pages automated deployment
+3. React Hooks
+4. Mapbox for map display
+5. Supports most sports apps such as nike strava...
 
 > automatically backup gpx data for easy backup and uploading to other software.<br>
 > Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
@@ -118,15 +121,15 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## Installation and testing (node >= 14.15.0 python >= 3.7)
+## Installation and testing (node >= 16 python >= 3.8)
 
 ```
 pip3 install -r requirements.txt
-yarn install
-yarn develop
+npm install -g corepack && corepack enable && pnpm install
+pnpm develop
 ```
 
-Open your browser and visit <http://localhost:8000/>
+Open your browser and visit <http://localhost:5173/>
 
 ## Docker
 
@@ -165,7 +168,7 @@ const MAPBOX_TOKEN =
 
 ## Custom your page
 
-- Find `gatsby-config.js` in the repository directory, find the following content, and change it to what you want.
+- Find `src/static/site-metadata.ts` in the repository directory, find the following content, and change it to what you want.
 
 ```javascript
 siteMetadata: {
@@ -198,18 +201,18 @@ const LINE_OPACITY = 0.4;
 - privacy protection
 
 setting flowing env:
+
 ```shell
 IGNORE_START_END_RANGE = 200 # ignore distance for each polyline start and end.
 
-IGNORE_RANGE = 200 # ignore meters for each point in below polyline. 
-IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # a polyline include point you want to ignore. 
+IGNORE_RANGE = 200 # ignore meters for each point in below polyline.
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # a polyline include point you want to ignore.
 
 # Do filter before saving to database, you will lose some data, but you can protect your privacy, when you using public repo. enable for set 1, disable via unset.
-IGNORE_BEFORE_SAVING = 
+IGNORE_BEFORE_SAVING =
 ```
 
 You can using [this](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
-
 
 ## Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
 
@@ -222,7 +225,7 @@ You can using [this](https://developers.google.com/maps/documentation/utilities/
 Copy all your gpx files to GPX_OUT or new gpx files
 
 ```python
-python3(python) scripts/gpx_sync.py
+python3(python) run_page/gpx_sync.py
 ```
 
 </details>
@@ -236,7 +239,7 @@ python3(python) scripts/gpx_sync.py
 Copy all your tcx files to TCX_OUT or new tcx files
 
 ```python
-python3(python) scripts/tcx_sync.py
+python3(python) run_page/tcx_sync.py
 ```
 
 </details>
@@ -250,7 +253,7 @@ python3(python) scripts/tcx_sync.py
 Copy all your tcx files to FIT_OUT or new fit files
 
 ```python
-python3(python) scripts/fit_sync.py
+python3(python) run_page/fit_sync.py
 ```
 
 </details>
@@ -267,19 +270,19 @@ If you only want `tcx` files add args --tcx
 If you only want `fit` files add args --fit
 
 ```python
-python3(python) scripts/garmin_sync.py ${your email} ${your password}
+python3(python) run_page/garmin_sync.py ${your email} ${your password}
 ```
 
 example：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example
+python3(python) run_page/garmin_sync.py example@gmail.com example
 ```
 
 only-run：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example --only-run
+python3(python) run_page/garmin_sync.py example@gmail.com example --only-run
 ```
 
 </details>
@@ -296,13 +299,13 @@ If you only want `tcx` files add args --tcx
 If you only want `fit` files add args --fit
 
 ```python
-python3(python) scripts/garmin_sync.py ${your email} ${your password} --is-cn
+python3(python) run_page/garmin_sync.py ${your email} ${your password} --is-cn
 ```
 
 example：
 
 ```python
-python3(python) scripts/garmin_sync.py example@gmail.com example --is-cn
+python3(python) run_page/garmin_sync.py example@gmail.com example --is-cn
 ```
 
 </details>
@@ -328,13 +331,13 @@ Get Nike's `refresh_token`
 3. Execute in the root directory:
 
 ```python
-python3(python) scripts/nike_sync.py ${nike refresh_token}
+python3(python) run_page/nike_sync.py ${nike refresh_token}
 ```
 
 example：
 
 ```python
-python3(python) scripts/nike_sync.py eyJhbGciThiMTItNGIw******
+python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 ```
 
 ![example img](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/nike_sync_%20example.png)
@@ -413,10 +416,10 @@ curl -X POST https://www.strava.com/oauth/token \
 7. Sync `Strava` data
 
 > The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running.
-If you only want to sync `type running` add args --only-run
+> If you only want to sync `type running` add args --only-run
 
 ```python
-python3(python) scripts/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
+python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
 
 References：
@@ -439,15 +442,15 @@ References：
 3. Execute in the root directory:
 
 ```python
-python3(python) scripts/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
+python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
 ```python
-python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
 or
-python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -466,15 +469,15 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 3. Execute in the root directory:
 
 ```python
-python3(python) scripts/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
+python3(python) run_page/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
 ```python
-python3(python) scripts/gpx_to_strava_sync.py xxx xxx xxx
+python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx
 or
-python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -492,13 +495,13 @@ python3(python) scripts/tcx_to_strava_sync.py xxx xxx xxx --all
 2. Execute in the root directory:
 
 ```python
-python3(python) scripts/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
+python3(python) run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 example：
 
 ```python
-python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
+python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 ```
 
 </details>
@@ -514,13 +517,13 @@ python3(python) scripts/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xx
 2. Execute in the root directory:
 
 ```python
-python3(python) scripts/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_email} ${garmin_password} --is-cn
+python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_email} ${garmin_password} --is-cn
 ```
 
 e.g.
 
 ```python
-python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
+python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
 
 </details>
@@ -536,23 +539,23 @@ python3(python) scripts/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 2. Execute in the root directory:
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 ```
 
 if your garmin account region is **China**, you need to execute the command:
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
-If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc. 
+If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc.
 
 <img width="830" alt="image" src="https://github.com/yihong0618/running_page/assets/8613196/b5076942-3133-4c89-ad66-a828211667dc">
 
 the final command will be:
 
 ```python
-python3(python) scripts/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
 ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
@@ -569,17 +572,17 @@ ps: **when initializing for the first time, if you have a large amount of strava
 - Display of results:[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
 ```
-python scripts/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
 
 ```
-python scripts/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
+python run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
 ```
 
 Generate year circular svg show
 
 ```
-python3(python) scripts/gen_svg.py --from-db --type circular --use-localtime
+python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 ```
 
 For more display effects, see:
@@ -614,17 +617,19 @@ For more display effects, see:
 <summary> Use <code> Cloudflare </code> to deploy </summary>
 <br>
 
-1. Click `Create a project` in `Pages` to connect to your Repo.
+1. Login to [Cloudflare dashboard](https://dash.cloudflare.com).
 
-2. After clicking `Begin setup`, modify Project's `Build settings`.
+2. Click `Workers & Pages` on the left side.
 
-3. Select `Framework preset` to `Gatsby`
+3. Click `Create application` and select `Pages` tab, connect your GitHub account and select `running_page` Repo, then click `Begin setup`.
 
-4. Scroll down, click `Environment variables`, then variable below:
+4. Scroll down to `Build settings`, choose `Create React App` from `Framework preset`, and set `Build output directory` to `dist`.
+
+5. Scroll down, click `Environment variables (advanced)`, then add a variable like below:
 
    > Variable name = `PYTHON_VERSION`, Value = `3.7`
 
-5. Click `Save and Deploy`
+6. Click `Save and Deploy`
 
 </details>
 
@@ -633,11 +638,9 @@ For more display effects, see:
 
 1. If you are using a custom domain for GitHub Pages, open [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml), change `fqdn` value to the domain name of your site.
 
-2. (_Skip this step if you're **NOT** using a custom domain_) Modify `gatsby-config.js`, change `pathPrefix` value to the root path. If the repository name is `running_page`, the value will be `/running_page`.
+2. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
 3. Go to repository's `Actions -> Workflows -> All Workflows`, choose `Publish GitHub Pages` from the left panel, click `Run workflow`. Make sure the workflow runs without errors, and `gh-pages` branch is created.
-
-4. Go to repository's `Settings -> GitHub Pages -> Source`, choose `Branch: gh-pages`, click `Save`.
 
 </details>
 
@@ -679,23 +682,9 @@ The following steps need to be taken
 
 When `SAVE_DATA_IN_GITHUB_CACHE` is set to `true` in the `run_data_sync.yml` file, the script can store fetched and intermediate data files in the GitHub Action cache. This helps keep your GitHub commit history and directory clean.
 
-If you are deploying using GitHub Pages, it is recommended to set this value to `true`, and set  `BUILD_GH_PAGES` to true.
-
-If you are using `Vercel`, you need to perform the following steps in the Vercel dashboard:
-
-1. In the `General` section of `Build & Development Settings`, choose `Other` as the `Framework Preset`, and then enable all the overrides, leaving the command line content empty.
-
-  ![General](https://user-images.githubusercontent.com/413855/255507920-76932fb9-61d6-423e-92e2-2e92b5bbd432.png)
-
-2. In the Git module, enter `gh-pages` as the `Production Branch` Branch name.
-
-  ![Branch name](https://user-images.githubusercontent.com/413855/255508137-ef742815-8418-419a-86b4-6756ff68e1db.png)
-
-
-3. Set the `BUILD_GH_PAGES` to true, in `run_data_sync.yml`.
+If you are deploying using GitHub Pages, it is recommended to set this value to `true`, and set `BUILD_GH_PAGES` to true.
 
 </details>
-
 
 # Fit file
 
@@ -716,7 +705,7 @@ supported manufacturer：
 - [ ] support the world map
 - [ ] support multiple types, like hiking, biking~
 - [ ] support for Zeep life
-  
+
 # Contribution
 
 - Any Issues PR welcome.
@@ -755,3 +744,5 @@ Just enjoy it~
 Strava API Rate Limit Exceeded. Retry after 100 seconds
 Strava API Rate Limit Timeout. Retry in 799.491622 seconds
 ```
+
+### vercel git ignpre gh-pages: you can change settings -> build -> Ignored Build Step -> Custom command `if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;`
