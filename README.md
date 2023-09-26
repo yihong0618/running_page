@@ -4,6 +4,8 @@
 
 ## note3: use v2.0 need change vercel setting from gatsby to vite.
 
+## note4: 2023.09.26 garmin need secret_string(and in Actions) get `python run_page/garmin_sync.py ${email} ${password}` if cn `python run_page/garmin_sync.py ${email} ${password} --is-cn`
+
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
 </p>
@@ -138,9 +140,9 @@ Open your browser and visit <http://localhost:5173/>
 # NRC
 docker build -t running_page:latest . --build-arg app=NRC --build-arg nike_refresh_token=""
 # Garmin
-docker build -t running_page:latest . --build-arg app=Garmin --build-arg email=""  --build-arg password=""
+docker build -t running_page:latest . --build-arg app=Garmin --build-arg secret_string=""
 # Garmin-CN
-docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg email=""  --build-arg password=""
+docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg secret_string=""
 # Strava
 docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
 #Nike_to_Strava
@@ -270,19 +272,22 @@ If you only want `tcx` files add args --tcx
 If you only want `fit` files add args --fit
 
 ```python
-python3(python) run_page/garmin_sync.py ${your email} ${your password}
+# to get secret_string
+python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
+# use this secret_string
+python3(python) run_page/garmin_sync.py ${secret_string}
 ```
 
 example：
 
 ```python
-python3(python) run_page/garmin_sync.py example@gmail.com example
+python3(python) run_page/get_garmin_secret.py xxxxxxxxxxx
 ```
 
 only-run：
 
 ```python
-python3(python) run_page/garmin_sync.py example@gmail.com example --only-run
+python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 ```
 
 </details>
@@ -299,13 +304,16 @@ If you only want `tcx` files add args --tcx
 If you only want `fit` files add args --fit
 
 ```python
-python3(python) run_page/garmin_sync.py ${your email} ${your password} --is-cn
+# to get secret_string
+python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
+# use this secret_string
+python3(python) run_page/garmin_sync.py ${secret_string}
 ```
 
 example：
 
 ```python
-python3(python) run_page/garmin_sync.py example@gmail.com example --is-cn
+python3(python) run_page/garmin_sync.py xxxxxxxxx(secret_string)--is-cn
 ```
 
 </details>
@@ -517,13 +525,13 @@ python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx x
 2. Execute in the root directory:
 
 ```python
-python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_email} ${garmin_password} --is-cn
+python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_secret_string} --is-cn
 ```
 
 e.g.
 
 ```python
-python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
+python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 ```
 
 </details>
@@ -539,13 +547,13 @@ python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 2. Execute in the root directory:
 
 ```python
-python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 ```
 
 if your garmin account region is **China**, you need to execute the command:
 
 ```python
-python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
 If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc.
@@ -555,7 +563,7 @@ If you want to add Garmin Device during sync, you should add `--use_fake_garmin_
 the final command will be:
 
 ```python
-python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_CN_EMAIL }} ${{ secrets.GARMIN_CN_PASSWORD }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
+python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
 ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
