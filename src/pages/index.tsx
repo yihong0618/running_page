@@ -56,7 +56,7 @@ const Index = () => {
     // default year
     setYear(y);
 
-    if ((viewState.zoom ?? 0) > 3) {
+    if ((viewState.zoom ?? 0) > 3 && bounds) {
       setViewState({
         ...bounds,
       });
@@ -75,7 +75,7 @@ const Index = () => {
   };
 
   const locateActivity = (runIds: [Number]) => {
-    const ids = new Set(runIds)
+    const ids = new Set(runIds);
 
     const selectedRuns = runs.filter((r) => ids.has(r.run_id));
 
@@ -132,26 +132,33 @@ const Index = () => {
         const tagName = target.tagName.toLowerCase();
 
         // click the github-stat style svg
-        if (tagName === 'rect' &&
+        if (
+          tagName === 'rect' &&
           parseFloat(target.getAttribute('width') || '0.0') === 2.6 &&
           parseFloat(target.getAttribute('height') || '0.0') === 2.6 &&
-          target.getAttribute('fill') !== '#444444') {
-
-          const [runDate] = target.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [`${+thisYear + 1}`];
-          const runIDsOnDate = runs.filter((r) => r.start_date_local.slice(0, 10) === runDate).map((r) => r.run_id)
+          target.getAttribute('fill') !== '#444444'
+        ) {
+          const [runDate] = target.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
+            `${+thisYear + 1}`,
+          ];
+          const runIDsOnDate = runs
+            .filter((r) => r.start_date_local.slice(0, 10) === runDate)
+            .map((r) => r.run_id);
           if (!runIDsOnDate.length) {
-            return
+            return;
           }
-          locateActivity(runIDsOnDate)
-
-        } else if (tagName === 'polyline') { // click the route grid svg
-          const desc = target.getElementsByTagName('desc')[0]
-          if (!desc) { return }
-          const run_id = Number(desc.innerHTML)
+          locateActivity(runIDsOnDate);
+        } else if (tagName === 'polyline') {
+          // click the route grid svg
+          const desc = target.getElementsByTagName('desc')[0];
+          if (!desc) {
+            return;
+          }
+          const run_id = Number(desc.innerHTML);
           if (!run_id) {
-            return
+            return;
           }
-          locateActivity([run_id])
+          locateActivity([run_id]);
         }
       }
     });

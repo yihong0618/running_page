@@ -218,8 +218,8 @@ const getBoundsForGeoData = (
       break;
     }
   }
-  if (!points) {
-    return {};
+  if (points.length === 0) {
+    return { longitude: 20, latitude: 20, zoom: 3 };
   }
   // Calculate corner values of bounds
   const pointsLong = points.map((point) => point[0]) as number[];
