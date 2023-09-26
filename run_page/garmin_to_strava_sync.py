@@ -8,20 +8,19 @@ import os
 import sys
 import time
 
-from config import STRAVA_GARMIN_TYPE_DICT, FOLDER_DICT
+from config import FOLDER_DICT, STRAVA_GARMIN_TYPE_DICT
 from garmin_sync import download_new_activities, get_downloaded_ids
 from strava_sync import run_strava_sync
-
 from utils import make_strava_client, upload_file_to_strava
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("strava_client_id", help="strava client id")
     parser.add_argument("strava_client_secret", help="strava client secret")
     parser.add_argument("strava_refresh_token", help="strava refresh token")
-    parser.add_argument("garmin_email", nargs="?", help="email of garmin")
-    parser.add_argument("garmin_password", nargs="?", help="password of garmin")
+    parser.add_argument(
+        "secret_string", nargs="?", help="secret_string fro get_garmin_secret.py"
+    )
     parser.add_argument(
         "--is-cn",
         dest="is_cn",
@@ -42,12 +41,12 @@ if __name__ == "__main__":
         options.strava_client_secret,
         options.strava_refresh_token,
     )
+    secret_string = options.secret_string
     garmin_auth_domain = "CN" if options.is_cn else ""
-    email = options.garmin_email
-    password = options.garmin_password
+    email = options.secret_string
     file_type = options.download_file_type
     is_only_running = False
-    if email == None or password == None:
+    if secret_string is None:
         print("Missing argument nor valid configuration file")
         sys.exit(1)
     folder = FOLDER_DICT.get(file_type, "gpx")
@@ -56,8 +55,7 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(
         download_new_activities(
-            email,
-            password,
+            secret_string,
             garmin_auth_domain,
             downloaded_ids,
             is_only_running,
