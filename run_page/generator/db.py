@@ -3,6 +3,7 @@ import random
 import string
 import time
 
+import geopy
 from config import TYPE_DICT
 from geopy.geocoders import Nominatim
 from sqlalchemy import Column, Float, Integer, Interval, String, create_engine
@@ -11,16 +12,14 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 
-import random
-import string
-
 
 # random user name 8 letters
 def randomword():
     letters = string.ascii_lowercase
-    return "".join(random.choice(letters) for i in range(8))
+    return "".join(random.choice(letters) for i in range(4))
 
 
+geopy.geocoders.options.default_user_agent = "my-application"
 # reverse the location (lan, lon) -> location detail
 g = Nominatim(user_agent=randomword())
 
@@ -94,14 +93,12 @@ def update_or_create_activity(session, run_activity):
                         g.reverse(f"{start_point.lat}, {start_point.lon}")
                     )
                 # limit (only for the first time)
-                except:
-                    print("+++++++limit+++++++")
-                    time.sleep(2)
+                except Exception as e:
                     try:
                         location_country = str(
                             g.reverse(f"{start_point.lat}, {start_point.lon}")
                         )
-                    except:
+                    except Exception as e:
                         pass
 
             activity = Activity(
@@ -138,7 +135,6 @@ def update_or_create_activity(session, run_activity):
     except Exception as e:
         print(f"something wrong with {run_activity.id}")
         print(str(e))
-        pass
 
     return created
 
