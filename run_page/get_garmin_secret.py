@@ -16,5 +16,5 @@ if __name__ == "__main__":
     if options.is_cn:
         garth.configure(domain="garmin.cn")
     garth.login(options.email, options.password)
-    secret_string = garth.save_to_string()
+    secret_string = garth.client.dumps()
     print(secret_string)

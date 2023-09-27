@@ -8,7 +8,6 @@ import asyncio
 import json
 import logging
 import os
-import re
 import sys
 import time
 import traceback
@@ -21,7 +20,6 @@ import garth
 import httpx
 from config import FOLDER_DICT, JSON_FILE, SQL_FILE, config
 from garmin_device_adaptor import wrap_device_info
-from tenacity import retry, stop_after_attempt, wait_fixed
 from utils import make_activities_file
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -44,7 +42,6 @@ GARMIN_CN_URL_DICT = {
     "BASE_URL": "https://connectapi.garmin.cn",
     "SSO_URL_ORIGIN": "https://sso.garmin.com",
     "SSO_URL": "https://sso.garmin.cn/sso",
-    # "MODERN_URL": "https://connect.garmin.cn/modern",
     "MODERN_URL": "https://connectapi.garmin.cn",
     "SIGNIN_URL": "https://sso.garmin.cn/sso/signin",
     "CSS_URL": "https://static.garmincdn.cn/cn.garmin.connect/ui/css/gauth-custom-v1.2-min.css",
@@ -66,7 +63,7 @@ class Garmin:
             else GARMIN_COM_URL_DICT
         )
         self.modern_url = self.URL_DICT.get("MODERN_URL")
-        garth.resume_from_string(secret_string)
+        garth.client.loads(secret_string)
         if garth.client.oauth2_token.expired:
             garth.client.refresh_oauth2()
 
@@ -104,7 +101,6 @@ class Garmin:
                     "Exception occurred during data retrieval - perhaps session expired - trying relogin: %s"
                     % err
                 )
-                self.login()
                 await self.fetch_data(url, retrying=True)
 
     async def get_activities(self, start, limit):
