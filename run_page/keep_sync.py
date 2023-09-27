@@ -85,23 +85,28 @@ def parse_raw_data_to_nametuple(
     ):
         raw_data_url = run_data.get("rawDataURL")
         r = session.get(raw_data_url)
-        # string strart with `H4sIAAAAAAAA` --> decode and unzip
-        run_points_data = decode_runmap_data(r.text)
-        run_points_data_gpx = run_points_data
-        if TRANS_GCJ02_TO_WGS84:
-            run_points_data = [
-                list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
-                for p in run_points_data
-            ]
-            for i, p in enumerate(run_points_data_gpx):
-                p["latitude"] = run_points_data[i][0]
-                p["longitude"] = run_points_data[i][1]
+        if r.ok:
+            # string strart with `H4sIAAAAAAAA` --> decode and unzip
+            run_points_data = decode_runmap_data(r.text)
+            run_points_data_gpx = run_points_data
+            if TRANS_GCJ02_TO_WGS84:
+                run_points_data = [
+                    list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
+                    for p in run_points_data
+                ]
+                for i, p in enumerate(run_points_data_gpx):
+                    p["latitude"] = run_points_data[i][0]
+                    p["longitude"] = run_points_data[i][1]
+            else:
+                run_points_data = [
+                    [p["latitude"], p["longitude"]] for p in run_points_data
+                ]
+            if with_download_gpx:
+                if str(keep_id) not in old_gpx_ids:
+                    gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
+                    download_keep_gpx(gpx_data, str(keep_id))
         else:
-            run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
-        if with_download_gpx:
-            if str(keep_id) not in old_gpx_ids:
-                gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
-                download_keep_gpx(gpx_data, str(keep_id))
+            print(f"ID {keep_id} retrieved gpx data failed")
     heart_rate = None
     if run_data["heartRate"]:
         heart_rate = run_data["heartRate"].get("averageHeartRate", None)

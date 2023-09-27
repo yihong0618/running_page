@@ -1,4 +1,6 @@
-## note: use v2.0 need change vercel setting from Gatsby to Vite
+## note1: use v2.0 need change vercel setting from Gatsby to Vite
+
+## note2: 2023.09.26 garmin need secret_string(and in Actions) get `python run_page/garmin_sync.py ${secret_string}` if cn `python run_page/garmin_sync.py ${secret_string} --is-cn`
 
 # [Create a personal workouts home page](http://workouts.ben29.xyz)
 
