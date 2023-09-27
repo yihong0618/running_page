@@ -26,9 +26,7 @@ fit-tool
 haversine==2.8.0
 git+https://github.com/yihong0618/garth.git
 
-
 bs4
-pycrypto
 html.parser
 aiofiles
 # if you need to import kml file
