@@ -18,6 +18,7 @@ import {
   RUN_COLOR,
   KAYAKING_COLOR,
   SNOWBOARD_COLOR,
+  TRAIL_RUNNING_COLOR,
 } from './const';
 import { FeatureCollection, LineString } from 'geojson';
 
@@ -195,6 +196,8 @@ const titleForType = (type: string): string => {
   switch (type) {
     case 'Run':
       return RUN_TITLES.RUN_TITLE;
+    case 'Trail Running':
+      return RUN_TITLES.TRAIL_RUN_TITLE;
     case 'Ride':
       return RUN_TITLES.RIDE_TITLE;
     case 'Indoor Ride':
@@ -240,6 +243,8 @@ const colorFromType = (workoutType: string): string => {
   switch (workoutType) {
     case 'Run':
       return RUN_COLOR;
+    case 'Trail Running':
+      return TRAIL_RUNNING_COLOR;
     case 'Ride':
     case 'Indoor Ride':
       return RIDE_COLOR;
