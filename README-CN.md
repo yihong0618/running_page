@@ -817,11 +817,16 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 1. 进入仓库的"Settings -> GitHub Pages -> Source"， 选择"GitHub Actions"
 
 2. 进入仓库的"Actions -> Workflows -> All Workflows"， 选择左侧面板的"Run Data Sync"， 然后点击"Run workflow"
-  * "Run Data Sync"将更新数据,然后触发"Publish GitHub Pages"工作流
-  * 确认工作流运行没有错误
+
+- "Run Data Sync"将更新数据,然后触发"Publish GitHub Pages"工作流
+- 确认工作流运行没有错误
+
 3. 打开网站检查结果
-  * 如果网站没有反映最新数据,请使用“F5”刷新页面
-  * 某些浏览器(比如Chrome)可能缓存网页不刷新,您需要使用“Ctrl+F5”(Windows)或“Shift+Cmd+r”(Mac)强制清除缓存并重新加载页面
+
+- 如果网站没有反映最新数据，请使用“F5”刷新页面
+- 某些浏览器(比如 Chrome)可能缓存网页不刷新,您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac)强制清除缓存并重新加载页面
+
+4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
 
 </details>
 

@@ -654,6 +654,8 @@ For more display effects, see:
   * note if the website doesn't reflect the latest data, please refresh it by `F5`.
   * Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
 
+4. make sure you have write permissions in Workflow permissions settings.
+
 </details>
 
 ## GitHub Actions
