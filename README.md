@@ -87,7 +87,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 ## How it works
 
-![image](https://user-images.githubusercontent.com/15976103/103496454-4294f600-4e79-11eb-9bd6-8eea7a07ddff.png)
+![image](https://github.com/yihong0618/running_page/assets/15976103/85d8d59d-2639-431e-8406-9d818afbd4ab)
 
 ## Features
 
