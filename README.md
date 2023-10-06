@@ -272,20 +272,20 @@ If you only want `tcx` files add args --tcx
 If you only want `fit` files add args --fit
 
 If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-**The Python version must be >=3.10**
+**The Python version must be >=3.8**
 
 #### Get Garmin Secret
+
 Enter the following command in the terminal
+
 ```python
 # to get secret_string
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
 ```
-![get_garmin_secret](docs/get_garmin_secret.png)
 
 #### Execute Garmin Sync Script
 
 Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING** in Github Action.
-![get_garmin_secret](docs/add_garmin_secret_string.jpg)
 
 ```python
 # use this secret_string
@@ -321,11 +321,14 @@ If you are using Garmin as a data source, it is recommended that you pull the co
 **The Python version must be >=3.10**
 
 #### Get Garmin CN Secret
+
 Enter the following command in the terminal
+
 ```python
 # to get secret_string
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 ```
+
 ![get_garmin_cn_secret](docs/get_garmin_cn_secret.jpg)
 
 #### Execute Garmin CN Sync Script
@@ -339,13 +342,11 @@ example：
 python3(python) run_page/garmin_sync.py xxxxxxxxx(secret_string) --is-cn
 ```
 
-
 only-run：
 
 ```python
 python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn --only-run
 ```
-
 
 </details>
 
@@ -678,12 +679,14 @@ For more display effects, see:
 1. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
 2. Go to the repository's `Actions -> Workflows -> All Workflows`, choose `Run Data Sync` from the left panel, and click `Run workflow`.
-  * The `Run Data Sync` will update data and then trigger the `Publish GitHub Pages` workflow 
-  * Make sure the workflow runs without errors.
+
+- The `Run Data Sync` will update data and then trigger the `Publish GitHub Pages` workflow
+- Make sure the workflow runs without errors.
 
 3. Open your website to check on the results
-  * note if the website doesn't reflect the latest data, please refresh it by `F5`.
-  * Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
+
+- note if the website doesn't reflect the latest data, please refresh it by `F5`.
+- Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
 
 4. make sure you have write permissions in Workflow permissions settings.
 

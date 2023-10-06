@@ -461,17 +461,21 @@ python3(python) run_page/tulipsport_sync.py nLgy****RyahI
 
 如果你想同步 `fit` 格式，增加命令 --fit
 
-如果你使用Garmin作为数据源建议您将代码拉取到本地获取Garmin国际区的密钥，注意**Python版本必须>=3.10**
+如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.8**
+
 #### 获取佳明国际区的密钥
+
 在终端中输入以下命令
+
 ```python
 # 获取密钥
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
 ```
-![get_garmin_secret](docs/get_garmin_secret.png)
+
 #### 执行佳明国际区同步脚本
-复制上述终端中输出的密钥，如果您是使用Github请在Github Action 中配置**GARMIN_SECRET_STRING**参数
-![get_garmin_secret](docs/add_garmin_secret_string.jpg)
+
+复制上述终端中输出的密钥，如果您是使用 Github 请在 Github Action 中配置**GARMIN_SECRET_STRING**参数
+
 示例：
 
 ```python
@@ -491,16 +495,22 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxx
 
 如果你想同步 `fit` 格式，增加命令 --fit
 
-如果你使用Garmin作为数据源建议您将代码拉取到本地获取Garmin国际区的密钥，注意**Python版本必须>=3.10**
+如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.10**
+
 #### 获取佳明国区的密钥
+
 在终端中输入以下命令
+
 ```python
 # to get secret_string
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 ```
+
 ![get_garmin_cn_secret](docs/get_garmin_cn_secret.jpg)
+
 #### 执行佳明国区同步脚本
-复制上述终端中输出的密钥，如果您是使用Github请在Github Action 中配置**GARMIN_SECRET_STRING_CN** 参数
+
+复制上述终端中输出的密钥，如果您是使用 Github 请在 Github Action 中配置**GARMIN_SECRET_STRING_CN** 参数
 ![get_garmin_secret](docs/add_garmin_secret_cn_string.jpg)
 示例：
 
