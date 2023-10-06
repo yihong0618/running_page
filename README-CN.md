@@ -89,7 +89,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 ## 它是怎么工作的
 
-![image](https://user-images.githubusercontent.com/15976103/105784027-e1ad9900-5fb2-11eb-9479-372be21482f1.png)
+![image](https://github.com/yihong0618/running_page/assets/15976103/85d8d59d-2639-431e-8406-9d818afbd4ab)
 
 ## 特性
 
