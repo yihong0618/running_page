@@ -633,7 +633,7 @@ For more display effects, see:
 
 4. Scroll down to `Build settings`, choose `Create React App` from `Framework preset`, and set `Build output directory` to `dist`.
 
-5. Scroll down, click `Environment variables (advanced)`, then add a variable like below:
+5. Scroll down, click `Environment variables (advanced)`, then add a variable like the below:
 
    > Variable name = `PYTHON_VERSION`, Value = `3.7`
 
@@ -644,11 +644,17 @@ For more display effects, see:
 <details>
 <summary> Deploy to GitHub Pages </summary>
 
-1. If you are using a custom domain for GitHub Pages, open [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml), change `fqdn` value to the domain name of your site.
+1. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
-2. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
+2. Go to the repository's `Actions -> Workflows -> All Workflows`, choose `Run Data Sync` from the left panel, and click `Run workflow`.
+  * The `Run Data Sync` will update data and then trigger the `Publish GitHub Pages` workflow 
+  * Make sure the workflow runs without errors.
 
-3. Go to repository's `Actions -> Workflows -> All Workflows`, choose `Publish GitHub Pages` from the left panel, click `Run workflow`. Make sure the workflow runs without errors, and `gh-pages` branch is created.
+3. Open your website to check on the results
+  * note if the website doesn't reflect the latest data, please refresh it by `F5`.
+  * Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
+
+4. make sure you have write permissions in Workflow permissions settings.
 
 </details>
 

@@ -814,17 +814,19 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 <details>
 <summary> 部署到 GitHub Pages </summary>
 
-1. 为 GitHub Actions 添加代码提交权限
-   访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
-2. 更新配置并提交代码
-   1. 更新[./src/static/site-metadata.ts](./src/static/site-metadata.ts#L12)中的`data`对象；
-      （按需）如果启用自定义域名模式或者变更 Fork 后的仓库名称，请变更`pathPrefix`的值。
-   2. 更新 GitHub CI 的配置 [.github/workflows/run_data_sync.yml](.github/workflows/run_data_sync.yml#L24) 中的配置；
-   3. （按需）如需使用自定义域名，可以修改 [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml#L60) 中的 `fqdn`（默认已注释掉）
-   4. 在仓库的`Settings > Secrets and variables > Actions`页面添加对应服务的环境配置信息，参考不同平台[配置](#支持)。
-3. 同步数据并发布 GitHub Pages
-   1. 手动触发`Run Data Sync`的 Github Action 完成数据同步，完成后会自动触发`Publish GitHub Pages`的任务执行，等待执行完成；
-   2. 开通仓库 GitHub Pages 功能，选择`GitHub Actions`
+1. 进入仓库的"Settings -> GitHub Pages -> Source"， 选择"GitHub Actions"
+
+2. 进入仓库的"Actions -> Workflows -> All Workflows"， 选择左侧面板的"Run Data Sync"， 然后点击"Run workflow"
+
+- "Run Data Sync"将更新数据,然后触发"Publish GitHub Pages"工作流
+- 确认工作流运行没有错误
+
+3. 打开网站检查结果
+
+- 如果网站没有反映最新数据，请使用“F5”刷新页面
+- 某些浏览器(比如 Chrome)可能缓存网页不刷新,您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac)强制清除缓存并重新加载页面
+
+4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
 
 </details>
 
