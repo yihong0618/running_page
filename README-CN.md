@@ -22,6 +22,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 <details>
 <summary>GIF 展示</summary>
 
+<br>
+
 ![running_page](https://user-images.githubusercontent.com/15976103/98808834-c02f1d80-2457-11eb-9a7c-70e91faa5e30.gif)
 
 </details>
@@ -30,6 +32,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 <details>
 <summary>Running page runners</summary>
+
+<br>
 
 | Runner                                            | page                                           | App         |
 | ------------------------------------------------- | ---------------------------------------------- | ----------- |

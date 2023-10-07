@@ -1,10 +1,13 @@
-## note1: clone or Fork before vercel 404 need to pull the latest code
-
-## note2: python3(python) in README means python3 python
-
-## note3: use v2.0 need change vercel setting from gatsby to vite.
-
-## note4: 2023.09.26 garmin need secret_string(and in Actions) get `python run_page/garmin_sync.py ${email} ${password}` if cn `python run_page/garmin_sync.py ${email} ${password} --is-cn`
+## Note
+1. clone or Fork before vercel 404 need to pull the latest code
+2. python3(python) in README means python3 python
+3. use v2.0 need change vercel setting from gatsby to vite
+4. 2023.09.26 garmin need secret_string(and in Actions) get
+```bash
+  python run_page/garmin_sync.py ${email} ${password}
+  # if cn
+  python run_page/garmin_sync.py ${email} ${password} --is-cn
+  ```
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
@@ -29,6 +32,8 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 <details>
 <summary>Running page runners</summary>
+
+<br>
 
 | Runner                                            | page                                           | App         |
 | ------------------------------------------------- | ---------------------------------------------- | ----------- |
@@ -97,8 +102,9 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 4. Mapbox for map display
 5. Supports most sports apps such as nike strava...
 
-> automatically backup gpx data for easy backup and uploading to other software.<br>
-> Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
+  > automatically backup gpx data for easy backup and uploading to other software.
+
+  > Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
 
 ## Support
 
@@ -119,13 +125,13 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 Clone or fork the repo.
 
-```
+```bash
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
 ## Installation and testing (node >= 16 python >= 3.8)
 
-```
+```bash
 pip3 install -r requirements.txt
 npm install -g corepack && corepack enable && pnpm install
 pnpm develop
@@ -135,44 +141,47 @@ Open your browser and visit <http://localhost:5173/>
 
 ## Docker
 
-```
-#build
+```bash
+
 # NRC
 docker build -t running_page:latest . --build-arg app=NRC --build-arg nike_refresh_token=""
+
 # Garmin
 docker build -t running_page:latest . --build-arg app=Garmin --build-arg secret_string=""
+
 # Garmin-CN
 docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg secret_string=""
+
 # Strava
 docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
-#Nike_to_Strava
+
+# Nike_to_Strava
 docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
 
-#run
+# run
 docker run -itd -p 80:80   running_page:latest
 
-#visit
+# visit
 Open your browser and visit localhost:80
 
 ```
 
 ## Local sync data
 
-### Modifying Mapbox token in `src/utils/const.js`
+### Modifying Mapbox token
 
-> If you use English please change `IS_CHINESE = false` in `src/utils/const.js` <br>
+> If you use English please change `IS_CHINESE = false` in `src/utils/const.ts` <br>
 > Suggested changes to your own [Mapbox token](https://www.mapbox.com/)
 
-```javascript
-const MAPBOX_TOKEN =
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+```typescript
+const MAPBOX_TOKEN ='pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
 
 ## Custom your page
 
 - Find `src/static/site-metadata.ts` in the repository directory, find the following content, and change it to what you want.
 
-```javascript
+```typescript
 siteMetadata: {
   siteTitle: 'Running Page', #website title
   siteUrl: 'https://yihong.run', #website url
@@ -191,42 +200,48 @@ siteMetadata: {
 },
 ```
 
-- Modifying styling in `src/utils/const.js`
+- Modifying styling in `src/utils/const.ts`
 
-```javascript
+```typescript
 // styling: set to `false` if you want to disable dash-line route
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
 ```
 
-- privacy protection
+> privacy protection,setting flowing env:
 
-setting flowing env:
+```bash
+# ignore distance for each polyline start and end.
+IGNORE_START_END_RANGE = 200
 
-```shell
-IGNORE_START_END_RANGE = 200 # ignore distance for each polyline start and end.
+# ignore meters for each point in below polyline.
+IGNORE_RANGE = 200
 
-IGNORE_RANGE = 200 # ignore meters for each point in below polyline.
-IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # a polyline include point you want to ignore.
+# a polyline include point you want to ignore.
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB
 
 # Do filter before saving to database, you will lose some data, but you can protect your privacy, when you using public repo. enable for set 1, disable via unset.
 IGNORE_BEFORE_SAVING =
 ```
 
-You can using [this](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
+You can using `Google map` [Interactive Polyline Encoder Utility
+](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
 
-## Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
+## Download your running data
+
+> Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
 
 ### GPX
 
 <details>
 <summary>Make your <code>GPX</code> data</summary>
+
 <br>
 
 Copy all your gpx files to GPX_OUT or new gpx files
 
-```python
+```bash
 python3(python) run_page/gpx_sync.py
 ```
 
@@ -236,6 +251,7 @@ python3(python) run_page/gpx_sync.py
 
 <details>
 <summary>Make your <code>TCX</code> data</summary>
+
 <br>
 
 Copy all your tcx files to TCX_OUT or new tcx files
