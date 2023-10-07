@@ -186,8 +186,7 @@ docker run -itd -p 80:80   running_page:latest
 > 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.ts`
 
 ```typescript
-const MAPBOX_TOKEN =
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+const MAPBOX_TOKEN ='pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
 
 
@@ -227,16 +226,21 @@ const LINE_OPACITY = 0.4;
 > 隐私保护：设置下面环境变量：
 
 ```bash
-IGNORE_START_END_RANGE = 200 # 忽略每个 polyline 的起点和终点的长度（单位：米）。
+# 忽略每个 polyline 的起点和终点的长度（单位：米）。
+IGNORE_START_END_RANGE = 200
 
-IGNORE_RANGE = 200 # 忽略下面 polyline 中每个点的距离的圆圈（单位：米）。
-IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # 包含要忽略的点的折线。
+# 忽略下面 polyline 中每个点的距离的圆圈（单位：米）。
+IGNORE_RANGE = 200
+
+# 包含要忽略的点的折线。
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB
 
 # 在保存到数据库之前进行过滤，你会丢失一些数据，但可以保护你的隐私，如果你使用的是公共仓库，建议设置为 1。不设置可关闭。
 IGNORE_BEFORE_SAVING = 1
 ```
 
-> 你可一用[这个](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
+> 你可以使用`
+Google Maps` 的 [互动式多段线编码器实用程序](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
 
 ## 下载数据到本地
 
