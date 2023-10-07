@@ -256,7 +256,7 @@ python3(python) run_page/gpx_sync.py
 
 Copy all your tcx files to TCX_OUT or new tcx files
 
-```python
+```bash
 python3(python) run_page/tcx_sync.py
 ```
 
@@ -266,11 +266,12 @@ python3(python) run_page/tcx_sync.py
 
 <details>
 <summary>Make your <code>FIT</code> data</summary>
-<br>
+
+X<br>
 
 Copy all your tcx files to FIT_OUT or new fit files
 
-```python
+```bash
 python3(python) run_page/fit_sync.py
 ```
 
@@ -280,43 +281,42 @@ python3(python) run_page/fit_sync.py
 
 <details>
 <summary>Get your <code>Garmin</code> data</summary>
+
 <br>
-If you only want to sync `type running` add args --only-run
 
-If you only want `tcx` files add args --tcx
-
-If you only want `fit` files add args --fit
-
-If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
+- If you only want to sync `type running` add args --only-run
+- If you only want `tcx` files add args --tcx
+- If you only want `fit` files add args --fit
+- If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
 **The Python version must be >=3.8**
 
 #### Get Garmin Secret
 
 Enter the following command in the terminal
 
-```python
+```bash
 # to get secret_string
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
 ```
 
 #### Execute Garmin Sync Script
 
-Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING** in Github Action.
+Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING** in `Github Action`.
 
-```python
+```bash
 # use this secret_string
 python3(python) run_page/garmin_sync.py ${secret_string}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/get_garmin_secret.py xxxxxxxxxxx
 ```
 
 only-run：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 ```
 
@@ -326,21 +326,20 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 
 <details>
 <summary>Get your <code>Garmin-CN</code> data</summary>
+
 <br>
-If you only want to sync `type running` add args --only-run
 
-If you only want `tcx` files add args --tcx
-
-If you only want `fit` files add args --fit
-
-If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
+- If you only want to sync `type running` add args --only-run
+- If you only want `tcx` files add args --tcx
+- If you only want `fit` files add args --fit
+- If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
 **The Python version must be >=3.10**
 
 #### Get Garmin CN Secret
 
 Enter the following command in the terminal
 
-```python
+```bash
 # to get secret_string
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 ```
@@ -354,13 +353,13 @@ Copy the Secret output in the terminal,If you are using Github, please configure
 
 example：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxx(secret_string) --is-cn
 ```
 
 only-run：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn --only-run
 ```
 
@@ -386,13 +385,13 @@ Get Nike's `refresh_token`
 
 3. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/nike_sync.py ${nike refresh_token}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 ```
 
@@ -404,11 +403,11 @@ python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 
 <details>
 <summary> Get your <code>Strava</code> data </summary>
+
 <br>
 
 1. Sign in/Sign up [Strava](https://www.strava.com/) account
 2. Open after successful Signin [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
-
 3. Create `My API Application`: Enter the following information
 
 <br>
@@ -435,13 +434,13 @@ https://www.strava.com/oauth/authorize?client_id=${your_id}&response_type=code&r
 
 example：
 
-```
+```bash
 http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f3471e6e&scope=read,activity:write,activity:read_all,profile:write,profile:read_all,read_all
 ```
 
 `code` value：
 
-```
+```bash
 1dab37edd9970971fb502c9efdd087f4f3471e6
 ```
 
@@ -449,7 +448,7 @@ http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f347
 
 6. Use `Client_id`、`Client_secret`、`Code` get `refresh_token`: Execute in `Terminal/iTerm`
 
-```
+```bash
 curl -X POST https://www.strava.com/oauth/token \
 -F client_id=${Your Client ID} \
 -F client_secret=${Your Client Secret} \
@@ -459,7 +458,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 example：
 
-```
+```bash
 curl -X POST https://www.strava.com/oauth/token \
 -F client_id=12345 \
 -F client_secret=b21******d0bfb377998ed1ac3b0 \
@@ -474,7 +473,7 @@ curl -X POST https://www.strava.com/oauth/token \
 > The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running.
 > If you only want to sync `type running` add args --only-run
 
-```python
+```bash
 python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
 
@@ -497,13 +496,13 @@ References：
 2. copy all your tcx files to TCX_OUT
 3. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
 or
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
@@ -524,13 +523,13 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 2. copy all your gpx files to GPX_OUT
 3. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx
 or
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
@@ -550,13 +549,13 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 1. follow the nike and strava steps
 2. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 ```
 
@@ -572,13 +571,13 @@ python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx x
 1. finish garmin and strava setps
 2. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_secret_string} --is-cn
 ```
 
 e.g.
 
-```python
+```bash
 python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 ```
 
@@ -594,13 +593,13 @@ python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 1. finish garmin and strava setps, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
 2. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 ```
 
 if your garmin account region is **China**, you need to execute the command:
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
@@ -610,7 +609,7 @@ If you want to add Garmin Device during sync, you should add `--use_fake_garmin_
 
 the final command will be:
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
@@ -799,14 +798,19 @@ Just enjoy it~
 
 # FAQ
 
-### Strava Api limit
+- Strava Api limit
 
-<https://www.strava.com/settings/api>
-<https://developers.strava.com/docs/#rate-limiting>
+    <https://www.strava.com/settings/api>
+    <https://developers.strava.com/docs/#rate-limiting>
 
-```
-Strava API Rate Limit Exceeded. Retry after 100 seconds
-Strava API Rate Limit Timeout. Retry in 799.491622 seconds
-```
+    ```
+    Strava API Rate Limit Exceeded. Retry after 100 seconds
+    Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+    ```
 
-### vercel git ignpre gh-pages: you can change settings -> build -> Ignored Build Step -> Custom command `if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;`
+- vercel git ignpre gh-pages:
+
+  you can change settings -> build -> Ignored Build Step -> Custom command
+  ```bash
+  if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;
+  ```

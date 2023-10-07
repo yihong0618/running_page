@@ -526,11 +526,8 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxx
 <br>
 
 - 如果你只想同步跑步数据请增加 --only-run
-
 - 如果你想同步 `tcx` 格式，增加命令 --tcx
-
 - 如果你想同步 `fit` 格式，增加命令 --fit
-
 - 如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.10**
 
 #### 获取佳明 CN 的密钥
@@ -657,7 +654,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 > 第一次同步 Strava 数据时需要更改在 strava_sync.py 中的第 12 行代码 False 改为 True，运行完成后，再改为 False。
 
-如果你只想同步跑步数据增加命令 --only-run
+仅同步跑步数据，添加参数 --only-run
 
 ```bash
 python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
@@ -708,13 +705,13 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 2. 把 gpx 文件全部拷贝到 GPX_OUT 中
 3. 在项目根目录下执行：
 
-```python
+```bash
 python3(python) run_page/gpx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx
 或
 python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx --all
@@ -734,13 +731,13 @@ python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx --all
 1. 完成 nike 和 strava 的步骤
 2. 在项目根目录下执行：
 
-```python
+```bash
 python3(python) run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 ```
 
@@ -756,13 +753,13 @@ python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx x
 1. 完成 garmin 和 strava 的步骤
 2. 在项目根目录下执行：
 
-```python
+```bash
 python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_secret_string} --is-cn
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 ```
 
@@ -778,13 +775,13 @@ python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 1. 完成 garmin 和 strava 的步骤，同时，还需要在 Github Actions secret 那新增 Strava 配置：`secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
 2. 在项目根目录下执行：
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 ```
 
 如果你的佳明账号是中国区，执行如下的命令：
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
@@ -794,7 +791,7 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 
 最终执行的命令如下：
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
