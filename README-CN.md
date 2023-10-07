@@ -1,10 +1,13 @@
-## note1: clone or Fork before vercel 404 need to pull the latest code
-
-## note2: python3(python) in README means python3 python
-
-## note3: use v2.0 need change vercel setting from gatsby to vite
-
-## note4: 2023.09.26 garmin need secret_string(and in Actions) get `python run_page/garmin_sync.py ${email} ${password}` if cn `python run_page/garmin_sync.py ${email} ${password} --is-cn`
+## Note
+1. clone or Fork before vercel 404 need to pull the latest code
+2. python3(python) in README means python3 python
+3. use v2.0 need change vercel setting from gatsby to vite
+4. 2023.09.26 garmin need secret_string(and in Actions) get
+```bash
+  python run_page/garmin_sync.py ${email} ${password}
+  # if cn
+  python run_page/garmin_sync.py ${email} ${password} --is-cn
+  ```
 
 ![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
 
@@ -101,7 +104,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 > 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里（建议本地同步，之后 actions 选择正在用的 app）
 
-> 注：如果你不想公开数据，可以选择 strava 的模糊处理，或 private 仓库。
+> 如果你不想公开数据，可以选择 strava 的模糊处理，或 private 仓库。
 
 <details>
 <summary>缩放地图彩蛋</summary>
@@ -117,8 +120,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Garmin](#garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#keep)**
-- **[悦跑圈](#joyrun悦跑圈，因悦跑圈限制单个设备原因，无法自动化)**
-- **[咕咚](#codoon咕咚，因咕咚限制单个设备原因，无法自动化)**
+- **[悦跑圈](#joyrun 悦跑圈，因悦跑圈限制单个设备，无法自动化)**
+- **[咕咚](#codoon 咕咚，因咕咚限制单个设备，无法自动化)**
 - **[郁金香运动](#tulipsport)**
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
@@ -136,13 +139,13 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 ## 下载
 
-```
+```bash
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
 ## 安装及测试 (node >= 16 python >= 3.8)
 
-```
+```bash
 pip3 install -r requirements.txt
 npm install -g corepack && corepack enable && pnpm install
 pnpm develop
@@ -152,16 +155,19 @@ pnpm develop
 
 ## Docker
 
-```
-#构建
+```bash
 # NRC
 docker build -t running_page:latest . --build-arg app=NRC --build-arg nike_refresh_token=""
+
 # Garmin
 docker build -t running_page:latest . --build-arg app=Garmin --build-arg secret_string=""
+
 # Garmin-CN
 docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg secret_string=""
+
 # Strava
 docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
+
 #Nike_to_Strava
 docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
 
@@ -173,26 +179,28 @@ docker run -itd -p 80:80   running_page:latest
 
 ```
 
-## 替换 `src/utils/const.js` 文件中的 Mapbox token
+## 替换 Mapbox token
 
-> 建议有能力的同学把代码中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
+> 建议有能力的同学把 `src/utils/const.ts` 文件中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
 
-```javascript
+> 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.ts`
+
+```typescript
 const MAPBOX_TOKEN =
   'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
 
-### 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.js`
 
-## 一些个性化选项
 
-- 在仓库目录下找到 `src/static/site-metadata.ts`，找到以下内容并修改成你自己想要的。
+## 个性化设置
 
-```javascript
+> 在仓库目录下找到 `src/static/site-metadata.ts`，找到以下内容并修改成你自己想要的。
+
+```typescript
 siteMetadata: {
   siteTitle: 'Running Page', #网站标题
   siteUrl: 'https://yihong.run', #网站域名
-  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU', #左上角LOGO
+  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU', #左上角 LOGO
   description: 'Personal site and blog',
   navLinks: [
     {
@@ -207,42 +215,43 @@ siteMetadata: {
 },
 ```
 
-- 修改 `src/utils/const.js` 文件中的样式：
+> 修改 `src/utils/const.ts` 文件中的样式：
 
-```javascript
+```typescript
 // styling: 关闭虚线：设置为 `false`
 const USE_DASH_LINE = true;
 // styling: 透明度：[0, 1]
 const LINE_OPACITY = 0.4;
 ```
 
-- 隐私保护：
+> 隐私保护：设置下面环境变量：
 
-设置下面环境变量：
-
-```shell
+```bash
 IGNORE_START_END_RANGE = 200 # 忽略每个 polyline 的起点和终点的长度（单位：米）。
 
 IGNORE_RANGE = 200 # 忽略下面 polyline 中每个点的距离的圆圈（单位：米）。
 IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # 包含要忽略的点的折线。
 
-# 在保存到数据库之前进行过滤，你会丢失一些数据，但可以保护你的隐私，如果你使用的是公共仓库，建议设置为1。不设置可关闭。
+# 在保存到数据库之前进行过滤，你会丢失一些数据，但可以保护你的隐私，如果你使用的是公共仓库，建议设置为 1。不设置可关闭。
 IGNORE_BEFORE_SAVING = 1
 ```
 
-你可一用[这个](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
+> 你可一用[这个](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
 
-## 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据，[别忘了在 `total` 页面生成可视化 SVG](#total-data-analysis)
+## 下载数据到本地
+
+> 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据到本地，别忘了在 total 页面生成可视化 SVG
 
 ### GPX
 
 <details>
 <summary>Make your <code>GPX</code> data</summary>
+
 <br>
 
-把其它软件生成的 gpx files 拷贝到 GPX_OUT 之后运行
+把其它软件生成的 `gpx files` 拷贝到 `GPX_OUT` 之后运行
 
-```python
+```bash
 python3(python) run_page/gpx_sync.py
 ```
 
@@ -252,11 +261,12 @@ python3(python) run_page/gpx_sync.py
 
 <details>
 <summary>Make your <code>TCX</code> data</summary>
+
 <br>
 
-把其它软件生成的 tcx files 拷贝到 TCX_OUT 之后运行
+把其它软件生成的 `tcx files` 拷贝到 `TCX_OUT` 之后运行
 
-```python
+```bash
 python3(python) run_page/tcx_sync.py
 ```
 
@@ -266,11 +276,12 @@ python3(python) run_page/tcx_sync.py
 
 <details>
 <summary>Make your <code>FIT</code> data</summary>
+
 <br>
 
 把其它软件生成的 fit files 拷贝到 FIT_OUT 之后运行
 
-```python
+```bash
 python3(python) run_page/fit_sync.py
 ```
 
@@ -281,27 +292,29 @@ python3(python) run_page/fit_sync.py
 <details>
 <summary>获取您的 Keep 数据</summary>
 
+<br>
+
 > 确保自己的账号能用手机号 + 密码登陆 (不要忘记添加 secret 和更改自己的账号，在 GitHub Actions 中), 注：海外手机号需要换成国内 +86 的手机号
 
-```python
+```bash
 python3(python) run_page/keep_sync.py ${your mobile} ${your password}
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/keep_sync.py 13333xxxx example
 ```
 
-> 注：我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
+> 我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
-```python
+```bash
 python3(python) run_page/keep_sync.py ${your mobile} ${your password} --with-gpx
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/keep_sync.py 13333xxxx example --with-gpx
 ```
 
@@ -310,9 +323,11 @@ python3(python) run_page/keep_sync.py 13333xxxx example --with-gpx
 <details>
 <summary>路线偏移修正</summary>
 
+<br>
+
 如果您得到的运动路线与实际路线对比有整体偏移，可以修改代码中的参数进行修正
 
-> 注：Keep 目前采用的是 GCJ-02 坐标系，因此导致得到运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
+> Keep 目前采用的是 GCJ-02 坐标系，因此导致得到运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
 
 - 修改 `run_page/keep_sync.py` 文件中的参数：
 
@@ -328,45 +343,46 @@ TRANS_GCJ02_TO_WGS84 = True
 <details>
 <summary>获取您的悦跑圈数据</summary>
 
-获取登陆验证码：
+<br>
 
-确保自己的账号能用手机号 + 验证码登陆
+1. 获取登陆验证码：
+2. 确保自己的账号能用手机号 + 验证码登陆
+3. 点击获取验证码
 
-点击获取验证码
-
-> 注：不要在手机输入验证码，拿到验证码就好，用这个验证码放到下方命令中
+> 不要在手机输入验证码，拿到验证码就好，用这个验证码放到下方命令中
 
 ![image](https://user-images.githubusercontent.com/15976103/102352588-e3af3000-3fe2-11eb-8131-14946b0262eb.png)
 
-```python
+```bash
 python3(python) run_page/joyrun_sync.py ${your mobile} ${your 验证码}
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/joyrun_sync.py 13333xxxx xxxx
 ```
 
-> 注：我增加了 joyrun 可以导出 gpx 功能，执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
+joyrun 导出 gpx 文件
+> 导出的 gpx 在 GPX_OUT 目录，方便上传到其它软件
 
-```python
+```bash
 python3(python) run_page/joyrun_sync.py ${your mobile} ${your 验证码} --with-gpx
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/joyrun_sync.py 13333xxxx example --with-gpx
 ```
 
-> 注：因为验证码有过期时间，我增加了 cookie uid sid 登陆的方式，uid 及 sid 在您登陆过程中会在控制台打印出来
+> 因为验证码有过期时间，我增加了 cookie uid sid 登陆的方式，uid 及 sid 在您登陆过程中会在控制台打印出来
 
 ![image](https://user-images.githubusercontent.com/15976103/102354069-05a9b200-3fe5-11eb-9b30-221c32bbc607.png)
 
 示例：
 
-```python
+```bash
 python3(python) run_page/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx --from-uid-sid --with-gpx
 ```
 
@@ -377,35 +393,39 @@ python3(python) run_page/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx -
 <details>
 <summary>获取您的咕咚数据</summary>
 
-```python
+<br>
+
+```bash
 python3(python) run_page/codoon_sync.py ${your mobile or email} ${your password}
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/codoon_sync.py 13333xxxx xxxx
 ```
 
-> 注：我增加了 Codoon 可以导出 gpx 功能，执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
+Codoon 导出 gpx
 
-```python
+> 导出的 gpx 在 GPX_OUT 目录，方便上传到其它软件
+
+```bash
 python3(python) run_page/codoon_sync.py ${your mobile or email} ${your password} --with-gpx
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/codoon_sync.py 13333xxxx xxxx --with-gpx
 ```
 
-> 注：因为登录 token 有过期时间限制，我增加了 refresh_token&user_id 登陆的方式，refresh_token 及 user_id 在您登陆过程中会在控制台打印出来
+> 因为登录 token 有过期时间限制，我增加了 refresh_token&user_id 登陆的方式，refresh_token 及 user_id 在您登陆过程中会在控制台打印出来
 
 ![image](https://user-images.githubusercontent.com/6956444/105690972-9efaab00-5f37-11eb-905c-65a198ad2300.png)
 
 示例：
 
-```python
+```bash
 python3(python) run_page/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth-token
 ```
 
@@ -414,13 +434,15 @@ python3(python) run_page/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-aut
 <details>
 <summary>路线偏移修正</summary>
 
+<br>
+
 如果您得到的运动路线与实际路线对比有整体偏移，可以修改代码中的参数进行修正
 
-> 注：咕咚最初采用 GCJ-02 坐标系，在 2014 年 3 月份左右升级为 WGS-84 坐标系，导致升级之前的运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
+> 咕咚最初采用 GCJ-02 坐标系，在 2014 年 3 月份左右升级为 WGS-84 坐标系，导致升级之前的运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
 
 - 修改 `run_page/codoon_sync.py` 文件中的参数：
 
-> 注：TRANS_END_DATE 需要根据您的实际情况设定，程序会修正这一天之前的运动记录
+> TRANS_END_DATE 需要根据您的实际情况设定，程序会修正这一天之前的运动记录
 
 ```python
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
@@ -436,15 +458,17 @@ TRANS_END_DATE = "2014-03-24"
 <details>
 <summary>获取您的郁金香运动数据</summary>
 
+<br>
+
 > 郁金香运动数据的获取方式采用开放平台授权模式，通过访问[RunningPage 授权页面](https://tulipsport.rdshoep.com)获取账号 TOKEN(不会过期，只能访问 2021 年之后的数据)，并在仓库的 GitHub Actions 环境配置中添加`TULIPSPORT_TOKEN`配置。
 
-```python
+```bash
 python3(python) run_page/tulipsport_sync.py ${tulipsport_token}
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/tulipsport_sync.py nLgy****RyahI
 ```
 
@@ -454,20 +478,22 @@ python3(python) run_page/tulipsport_sync.py nLgy****RyahI
 
 <details>
 <summary>获取您的 Garmin 数据</summary>
+
 <br>
-如果你只想同步跑步数据增加命令 --only-run
 
-如果你想同步 `tcx` 格式，增加命令 --tcx
+- 如果你只想同步跑步数据增加命令 --only-run
 
-如果你想同步 `fit` 格式，增加命令 --fit
+- 如果你想同步 `tcx` 格式，增加命令 --tcx
 
-如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.8**
+- 如果你想同步 `fit` 格式，增加命令 --fit
+
+- 如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.8**
 
 #### 获取佳明国际区的密钥
 
 在终端中输入以下命令
 
-```python
+```bash
 # 获取密钥
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
 ```
@@ -478,30 +504,32 @@ python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
 
 示例：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxxxx
 ```
 
 </details>
 
-### Garmin-CN (大陆用户请用这个)
+### Garmin-CN (大陆用户使用)
 
 <details>
-<summary>获取您的 Garmin-CN 数据</summary>
+<summary>获取您的 Garmin CN 数据</summary>
 
-如果你只想同步跑步数据请增加 --only-run
+<br>
 
-如果你想同步 `tcx` 格式，增加命令 --tcx
+- 如果你只想同步跑步数据请增加 --only-run
 
-如果你想同步 `fit` 格式，增加命令 --fit
+- 如果你想同步 `tcx` 格式，增加命令 --tcx
 
-如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.10**
+- 如果你想同步 `fit` 格式，增加命令 --fit
 
-#### 获取佳明国区的密钥
+- 如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.10**
+
+#### 获取佳明 CN 的密钥
 
 在终端中输入以下命令
 
-```python
+```bash
 # to get secret_string
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 ```
@@ -514,13 +542,13 @@ python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --i
 ![get_garmin_secret](docs/add_garmin_secret_cn_string.jpg)
 示例：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxx --is-cn
 ```
 
 仅同步跑步数据：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 ```
 
@@ -531,6 +559,8 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 <details>
 <summary>获取 Nike Run Club 数据</summary>
 
+<br>
+
 > 请注意：当您选择将 running_page 部署在自己的服务器上时，由于 Nike 已经封禁了一部分 IDC 的服务器 IP 段，您的服务器可能不能正常同步 Nike Run Club 的数据并显示 `403 error` ，这时您将不得不选择其他的托管方式。
 
 获取 Nike 的 refresh_token
@@ -540,13 +570,13 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 
 ![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png) 3. 在项目根目录下执行：
 
-```python
+```bash
 python3(python) run_page/nike_sync.py ${nike refresh_token}
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 ```
 
@@ -558,6 +588,8 @@ python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 
 <details>
 <summary>获取 Strava 数据</summary>
+
+<br>
 
 1. 注册/登陆 [Strava](https://www.strava.com/) 账号
 2. 登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
@@ -592,7 +624,7 @@ http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f347
 ![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png) 6. 使用 Client_id、Client_secret、Code 请求 refresh_token
 在 `终端/iTerm` 中执行：
 
-```
+```bash
 curl -X POST https://www.strava.com/oauth/token \
 -F client_id=${Your Client ID} \
 -F client_secret=${Your Client Secret} \
@@ -602,7 +634,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 示例：
 
-```
+```bash
 curl -X POST https://www.strava.com/oauth/token \
 -F client_id=12345 \
 -F client_secret=b21******d0bfb377998ed1ac3b0 \
@@ -619,7 +651,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 如果你只想同步跑步数据增加命令 --only-run
 
-```python
+```bash
 python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
 
@@ -641,19 +673,19 @@ python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_
 2. 把 tcx 文件全部拷贝到 TCX_OUT 中
 3. 在项目根目录下执行：
 
-```python
+```bash
 python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 示例：
 
-```python
+```bash
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
 或
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
-4. 如果你已经上传过需要跳过判断增加参数 `--all`
+> 如果你已经上传过需要跳过判断增加参数 `--all`
 
 </details>
 
@@ -758,7 +790,7 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
-注意：**首次初始化的时候，如果你有大量的 strava 跑步数据，可能有些数据会上传失败，只需要多重试几次即可。**
+> 注意：**首次初始化的时候，如果你有大量的 strava 跑步数据，可能有些数据会上传失败，只需要多重试几次即可。**
 
 </details>
 
@@ -770,19 +802,19 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
-> 注：感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为 special-color2, --min-distance 10.0 用来筛选 10km 以上的)
+> 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为 special-color2, --min-distance 10.0 用来筛选 10km 以上的)
 
-```
+```bash
 python3(python) run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
 
-```
+```bash
 python3(python) run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
 ```
 
 生成年度环形数据
 
-```
+```bash
 python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 ```
 
@@ -823,7 +855,7 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 
 5. 下滑点击 `环境变量 (高级)`，并添加一个如下的变量：
 
-   > 变量名称 = `PYTHON_VERSION`, 值 = `3.7`
+   > 变量名称 = `PYTHON_VERSION`, 值 = `3.8`
 
 6. 点击 `保存并部署`，完成部署。
 
@@ -832,23 +864,24 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 <details>
 <summary> 部署到 GitHub Pages </summary>
 
-1. 进入仓库的"Settings -> GitHub Pages -> Source"， 选择"GitHub Actions"
+1. 进入仓库的"Settings -> GitHub Pages -> Source"，选择"GitHub Actions"
 
-2. 进入仓库的"Actions -> Workflows -> All Workflows"， 选择左侧面板的"Run Data Sync"， 然后点击"Run workflow"
+2. 进入仓库的"Actions -> Workflows -> All Workflows"，选择左侧面板的"Run Data Sync"，然后点击"Run workflow"
 
-- "Run Data Sync"将更新数据,然后触发"Publish GitHub Pages"工作流
+- "Run Data Sync"将更新数据，然后触发"Publish GitHub Pages"工作流
 - 确认工作流运行没有错误
 
 3. 打开网站检查结果
 
 - 如果网站没有反映最新数据，请使用“F5”刷新页面
-- 某些浏览器(比如 Chrome)可能缓存网页不刷新,您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac)强制清除缓存并重新加载页面
+- 某些浏览器 (比如 Chrome) 可能缓存网页不刷新，您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac) 强制清除缓存并重新加载页面
 
 4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
 
 </details>
 
-## GitHub Actions (Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。)
+## GitHub Actions
+> Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。
 
 <details>
 <summary>修改 GitHub Actions Token</summary>
@@ -859,7 +892,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 1. 更改成你的 app type 及 info
    ![image](https://user-images.githubusercontent.com/15976103/94450124-73f98800-01df-11eb-9b3c-ac1a6224f46f.png)
 
-2. 在 repo Settings > Secrets 中增加你的 secret (只添加你需要的即可)
+2. 在 `repo Settings` > `Secrets` 中增加你的 secret (只添加你需要的即可)
 
    ![image](https://user-images.githubusercontent.com/15976103/94450295-aacf9e00-01df-11eb-80b7-a92b9cd1461e.png)
    我的 secret 如下
@@ -867,14 +900,14 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 </details>
 
-## 把数据文件放在 github cache 中
+## 把数据文件放在 GitHub cache 中
 
 <details>
-<summary>把数据文件放在github cache中</summary>
+<summary>把数据文件放在 GitHub Cache 中</summary>
 
-`run_data_sync.yml`中的`SAVE_DATA_IN_GITHUB_CACHE`设置为`true`时，可以把脚本抓取和中间产生的数据文件放到 github action cache 中。这样可以让你的 github commit 历史和目录保持干净。
+`run_data_sync.yml`中的`SAVE_DATA_IN_GITHUB_CACHE`设置为`true`时，可以把脚本抓取和中间产生的数据文件放到 GitHub Actions Cache 中。这样可以让你的 GitHub commit 历史和目录保持干净。
 
-如果你用 github pages 部署建议把这个值设置成`true`。
+如果你用 `GitHub Pages` 部署建议把这个值设置成`true`。
 
 </details>
 
@@ -910,10 +943,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 - 任何 Issues PR 均欢迎。
 - 可以提交 PR share 自己的 Running page 在 README 中。
-
-提交 PR 前：
-
-- 使用 black 对 Python 代码进行格式化。(`black .`)
+- 提交 PR 前，使用 black 对 Python 代码进行格式化。(`black .`)
 
 # 特别感谢
 
@@ -936,16 +966,21 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 # FAQ
 
-### Strava 100 每 15 分钟的请求，1000 每日限制
+-  Strava 100 每 15 分钟的请求，1000 每日限制
 
-<https://www.strava.com/settings/api>
-<https://developers.strava.com/docs/#rate-limiting>
+   <https://www.strava.com/settings/api>
+  <https://developers.strava.com/docs/#rate-limiting>
 
-等待时间限制（这里是 strava 接口请求限制），不要关闭终端，这里会自动执行下一组上传数据
+    等待时间限制（这里是 strava 接口请求限制），不要关闭终端，这里会自动执行下一组上传数据
 
-```
-Strava API Rate Limit Exceeded. Retry after 100 seconds
-Strava API Rate Limit Timeout. Retry in 799.491622 seconds
-```
+    ```
+    Strava API Rate Limit Exceeded. Retry after 100 seconds
+    Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+    ```
+- vercel git
 
-### vercel git 如果想 ignpre gh-pages 可以在 settings -> build -> Ignored Build Step -> Custom 输入命令 `if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;`
+  如果想 ignpre gh-pages 可以在 `settings` -> `build` -> `Ignored Build Step` -> `Custom` 输入命令：
+
+  ```bash
+  if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;
+  ```

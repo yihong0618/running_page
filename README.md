@@ -736,7 +736,7 @@ If you are deploying using GitHub Pages, it is recommended to set this value to 
 
 # Fit file
 
-supported manufacturer：
+supported manufacturer:
 
 - [x] Garmin
 - [x] magene
