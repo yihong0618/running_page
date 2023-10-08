@@ -103,7 +103,7 @@ jobs:
       - name: Run sync JoyRun script
         if: env.RUN_TYPE == 'joyrun'
         run: |
-          python scripts/joyrun_sync.py --from-uid-sid ${{ secrets.JOYRUN_UID }} ${{ secrets.JOYRUN_SID }} --with-gpx
+          python run_page/joyrun_sync.py --from-uid-sid ${{ secrets.JOYRUN_UID }} ${{ secrets.JOYRUN_SID }} --with-gpx
 
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'
