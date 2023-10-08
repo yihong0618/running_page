@@ -6,9 +6,9 @@ on:
     - cron: '0 0 * * *'
   push:
     branches:
-      - strava_sync
+      - sync_strava
     paths:
-      - scripts/garmin_to_strava_sync.py
+      - run_page/garmin_to_strava_sync.py
       - requirements.txt
 
 env:
@@ -75,4 +75,4 @@ jobs:
       - name: Run sync Garmin-cn to Strava(Run with Garmin data backup in Strava)
         if: env.RUN_TYPE == 'garmin_to_strava_cn'
         run: |
-          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
+          python run_page/garmin_to_strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }} ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn --tcx
