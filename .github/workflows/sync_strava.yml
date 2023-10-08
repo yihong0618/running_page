@@ -6,7 +6,7 @@ on:
     - cron: '0 0 * * *'
   push:
     branches:
-      - sync_strava
+      - master
     paths:
       - run_page/garmin_to_strava_sync.py
       - requirements.txt
