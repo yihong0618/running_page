@@ -28,10 +28,10 @@ def run_strava_sync(client_id, client_secret, refresh_token, only_run=False):
         ]
         for d in activities_list
     ]
-
     with open(CSV_FILE, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerows(run_data)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
