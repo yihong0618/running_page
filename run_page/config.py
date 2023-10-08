@@ -18,6 +18,7 @@ FOLDER_DICT = {
 }
 SQL_FILE = os.path.join(parent, "run_page", "data.db")
 JSON_FILE = os.path.join(parent, "src", "static", "activities.json")
+CSV_FILE = os.path.join(parent, "assets", "running.csv")
 SYNCED_FILE = os.path.join(parent, "imported.json")
 
 # TODO: Move into nike_sync

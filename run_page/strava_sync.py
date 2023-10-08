@@ -1,7 +1,8 @@
 import argparse
+import csv
 import json
 
-from config import JSON_FILE, SQL_FILE
+from config import JSON_FILE, SQL_FILE, CSV_FILE
 from generator import Generator
 
 
@@ -17,6 +18,20 @@ def run_strava_sync(client_id, client_secret, refresh_token, only_run=False):
     with open(JSON_FILE, "w") as f:
         json.dump(activities_list, f)
 
+    run_data = [
+        [
+            d["start_date_local"],
+            d["name"],
+            d["distance"],
+            d["moving_time"],
+            d["location_country"],
+        ]
+        for d in activities_list
+    ]
+
+    with open(CSV_FILE, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(run_data)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
