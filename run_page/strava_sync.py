@@ -30,6 +30,7 @@ def run_strava_sync(client_id, client_secret, refresh_token, only_run=False):
     ]
     with open(CSV_FILE, "w", newline="") as f:
         writer = csv.writer(f)
+        writer.writerow(['start_date_local','name','distance','moving_time','location_country'])
         writer.writerows(run_data)
 
 
