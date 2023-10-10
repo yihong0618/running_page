@@ -3,6 +3,7 @@ import argparse
 import garth
 
 if __name__ == "__main__":
+    
     parser = argparse.ArgumentParser()
     parser.add_argument("email", nargs="?", help="email of garmin")
     parser.add_argument("password", nargs="?", help="password of garmin")
