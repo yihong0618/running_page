@@ -84,6 +84,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
 | [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
 | [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
+| [Jeffggmm](https://github.com/Jeffggmm)           | <https://jeffggmm.github.io/workouts_page/>    | Garmin      |
 
 </details>
 
@@ -880,6 +881,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 ```shell
 curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "Authorization: token d8xxxxxxxxxx" # change to your config
 ```
+
 <center><img src="https://cdn.jujimeizuo.cn/blog/2023/10/get-action-id.jpg" alt="get-action-id"></center>
 
 2. 结合快捷指令

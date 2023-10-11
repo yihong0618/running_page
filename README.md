@@ -82,6 +82,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
 | [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
 | [Echo](https://github.com/donghao526)             | <https://donghao526.github.io/running>         | JoyRun      |
+| [Jeffggmm](https://github.com/Jeffggmm)           | <https://jeffggmm.github.io/workouts_page/>    | Garmin      |
 
 </details>
 
@@ -736,26 +737,26 @@ Take the keep app as an example. Close the app after running, and then automatic
 ```shell
 curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "Authorization: token d8xxxxxxxxxx" # change to your config
 ```
+
 <center><img src="https://cdn.jujimeizuo.cn/blog/2023/10/get-action-id.jpg" alt="get-action-id"></center>
 
 2. Binding shortcut instruction
 
-    1. Get it via icloud [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
-    
-    2. Modify the dictionary parameters in the following figure
+   1. Get it via icloud [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
+
+   2. Modify the dictionary parameters in the following figure
    <center> <img src="https://cdn.jujimeizuo.cn/blog/2023/10/running-page-template.jpg"> </center>
 
 3. Automation
-  
-    <center>
-    <img src="https://cdn.jujimeizuo.cn/blog/2023/10/new-automation.png" width=20% height=20%>
-    <img src="https://cdn.jujimeizuo.cn/blog/2023/10/select-close.png" width=20% height=20%>
-    <img src="https://cdn.jujimeizuo.cn/blog/2023/10/select-shortcut.png" width=20% height=20%>
-    <img src="https://cdn.jujimeizuo.cn/blog/2023/10/finish-automation.png" width=20% height=20%>
-    </center>
+
+<center>
+<img src="https://cdn.jujimeizuo.cn/blog/2023/10/new-automation.png" width=20% height=20%>
+<img src="https://cdn.jujimeizuo.cn/blog/2023/10/select-close.png" width=20% height=20%>
+<img src="https://cdn.jujimeizuo.cn/blog/2023/10/select-shortcut.png" width=20% height=20%>
+<img src="https://cdn.jujimeizuo.cn/blog/2023/10/finish-automation.png" width=20% height=20%>
+</center>
 
 </details>
-
 
 ## Storing Data Files in GitHub Cache
 
