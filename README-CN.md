@@ -73,7 +73,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [jianchengwang](https://github.com/jianchengwang) | <https://jianchengwang.github.io/running_page> | Suunto      |
 | [fxbin](https://github.com/fxbin)                 | <https://fxbin.github.io/sport-records/>       | Keep        |
 | [shensl4499](https://github.com/shensl4499)       | <https://waner.run>                            | codoon      |
-| [haowei93](https://github.com/haowei93)           | <https://haowei93.github.io/>                  | gpx         |
+| [haowei93](https://github.com/haowei93)           | <https://running-fun.eu.org>                   | gpx         |
 | [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava      |
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
