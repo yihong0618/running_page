@@ -6,29 +6,27 @@ import json
 import os
 import time
 import urllib.parse
+import xml.etree.ElementTree as ET
 from collections import namedtuple
 from datetime import datetime, timedelta
 
+import eviltransform
 import gpxpy
+import numpy as np
 import polyline
 import requests
-import eviltransform
 from config import (
     BASE_TIMEZONE,
     GPX_FOLDER,
-    TCX_FOLDER,
     JSON_FILE,
     SQL_FILE,
+    TCX_FOLDER,
     run_map,
     start_point,
 )
 from generator import Generator
-
-from utils import adjust_time_to_utc, adjust_timestamp_to_utc, to_date
-
-import numpy as np
-import xml.etree.ElementTree as ET
 from tzlocal import get_localzone
+from utils import adjust_time_to_utc, adjust_timestamp_to_utc, to_date
 
 # struct body
 FitType = np.dtype(
@@ -238,13 +236,13 @@ def tcx_job(run_data):
     if "points" in run_data:
         own_points = run_data["points"]  # track points
     # get single bpm
-    if own_heart_rate != None:
+    if own_heart_rate is not None:
         for single_time, single_bpm in own_heart_rate.items():
             single_time = adjust_timestamp_to_utc(single_time, str(get_localzone()))
             # set bpm data
             fit_array = set_array(fit_array, single_time, single_bpm, None, None, None)
     # get single track point
-    if own_points != None:
+    if own_points is not None:
         for point in own_points:
             repeat_flag = False
             # TODO add elevation information
