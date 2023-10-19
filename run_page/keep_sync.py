@@ -7,6 +7,7 @@ import time
 import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta
+from Crypto.Cipher import AES
 
 import eviltransform
 import gpxpy
@@ -20,6 +21,10 @@ from utils import adjust_time
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
+
+# AES Decrypt key
+key = b"56fe59;82g:d873c"
+iv = b"2346892432920300"
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
 TRANS_GCJ02_TO_WGS84 = True
@@ -64,8 +69,12 @@ def get_single_run_data(session, headers, run_id):
         return r.json()
 
 
-def decode_runmap_data(text):
-    run_points_data = zlib.decompress(base64.b64decode(text), 16 + zlib.MAX_WBITS)
+def decode_runmap_data(text, is_geo=False):
+    _bytes = base64.b64decode(text)
+    if is_geo:
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        _bytes = cipher.decrypt(_bytes)
+    run_points_data = zlib.decompress(_bytes, 16 + zlib.MAX_WBITS)
     run_points_data = json.loads(run_points_data)
     return run_points_data
 
@@ -80,33 +89,25 @@ def parse_raw_data_to_nametuple(
     keep_id = run_data["id"].split("_")[1]
 
     start_time = run_data["startTime"]
-    if run_data.get("vendor", {}).get("source", "") == "Keep" and run_data.get(
-        "rawDataURL"
-    ):
-        raw_data_url = run_data.get("rawDataURL")
-        r = session.get(raw_data_url)
-        if r.ok:
-            # string strart with `H4sIAAAAAAAA` --> decode and unzip
-            run_points_data = decode_runmap_data(r.text)
-            run_points_data_gpx = run_points_data
-            if TRANS_GCJ02_TO_WGS84:
-                run_points_data = [
-                    list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
-                    for p in run_points_data
-                ]
-                for i, p in enumerate(run_points_data_gpx):
-                    p["latitude"] = run_points_data[i][0]
-                    p["longitude"] = run_points_data[i][1]
-            else:
-                run_points_data = [
-                    [p["latitude"], p["longitude"]] for p in run_points_data
-                ]
-            if with_download_gpx:
-                if str(keep_id) not in old_gpx_ids:
-                    gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
-                    download_keep_gpx(gpx_data, str(keep_id))
+    if run_data["geoPoints"]:
+        run_points_data = decode_runmap_data(run_data["geoPoints"], True)
+        run_points_data_gpx = run_points_data
+        if TRANS_GCJ02_TO_WGS84:
+            run_points_data = [
+                list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
+                for p in run_points_data
+            ]
+            for i, p in enumerate(run_points_data_gpx):
+                p["latitude"] = run_points_data[i][0]
+                p["longitude"] = run_points_data[i][1]
         else:
-            print(f"ID {keep_id} retrieved gpx data failed")
+            run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
+        if with_download_gpx:
+            if str(keep_id) not in old_gpx_ids:
+                gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
+                download_keep_gpx(gpx_data, str(keep_id))
+    else:
+        print(f"ID {keep_id} no gps data")
     heart_rate = None
     if run_data["heartRate"]:
         heart_rate = run_data["heartRate"].get("averageHeartRate", None)
