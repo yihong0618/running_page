@@ -7,13 +7,13 @@ import time
 import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta
-from Crypto.Cipher import AES
 
 import eviltransform
 import gpxpy
 import polyline
 import requests
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
+from Crypto.Cipher import AES
 from generator import Generator
 from utils import adjust_time
 
@@ -22,9 +22,6 @@ LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 
-# AES Decrypt key
-key = "NTZmZTU5OzgyZzpkODczYw=="
-iv = "MjM0Njg5MjQzMjkyMDMwMA=="
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
@@ -71,6 +68,8 @@ def get_single_run_data(session, headers, run_id):
 
 def decode_runmap_data(text, is_geo=False):
     _bytes = base64.b64decode(text)
+    key = "NTZmZTU5OzgyZzpkODczYw=="
+    iv = "MjM0Njg5MjQzMjkyMDMwMA=="
     if is_geo:
         cipher = AES.new(base64.b64decode(key), AES.MODE_CBC, base64.b64decode(iv))
         _bytes = cipher.decrypt(_bytes)
