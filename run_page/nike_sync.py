@@ -31,20 +31,19 @@ class Nike:
     def __init__(self, refresh_token):
         self.client = httpx.Client()
 
-        # response = self.client.post(
-        #     TOKEN_REFRESH_URL,
-        #     json={
-        #         "refresh_token": refresh_token,
-        #         "client_id": NIKE_CLIENT_ID,
-        #         "grant_type": "refresh_token",
-        #     },
-        #     timeout=60,
-        # )
-        # response.raise_for_status()
+        response = self.client.post(
+            TOKEN_REFRESH_URL,
+            json={
+                "refresh_token": refresh_token,
+                "client_id": NIKE_CLIENT_ID,
+                "grant_type": "refresh_token",
+            },
+            timeout=60,
+        )
+        response.raise_for_status()
 
-        # access_token = response.json()["access_token"]
-        # self.client.headers.update({"Authorization": f"Bearer {access_token}"})
-        self.client.headers.update({"Authorization": f"Bearer {refresh_token}"})
+        access_token = response.json()["access_token"]
+        self.client.headers.update({"Authorization": f"Bearer {access_token}"})
 
     def get_activities_since_timestamp(self, timestamp):
         return self.request("activities/after_time", timestamp)
