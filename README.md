@@ -98,7 +98,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 ## Features
 
-1. GitHub Actions manages automatic synchronization of runs and generation of new pages.
+1. GitHub Actions automatically synchronizes running data and generates page displays
 2. Support for Vercel (recommended) and GitHub Pages automated deployment
 3. React Hooks
 4. Mapbox for map display

@@ -102,15 +102,15 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 ## 特性
 
-1. GitHub Actions 管理自动同步跑步进程及自动生成新的页面
-2. 支持 Vercel(推荐) 和 GitHub Pages 自动部署
+1. GitHub Actions 自动同步跑步数据，生成展示页面
+2. 支持 Vercel（推荐）和 GitHub Pages 自动部署
 3. React Hooks
 4. Mapbox 进行地图展示
-5. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep 等，自动备份 gpx 数据，方便备份及上传到其它软件
+5. Nike、Strava、佳明（佳明中国）及 Keep 等，自动备份 GPX 数据，方便备份及上传到其它软件
 
 > 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 App 的数据都同步到这里（建议本地同步，之后 Actions 选择正在用的 App）
 
-> 如果你不想公开数据，可以选择 `strava` 的模糊处理，或 `private` 仓库。
+> 如果你不想公开数据，可以选择 `Strava` 的模糊处理，或 `private` 仓库。
 
 <details>
 <summary>缩放地图彩蛋</summary>
