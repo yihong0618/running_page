@@ -275,6 +275,7 @@ def run_keep_sync(email, password, with_download_gpx=False):
     with open(JSON_FILE, "w") as f:
         json.dump(activities_list, f)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("phone_number", help="keep login phone number")
