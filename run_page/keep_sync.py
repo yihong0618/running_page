@@ -7,13 +7,13 @@ import time
 import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta
-from Crypto.Cipher import AES
 
 import eviltransform
 import gpxpy
 import polyline
 import requests
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
+from Crypto.Cipher import AES
 from generator import Generator
 from utils import adjust_time
 
@@ -22,20 +22,17 @@ LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 
-# AES Decrypt key
-key = b"56fe59;82g:d873c"
-iv = b"2346892432920300"
 
-# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
 
 
-def login(session, mobile, passowrd):
+def login(session, mobile, password):
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
         "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
     }
-    data = {"mobile": mobile, "password": passowrd}
+    data = {"mobile": mobile, "password": password}
     r = session.post(LOGIN_API, headers=headers, data=data)
     if r.ok:
         token = r.json()["data"]["token"]
@@ -71,8 +68,10 @@ def get_single_run_data(session, headers, run_id):
 
 def decode_runmap_data(text, is_geo=False):
     _bytes = base64.b64decode(text)
+    key = "NTZmZTU5OzgyZzpkODczYw=="
+    iv = "MjM0Njg5MjQzMjkyMDMwMA=="
     if is_geo:
-        cipher = AES.new(key, AES.MODE_CBC, iv)
+        cipher = AES.new(base64.b64decode(key), AES.MODE_CBC, base64.b64decode(iv))
         _bytes = cipher.decrypt(_bytes)
     run_points_data = zlib.decompress(_bytes, 16 + zlib.MAX_WBITS)
     run_points_data = json.loads(run_points_data)
