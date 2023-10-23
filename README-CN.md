@@ -108,12 +108,14 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 4. Mapbox 进行地图展示
 5. Nike 及 Runtastic(Adidas Run) 以及佳明（佳明中国）及 Keep 等，自动备份 gpx 数据，方便备份及上传到其它软件
 
-> 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 app 的数据都同步到这里（建议本地同步，之后 actions 选择正在用的 app）
+> 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 App 的数据都同步到这里（建议本地同步，之后 Actions 选择正在用的 App）
 
-> 如果你不想公开数据，可以选择 strava 的模糊处理，或 private 仓库。
+> 如果你不想公开数据，可以选择 `strava` 的模糊处理，或 `private` 仓库。
 
 <details>
 <summary>缩放地图彩蛋</summary>
+
+<br>
 
 ![image](https://user-images.githubusercontent.com/15976103/95644909-a31bcd80-0aec-11eb-9270-869b0a94f59f.png)
 
@@ -126,8 +128,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Garmin](#garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#keep)**
-- **[悦跑圈](#joyrun 悦跑圈，因悦跑圈限制单个设备，无法自动化)**
-- **[咕咚](#codoon 咕咚，因咕咚限制单个设备，无法自动化)**
+- **[悦跑圈](#joyrun悦跑圈)** ：限制单个设备，无法自动化
+- **[咕咚](#codoon咕咚)** ：限制单个设备，无法自动化
 - **[郁金香运动](#tulipsport)**
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
@@ -350,6 +352,8 @@ TRANS_GCJ02_TO_WGS84 = True
 
 ### JoyRun（悦跑圈）
 
+> 因悦跑圈限制单个设备，无法自动化。
+
 <details>
 <summary>获取您的悦跑圈数据</summary>
 
@@ -399,6 +403,8 @@ python3(python) run_page/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx -
 </details>
 
 ### Codoon（咕咚）
+
+> 因悦跑圈限制单个设备，无法自动化。
 
 <details>
 <summary>获取您的咕咚数据</summary>
@@ -812,6 +818,8 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 <details>
 <summary>生成数据展示</summary>
 
+<br>
+
 - 生成数据展示 SVG
 - 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
@@ -841,6 +849,8 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 <details>
 <summary>使用 Vercel 部署</summary>
 
+<br>
+
 1. vercel 连接你的 GitHub repo
 
 ![image](https://user-images.githubusercontent.com/15976103/94452465-2599b880-01e2-11eb-9538-582f0f46c421.png)
@@ -856,6 +866,7 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 
 <details>
 <summary> 使用 Cloudflare 部署 </summary>
+
 <br>
 
 1. 登录到 [Cloudflare 仪表板](https://dash.cloudflare.com)。
@@ -876,6 +887,8 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 
 <details>
 <summary> 部署到 GitHub Pages </summary>
+
+<br>
 
 1. 进入仓库的 "Settings -> GitHub Pages -> Source"，选择 "GitHub Actions"
 
@@ -899,6 +912,8 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 <details>
 <summary>修改 GitHub Actions Token</summary>
 
+<br>
+
 Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
 需要做如下步骤
 
@@ -918,6 +933,8 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 <details>
 
 <summary>使用 iOS 的 Shortcuts 实现自动化</summary>
+
+<br>
 
 下面拿 keep app 举例，当结束跑步后关闭 app，然后自动触发 Actions 更新数据。
 
@@ -952,6 +969,8 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 <details>
 <summary>把数据文件放在 GitHub Cache 中</summary>
+
+<br>
 
 `run_data_sync.yml` 中的 `SAVE_DATA_IN_GITHUB_CACHE` 设置为 `true` 时，可以把脚本抓取和中间产生的数据文件放到 GitHub Actions Cache 中。这样可以让你的 GitHub commit 历史和目录保持干净。
 

@@ -269,7 +269,7 @@ python3(python) run_page/tcx_sync.py
 <details>
 <summary>Make your <code>FIT</code> data</summary>
 
-X<br>
+<br>
 
 Copy all your tcx files to FIT_OUT or new fit files
 
@@ -576,7 +576,7 @@ python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx x
 
 <br>
 
-1. finish garmin and strava setps
+1. finish garmin and strava setup
 2. Execute in the root directory:
 
 ```bash
@@ -598,7 +598,7 @@ python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 
 <br>
 
-1. finish garmin and strava setps, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
+1. finish garmin and strava setup, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
 2. Execute in the root directory:
 
 ```bash
@@ -657,6 +657,7 @@ For more display effects, see:
 
 <details>
 <summary> Use <code> Vercel </code> to deploy </summary>
+
 <br>
 
 1. vercel connects to your GitHub repo.
@@ -678,6 +679,7 @@ For more display effects, see:
 
 <details>
 <summary> Use <code> Cloudflare </code> to deploy </summary>
+
 <br>
 
 1. Login to [Cloudflare dashboard](https://dash.cloudflare.com).
@@ -699,6 +701,8 @@ For more display effects, see:
 <details>
 <summary> Deploy to GitHub Pages </summary>
 
+<br>
+
 1. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
 2. Go to the repository's `Actions -> Workflows -> All Workflows`, choose `Run Data Sync` from the left panel, and click `Run workflow`.
@@ -719,6 +723,7 @@ For more display effects, see:
 
 <details>
 <summary> Modifying information in <code> GitHub Actions </code>  </summary>
+
 <br>
 
 Actions [source code](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
@@ -752,11 +757,13 @@ The following steps need to be taken
 
 <summary>Automate with <code> iOS Shortcuts </code> </summary>
 
+<br>
+
 Take the keep app as an example. Close the app after running, and then automatically trigger Actions to update the data.
 
-1. Get actions id（need to apply token）
+1. Get actions id (need to apply token)
 
-```shell
+```bash
 curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "Authorization: token d8xxxxxxxxxx" # change to your config
 ```
 
@@ -785,7 +792,9 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 <details>
 <summary>Storing Data Files in GitHub Cache</summary>
 
-When `SAVE_DATA_IN_GITHUB_CACHE` is set to `true` in the `run_data_sync.yml` file, the script can store fetched and intermediate data files in the GitHub Action cache. This helps keep your GitHub commit history and directory clean.
+<br>
+
+When `SAVE_DATA_IN_GITHUB_CACHE` is set to `true` in the `run_data_sync.yml` file, the script can store fetched and intermediate data files in the GitHub Action Cache. This helps keep your GitHub commit history and directory clean.
 
 If you are deploying using GitHub Pages, it is recommended to set this value to `true`, and set `BUILD_GH_PAGES` to true.
 
