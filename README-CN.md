@@ -869,11 +869,11 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 <details>
 <summary> 部署到 GitHub Pages </summary>
 
-1. 进入仓库的"Settings -> GitHub Pages -> Source"，选择"GitHub Actions"
+1. 进入仓库的 "Settings -> GitHub Pages -> Source"，选择 "GitHub Actions"
 
-2. 进入仓库的"Actions -> Workflows -> All Workflows"，选择左侧面板的"Run Data Sync"，然后点击"Run workflow"
+2. 进入仓库的 "Actions -> Workflows -> All Workflows"，选择左侧面板的 "Run Data Sync"，然后点击 "Run workflow"
 
-- "Run Data Sync"将更新数据，然后触发"Publish GitHub Pages"工作流
+- "Run Data Sync" 将更新数据，然后触发 "Publish GitHub Pages" 工作流
 - 确认工作流运行没有错误
 
 3. 打开网站检查结果
@@ -881,7 +881,7 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 - 如果网站没有反映最新数据，请使用“F5”刷新页面
 - 某些浏览器 (比如 Chrome) 可能缓存网页不刷新，您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac) 强制清除缓存并重新加载页面
 
-4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到`Workflow permissions`的设置项，将选项配置为`Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
+4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到 `Workflow permissions` 的设置项，将选项配置为 `Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
 
 </details>
 
@@ -905,14 +905,49 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 </details>
 
-## 把数据文件放在 GitHub cache 中
+## 快捷指令
+
+<details>
+
+<summary>使用 iOS 的 Shortcuts 实现自动化</summary>
+
+下面拿 keep app 举例，当结束跑步后关闭 app，然后自动触发 Actions 更新数据。
+
+1. 拿到项目的 actions id（需要自行申请 token）
+
+```shell
+curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "Authorization: token d8xxxxxxxxxx" # change to your config
+```
+
+<center><img src="https://cdn.jujimeizuo.cn/blog/2023/10/get-action-id.jpg" alt="get-action-id"></center>
+
+2. 结合快捷指令
+
+   1. 通过 icloud 获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
+
+   2. 修改下图字典参数
+   <center> <img src="https://cdn.jujimeizuo.cn/blog/2023/10/running-page-template.jpg"> </center>
+
+3. 自动化
+
+<center>
+<img src="https://cdn.jujimeizuo.cn/blog/2023/10/new-automation.png" width=20% height=20%>
+<img src="https://cdn.jujimeizuo.cn/blog/2023/10/select-close.png" width=20% height=20%>
+<img src="https://cdn.jujimeizuo.cn/blog/2023/10/select-shortcut.png" width=20% height=20%>
+<img src="https://cdn.jujimeizuo.cn/blog/2023/10/finish-automation.png" width=20% height=20%>
+</center>
+
+</details>
+
+
+## Github Cache
 
 <details>
 <summary>把数据文件放在 GitHub Cache 中</summary>
 
-`run_data_sync.yml`中的`SAVE_DATA_IN_GITHUB_CACHE`设置为`true`时，可以把脚本抓取和中间产生的数据文件放到 GitHub Actions Cache 中。这样可以让你的 GitHub commit 历史和目录保持干净。
+`run_data_sync.yml` 中的 `SAVE_DATA_IN_GITHUB_CACHE` 设置为 `true` 时，可以把脚本抓取和中间产生的数据文件放到 GitHub Actions Cache 中。这样可以让你的 GitHub commit 历史和目录保持干净。
 
-如果你用 `GitHub Pages` 部署建议把这个值设置成`true`。
+如果你用 `GitHub Pages` 部署建议把这个值设置成 `true`。
 
 </details>
 
