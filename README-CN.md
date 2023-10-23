@@ -931,7 +931,7 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 2. 结合快捷指令
 
-   1. 通过 icloud 获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
+   1. 通过 iCloud 获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
 
    2. 修改下图字典参数
    <center> <img src="https://cdn.jujimeizuo.cn/blog/2023/10/running-page-template.jpg"> </center>
