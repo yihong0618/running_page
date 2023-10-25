@@ -5,7 +5,6 @@ Copy most code from https://github.com/cyberjunky/python-garminconnect
 
 import argparse
 import asyncio
-import json
 import logging
 import os
 import sys
@@ -27,25 +26,20 @@ logger = logging.getLogger(__name__)
 
 TIME_OUT = httpx.Timeout(240.0, connect=360.0)
 GARMIN_COM_URL_DICT = {
-    "BASE_URL": "https://connectapi.garmin.com",
     "SSO_URL_ORIGIN": "https://sso.garmin.com",
     "SSO_URL": "https://sso.garmin.com/sso",
-    # "MODERN_URL": "https://connect.garmin.com/modern",
     "MODERN_URL": "https://connectapi.garmin.com",
     "SIGNIN_URL": "https://sso.garmin.com/sso/signin",
-    "CSS_URL": "https://static.garmincdn.com/com.garmin.connect/ui/css/gauth-custom-v1.2-min.css",
-    "UPLOAD_URL": "https://connectapi.garmin.com/upload-service/upload/.gpx",
+    "UPLOAD_URL": "https://connectapi.garmin.com/upload-service/upload/",
     "ACTIVITY_URL": "https://connectapi.garmin.com/activity-service/activity/{activity_id}",
 }
 
 GARMIN_CN_URL_DICT = {
-    "BASE_URL": "https://connectapi.garmin.cn",
     "SSO_URL_ORIGIN": "https://sso.garmin.com",
     "SSO_URL": "https://sso.garmin.cn/sso",
     "MODERN_URL": "https://connectapi.garmin.cn",
     "SIGNIN_URL": "https://sso.garmin.cn/sso/signin",
-    "CSS_URL": "https://static.garmincdn.cn/cn.garmin.connect/ui/css/gauth-custom-v1.2-min.css",
-    "UPLOAD_URL": "https://connectapi.garmin.cn/upload-service/upload/.gpx",
+    "UPLOAD_URL": "https://connectapi.garmin.cn/upload-service/upload/",
     "ACTIVITY_URL": "https://connectapi.garmin.cn/activity-service/activity/{activity_id}",
 }
 
@@ -123,39 +117,9 @@ class Garmin:
         response.raise_for_status()
         return response.read()
 
-    async def upload_activities(self, files):
-        for file, garmin_type in files:
-            files = {"data": ("file.gpx", file)}
-            try:
-                res = await self.req.post(
-                    self.upload_url, files=files, headers={"nk": "NT"}
-                )
-            except Exception as e:
-                print(str(e))
-                # just pass for now
-                continue
-            try:
-                resp = res.json()["detailedImportResult"]
-            except Exception as e:
-                print(e)
-                raise Exception("failed to upload")
-            # change the type
-            if resp["successes"]:
-                activity_id = resp["successes"][0]["internalId"]
-                print(f"id {activity_id} uploaded...")
-                data = {"activityTypeDTO": {"typeKey": garmin_type}}
-                encoding_headers = {"Content-Type": "application/json; charset=UTF-8"}
-                r = await self.req.put(
-                    self.activity_url.format(activity_id=activity_id),
-                    data=json.dumps(data),
-                    headers=encoding_headers,
-                )
-                r.raise_for_status()
-        await self.req.aclose()
-
     async def upload_activities_original(self, datas, use_fake_garmin_device=False):
         print(
-            "start upload activities to garmin!!!, use_fake_garmin_device:",
+            "start upload activities to garmin!, use_fake_garmin_device:",
             use_fake_garmin_device,
         )
         for data in datas:
@@ -169,11 +133,11 @@ class Garmin:
                 file_body = wrap_device_info(f)
             else:
                 file_body = BytesIO(f.read())
-            files = {"data": (data.filename, file_body)}
+            files = {"file": (data.filename, file_body)}
 
             try:
                 res = await self.req.post(
-                    self.upload_url, files=files, headers={"nk": "NT"}
+                    self.upload_url, files=files, headers=self.headers
                 )
                 os.remove(data.filename)
                 f.close()

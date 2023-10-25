@@ -13,6 +13,7 @@ import gpxpy
 import polyline
 import requests
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
+from Crypto.Cipher import AES
 from generator import Generator
 from utils import adjust_time
 
@@ -21,16 +22,17 @@ LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 
-# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
 
 
-def login(session, mobile, passowrd):
+def login(session, mobile, password):
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
         "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
     }
-    data = {"mobile": mobile, "password": passowrd}
+    data = {"mobile": mobile, "password": password}
     r = session.post(LOGIN_API, headers=headers, data=data)
     if r.ok:
         token = r.json()["data"]["token"]
@@ -64,8 +66,14 @@ def get_single_run_data(session, headers, run_id):
         return r.json()
 
 
-def decode_runmap_data(text):
-    run_points_data = zlib.decompress(base64.b64decode(text), 16 + zlib.MAX_WBITS)
+def decode_runmap_data(text, is_geo=False):
+    _bytes = base64.b64decode(text)
+    key = "NTZmZTU5OzgyZzpkODczYw=="
+    iv = "MjM0Njg5MjQzMjkyMDMwMA=="
+    if is_geo:
+        cipher = AES.new(base64.b64decode(key), AES.MODE_CBC, base64.b64decode(iv))
+        _bytes = cipher.decrypt(_bytes)
+    run_points_data = zlib.decompress(_bytes, 16 + zlib.MAX_WBITS)
     run_points_data = json.loads(run_points_data)
     return run_points_data
 
@@ -80,33 +88,25 @@ def parse_raw_data_to_nametuple(
     keep_id = run_data["id"].split("_")[1]
 
     start_time = run_data["startTime"]
-    if run_data.get("vendor", {}).get("source", "") == "Keep" and run_data.get(
-        "rawDataURL"
-    ):
-        raw_data_url = run_data.get("rawDataURL")
-        r = session.get(raw_data_url)
-        if r.ok:
-            # string strart with `H4sIAAAAAAAA` --> decode and unzip
-            run_points_data = decode_runmap_data(r.text)
-            run_points_data_gpx = run_points_data
-            if TRANS_GCJ02_TO_WGS84:
-                run_points_data = [
-                    list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
-                    for p in run_points_data
-                ]
-                for i, p in enumerate(run_points_data_gpx):
-                    p["latitude"] = run_points_data[i][0]
-                    p["longitude"] = run_points_data[i][1]
-            else:
-                run_points_data = [
-                    [p["latitude"], p["longitude"]] for p in run_points_data
-                ]
-            if with_download_gpx:
-                if str(keep_id) not in old_gpx_ids:
-                    gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
-                    download_keep_gpx(gpx_data, str(keep_id))
+    if run_data["geoPoints"]:
+        run_points_data = decode_runmap_data(run_data["geoPoints"], True)
+        run_points_data_gpx = run_points_data
+        if TRANS_GCJ02_TO_WGS84:
+            run_points_data = [
+                list(eviltransform.gcj2wgs(p["latitude"], p["longitude"]))
+                for p in run_points_data
+            ]
+            for i, p in enumerate(run_points_data_gpx):
+                p["latitude"] = run_points_data[i][0]
+                p["longitude"] = run_points_data[i][1]
         else:
-            print(f"ID {keep_id} retrieved gpx data failed")
+            run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
+        if with_download_gpx:
+            if str(keep_id) not in old_gpx_ids:
+                gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
+                download_keep_gpx(gpx_data, str(keep_id))
+    else:
+        print(f"ID {keep_id} no gps data")
     heart_rate = None
     if run_data["heartRate"]:
         heart_rate = run_data["heartRate"].get("averageHeartRate", None)
