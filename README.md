@@ -4,9 +4,9 @@
 3. use v2.0 need change vercel setting from gatsby to vite
 4. 2023.09.26 garmin need secret_string(and in Actions) get
 ```bash
-  python run_page/garmin_sync.py ${email} ${password}
+  python run_page/get_garmin_secret.py ${email} ${password}
   # if cn
-  python run_page/garmin_sync.py ${email} ${password} --is-cn
+  python run_page/get_garmin_secret.py ${email} ${password} --is-cn
   ```
 
 <p align="center">
