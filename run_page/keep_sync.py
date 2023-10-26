@@ -15,7 +15,8 @@ import requests
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 from utils import adjust_time
-import xml.etree.ElementTree as ET
+from utils import parse_df_points_to_gpx, Metadata
+from pandas import DataFrame
 
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
@@ -122,7 +123,7 @@ def parse_raw_data_to_nametuple(
                 str(keep_id) not in old_gpx_ids
                 and run_data["dataType"] == "outdoorRunning"
             ):
-                gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
+                gpx_data = parse_points_to_gpx(run_data["id"], run_points_data_gpx, start_time)
                 download_keep_gpx(gpx_data, str(keep_id))
     else:
         print(f"ID {keep_id} no gps data")
@@ -185,7 +186,7 @@ def get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx=False
     return tracks
 
 
-def parse_points_to_gpx(run_points_data, start_time):
+def parse_points_to_gpx(run_id, run_points_data, start_time):
     points_dict_list = []
     # early timestamp fields in keep's data stands for delta time, but in newly data timestamp field stands for exactly time,
     # so it does'nt need to plus extra start_time
@@ -204,34 +205,16 @@ def parse_points_to_gpx(run_points_data, start_time):
             "hr": point.get("hr"),
         }
         points_dict_list.append(points_dict)
-    gpx = gpxpy.gpx.GPX()
-    gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
-    gpx_track = gpxpy.gpx.GPXTrack()
-    gpx_track.name = "gpx from keep"
-    gpx.tracks.append(gpx_track)
 
-    # Create first segment in our GPX track:
-    gpx_segment = gpxpy.gpx.GPXTrackSegment()
-    gpx_track.segments.append(gpx_segment)
-    for p in points_dict_list:
-        point = gpxpy.gpx.GPXTrackPoint(
-            latitude=p["latitude"],
-            longitude=p["longitude"],
-            time=p["time"],
-            elevation=p.get("elevation"),
-        )
-        if p.get("hr") is not None:
-            gpx_extension_hr = ET.fromstring(
-                f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
-                <gpxtpx:hr>{p["hr"]}</gpxtpx:hr>
-                </gpxtpx:TrackPointExtension>
-                """
-            )
-            point.extensions.append(gpx_extension_hr)
-
-        gpx_segment.points.append(point)
-
-    return gpx.to_xml()
+    meta = Metadata(
+        name="Run from Keep",
+        type="Run",
+        desc=f"Run from Keep",
+        link=RUN_LOG_API.format(run_id=run_id),
+    )
+    df_points = DataFrame(points_dict_list)
+    gpx_data = parse_df_points_to_gpx(meta, df_points)
+    return gpx_data
 
 
 # if cannot found suitable HR data within the specified time frame (within 10 seconds by default), there will be no hr data return
