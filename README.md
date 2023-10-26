@@ -1,13 +1,15 @@
 ## Note
+
 1. clone or Fork before vercel 404 need to pull the latest code
 2. python3(python) in README means python3 python
 3. use v2.0 need change vercel setting from gatsby to vite
 4. 2023.09.26 garmin need secret_string(and in Actions) get
+
 ```bash
   python run_page/get_garmin_secret.py ${email} ${password}
   # if cn
   python run_page/get_garmin_secret.py ${email} ${password} --is-cn
-  ```
+```
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
@@ -81,7 +83,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX      |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚        |
 | [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
 | [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
@@ -104,9 +106,9 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 4. Mapbox for map display
 5. Supports most sports apps such as nike strava...
 
-  > automatically backup gpx data for easy backup and uploading to other software.
+> automatically backup gpx data for easy backup and uploading to other software.
 
-  > Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
+> Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
 
 ## Support
 
@@ -176,7 +178,8 @@ Open your browser and visit localhost:80
 > Suggested changes to your own [Mapbox token](https://www.mapbox.com/)
 
 ```typescript
-const MAPBOX_TOKEN ='pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+const MAPBOX_TOKEN =
+  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
 
 ## Custom your page
@@ -290,7 +293,7 @@ python3(python) run_page/fit_sync.py
 - If you only want `tcx` files add args --tcx
 - If you only want `fit` files add args --fit
 - If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-**The Python version must be >=3.8**
+  **The Python version must be >=3.8**
 
 #### Get Garmin Secret
 
@@ -335,7 +338,7 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 - If you only want `tcx` files add args --tcx
 - If you only want `fit` files add args --fit
 - If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-**The Python version must be >=3.10**
+  **The Python version must be >=3.10**
 
 #### Get Garmin CN Secret
 
@@ -851,17 +854,18 @@ Just enjoy it~
 
 - Strava Api limit
 
-    <https://www.strava.com/settings/api>
-    <https://developers.strava.com/docs/#rate-limiting>
+  <https://www.strava.com/settings/api>
+  <https://developers.strava.com/docs/#rate-limiting>
 
-    ```
-    Strava API Rate Limit Exceeded. Retry after 100 seconds
-    Strava API Rate Limit Timeout. Retry in 799.491622 seconds
-    ```
+  ```
+  Strava API Rate Limit Exceeded. Retry after 100 seconds
+  Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+  ```
 
 - vercel git ignpre gh-pages:
 
   you can change settings -> build -> Ignored Build Step -> Custom command
+
   ```bash
   if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;
   ```

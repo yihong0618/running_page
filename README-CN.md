@@ -1,13 +1,15 @@
 ## Note
+
 1. clone or Fork before vercel 404 need to pull the latest code
 2. python3(python) in README means python3 python
 3. use v2.0 need change vercel setting from gatsby to vite
 4. 2023.09.26 garmin need secret_string(and in Actions) get
+
 ```bash
   python run_page/get_garmin_secret.py ${email} ${password}
   # if cn
   python run_page/get_garmin_secret.py ${email} ${password} --is-cn
-  ```
+```
 
 ![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
 
@@ -85,7 +87,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX      |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚        |
 | [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro/>                     | Garmin      |
 | [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
@@ -194,10 +196,9 @@ docker run -itd -p 80:80   running_page:latest
 > 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.ts`
 
 ```typescript
-const MAPBOX_TOKEN ='pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+const MAPBOX_TOKEN =
+  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
-
-
 
 ## 个性化设置
 
@@ -378,6 +379,7 @@ python3(python) run_page/joyrun_sync.py 13333xxxx xxxx
 ```
 
 joyrun 导出 gpx 文件
+
 > 导出的 gpx 在 GPX_OUT 目录，方便上传到其它软件
 
 ```bash
@@ -907,6 +909,7 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 </details>
 
 ## GitHub Actions
+
 > Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。
 
 <details>
@@ -963,7 +966,6 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 </center>
 
 </details>
-
 
 ## Github Cache
 
@@ -1033,17 +1035,18 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 # FAQ
 
--  Strava 100 每 15 分钟的请求，1000 每日限制
+- Strava 100 每 15 分钟的请求，1000 每日限制
 
-   <https://www.strava.com/settings/api>
+  <https://www.strava.com/settings/api>
   <https://developers.strava.com/docs/#rate-limiting>
 
-    等待时间限制（这里是 strava 接口请求限制），不要关闭终端，这里会自动执行下一组上传数据
+  等待时间限制（这里是 strava 接口请求限制），不要关闭终端，这里会自动执行下一组上传数据
 
-    ```
-    Strava API Rate Limit Exceeded. Retry after 100 seconds
-    Strava API Rate Limit Timeout. Retry in 799.491622 seconds
-    ```
+  ```
+  Strava API Rate Limit Exceeded. Retry after 100 seconds
+  Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+  ```
+
 - vercel git
 
   如果想 ignpre gh-pages 可以在 `settings` -> `build` -> `Ignored Build Step` -> `Custom` 输入命令：
