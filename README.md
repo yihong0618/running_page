@@ -1,10 +1,15 @@
-## note1: clone or Fork before vercel 404 need to pull the latest code
+## Note
 
-## note2: python3(python) in README means python3 python
+1. clone or Fork before vercel 404 need to pull the latest code
+2. python3(python) in README means python3 python
+3. use v2.0 need change vercel setting from gatsby to vite
+4. 2023.09.26 garmin need secret_string(and in Actions) get
 
-## note3: use v2.0 need change vercel setting from gatsby to vite.
-
-## note4: 2023.09.26 garmin need secret_string(and in Actions) get `python run_page/garmin_sync.py ${email} ${password}` if cn `python run_page/garmin_sync.py ${email} ${password} --is-cn`
+```bash
+  python run_page/get_garmin_secret.py ${email} ${password}
+  # if cn
+  python run_page/get_garmin_secret.py ${email} ${password} --is-cn
+```
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
@@ -29,6 +34,8 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 <details>
 <summary>Running page runners</summary>
+
+<br>
 
 | Runner                                            | page                                           | App         |
 | ------------------------------------------------- | ---------------------------------------------- | ----------- |
@@ -76,7 +83,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX      |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚        |
 | [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
 | [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
@@ -93,13 +100,14 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 ## Features
 
-1. GitHub Actions manages automatic synchronization of runs and generation of new pages.
+1. GitHub Actions automatically synchronizes running data and generates page displays
 2. Support for Vercel (recommended) and GitHub Pages automated deployment
 3. React Hooks
 4. Mapbox for map display
 5. Supports most sports apps such as nike strava...
 
-> automatically backup gpx data for easy backup and uploading to other software.<br>
+> automatically backup gpx data for easy backup and uploading to other software.
+
 > Note: If you don't want to make the data public, you can choose strava's fuzzy processing, or private repositories.
 
 ## Support
@@ -121,13 +129,13 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 Clone or fork the repo.
 
-```
+```bash
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
 ## Installation and testing (node >= 16 python >= 3.8)
 
-```
+```bash
 pip3 install -r requirements.txt
 npm install -g corepack && corepack enable && pnpm install
 pnpm develop
@@ -137,35 +145,39 @@ Open your browser and visit <http://localhost:5173/>
 
 ## Docker
 
-```
-#build
+```bash
+
 # NRC
 docker build -t running_page:latest . --build-arg app=NRC --build-arg nike_refresh_token=""
+
 # Garmin
 docker build -t running_page:latest . --build-arg app=Garmin --build-arg secret_string=""
+
 # Garmin-CN
 docker build -t running_page:latest . --build-arg app=Garmin-CN --build-arg secret_string=""
+
 # Strava
 docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
-#Nike_to_Strava
+
+# Nike_to_Strava
 docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
 
-#run
+# run
 docker run -itd -p 80:80   running_page:latest
 
-#visit
+# visit
 Open your browser and visit localhost:80
 
 ```
 
 ## Local sync data
 
-### Modifying Mapbox token in `src/utils/const.js`
+### Modifying Mapbox token
 
-> If you use English please change `IS_CHINESE = false` in `src/utils/const.js` <br>
+> If you use English please change `IS_CHINESE = false` in `src/utils/const.ts` <br>
 > Suggested changes to your own [Mapbox token](https://www.mapbox.com/)
 
-```javascript
+```typescript
 const MAPBOX_TOKEN =
   'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
@@ -174,7 +186,7 @@ const MAPBOX_TOKEN =
 
 - Find `src/static/site-metadata.ts` in the repository directory, find the following content, and change it to what you want.
 
-```javascript
+```typescript
 siteMetadata: {
   siteTitle: 'Running Page', #website title
   siteUrl: 'https://yihong.run', #website url
@@ -193,42 +205,48 @@ siteMetadata: {
 },
 ```
 
-- Modifying styling in `src/utils/const.js`
+- Modifying styling in `src/utils/const.ts`
 
-```javascript
+```typescript
 // styling: set to `false` if you want to disable dash-line route
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
 ```
 
-- privacy protection
+> privacy protection,setting flowing env:
 
-setting flowing env:
+```bash
+# ignore distance for each polyline start and end.
+IGNORE_START_END_RANGE = 200
 
-```shell
-IGNORE_START_END_RANGE = 200 # ignore distance for each polyline start and end.
+# ignore meters for each point in below polyline.
+IGNORE_RANGE = 200
 
-IGNORE_RANGE = 200 # ignore meters for each point in below polyline.
-IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB # a polyline include point you want to ignore.
+# a polyline include point you want to ignore.
+IGNORE_POLYLINE = ktjrFoemeU~IorGq}DeB
 
 # Do filter before saving to database, you will lose some data, but you can protect your privacy, when you using public repo. enable for set 1, disable via unset.
 IGNORE_BEFORE_SAVING =
 ```
 
-You can using [this](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
+You can using `Google map` [Interactive Polyline Encoder Utility
+](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
 
-## Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
+## Download your running data
+
+> Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
 
 ### GPX
 
 <details>
 <summary>Make your <code>GPX</code> data</summary>
+
 <br>
 
 Copy all your gpx files to GPX_OUT or new gpx files
 
-```python
+```bash
 python3(python) run_page/gpx_sync.py
 ```
 
@@ -238,11 +256,12 @@ python3(python) run_page/gpx_sync.py
 
 <details>
 <summary>Make your <code>TCX</code> data</summary>
+
 <br>
 
 Copy all your tcx files to TCX_OUT or new tcx files
 
-```python
+```bash
 python3(python) run_page/tcx_sync.py
 ```
 
@@ -252,11 +271,12 @@ python3(python) run_page/tcx_sync.py
 
 <details>
 <summary>Make your <code>FIT</code> data</summary>
+
 <br>
 
 Copy all your tcx files to FIT_OUT or new fit files
 
-```python
+```bash
 python3(python) run_page/fit_sync.py
 ```
 
@@ -266,43 +286,42 @@ python3(python) run_page/fit_sync.py
 
 <details>
 <summary>Get your <code>Garmin</code> data</summary>
+
 <br>
-If you only want to sync `type running` add args --only-run
 
-If you only want `tcx` files add args --tcx
-
-If you only want `fit` files add args --fit
-
-If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-**The Python version must be >=3.8**
+- If you only want to sync `type running` add args --only-run
+- If you only want `tcx` files add args --tcx
+- If you only want `fit` files add args --fit
+- If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
+  **The Python version must be >=3.8**
 
 #### Get Garmin Secret
 
 Enter the following command in the terminal
 
-```python
+```bash
 # to get secret_string
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
 ```
 
 #### Execute Garmin Sync Script
 
-Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING** in Github Action.
+Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING** in `Github Action`.
 
-```python
+```bash
 # use this secret_string
 python3(python) run_page/garmin_sync.py ${secret_string}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/get_garmin_secret.py xxxxxxxxxxx
 ```
 
 only-run：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 ```
 
@@ -312,21 +331,20 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 
 <details>
 <summary>Get your <code>Garmin-CN</code> data</summary>
+
 <br>
-If you only want to sync `type running` add args --only-run
 
-If you only want `tcx` files add args --tcx
-
-If you only want `fit` files add args --fit
-
-If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-**The Python version must be >=3.10**
+- If you only want to sync `type running` add args --only-run
+- If you only want `tcx` files add args --tcx
+- If you only want `fit` files add args --fit
+- If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
+  **The Python version must be >=3.10**
 
 #### Get Garmin CN Secret
 
 Enter the following command in the terminal
 
-```python
+```bash
 # to get secret_string
 python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 ```
@@ -340,13 +358,13 @@ Copy the Secret output in the terminal,If you are using Github, please configure
 
 example：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxx(secret_string) --is-cn
 ```
 
 only-run：
 
-```python
+```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn --only-run
 ```
 
@@ -372,13 +390,13 @@ Get Nike's `refresh_token`
 
 3. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/nike_sync.py ${nike refresh_token}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 ```
 
@@ -390,11 +408,11 @@ python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 
 <details>
 <summary> Get your <code>Strava</code> data </summary>
+
 <br>
 
 1. Sign in/Sign up [Strava](https://www.strava.com/) account
 2. Open after successful Signin [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
-
 3. Create `My API Application`: Enter the following information
 
 <br>
@@ -427,13 +445,13 @@ https://www.strava.com/oauth/authorize?client_id=115321&response_type=code&redir
 
 example：
 
-```
+```bash
 http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f3471e6e&scope=read,activity:write,activity:read_all,profile:write,profile:read_all,read_all
 ```
 
 `code` value：
 
-```
+```bash
 1dab37edd9970971fb502c9efdd087f4f3471e6
 ```
 
@@ -441,7 +459,7 @@ http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f347
 
 6. Use `Client_id`、`Client_secret`、`Code` get `refresh_token`: Execute in `Terminal/iTerm`
 
-```
+```bash
 curl -X POST https://www.strava.com/oauth/token \
 -F client_id=${Your Client ID} \
 -F client_secret=${Your Client Secret} \
@@ -451,7 +469,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 example：
 
-```
+```bash
 curl -X POST https://www.strava.com/oauth/token \
 -F client_id=12345 \
 -F client_secret=b21******d0bfb377998ed1ac3b0 \
@@ -466,7 +484,7 @@ curl -X POST https://www.strava.com/oauth/token \
 > The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running.
 > If you only want to sync `type running` add args --only-run
 
-```python
+```bash
 python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
 
@@ -489,13 +507,13 @@ References：
 2. copy all your tcx files to TCX_OUT
 3. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
 or
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
@@ -516,13 +534,13 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 2. copy all your gpx files to GPX_OUT
 3. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx
 or
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
@@ -542,13 +560,13 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 1. follow the nike and strava steps
 2. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 example：
 
-```python
+```bash
 python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 ```
 
@@ -561,16 +579,16 @@ python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx x
 
 <br>
 
-1. finish garmin and strava setps
+1. finish garmin and strava setup
 2. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_secret_string} --is-cn
 ```
 
 e.g.
 
-```python
+```bash
 python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 ```
 
@@ -583,16 +601,16 @@ python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 
 <br>
 
-1. finish garmin and strava setps, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
+1. finish garmin and strava setup, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
 2. Execute in the root directory:
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 ```
 
 if your garmin account region is **China**, you need to execute the command:
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
@@ -602,7 +620,7 @@ If you want to add Garmin Device during sync, you should add `--use_fake_garmin_
 
 the final command will be:
 
-```python
+```bash
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
@@ -642,6 +660,7 @@ For more display effects, see:
 
 <details>
 <summary> Use <code> Vercel </code> to deploy </summary>
+
 <br>
 
 1. vercel connects to your GitHub repo.
@@ -663,6 +682,7 @@ For more display effects, see:
 
 <details>
 <summary> Use <code> Cloudflare </code> to deploy </summary>
+
 <br>
 
 1. Login to [Cloudflare dashboard](https://dash.cloudflare.com).
@@ -684,6 +704,8 @@ For more display effects, see:
 <details>
 <summary> Deploy to GitHub Pages </summary>
 
+<br>
+
 1. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
 2. Go to the repository's `Actions -> Workflows -> All Workflows`, choose `Run Data Sync` from the left panel, and click `Run workflow`.
@@ -704,6 +726,7 @@ For more display effects, see:
 
 <details>
 <summary> Modifying information in <code> GitHub Actions </code>  </summary>
+
 <br>
 
 Actions [source code](https://github.com/yihong0618/running_page/blob/master/.github/workflows/run_data_sync.yml)
@@ -737,11 +760,13 @@ The following steps need to be taken
 
 <summary>Automate with <code> iOS Shortcuts </code> </summary>
 
+<br>
+
 Take the keep app as an example. Close the app after running, and then automatically trigger Actions to update the data.
 
-1. Get actions id（need to apply token）
+1. Get actions id (need to apply token)
 
-```shell
+```bash
 curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "Authorization: token d8xxxxxxxxxx" # change to your config
 ```
 
@@ -770,7 +795,9 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 <details>
 <summary>Storing Data Files in GitHub Cache</summary>
 
-When `SAVE_DATA_IN_GITHUB_CACHE` is set to `true` in the `run_data_sync.yml` file, the script can store fetched and intermediate data files in the GitHub Action cache. This helps keep your GitHub commit history and directory clean.
+<br>
+
+When `SAVE_DATA_IN_GITHUB_CACHE` is set to `true` in the `run_data_sync.yml` file, the script can store fetched and intermediate data files in the GitHub Action Cache. This helps keep your GitHub commit history and directory clean.
 
 If you are deploying using GitHub Pages, it is recommended to set this value to `true`, and set `BUILD_GH_PAGES` to true.
 
@@ -778,7 +805,7 @@ If you are deploying using GitHub Pages, it is recommended to set this value to 
 
 # Fit file
 
-supported manufacturer：
+supported manufacturer:
 
 - [x] Garmin
 - [x] magene
@@ -825,14 +852,20 @@ Just enjoy it~
 
 # FAQ
 
-### Strava Api limit
+- Strava Api limit
 
-<https://www.strava.com/settings/api>
-<https://developers.strava.com/docs/#rate-limiting>
+  <https://www.strava.com/settings/api>
+  <https://developers.strava.com/docs/#rate-limiting>
 
-```
-Strava API Rate Limit Exceeded. Retry after 100 seconds
-Strava API Rate Limit Timeout. Retry in 799.491622 seconds
-```
+  ```
+  Strava API Rate Limit Exceeded. Retry after 100 seconds
+  Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+  ```
 
-### vercel git ignpre gh-pages: you can change settings -> build -> Ignored Build Step -> Custom command `if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;`
+- vercel git ignpre gh-pages:
+
+  you can change settings -> build -> Ignored Build Step -> Custom command
+
+  ```bash
+  if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;
+  ```
