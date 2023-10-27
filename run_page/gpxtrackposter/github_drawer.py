@@ -80,7 +80,7 @@ class GithubDrawer(TracksDrawer):
                     f"{year}",
                     insert=offset.tuple(),
                     fill=self.poster.colors["text"],
-                    alignment_baseline="hanging",
+                    dominant_baseline="hanging",
                     style=year_style,
                 )
             )
@@ -90,7 +90,7 @@ class GithubDrawer(TracksDrawer):
                     f"{year_length} {km_or_mi}",
                     insert=(offset.tuple()[0] + 165, offset.tuple()[1] + 5),
                     fill=self.poster.colors["text"],
-                    alignment_baseline="hanging",
+                    dominant_baseline="hanging",
                     style=year_length_style,
                 )
             )
@@ -137,4 +137,4 @@ class GithubDrawer(TracksDrawer):
                     dr.add(rect)
                     github_rect_day += datetime.timedelta(1)
                 rect_x += 3.5
-            offset.y += 3.5 * 9 + year_size + 1.5
+            offset.y += 3.5 * 9 + year_size + 1.0
