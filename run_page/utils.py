@@ -7,6 +7,7 @@ import pytz
 import gpxpy
 import pandas as pd
 import xml.etree.ElementTree as ET
+import numpy as np
 
 try:
     from rich import print
@@ -162,7 +163,7 @@ def parse_df_points_to_gpx(
         )
 
         # gpx extensions
-        if col_hr and df_points.loc[idx, col_hr]:
+        if df_points.loc[idx, col_hr] and not np.isnan(df_points.loc[idx, col_hr]):
             gpx_extension_hr = ET.fromstring(
                 f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
                 <gpxtpx:hr>{df_points.loc[idx, col_hr]}</gpxtpx:hr>

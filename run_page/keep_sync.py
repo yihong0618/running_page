@@ -6,13 +6,12 @@ import time
 import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta
-from Crypto.Cipher import AES
 
 import eviltransform
-import gpxpy
 import polyline
 import requests
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
+from Crypto.Cipher import AES
 from generator import Generator
 from utils import adjust_time
 from utils import parse_df_points_to_gpx, Metadata
@@ -23,6 +22,9 @@ LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
 
+HR_FRAME_THRESHOLD_IN_DECISECOND = 100  # Maximum time difference to consider a data point as the nearest, the unit is decisecond(分秒)
+
+TIMESTAMP_THRESHOLD_IN_DECISECOND = 3_600_000  # Threshold for target timestamp adjustment, the unit of timestamp is decisecond(分秒), so the 3_600_000 stands for 100 hours sports time. 100h = 100 * 60 * 60 * 10
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
@@ -111,11 +113,9 @@ def parse_raw_data_to_nametuple(
             for i, p in enumerate(run_points_data_gpx):
                 p["latitude"] = run_points_data[i][0]
                 p["longitude"] = run_points_data[i][1]
-                p_hr_data = find_nearest_hr_data(
-                    decoded_hr_data, int(p["timestamp"]), start_time
-                )
-                if p_hr_data is not None:
-                    p["hr"] = p_hr_data["beatsPerMinute"]
+                p_hr = find_nearest_hr(decoded_hr_data, int(p["timestamp"]), start_time)
+                if p_hr:
+                    p["hr"] = p_hr
         else:
             run_points_data = [[p["latitude"], p["longitude"]] for p in run_points_data]
         if with_download_gpx:
@@ -123,7 +123,9 @@ def parse_raw_data_to_nametuple(
                 str(keep_id) not in old_gpx_ids
                 and run_data["dataType"] == "outdoorRunning"
             ):
-                gpx_data = parse_points_to_gpx(run_data["id"], run_points_data_gpx, start_time)
+                gpx_data = parse_points_to_gpx(
+                    run_data["id"], run_points_data_gpx, start_time
+                )
                 download_keep_gpx(gpx_data, str(keep_id))
     else:
         print(f"ID {keep_id} no gps data")
@@ -157,7 +159,6 @@ def parse_raw_data_to_nametuple(
         ),
         "average_speed": run_data["distance"] / run_data["duration"],
         "location_country": str(run_data.get("region", "")),
-        "source": "Keep",
     }
     return namedtuple("x", d.keys())(*d.values())
 
@@ -187,11 +188,21 @@ def get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx=False
 
 
 def parse_points_to_gpx(run_id, run_points_data, start_time):
+    """
+    Convert run points data to GPX format.
+
+    Args:
+        run_id (str): The ID of the run.
+        run_points_data (list of dict): A list of run data points.
+        start_time (int): The start time for adjusting timestamps. Note that the unit of the start_time is millsecond
+
+    Returns:
+        gpx_data (str): GPX data in string format.
+    """
     points_dict_list = []
     # early timestamp fields in keep's data stands for delta time, but in newly data timestamp field stands for exactly time,
     # so it does'nt need to plus extra start_time
-    # the 3_600_000 stands for 100 hours sports time. 100h = 100 * 60 * 60 * 10
-    if run_points_data[0]["timestamp"] > 3_600_000:
+    if run_points_data[0]["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND:
         start_time = 0
 
     for point in run_points_data:
@@ -199,7 +210,8 @@ def parse_points_to_gpx(run_id, run_points_data, start_time):
             "latitude": point["latitude"],
             "longitude": point["longitude"],
             "time": datetime.utcfromtimestamp(
-                (point["timestamp"] * 100 + start_time) / 1000
+                (point["timestamp"] * 100 + start_time)
+                / 1000  # note that the timestamp of a point is decisecond(分秒)
             ),
             "elevation": point.get("verticalAccuracy"),
             "hr": point.get("hr"),
@@ -212,29 +224,52 @@ def parse_points_to_gpx(run_id, run_points_data, start_time):
         desc=f"Run from Keep",
         link=RUN_LOG_API.format(run_id=run_id),
     )
-    df_points = DataFrame(points_dict_list)
-    gpx_data = parse_df_points_to_gpx(meta, df_points)
+    gpx_data = parse_df_points_to_gpx(meta, DataFrame(points_dict_list))
     return gpx_data
 
 
-# if cannot found suitable HR data within the specified time frame (within 10 seconds by default), there will be no hr data return
-def find_nearest_hr_data(hr_data_list, target_timestamp, start_time, threshold=1000):
+#
+def find_nearest_hr(
+    hr_data_list, target_time, start_time, threshold=HR_FRAME_THRESHOLD_IN_DECISECOND
+):
+    """
+    Find the nearest heart rate data point to the target time.
+    if cannot found suitable HR data within the specified time frame (within 10 seconds by default), there will be no hr data return
+    Args:
+        heart_rate_data (list of dict): A list of heart rate data points, where each point is a dictionary
+            containing at least "timestamp" and "beatsPerMinute" keys.
+        target_time (float): The target timestamp for which to find the nearest heart rate data point. Please Note that the unit of target_time is decisecond(分秒),
+            means 1/10 of a second ,this is very unsual!! so when we convert a target_time to second we need to divide by 10, and when we convert a target time to millsecond
+            we need to times 100.
+        start_time (float): The reference start time. the unit of start_time is normal millsecond timestamp
+        threshold (float, optional): The maximum allowed time difference to consider a data point as the nearest.
+            Default is HR_THRESHOLD, the unit is decisecond(分秒)
+
+    Returns:
+        int or None: The heart rate value of the nearest data point, or None if no suitable data point is found.
+    """
     closest_element = None
     # init difference value
     min_difference = float("inf")
-    delta_time = target_timestamp
-    if target_timestamp > 3_600_000:
-        delta_time = (target_timestamp * 100 - start_time) / 100
+    if target_time > TIMESTAMP_THRESHOLD_IN_DECISECOND:
+        target_time = (
+            target_time * 100 - start_time
+        ) / 100  # note that the unit of target_time is decisecond(分秒) and the unit of start_time is normal millsecond
 
     for item in hr_data_list:
         timestamp = item["timestamp"]
-        difference = abs(timestamp - delta_time)
+        difference = abs(timestamp - target_time)
 
         if difference <= threshold and difference < min_difference:
             closest_element = item
             min_difference = difference
 
-    return closest_element
+    if closest_element:
+        hr = closest_element.get("beatsPerMinute")
+        if hr and hr > 0:
+            return hr
+
+    return None
 
 
 def download_keep_gpx(gpx_data, keep_id):
