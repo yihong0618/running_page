@@ -164,9 +164,10 @@ def parse_df_points_to_gpx(
 
         # gpx extensions
         if df_points.loc[idx, col_hr] and not np.isnan(df_points.loc[idx, col_hr]):
+            hr = int(df_points.loc[idx, col_hr])
             gpx_extension_hr = ET.fromstring(
                 f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
-                <gpxtpx:hr>{df_points.loc[idx, col_hr]}</gpxtpx:hr>
+                <gpxtpx:hr>{hr}</gpxtpx:hr>
                 </gpxtpx:TrackPointExtension>
                 """
             )
