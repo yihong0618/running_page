@@ -58,9 +58,13 @@ def project(
     scale = size.x / d_x if size.x / size.y <= d_x / d_y else size.y / d_y
     offset = offset + 0.5 * (size - scale * XY(d_x, -d_y)) - scale * XY(min_x, min_y)
     lines = []
+    # If len > $zoom_threshold, choose 1 point out of every $step to reduce size of the SVG file
+    zoom_threshold = 400
     for latlngline in latlnglines:
         line = []
-        for latlng in latlngline:
+        step = int(len(latlngline) / zoom_threshold) + 1
+        for i in range(0, len(latlngline), step):
+            latlng = latlngline[i]
             if bbox.contains(latlng):
                 line.append((offset + scale * latlng2xy(latlng)).tuple())
             else:
