@@ -148,6 +148,7 @@ def parse_raw_data_to_nametuple(
         "end_local": datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
         "length": run_data["distance"],
         "average_heartrate": int(avg_heart_rate) if avg_heart_rate else None,
+        "total_elevation_gain": run_data["accumulativeUpliftedHeight"],
         "map": run_map(polyline_str),
         "start_latlng": start_latlng,
         "distance": run_data["distance"],
@@ -211,7 +212,7 @@ def parse_points_to_gpx(run_points_data, start_time):
                 (point["timestamp"] * 100 + start_time)
                 / 1000  # note that the timestamp of a point is decisecond(分秒)
             ),
-            "elevation": point.get("verticalAccuracy"),
+            "elevation": point.get("altitude"),
             "hr": point.get("hr"),
         }
         points_dict_list.append(points_dict)
@@ -219,6 +220,7 @@ def parse_points_to_gpx(run_points_data, start_time):
     gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
     gpx_track = gpxpy.gpx.GPXTrack()
     gpx_track.name = "gpx from keep"
+    gpx_track.type = "running"
     gpx.tracks.append(gpx_track)
 
     # Create first segment in our GPX track:
