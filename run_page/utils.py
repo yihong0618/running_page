@@ -4,11 +4,6 @@ from datetime import datetime
 
 import pytz
 
-import gpxpy
-import pandas as pd
-import xml.etree.ElementTree as ET
-import numpy as np
-
 try:
     from rich import print
 except:
@@ -16,9 +11,6 @@ except:
 from generator import Generator
 from stravalib.client import Client
 from stravalib.exc import RateLimitExceeded
-from collections import namedtuple
-
-Metadata = namedtuple("Metadata", ("name", "type", "desc", "link"))
 
 
 def adjust_time(time, tz_name):
@@ -123,54 +115,3 @@ def upload_file_to_strava(client, file_name, data_type, force_to_run=True):
         print(
             f"Uploading {data_type} file: {file_name} to strava, upload_id: {r.upload_id}."
         )
-
-
-def parse_df_points_to_gpx(
-    metadata,
-    df_points,
-    col_lat="latitude",
-    col_long="longitude",
-    col_time="time",
-    col_ele="elevation",
-    col_hr="hr",
-):
-    """
-    Convert a pandas dataframe to gpx
-    Parameters:
-        metadata(Metadata): metadata of the gpx track
-        df_points (pd.DataFrame): pandas dataframe containing at minimum lat,long,time info of points
-    """
-    gpx = gpxpy.gpx.GPX()
-    gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
-    gpx_track = gpxpy.gpx.GPXTrack()
-    gpx.tracks.append(gpx_track)
-
-    gpx_segment = gpxpy.gpx.GPXTrackSegment()
-    gpx_track.segments.append(gpx_segment)
-
-    # support multi tracks in the future
-    gpx.tracks[0].name = metadata.name
-    gpx.tracks[0].type = metadata.type
-    gpx.tracks[0].description = metadata.desc
-    gpx.tracks[0].link = metadata.link
-
-    for idx in df_points.index:
-        track_point = gpxpy.gpx.GPXTrackPoint(
-            latitude=df_points.loc[idx, col_lat],
-            longitude=df_points.loc[idx, col_long],
-            time=pd.Timestamp(df_points.loc[idx, col_time]),
-            elevation=df_points.loc[idx, col_ele] if col_ele else None,
-        )
-
-        # gpx extensions
-        if df_points.loc[idx, col_hr] and not np.isnan(df_points.loc[idx, col_hr]):
-            hr = int(df_points.loc[idx, col_hr])
-            gpx_extension_hr = ET.fromstring(
-                f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
-                <gpxtpx:hr>{hr}</gpxtpx:hr>
-                </gpxtpx:TrackPointExtension>
-                """
-            )
-            track_point.extensions.append(gpx_extension_hr)
-        gpx_segment.points.append(track_point)
-    return gpx.to_xml()

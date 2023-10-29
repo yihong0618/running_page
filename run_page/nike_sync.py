@@ -22,8 +22,6 @@ from config import (
 )
 from generator import Generator
 from utils import adjust_time, make_activities_file
-from pandas import DataFrame
-from utils import parse_df_points_to_gpx, Metadata
 
 # logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nike_sync")
@@ -250,10 +248,24 @@ def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rat
     if heart_rate_data:
         update_points(points_dict_list, heart_rate_data, "heart_rate")
 
-    meta = Metadata(name=title, type="Run", desc="Run from NRC")
-    df_points = DataFrame(points_dict_list)
-    gpx_doc = parse_df_points_to_gpx(meta, df_points, col_hr="heart_rate")
-    return gpx_doc
+    for p in points_dict_list:
+        # delete useless attr
+        del p["start_time"]
+        if p.get("heart_rate") is None:
+            point = gpxpy.gpx.GPXTrackPoint(**p)
+        else:
+            heart_rate_num = p.pop("heart_rate")
+            point = gpxpy.gpx.GPXTrackPoint(**p)
+            gpx_extension_hr = ElementTree.fromstring(
+                f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
+                <gpxtpx:hr>{heart_rate_num}</gpxtpx:hr>
+                </gpxtpx:TrackPointExtension>
+            """
+            )
+            point.extensions.append(gpx_extension_hr)
+        gpx_segment.points.append(point)
+
+    return gpx.to_xml()
 
 
 def parse_activity_data(activity):
