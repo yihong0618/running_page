@@ -78,23 +78,24 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [cvvz](https://github.com/cvvz)                   | <https://cvvz.github.io/running>               | Strava      |
 | [zHElEARN](https://github.com/zHElEARN)           | <https://workouts.zhelearn.com>                | Strava      |
 | [Rhfeng](https://sport.frh.life)                  | <https://sport.frh.life>                       | Garmin-cn   |
-| [Ym9i](https://github.com/Ym9i)                   | <https://bobrun.vercel.app/>                   | Strava      |
+| [Ym9i](https://github.com/Ym9i)                   | <https://bobrun.vercel.app>                    | Strava      |
 | [jianchengwang](https://github.com/jianchengwang) | <https://jianchengwang.github.io/running_page> | Suunto      |
-| [fxbin](https://github.com/fxbin)                 | <https://fxbin.github.io/sport-records/>       | Keep        |
+| [fxbin](https://github.com/fxbin)                 | <https://fxbin.github.io/sport-records>        | Keep        |
 | [shensl4499](https://github.com/shensl4499)       | <https://waner.run>                            | codoon      |
 | [haowei93](https://github.com/haowei93)           | <https://running-fun.eu.org>                   | gpx         |
-| [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz/>                     | Strava      |
-| [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
+| [stevenash0822](https://github.com/stevenash0822) | <https://run.imangry.xyz>                      | Strava      |
+| [Vint](https://github.com/VintLin)                | <https://vinton.store/Running>                 | Keep        |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
-| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚        |
-| [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro/>                     | Garmin      |
-| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
-| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
-| [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
-| [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
-| [Jeffggmm](https://github.com/Jeffggmm)           | <https://jeffggmm.github.io/workouts_page/>    | Garmin      |
-| [s1smart](https://github.com/s1smart)             | <https://s1smart.github.io/running_page/>      | Strava      |
+| [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page>     | Garmin-cn   |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run>                           | 咕咚        |
+| [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro>                      | Garmin      |
+| [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page>       | JoyRun      |
+| [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me>                   | Strava/Nike |
+| [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev>                   | Strava      |
+| [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev>                    | Garmin-cn   |
+| [Jeffggmm](https://github.com/Jeffggmm)           | <https://jeffggmm.github.io/workouts_page>     | Garmin      |
+| [s1smart](https://github.com/s1smart)             | <https://s1smart.github.io/running_page>       | Strava      |
+| [NoZTurn](https://github.com/NoZTurn)             | <https://run.jiangkai.org>                     | Garmin-cn   |
 
 </details>
 
