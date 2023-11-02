@@ -7,7 +7,7 @@ import svgrPlugin from 'vite-plugin-svgr';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
-  base: process.env.PATH_PREFIX || '/',
+  base: '../',
   build: {
     manifest: true,
     outDir: './dist', // for user easy to use, vercel use default dir -> dist
