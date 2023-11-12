@@ -581,8 +581,12 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 获取 Nike 的 refresh_token
 
 **全部需要在大陆以外的全局 ip 下进行**
+
+![example img](https://user-images.githubusercontent.com/67903793/282300381-4e7437d0-65a9-4eed-93d1-2b70e360215f.png)
+
 1. 在这里登陆[website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG), 打开 F12 在浏览器抓 login -> XHR -> get the `refresh_token` from login api
-2. 复制 `refresh_token` 用
+
+2. 复制 `refresh_token` 之后可以添加在GitHub Secrets 中，也可以直接在命令行中使用
 
 ```bash
 python3(python) run_page/nike_sync.py ${nike refresh_token}
