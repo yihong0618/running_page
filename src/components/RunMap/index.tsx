@@ -1,6 +1,6 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import React, { useRef, useCallback } from 'react';
-import Map, { Layer, Source, FullscreenControl, MapRef } from 'react-map-gl';
+import Map, { Layer, Source, FullscreenControl, NavigationControl, MapRef } from 'react-map-gl';
 import useActivities from '@/hooks/useActivities';
 import {
   MAP_LAYER_LIST,
@@ -141,6 +141,7 @@ const RunMap = ({
       )}
       <span className={styles.runTitle}>{title}</span>
       <FullscreenControl style={fullscreenButton} />
+      <NavigationControl showCompass={false} position={'bottom-right'} style={{ opacity: 0.3 }} />
     </Map>
   );
 };
