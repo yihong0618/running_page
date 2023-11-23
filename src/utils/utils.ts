@@ -8,6 +8,8 @@ import { FeatureCollection, LineString } from 'geojson';
 
 export type Coordinate = [number, number];
 
+export type RunIds = Array<number> | [];
+
 export interface Activity {
   run_id: number;
   name: string;
