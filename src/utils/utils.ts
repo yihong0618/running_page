@@ -29,7 +29,7 @@ export interface Activity {
   name: string;
   distance: number;
   moving_time: string;
-  type: 'Run';
+  type: string;
   start_date: string;
   start_date_local: string;
   location_country: string;
@@ -225,7 +225,48 @@ const titleForType = (type: string): string => {
   }
 }
 
-const titleForRun = (run: string): string => {
+const typeForRun = (run: Activity): string => {
+  const type = run.type
+  switch (type) {
+    case 'Run':
+      var runDistance = run.distance / 1000;
+      if (runDistance >= 40) {
+        return 'Full Marathon';
+      }
+      else if (runDistance > 20) {
+        return 'Half Marathon';
+      }
+      return 'Run';
+    case 'Trail Run':
+      return 'Trail Run';
+    case 'Ride':
+      return 'Ride';
+    case 'Indoor Ride':
+      return 'Indoor Ride';
+    case 'VirtualRide':
+      return 'Virtual Ride';
+    case 'Hike':
+      return 'Hike';
+    case 'Rowing':
+      return 'Rowing';
+    case 'Swim':
+      return 'Swim';
+    case 'RoadTrip':
+      return 'RoadTrip';
+    case 'Flight':
+      return 'Flight';
+    case 'Kayaking':
+      return 'Kayaking';
+    case 'Snowboard':
+      return 'Snowboard';
+    case 'Ski':
+      return 'Ski';
+    default:
+      return 'Run';
+  }
+}
+
+const titleForRun = (run: Activity): string => {
   const type = run.type;
   if (type == 'Run'){
       const runDistance = run.distance / 1000;
@@ -359,6 +400,7 @@ export {
   geoJsonForRuns,
   geoJsonForMap,
   titleForRun,
+  typeForRun,
   titleForType,
   filterYearRuns,
   filterCityRuns,

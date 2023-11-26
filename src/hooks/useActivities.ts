@@ -1,10 +1,9 @@
-import { locationForRun, titleForRun } from '@/utils/utils';
+import {locationForRun, typeForRun} from '@/utils/utils';
 import activities from '@/static/activities.json';
 
 const useActivities = () => {
   const cities: Record<string, number> = {};
   const runPeriod: Record<string, number> = {};
-  const workoutsCounts: Record<string, number> = {};
   const provinces: Set<string> = new Set();
   const countries: Set<string> = new Set();
   let years: Set<string> = new Set();
@@ -13,16 +12,13 @@ const useActivities = () => {
   activities.forEach((run) => {
     const location = locationForRun(run);
 
-    const periodName = titleForRun(run);
+    const periodName = typeForRun(run);
     if (periodName) {
       runPeriod[periodName] = runPeriod[periodName]
         ? runPeriod[periodName] + 1
         : 1;
     }
 
-    workoutsCounts[run.type] = workoutsCounts[run.type]
-    ? workoutsCounts[run.type] + 1
-    : 1;
 
     const { city, province, country } = location;
     // drop only one char city
@@ -45,7 +41,6 @@ const useActivities = () => {
     provinces: [...provinces],
     cities,
     runPeriod,
-    workoutsCounts,
     thisYear,
   };
 };
