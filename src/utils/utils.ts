@@ -198,6 +198,10 @@ const titleForType = (type: string): string => {
   switch (type) {
     case 'Run':
       return RUN_TITLES.RUN_TITLE;
+    case 'Full Marathon':
+      return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
+    case 'Half Marathon':
+      return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
     case 'Trail Run':
       return RUN_TITLES.TRAIL_RUN_TITLE;
     case 'Ride':
