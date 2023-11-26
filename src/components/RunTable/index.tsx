@@ -4,13 +4,14 @@ import {
   sortDateFuncReverse,
   convertMovingTime2Sec,
   Activity,
+  RunIds,
 } from '@/utils/utils';
 import RunRow from './RunRow';
 import styles from './style.module.scss';
 
 interface IRunTableProperties {
   runs: Activity[];
-  locateActivity: (_date: string) => void;
+  locateActivity: (_runIds: RunIds) => void;
   setActivity: (_runs: Activity[]) => void;
   runIndex: number;
   setRunIndex: (_index: number) => void;
