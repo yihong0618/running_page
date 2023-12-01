@@ -16,8 +16,16 @@ const data: ISiteMetadataResult = {
   description: 'Just running',
   navLinks: [
     {
+      name: 'Home',
+      url: 'https://running.danilelxp.com/',
+    },
+    {
       name: 'Blog',
       url: 'https://danilelxp.com/',
+    },
+    {
+      name: 'Travel',
+      url: 'https://www.danilelxp.com/about',
     },
   ],
 };
