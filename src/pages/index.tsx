@@ -50,7 +50,7 @@ const Index = () => {
     scrollToMap();
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
-    setTitle(`${item} ${name} Running Heatmap`);
+    setTitle(`${item} ${name} Heatmap`);
   };
 
   const changeYear = (y: string) => {
@@ -74,6 +74,10 @@ const Index = () => {
   const changeTitle = (title: string) => {
     changeByItem(title, 'Title', filterTitleRuns);
   };
+
+  const changeType = (type: string) => {
+    changeByItem(type, 'Type', filterTypeRuns);
+  }
 
   const locateActivity = (runIds: RunIds) => {
     const ids = new Set(runIds);
@@ -177,7 +181,7 @@ const Index = () => {
           <LocationStat
             changeYear={changeYear}
             changeCity={changeCity}
-            changeTitle={changeTitle}
+            changeType={changeType}
           />
         ) : (
           <YearsStat year={year} onClick={changeYear} />

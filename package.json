@@ -1,8 +1,8 @@
 {
-  "name": "yihong.run",
-  "description": "Yi hong",
+  "name": "outdoor-journey-tianhui",
+  "description": "Tianhui's outdoor journey",
   "version": "1.0.0",
-  "author": "Yi Hong <zouzou0208@gmail.com>",
+  "author": "Tianhui Xu <tianhui_xu@uni.minerva.edu>",
   "dependencies": {
     "@mapbox/mapbox-gl-language": "^1.0.0",
     "@mapbox/polyline": "^1.1.1",
@@ -46,7 +46,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yihong0618/running_page"
+    "url": "https://github.com/TianhuiXu/outdoor_page"
   },
   "devDependencies": {
     "@types/mapbox__polyline": "^1.0.2",
