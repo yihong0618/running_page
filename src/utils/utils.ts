@@ -3,7 +3,23 @@ import gcoord from 'gcoord';
 import { WebMercatorViewport } from 'viewport-mercator-project';
 import { chinaGeojson } from '@/static/run_countries';
 import { chinaCities } from '@/static/city';
-import { MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES } from './const';
+import { 
+  MUNICIPALITY_CITIES_ARR,
+  NEED_FIX_MAP,
+  RUN_TITLES,
+  MAIN_COLOR,
+  RIDE_COLOR,
+  VIRTUAL_RIDE_COLOR,
+  HIKE_COLOR,
+  SWIM_COLOR,
+  ROWING_COLOR,
+  ROAD_TRIP_COLOR,
+  FLIGHT_COLOR,
+  RUN_COLOR,
+  KAYAKING_COLOR,
+  SNOWBOARD_COLOR,
+  TRAIL_RUN_COLOR,
+ } from './const';
 import { FeatureCollection, LineString } from 'geojson';
 
 export type Coordinate = [number, number];
@@ -29,9 +45,6 @@ const titleForShow = (run: Activity): string => {
   const date = run.start_date_local.slice(0, 11);
   const distance = (run.distance / 1000.0).toFixed(2);
   let name = 'Run';
-  if (run.name.slice(0, 7) === 'Running') {
-    name = 'run';
-  }
   if (run.name) {
     name = run.name;
   }
@@ -167,40 +180,145 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
 
     return {
       type: 'Feature',
-      properties: {},
+      properties: {
+        'color': colorFromType(run.type),
+      },
       geometry: {
         type: 'LineString',
         coordinates: points,
+        workoutType: run.type,
       },
+      name: run.name,
     };
   }),
 });
 
 const geoJsonForMap = () => chinaGeojson;
 
+const titleForType = (type: string): string => {
+  switch (type) {
+    case 'Run':
+      return RUN_TITLES.RUN_TITLE;
+    case 'Full Marathon':
+      return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
+    case 'Half Marathon':
+      return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
+    case 'Trail Run':
+      return RUN_TITLES.TRAIL_RUN_TITLE;
+    case 'Ride':
+      return RUN_TITLES.RIDE_TITLE;
+    case 'Indoor Ride':
+      return RUN_TITLES.INDOOR_RIDE_TITLE;
+    case 'VirtualRide':
+      return RUN_TITLES.VIRTUAL_RIDE_TITLE;
+    case 'Hike':
+      return RUN_TITLES.HIKE_TITLE;
+    case 'Rowing':
+      return RUN_TITLES.ROWING_TITLE;
+    case 'Swim':
+      return RUN_TITLES.SWIM_TITLE;
+    case 'RoadTrip':
+      return RUN_TITLES.ROAD_TRIP_TITLE;
+    case 'Flight':
+      return RUN_TITLES.FLIGHT_TITLE;
+    case 'Kayaking':
+      return RUN_TITLES.KAYAKING_TITLE;
+    case 'Snowboard':
+      return RUN_TITLES.SNOWBOARD_TITLE;
+    case 'Ski':
+      return RUN_TITLES.SKI_TITLE;
+    default:
+      return RUN_TITLES.RUN_TITLE;
+  }
+}
+
+const typeForRun = (run: Activity): string => {
+  const type = run.type
+  switch (type) {
+    case 'Run':
+      var runDistance = run.distance / 1000;
+      if (runDistance >= 40) {
+        return 'Full Marathon';
+      }
+      else if (runDistance > 20) {
+        return 'Half Marathon';
+      }
+      return 'Run';
+    case 'Trail Run':
+      return 'Trail Run';
+    case 'Ride':
+      return 'Ride';
+    case 'Indoor Ride':
+      return 'Indoor Ride';
+    case 'VirtualRide':
+      return 'Virtual Ride';
+    case 'Hike':
+      return 'Hike';
+    case 'Rowing':
+      return 'Rowing';
+    case 'Swim':
+      return 'Swim';
+    case 'RoadTrip':
+      return 'RoadTrip';
+    case 'Flight':
+      return 'Flight';
+    case 'Kayaking':
+      return 'Kayaking';
+    case 'Snowboard':
+      return 'Snowboard';
+    case 'Ski':
+      return 'Ski';
+    default:
+      return 'Run';
+  }
+}
+
 const titleForRun = (run: Activity): string => {
-  const runDistance = run.distance / 1000;
-  const runHour = +run.start_date_local.slice(11, 13);
-  if (runDistance > 20 && runDistance < 40) {
-    return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
-  }
-  if (runDistance >= 40) {
-    return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
-  }
-  if (runHour >= 0 && runHour <= 10) {
-    return RUN_TITLES.MORNING_RUN_TITLE;
-  }
-  if (runHour > 10 && runHour <= 14) {
-    return RUN_TITLES.MIDDAY_RUN_TITLE;
-  }
-  if (runHour > 14 && runHour <= 18) {
-    return RUN_TITLES.AFTERNOON_RUN_TITLE;
-  }
-  if (runHour > 18 && runHour <= 21) {
-    return RUN_TITLES.EVENING_RUN_TITLE;
-  }
-  return RUN_TITLES.NIGHT_RUN_TITLE;
+  const type = run.type;
+  return run.name;
+  // if (type == 'Run'){
+  //     const runDistance = run.distance / 1000;
+  //     if (runDistance >= 40) {
+  //       return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
+  //     }
+  //     else if (runDistance > 20) {
+  //       return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
+  //     }
+  // }
+  // return titleForType(type);
 };
+
+const colorFromType = (workoutType: string): string => {
+  switch (workoutType) {
+    case 'Run':
+      return RUN_COLOR;
+    case 'Trail Run':
+      return TRAIL_RUN_COLOR;
+    case 'Ride':
+    case 'Indoor Ride':
+      return RIDE_COLOR;
+    case 'VirtualRide':
+      return VIRTUAL_RIDE_COLOR;
+    case 'Hike':
+      return HIKE_COLOR;
+    case 'Rowing':
+      return ROWING_COLOR;
+    case 'Swim':
+      return SWIM_COLOR;
+    case 'RoadTrip':
+      return ROAD_TRIP_COLOR;
+    case 'Flight':
+      return FLIGHT_COLOR;
+    case 'Kayaking':
+      return KAYAKING_COLOR;
+    case 'Snowboard':
+    case 'Ski':
+      return SNOWBOARD_COLOR;
+    default:
+      return MAIN_COLOR;
+  }
+};
+
 
 export interface IViewState {
   longitude?: number;
@@ -254,8 +372,12 @@ const filterCityRuns = (run: Activity, city: string) => {
   }
   return false;
 };
+
 const filterTitleRuns = (run: Activity, title: string) =>
   titleForRun(run) === title;
+
+const filterTypeRuns = (run: Activity, type: string) => 
+  run.type === type;
 
 const filterAndSortRuns = (
   activities: Activity[],
@@ -293,9 +415,11 @@ export {
   filterCityRuns,
   filterTitleRuns,
   filterAndSortRuns,
+  filterTypeRuns,
   sortDateFunc,
   sortDateFuncReverse,
   getBoundsForGeoData,
+  colorFromType,
   formatRunTime,
   convertMovingTime2Sec,
 };
