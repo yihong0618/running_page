@@ -1,6 +1,6 @@
 // const
 const MAPBOX_TOKEN =
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+  'pk.eyJ1IjoidGlhbmh1aSIsImEiOiJjbGo4OGlrZ2wwbjk3M2NvYnVjeXluZG02In0.z2jfvgt_GX-e91AEd7axmA';
 const MUNICIPALITY_CITIES_ARR = [
   '北京市',
   '上海市',
@@ -25,7 +25,7 @@ const MAP_LAYER_LIST = [
 ];
 
 // styling: set to `true` if you want dash-line route
-const USE_DASH_LINE = true;
+const USE_DASH_LINE = false;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
 // styling: map height
@@ -34,14 +34,14 @@ const MAP_HEIGHT = 600;
 const ROAD_LABEL_DISPLAY = true;
 
 // IF you outside China please make sure IS_CHINESE = false
-const IS_CHINESE = true;
+const IS_CHINESE = false;
 const USE_ANIMATION_FOR_GRID = false;
 const CHINESE_INFO_MESSAGE = (yearLength: number, year: string): string => {
   const yearStr = year === 'Total' ? '所有' : ` ${year} `;
   return `我用 App 记录自己跑步 ${yearLength} 年了，下面列表展示的是${yearStr}的数据`;
 };
-const ENGLISH_INFO_MESSAGE = (yearLength: number, year: string): string =>
-  `Running Journey with ${yearLength} Years, the table shows year ${year} data`;
+const ENGLISH_INFO_MESSAGE = (yearLength: number, year: string): string => 
+  `Exploring the world through running, biking, hiking, kayaking... \n Data collected for ${yearLength} years. Table showing ${year} data ~`;
 
 // not support English for now
 const CHINESE_LOCATION_INFO_MESSAGE_FIRST =
