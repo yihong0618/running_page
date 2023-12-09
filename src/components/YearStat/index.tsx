@@ -7,7 +7,8 @@ import styles from './style.module.scss';
 import useHover from '@/hooks/useHover';
 import { yearStats } from '@assets/index'
 
-const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) => void }) => {
+const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick: (_year: string) => void ,
+    onClickTypeInYear: (_year: string, _type: string) => void }) => {
   let { activities: runs, years } = useActivities();
   // for hover
   const [hovered, eventHandlers] = useHover();
@@ -81,6 +82,10 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
             // pace={formatPace(count[2] / count[1])}
             distance={(count[2] / 1000.0).toFixed(0)}
             // color={colorFromType(type)}
+            onClick={(e: Event) => {
+              onClickTypeInYear(year, type);
+              e.stopPropagation();
+            }}
           />
         ))}
         <Stat

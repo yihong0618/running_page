@@ -51,7 +51,7 @@ const Index = () => {
     scrollToMap();
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
-    setTitle(`${item} ${name} Running Heatmap`);
+    setTitle(`${item} ${name} Heatmap`);
   };
 
   const changeYear = (y: string) => {
@@ -77,7 +77,20 @@ const Index = () => {
   };
 
   const changeType = (type: string) => {
-    changeByItem(type, 'Type', filterTypeRuns, false);
+    changeByItem(type, 'Type', filterTypeRuns);
+  };
+
+  const changeTypeInYear = (year:string, type: string) => {
+    scrollToMap();
+    // type in year, filter year first, then type
+    if(year != 'Total'){
+      setActivity(filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc, type, filterTypeRuns));
+    }
+    else {
+      setActivity(filterAndSortRuns(activities, type, filterTypeRuns, sortDateFunc));
+    }
+    setRunIndex(-1);
+    setTitle(`${year} ${type} Type Heatmap`);
   };
 
 
@@ -184,9 +197,10 @@ const Index = () => {
             changeYear={changeYear}
             changeCity={changeCity}
             changeType={changeType}
+            onClickTypeInYear={changeTypeInYear}
           />
         ) : (
-          <YearsStat year={year} onClick={changeYear} />
+          <YearsStat year={year} onClick={changeYear} onClickTypeInYear={changeTypeInYear}/>
         )}
       </div>
       <div className="fl w-100 w-70-l">
