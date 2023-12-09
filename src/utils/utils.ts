@@ -372,7 +372,16 @@ const filterCityRuns = (run: Activity, city: string) => {
 const filterTitleRuns = (run: Activity, title: string) =>
   titleForRun(run) === title;
 
-const filterTypeRuns = (run: Activity, type: string) => run.type === type;
+const filterTypeRuns = (run: Activity, type: string) => {
+  switch (type){
+    case 'Full Marathon':
+      return run.type === 'Run' && run.distance > 40000
+    case 'Half Marathon':
+      return run.type === 'Run' && run.distance < 40000 && run.distance > 20000
+    default:
+      return run.type === type
+  }
+}
 
 const filterAndSortRuns = (
   activities: Activity[],
