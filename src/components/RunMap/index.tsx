@@ -1,6 +1,6 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React, { useRef, useCallback } from 'react';
-import Map, { Layer, Source, FullscreenControl, NavigationControl, MapRef } from 'react-map-gl';
+import React, {useRef, useCallback, useState} from 'react';
+import Map, {Layer, Source, FullscreenControl, NavigationControl, MapRef} from 'react-map-gl';
 import useActivities from '@/hooks/useActivities';
 import {
   MAP_LAYER_LIST,
@@ -21,6 +21,7 @@ import styles from './style.module.scss';
 import { FeatureCollection } from 'geojson';
 import { RPGeometry } from '@/static/run_countries';
 import './mapbox.css';
+import LightsControl from "@/components/RunMap/LightsControl";
 
 interface IRunMapProps {
   title: string;
@@ -41,25 +42,42 @@ const RunMap = ({
 }: IRunMapProps) => {
   const { countries, provinces } = useActivities();
   const mapRef = useRef<MapRef>();
+  const [lights, setLights] = useState(true);
   const mapRefCallback = useCallback(
     (ref: MapRef) => {
       if (ref !== null) {
-        mapRef.current = ref;
         const map = ref.getMap();
-        if (map && IS_CHINESE) {
-          map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
-          if (!ROAD_LABEL_DISPLAY) {
-            // todo delete layers
-            map.on('load', () => {
+        if (map) {
+            map.addControl(new MapboxLanguage({defaultLanguage: 'zh-Hans'}));
+          }
+          map.on('load', () => {
+            if (!ROAD_LABEL_DISPLAY) {
+              // todo delete layers
               MAP_LAYER_LIST.forEach((layerId) => {
                 map.removeLayer(layerId);
               });
-            });
-          }
+            }
+            mapRef.current = ref;
+          });
+        }
+      if (mapRef.current) {
+        const map = mapRef.current.getMap();
+        if (map) {
+          const styleJson = map.getStyle();
+          const keepWhenLightsOff = ['runs2']
+          styleJson.layers.forEach(it => {
+              if (!keepWhenLightsOff.includes(it.id)) {
+                if (lights)
+                  map.setLayoutProperty(it.id, 'visibility', 'visible');
+                else
+                  map.setLayoutProperty(it.id, 'visibility', 'none');
+              }
+            }
+          )
         }
       }
     },
-    [mapRef]
+    [mapRef, lights]
   );
   const filterProvinces = provinces.slice();
   const filterCountries = countries.slice();
@@ -67,9 +85,16 @@ const RunMap = ({
   filterProvinces.unshift('in', 'name');
   filterCountries.unshift('in', 'name');
 
+  const initGeoDataLength = geoData.features.length;
   const isBigMap = (viewState.zoom ?? 0) <= 3;
   if (isBigMap && IS_CHINESE) {
-    geoData = geoJsonForMap();
+    // Show boundary and line together, combine geoData(only when not combine yet)
+    if(geoData.features.length === initGeoDataLength){
+      geoData = {
+          "type": "FeatureCollection",
+          "features": geoData.features.concat(geoJsonForMap().features)
+      };
+    }
   }
 
   const isSingleRun =
@@ -84,7 +109,7 @@ const RunMap = ({
     [startLon, startLat] = points[0];
     [endLon, endLat] = points[points.length - 1];
   }
-  let dash = USE_DASH_LINE && !isSingleRun ? [2, 2] : [2, 0];
+  let dash = USE_DASH_LINE && !isSingleRun && !isBigMap ? [2, 2] : [2, 0];
   const onMove = React.useCallback(({ viewState }: {viewState: IViewState}) => {
     setViewState(viewState);
   }, []);
@@ -133,9 +158,9 @@ const RunMap = ({
           type="line"
           paint={{
             'line-color': ['get', 'color'],
-            'line-width': isBigMap ? 1 : 2,
+            'line-width': isBigMap && lights ? 1 : 2,
             'line-dasharray': dash,
-            'line-opacity': isSingleRun ? 1 : LINE_OPACITY,
+            'line-opacity': isSingleRun || isBigMap || !lights ? 1 : LINE_OPACITY,
             'line-blur': 1,
           }}
           layout={{
@@ -153,8 +178,9 @@ const RunMap = ({
         />
       )}
       <span className={styles.runTitle}>{title}</span>
-      <FullscreenControl style={fullscreenButton} />
-      <NavigationControl showCompass={false} position={'bottom-right'} style={{ opacity: 0.3 }} />
+      <FullscreenControl style={fullscreenButton}/>
+      <LightsControl setLights={setLights} lights={lights}/>
+      <NavigationControl showCompass={false} position={'bottom-right'} style={{opacity: 0.3}}/>
     </Map>
   );
 };
