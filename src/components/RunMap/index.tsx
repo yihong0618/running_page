@@ -82,9 +82,16 @@ const RunMap = ({
   // for geojson format
   filterProvinces.unshift('in', 'name');
 
+  const initGeoDataLength = geoData.features.length;
   const isBigMap = (viewState.zoom ?? 0) <= 3;
   if (isBigMap && IS_CHINESE) {
-    geoData = geoJsonForMap();
+    // Show boundary and line together, combine geoData(only when not combine yet)
+    if(geoData.features.length === initGeoDataLength){
+      geoData = {
+          "type": "FeatureCollection",
+          "features": geoData.features.concat(geoJsonForMap().features)
+      };
+    }
   }
 
   const isSingleRun =
