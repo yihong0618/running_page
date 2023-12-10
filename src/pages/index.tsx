@@ -49,6 +49,9 @@ const Index = () => {
     func: (_run: Activity, _value: string) => boolean
   ) => {
     scrollToMap();
+    if(name != 'Year'){
+      setYear(thisYear)
+    }
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
     setTitle(`${item} ${name} Heatmap`);
@@ -84,9 +87,11 @@ const Index = () => {
     scrollToMap();
     // type in year, filter year first, then type
     if(year != 'Total'){
+      setYear(year);
       setActivity(filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc, type, filterTypeRuns));
     }
     else {
+      setYear(thisYear);
       setActivity(filterAndSortRuns(activities, type, filterTypeRuns, sortDateFunc));
     }
     setRunIndex(-1);
