@@ -125,8 +125,8 @@ const Index = () => {
   useEffect(() => {
     const runsNum = runs.length;
     // maybe change 20 ?
-    const sliceNume = runsNum >= 20 ? runsNum / 20 : 1;
-    let i = sliceNume;
+    const sliceNum = runsNum >= 10 ? runsNum / 10 : 1;
+    let i = sliceNum;
     const id = setInterval(() => {
       if (i >= runsNum) {
         clearInterval(id);
@@ -134,8 +134,8 @@ const Index = () => {
 
       const tempRuns = runs.slice(0, i);
       setGeoData(geoJsonForRuns(tempRuns));
-      i += sliceNume;
-    }, 100);
+      i += sliceNum;
+    }, 10);
     setIntervalId(id);
   }, [runs]);
 
