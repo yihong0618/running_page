@@ -375,9 +375,9 @@ const filterTitleRuns = (run: Activity, title: string) =>
 const filterTypeRuns = (run: Activity, type: string) => {
   switch (type){
     case 'Full Marathon':
-      return run.type === 'Run' && run.distance > 40000
+      return (run.type === 'Run' || run.type === 'Trail Run') && run.distance > 40000
     case 'Half Marathon':
-      return run.type === 'Run' && run.distance < 40000 && run.distance > 20000
+      return (run.type === 'Run' || run.type === 'Trail Run') && run.distance < 40000 && run.distance > 20000
     default:
       return run.type === type
   }
