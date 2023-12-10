@@ -106,7 +106,7 @@ const RunMap = ({
     [startLon, startLat] = points[0];
     [endLon, endLat] = points[points.length - 1];
   }
-  let dash = USE_DASH_LINE && !isSingleRun ? [2, 2] : [2, 0];
+  let dash = USE_DASH_LINE && !isSingleRun && !isBigMap ? [2, 2] : [2, 0];
   const onMove = React.useCallback(({ viewState }: {viewState: IViewState}) => {
     setViewState(viewState);
   }, []);
@@ -145,9 +145,9 @@ const RunMap = ({
           type="line"
           paint={{
             'line-color': MAIN_COLOR,
-            'line-width': isBigMap ? 1 : 2,
+            'line-width': isBigMap && lights ? 1 : 2,
             'line-dasharray': dash,
-            'line-opacity': isSingleRun ? 1 : LINE_OPACITY,
+            'line-opacity': isSingleRun || isBigMap || !lights ? 1 : LINE_OPACITY,
             'line-blur': 1,
           }}
           layout={{
