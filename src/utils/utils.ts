@@ -274,7 +274,7 @@ const typeForRun = (run: Activity): string => {
 
 const titleForRun = (run: Activity): string => {
   const type = run.type;
-  if (type == 'Run'){
+  if (type == 'Run' || type == 'Trail Run'){
       const runDistance = run.distance / 1000;
       if (runDistance >= 40) {
         return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
