@@ -160,7 +160,7 @@ def tcx_output(fit_array, run_data):
     activities.append(activity)
     #   Id
     activity_id = ET.Element("Id")
-    activity_id.text = fit_start_time # Codoon use start_time as ID
+    activity_id.text = fit_start_time  # Codoon use start_time as ID
     activity.append(activity_id)
     #   Creator
     activity_creator = ET.Element("Creator")
