@@ -48,6 +48,9 @@ const Index = () => {
     func: (_run: Activity, _value: string) => boolean
   ) => {
     scrollToMap();
+    if(name != 'Year'){
+      setYear(thisYear)
+    }
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
     setTitle(`${item} ${name} Running Heatmap`);
