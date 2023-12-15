@@ -212,6 +212,7 @@ siteMetadata: {
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
+const GOOGLE_ANALYTICS_TRACKING_ID = 'GA_ID';
 ```
 
 > privacy protection,setting flowing env:
@@ -720,8 +721,6 @@ For more display effects, see:
 - Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
 
 4. make sure you have write permissions in Workflow permissions settings.
-
-
 
 5. If you want to deploy your running_page to xxx.github.io instead of xxx.github.io/running_page, you need to do three things:
 
