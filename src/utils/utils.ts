@@ -233,17 +233,23 @@ const titleForType = (type: string): string => {
 
 const typeForRun = (run: Activity): string => {
   const type = run.type
+  var distance = run.distance / 1000;
   switch (type) {
     case 'Run':
-      var runDistance = run.distance / 1000;
-      if (runDistance >= 40) {
+      if (distance >= 40) {
         return 'Full Marathon';
       }
-      else if (runDistance > 20) {
+      else if (distance > 20) {
         return 'Half Marathon';
       }
       return 'Run';
     case 'Trail Run':
+      if (distance >= 40) {
+        return 'Full Marathon';
+      }
+      else if (distance > 20) {
+        return 'Half Marathon';
+      }
       return 'Trail Run';
     case 'Ride':
       return 'Ride';
