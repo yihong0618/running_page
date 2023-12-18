@@ -215,6 +215,13 @@ const USE_DASH_LINE = true;
 const LINE_OPACITY = 0.4;
 ```
 
+- To use Google Analytics, you need to modify the configuration in the `src/utils/const.ts` file.
+
+```typescript
+const USE_GOOGLE_ANALYTICS = false;
+const GOOGLE_ANALYTICS_TRACKING_ID = '';
+```
+
 > privacy protection,setting flowing env:
 
 ```bash
