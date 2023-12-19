@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import React, { useEffect, useState } from 'react';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
 import RunMap from '@/components/RunMap';
@@ -48,7 +48,7 @@ const Index = () => {
     func: (_run: Activity, _value: string) => boolean
   ) => {
     scrollToMap();
-    if(name != 'Year'){
+    if (name != 'Year') {
       setYear(thisYear)
     }
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));

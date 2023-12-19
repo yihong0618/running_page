@@ -1,4 +1,3 @@
-import React from 'react';
 import { ReactComponent as GitHubSvg } from '@assets/github.svg';
 import { ReactComponent as GridSvg } from '@assets/grid.svg';
 import styles from './style.module.scss';

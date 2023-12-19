@@ -1,4 +1,3 @@
-import React from 'react';
 import YearStat from '@/components/YearStat';
 import {
   CHINESE_LOCATION_INFO_MESSAGE_FIRST,
