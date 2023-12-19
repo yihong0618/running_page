@@ -95,6 +95,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
 | [Jeffggmm](https://github.com/Jeffggmm)           | <https://jeffggmm.github.io/workouts_page/>    | Garmin      |
 | [s1smart](https://github.com/s1smart)             | <https://s1smart.github.io/running_page/>      | Strava      |
+| [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
 
 </details>
 
