@@ -6,6 +6,7 @@
   "dependencies": {
     "@mapbox/mapbox-gl-language": "^1.0.0",
     "@mapbox/polyline": "^1.1.1",
+    "@svgr/plugin-svgo": "^8.1.0",
     "@vercel/analytics": "^0.1.6",
     "@vitejs/plugin-react": "^4.0.0",
     "gcoord": "^0.3.2",
