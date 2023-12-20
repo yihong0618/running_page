@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { ComponentType, lazy, Suspense } from 'react';
 import Stat from '@/components/Stat';
 import useActivities from '@/hooks/useActivities';
 import { formatPace } from '@/utils/utils';
@@ -11,12 +11,13 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component
-  const YearSVG = lazy(() => yearStats[`./year_${year}.svg`]()
-    .then((res) => ({ default: res }))
-    .catch((err) => {
-      console.error(err);
-      return { default: () => <div>Failed to load SVG</div> };
-    })
+  const YearSVG = lazy(() =>
+    yearStats[`./year_${year}.svg`]()
+      .then((res) => ({ default: res as ComponentType<any> }))
+      .catch((err) => {
+        console.error(err);
+        return { default: () => <div>Failed to load SVG</div> };
+      })
   );
 
   if (years.includes(year)) {

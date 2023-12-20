@@ -4,6 +4,9 @@ import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 
+// The following are known larger packages or packages that can be loaded asynchronously.
+const individuallyPackages = ['activities', 'github.svg', 'grid.svg'];
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -39,8 +42,18 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id: string) => {
-          if (id.includes('activities')) {
-            return 'activities';
+          if (id.includes('node_modules')) {
+            return 'vendors';
+            // If there will be more and more external packages referenced in the future,
+            // the following approach can be considered.
+            // const name = id.split('node_modules/')[1].split('/');
+            // return name[0] == '.pnpm' ? name[1] : name[0];
+          } else {
+            for (const item of individuallyPackages) {
+              if (id.includes(item)) {
+                return item;
+              }
+            }
           }
         },
       },
