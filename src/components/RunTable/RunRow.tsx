@@ -1,4 +1,3 @@
-import React from 'react';
 import { formatPace, colorFromType, formatRunTime, Activity, RunIds } from '@/utils/utils';
 import styles from './style.module.scss';
 

@@ -129,6 +129,12 @@ def formated_input(
 def tcx_output(fit_array, run_data):
     # route ID
     fit_id = str(run_data["id"])
+    # local time
+    fit_start_time_local = run_data["start_time"]
+    # zulu time
+    utc = adjust_time_to_utc(to_date(fit_start_time_local), str(get_localzone()))
+    fit_start_time = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+
     # Root node
     training_center_database = ET.Element(
         "TrainingCenterDatabase",
@@ -154,7 +160,7 @@ def tcx_output(fit_array, run_data):
     activities.append(activity)
     #   Id
     activity_id = ET.Element("Id")
-    activity_id.text = fit_id
+    activity_id.text = fit_start_time  # Codoon use start_time as ID
     activity.append(activity_id)
     #   Creator
     activity_creator = ET.Element("Creator")
@@ -164,13 +170,6 @@ def tcx_output(fit_array, run_data):
     activity_creator_name.text = "咕咚"
     activity_creator.append(activity_creator_name)
     #   Lap
-
-    # local time
-    fit_start_time_local = run_data["start_time"]
-    # zulu time
-    utc = adjust_time_to_utc(to_date(fit_start_time_local), str(get_localzone()))
-    fit_start_time = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
-
     activity_lap = ET.Element("Lap", {"StartTime": fit_start_time})
     activity.append(activity_lap)
     #       TotalTimeSeconds

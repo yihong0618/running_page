@@ -1,4 +1,3 @@
-import React from 'react';
 import Stat from '@/components/Stat';
 import useActivities from '@/hooks/useActivities';
 import { IS_CHINESE } from '@/utils/const';

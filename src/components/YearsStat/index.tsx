@@ -1,4 +1,3 @@
-import React from 'react';
 import YearStat from '@/components/YearStat';
 import useActivities from '@/hooks/useActivities';
 import { INFO_MESSAGE } from '@/utils/const';
@@ -26,11 +25,11 @@ const YearsStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick
         <YearStat key={year} year={year} onClick={onClick} onClickTypeInYear={onClickTypeInYear}/>
       ))}
       {// eslint-disable-next-line no-prototype-builtins
-      yearsArrayUpdate.hasOwnProperty('Total') ? (
-        <YearStat key="Total" year="Total" onClick={onClick} onClickTypeInYear={onClickTypeInYear}/>
-      ) : (
-        <div />
-      )}
+        yearsArrayUpdate.hasOwnProperty('Total') ? (
+          <YearStat key="Total" year="Total" onClick={onClick} onClickTypeInYear={onClickTypeInYear}/>
+        ) : (
+          <div />
+        )}
     </div>
   );
 };

@@ -40,7 +40,9 @@ def to_date(ts):
             # shouldn't be an issue since it's an offline cmdline tool
             return datetime.strptime(ts, ts_fmt)
         except ValueError:
-            print("Error: Can not execute strptime")
+            print(
+                f"Warning: Can not execute strptime {ts} with ts_fmt {ts_fmt}, try next one..."
+            )
             pass
 
     raise ValueError(f"cannot parse timestamp {ts} into date with fmts: {ts_fmts}")

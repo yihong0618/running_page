@@ -1,4 +1,3 @@
-import React from 'react';
 import useActivities from '@/hooks/useActivities';
 import styles from './style.module.scss';
 
