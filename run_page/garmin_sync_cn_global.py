@@ -72,7 +72,7 @@ if __name__ == "__main__":
         for i in new_ids
         if os.path.exists(os.path.join(folder, f"{i}.fit"))
     ]
-    print("Files to sync:" + ' '.join(to_upload_files))
+    print("Files to sync:" + " ".join(to_upload_files))
     garmin_global_client = Garmin(
         secret_string_global,
         config("sync", "garmin", "authentication_domain"),
