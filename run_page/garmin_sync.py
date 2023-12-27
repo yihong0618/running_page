@@ -201,10 +201,13 @@ async def download_garmin_data(client, activity_id, file_type="gpx"):
             zip_file = zipfile.ZipFile(file_path, "r")
             for file_info in zip_file.infolist():
                 zip_file.extract(file_info, folder)
-                os.rename(
-                    os.path.join(folder, f"{activity_id}_ACTIVITY.fit"),
-                    os.path.join(folder, f"{activity_id}.fit"),
-                )
+                if file_info.filename.endswith(".fit"):
+                    os.rename(
+                        os.path.join(folder, f"{activity_id}_ACTIVITY.fit"),
+                        os.path.join(folder, f"{activity_id}.fit"),
+                    )
+                else:
+                    os.remove(os.path.join(folder, file_info.filename))
             os.remove(file_path)
     except Exception as e:
         print(f"Failed to download activity {activity_id}: {str(e)}")
