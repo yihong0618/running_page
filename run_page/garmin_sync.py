@@ -117,7 +117,9 @@ class Garmin:
         response.raise_for_status()
         return response.read()
 
-    async def upload_activities_original_from_strava(self, datas, use_fake_garmin_device=False):
+    async def upload_activities_original_from_strava(
+        self, datas, use_fake_garmin_device=False
+    ):
         print(
             "start upload activities to garmin!, use_fake_garmin_device:",
             use_fake_garmin_device,
@@ -177,7 +179,6 @@ class Garmin:
         except Exception as e:
             print("garmin upload failed: ", e)
 
-
     async def upload_activities_files(self, files, use_fake_garmin_device=False):
         print(
             "start upload activities to garmin!, use_fake_garmin_device:",
@@ -187,8 +188,8 @@ class Garmin:
         await gather_with_concurrency(
             10,
             [
-            self.upload_activity_from_file(file=f, use_fake_garmin_device=False)
-            for f in files
+                self.upload_activity_from_file(file=f, use_fake_garmin_device=False)
+                for f in files
             ],
         )
 

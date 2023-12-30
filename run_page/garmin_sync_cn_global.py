@@ -48,18 +48,18 @@ if __name__ == "__main__":
         print("Missing argument nor valid configuration file")
         sys.exit(1)
 
-    # Step 1: 
+    # Step 1:
     # Sync all activities from Garmin CN to Garmin Global in FIT format
     # If the activity is manually imported with a GPX, the GPX file will be synced
 
     # load synced activity list
-    synced_activity = load_synced_activity_list()    
-    
+    synced_activity = load_synced_activity_list()
+
     folder = FIT_FOLDER
     # make gpx or tcx dir
     if not os.path.exists(folder):
         os.mkdir(folder)
-    
+
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(
         download_new_activities(
@@ -79,10 +79,10 @@ if __name__ == "__main__":
         if os.path.exists(os.path.join(folder, f"{i}.fit")):
             to_upload_files.append(os.path.join(folder, f"{i}.fit"))
         elif os.path.exists(os.path.join(folder, f"{i}.gpx")):
-            # upload files with gpx format 
+            # upload files with gpx format
             # which are manually uploaded to garmin connect
             to_upload_files.append(os.path.join(folder, f"{i}.gpx"))
-    
+
     print("Files to sync:" + " ".join(to_upload_files))
     garmin_global_client = Garmin(
         secret_string_global,
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     )
     loop.run_until_complete(future)
 
-    # Save synced activity list for speeding up 
+    # Save synced activity list for speeding up
     synced_activity.extend(new_ids)
     save_synced_activity_list(synced_activity)
 
