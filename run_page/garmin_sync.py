@@ -117,7 +117,7 @@ class Garmin:
         response.raise_for_status()
         return response.read()
 
-    async def upload_activities_original(self, datas, use_fake_garmin_device=False):
+    async def upload_activities_original_from_strava(self, datas, use_fake_garmin_device=False):
         print(
             "start upload activities to garmin!, use_fake_garmin_device:",
             use_fake_garmin_device,
@@ -152,35 +152,46 @@ class Garmin:
                 print("garmin upload failed: ", e)
         await self.req.aclose()
 
+    async def upload_activity_from_file(self, file, use_fake_garmin_device=False):
+        print("Uploading " + str(file))
+        f = open(file, "rb")
+        # wrap fake garmin device to origin fit file, current not support gpx file
+        if use_fake_garmin_device:
+            file_body = wrap_device_info(f)
+        else:
+            file_body = BytesIO(f.read())
+        files = {"file": (file, file_body)}
+
+        try:
+            res = await self.req.post(
+                self.upload_url, files=files, headers=self.headers
+            )
+            f.close()
+        except Exception as e:
+            print(str(e))
+            # just pass for now
+            return
+        try:
+            resp = res.json()["detailedImportResult"]
+            print("garmin upload success: ", resp)
+        except Exception as e:
+            print("garmin upload failed: ", e)
+
+
     async def upload_activities_files(self, files, use_fake_garmin_device=False):
         print(
             "start upload activities to garmin!, use_fake_garmin_device:",
             use_fake_garmin_device,
         )
-        for file in files:
-            print(file)
-            f = open(file, "rb")
-            # wrap fake garmin device to origin fit file, current not support gpx file
-            if use_fake_garmin_device:
-                file_body = wrap_device_info(f)
-            else:
-                file_body = BytesIO(f.read())
-            files = {"file": (file, file_body)}
 
-            try:
-                res = await self.req.post(
-                    self.upload_url, files=files, headers=self.headers
-                )
-                f.close()
-            except Exception as e:
-                print(str(e))
-                # just pass for now
-                continue
-            try:
-                resp = res.json()["detailedImportResult"]
-                print("garmin upload success: ", resp)
-            except Exception as e:
-                print("garmin upload failed: ", e)
+        await gather_with_concurrency(
+            10,
+            [
+            self.upload_activity_from_file(file=f, use_fake_garmin_device=False)
+            for f in files
+            ],
+        )
+
         await self.req.aclose()
 
 
@@ -236,6 +247,11 @@ async def download_garmin_data(client, activity_id, file_type="gpx"):
                     os.rename(
                         os.path.join(folder, f"{activity_id}_ACTIVITY.fit"),
                         os.path.join(folder, f"{activity_id}.fit"),
+                    )
+                elif file_info.filename.endswith(".gpx"):
+                    os.rename(
+                        os.path.join(folder, f"{activity_id}_ACTIVITY.gpx"),
+                        os.path.join(folder, f"{activity_id}.gpx"),
                     )
                 else:
                     os.remove(os.path.join(folder, file_info.filename))
