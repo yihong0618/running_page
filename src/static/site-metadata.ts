@@ -10,9 +10,9 @@ interface ISiteMetadataResult {
 }
 
 const data: ISiteMetadataResult = {
-  siteTitle: 'Echos Running Page',
+  siteTitle: "Echo's Running Page",
   siteUrl: 'https://donghao526.github.io/running/',
-  logo: 'https://cdn-icons-png.flaticon.com/512/4721/4721050.png',
+  logo: 'https://media.istockphoto.com/id/1158723576/vector/running-man-icon-sign-flat.jpg?s=612x612&w=0&k=20&c=Nfj6k5NvsAdx9nS5JeqrK_tkpVvJ1pDHZfe7mqSvMOU=',
   description: 'Personal site and blog',
   navLinks: [
     {
