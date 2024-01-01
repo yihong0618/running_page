@@ -109,8 +109,10 @@ class Track:
         self.start_time_local = start_time
         self.end_time = start_time + activity.elapsed_time
         self.length = float(activity.distance)
-        if not IGNORE_BEFORE_SAVING:
+        if IGNORE_BEFORE_SAVING:
             summary_polyline = filter_out(activity.summary_polyline)
+        else:
+            summary_polyline = activity.summary_polyline
         polyline_data = polyline.decode(summary_polyline) if summary_polyline else []
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
         self.run_id = activity.run_id

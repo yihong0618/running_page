@@ -4,13 +4,14 @@ import {
   sortDateFuncReverse,
   convertMovingTime2Sec,
   Activity,
+  RunIds,
 } from '@/utils/utils';
 import RunRow from './RunRow';
 import styles from './style.module.scss';
 
 interface IRunTableProperties {
   runs: Activity[];
-  locateActivity: (_date: string) => void;
+  locateActivity: (_runIds: RunIds) => void;
   setActivity: (_runs: Activity[]) => void;
   runIndex: number;
   setRunIndex: (_index: number) => void;
@@ -35,8 +36,8 @@ const RunTable = ({
       : b.average_speed - a.average_speed;
   const sortBPMFunc: SortFunc = (a, b) => {
     return sortFuncInfo === 'BPM'
-      ? a.average_heartrate ?? 0 - (b.average_heartrate ?? 0)
-      : b.average_heartrate ?? 0 - (a.average_heartrate ?? 0);
+      ? (a.average_heartrate ?? 0) - (b.average_heartrate ?? 0)
+      : (b.average_heartrate ?? 0) - (a.average_heartrate ?? 0);
   };
   const sortRunTimeFunc: SortFunc = (a, b) => {
     const aTotalSeconds = convertMovingTime2Sec(a.moving_time);

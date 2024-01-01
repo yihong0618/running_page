@@ -1,13 +1,15 @@
 ## Note
+
 1. clone or Fork before vercel 404 need to pull the latest code
 2. python3(python) in README means python3 python
 3. use v2.0 need change vercel setting from gatsby to vite
 4. 2023.09.26 garmin need secret_string(and in Actions) get
+
 ```bash
   python run_page/get_garmin_secret.py ${email} ${password}
   # if cn
   python run_page/get_garmin_secret.py ${email} ${password} --is-cn
-  ```
+```
 
 ![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
 
@@ -85,7 +87,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | AW-GPX      |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚        |
 | [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro/>                     | Garmin      |
 | [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
@@ -93,7 +95,8 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
 | [Jeffggmm](https://github.com/Jeffggmm)           | <https://jeffggmm.github.io/workouts_page/>    | Garmin      |
 | [s1smart](https://github.com/s1smart)             | <https://s1smart.github.io/running_page/>      | Strava      |
-
+| [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
+| [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>            | Strava      |
 </details>
 
 ## 它是怎么工作的
@@ -194,10 +197,9 @@ docker run -itd -p 80:80   running_page:latest
 > 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.ts`
 
 ```typescript
-const MAPBOX_TOKEN ='pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+const MAPBOX_TOKEN =
+  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
-
-
 
 ## 个性化设置
 
@@ -378,6 +380,7 @@ python3(python) run_page/joyrun_sync.py 13333xxxx xxxx
 ```
 
 joyrun 导出 gpx 文件
+
 > 导出的 gpx 在 GPX_OUT 目录，方便上传到其它软件
 
 ```bash
@@ -578,10 +581,15 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 
 获取 Nike 的 refresh_token
 
-1. 登录 [Nike](https://www.nike.com) 官网
-2. In Developer -> Application-> Storage -> https:unite.nike.com 中找到 refresh_token
+**全部需要在大陆以外的全局 ip 下进行**
 
-![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png) 3. 在项目根目录下执行：
+![example img](https://user-images.githubusercontent.com/67903793/282300381-4e7437d0-65a9-4eed-93d1-2b70e360215f.png)
+
+1. 在这里登陆[website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG), 打开 F12 在浏览器抓 login -> XHR -> get the `refresh_token` from login api
+
+2. 复制 `refresh_token` 之后可以添加在GitHub Secrets 中，也可以直接在命令行中使用
+
+> Chrome 浏览器：按下 F12 打开浏览器开发者工具，点击 Application 选项卡，来到左侧的 Storage 面板，点击展开 Local storage，点击下方的 https://unite.nike.com。接着点击右侧的 com.nike.commerce.nikedotcom.web.credential Key，下方会分行显示我们选中的对象，可以看到 refresh_token ，复制 refresh_token 右侧的值。Safari 浏览器：在 Safari 打开 Nike 的网页后，右击页面，选择「检查元素」，打开浏览器开发者工具。点击「来源」选项卡，在左侧找到 XHR 文件夹，点击展开，在下方找到 login 文件并单击，在右侧同样可以看到 refresh_token ，复制 refresh_token 右侧的值。
 
 ```bash
 python3(python) run_page/nike_sync.py ${nike refresh_token}
@@ -904,9 +912,17 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 
 4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到 `Workflow permissions` 的设置项，将选项配置为 `Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
 
+
+5. 如果想把你的 running_page 部署在 xxx.github.io 而不是 xxx.github.io/run_page，需要做三点
+
+-  修改你的 fork 的 running_page 仓库改名为 xxx.github.io, xxx 是你 github 的 username
+-  修改 gh-pages.yml 中的 Build 模块，删除 `${{ github.event.repository.name }}` 改为`run: PATH_PREFIX=/ pnpm build` 即可
+-  src/static/site-metadata.ts 中 `siteUrl: ''` 即可
+
 </details>
 
 ## GitHub Actions
+
 > Fork 的同学请一定不要忘了把 GitHub Token 改成自己的，否则会 push 到我的 repo 中，谢谢大家。
 
 <details>
@@ -963,7 +979,6 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 </center>
 
 </details>
-
 
 ## Github Cache
 
@@ -1033,17 +1048,18 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 # FAQ
 
--  Strava 100 每 15 分钟的请求，1000 每日限制
+- Strava 100 每 15 分钟的请求，1000 每日限制
 
-   <https://www.strava.com/settings/api>
+  <https://www.strava.com/settings/api>
   <https://developers.strava.com/docs/#rate-limiting>
 
-    等待时间限制（这里是 strava 接口请求限制），不要关闭终端，这里会自动执行下一组上传数据
+  等待时间限制（这里是 strava 接口请求限制），不要关闭终端，这里会自动执行下一组上传数据
 
-    ```
-    Strava API Rate Limit Exceeded. Retry after 100 seconds
-    Strava API Rate Limit Timeout. Retry in 799.491622 seconds
-    ```
+  ```
+  Strava API Rate Limit Exceeded. Retry after 100 seconds
+  Strava API Rate Limit Timeout. Retry in 799.491622 seconds
+  ```
+
 - vercel git
 
   如果想 ignpre gh-pages 可以在 `settings` -> `build` -> `Ignored Build Step` -> `Custom` 输入命令：

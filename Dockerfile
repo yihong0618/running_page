@@ -24,8 +24,7 @@ RUN npm config set registry https://registry.npm.taobao.org \
 FROM develop-py AS data
 ARG app
 ARG nike_refresh_token
-ARG email
-ARG password
+ARG secret_string
 ARG client_id
 ARG client_secret
 ARG refresh_token
@@ -39,9 +38,9 @@ RUN DUMMY=${DUMMY}; \
   if [ "$app" = "NRC" ] ; then \
   python3 run_page/nike_sync.py ${nike_refresh_token}; \
   elif [ "$app" = "Garmin" ] ; then \
-  python3 run_page/garmin_sync.py ${email} ${password}; \
+  python3 run_page/garmin_sync.py ${secret_string} ; \
   elif [ "$app" = "Garmin-CN" ] ; then \
-  python3 run_page/garmin_sync.py ${email} ${password}  --is-cn ; \
+  python3 run_page/garmin_sync.py ${secret_string} --is-cn ; \
   elif [ "$app" = "Strava" ] ; then \
   python3 run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token};\
   elif [ "$app" = "Nike_to_Strava" ] ; then \
@@ -60,5 +59,5 @@ COPY --from=data /root/running_page /root/running_page
 RUN pnpm run build
 
 FROM nginx:alpine AS web
-COPY --from=frontend-build /root/running_page/public /usr/share/nginx/html/
+COPY --from=frontend-build /root/running_page/dist /usr/share/nginx/html/
 COPY --from=frontend-build /root/running_page/assets /usr/share/nginx/html/assets

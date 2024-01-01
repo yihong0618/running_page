@@ -1,6 +1,6 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import React, { useRef, useCallback } from 'react';
-import Map, { Layer, Source, FullscreenControl, MapRef } from 'react-map-gl';
+import Map, { Layer, Source, FullscreenControl, NavigationControl, MapRef } from 'react-map-gl';
 import useActivities from '@/hooks/useActivities';
 import {
   MAP_LAYER_LIST,
@@ -14,7 +14,7 @@ import {
   MAP_HEIGHT,
 } from '@/utils/const';
 import { Coordinate, IViewState, geoJsonForMap } from '@/utils/utils';
-import RunMarker from './RunMaker';
+import RunMarker from './RunMarker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.scss';
 import { FeatureCollection } from 'geojson';
@@ -82,7 +82,7 @@ const RunMap = ({
     [endLon, endLat] = points[points.length - 1];
   }
   let dash = USE_DASH_LINE && !isSingleRun ? [2, 2] : [2, 0];
-  const onMove = React.useCallback(({ viewState }: {viewState: IViewState}) => {
+  const onMove = React.useCallback(({ viewState }: { viewState: IViewState }) => {
     setViewState(viewState);
   }, []);
   const style: React.CSSProperties = {
@@ -98,7 +98,7 @@ const RunMap = ({
 
   return (
     <Map
-      { ...viewState }
+      {...viewState}
       onMove={onMove}
       style={style}
       mapStyle="mapbox://styles/mapbox/dark-v10"
@@ -141,6 +141,7 @@ const RunMap = ({
       )}
       <span className={styles.runTitle}>{title}</span>
       <FullscreenControl style={fullscreenButton} />
+      <NavigationControl showCompass={false} position={'bottom-right'} style={{ opacity: 0.3 }} />
     </Map>
   );
 };

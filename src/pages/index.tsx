@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import React, { useEffect, useState } from 'react';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
 import RunMap from '@/components/RunMap';
@@ -21,6 +21,7 @@ import {
   scrollToMap,
   sortDateFunc,
   titleForShow,
+  RunIds,
 } from '@/utils/utils';
 
 const Index = () => {
@@ -47,6 +48,9 @@ const Index = () => {
     func: (_run: Activity, _value: string) => boolean
   ) => {
     scrollToMap();
+    if (name != 'Year') {
+      setYear(thisYear)
+    }
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
     setTitle(`${item} ${name} Running Heatmap`);
@@ -74,10 +78,12 @@ const Index = () => {
     changeByItem(title, 'Title', filterTitleRuns);
   };
 
-  const locateActivity = (runIds: [Number]) => {
+  const locateActivity = (runIds: RunIds) => {
     const ids = new Set(runIds);
 
-    const selectedRuns = runs.filter((r) => ids.has(r.run_id));
+    const selectedRuns = !runIds.length
+      ? runs
+      : runs.filter((r: any) => ids.has(r.run_id));
 
     if (!selectedRuns.length) {
       return;
@@ -126,19 +132,26 @@ const Index = () => {
     if (!svgStat) {
       return;
     }
-    svgStat.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target) {
-        const tagName = target.tagName.toLowerCase();
 
-        // click the github-stat style svg
-        if (
-          tagName === 'rect' &&
-          parseFloat(target.getAttribute('width') || '0.0') === 2.6 &&
-          parseFloat(target.getAttribute('height') || '0.0') === 2.6 &&
-          target.getAttribute('fill') !== '#444444'
-        ) {
-          const [runDate] = target.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
+    const handleClick = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName.toLowerCase() === 'path') {
+        // Use querySelector to get the <desc> element and the <title> element.
+        const descEl = target.querySelector('desc');
+        if (descEl) {
+          // If the runId exists in the <desc> element, it means that a running route has been clicked.
+          const runId = Number(descEl.innerHTML);
+          if (!runId) {
+            return;
+          }
+          locateActivity([runId]);
+          return;
+        }
+
+        const titleEl = target.querySelector('title');
+        if (titleEl) {
+          // If the runDate exists in the <title> element, it means that a date square has been clicked.
+          const [runDate] = titleEl.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
             `${+thisYear + 1}`,
           ];
           const runIDsOnDate = runs
@@ -148,20 +161,13 @@ const Index = () => {
             return;
           }
           locateActivity(runIDsOnDate);
-        } else if (tagName === 'polyline') {
-          // click the route grid svg
-          const desc = target.getElementsByTagName('desc')[0];
-          if (!desc) {
-            return;
-          }
-          const run_id = Number(desc.innerHTML);
-          if (!run_id) {
-            return;
-          }
-          locateActivity([run_id]);
         }
       }
-    });
+    }
+    svgStat.addEventListener('click', handleClick);
+    return () => {
+      svgStat && svgStat.removeEventListener('click', handleClick);
+    };
   }, [year]);
 
   return (
