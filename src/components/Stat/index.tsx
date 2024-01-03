@@ -1,7 +1,7 @@
-import React from 'react';
+import { CSSProperties } from 'react';
 import { intComma } from '@/utils/utils';
 
-const divStyle: React.CSSProperties = {
+const divStyle: CSSProperties = {
   fontWeight: '700',
 };
 

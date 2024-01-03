@@ -91,7 +91,9 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Echo](https://github.com/donghao526)             | <https://donghao526.github.io/running>         | JoyRun      |
 | [Jeffggmm](https://github.com/Jeffggmm)           | <https://jeffggmm.github.io/workouts_page/>    | Garmin      |
 | [s1smart](https://github.com/s1smart)             | <https://s1smart.github.io/running_page/>      | Strava      |
-
+| [XmchxUp](https://github.com/XmchxUp)             | <https://xmchxup.github.io/running_page/>      | Strava      |
+| [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
+| [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>            | Strava      |
 </details>
 
 ## How it works
@@ -212,6 +214,13 @@ siteMetadata: {
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
+```
+
+- To use Google Analytics, you need to modify the configuration in the `src/utils/const.ts` file.
+
+```typescript
+const USE_GOOGLE_ANALYTICS = false;
+const GOOGLE_ANALYTICS_TRACKING_ID = '';
 ```
 
 > privacy protection,setting flowing env:
@@ -720,8 +729,6 @@ For more display effects, see:
 - Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
 
 4. make sure you have write permissions in Workflow permissions settings.
-
-
 
 5. If you want to deploy your running_page to xxx.github.io instead of xxx.github.io/running_page, you need to do three things:
 

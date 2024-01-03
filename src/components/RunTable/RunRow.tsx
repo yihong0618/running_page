@@ -1,10 +1,9 @@
-import React from 'react';
-import { formatPace, titleForRun, formatRunTime, Activity } from '@/utils/utils';
+import { formatPace, titleForRun, formatRunTime, Activity, RunIds } from '@/utils/utils';
 import styles from './style.module.scss';
 
 interface IRunRowProperties {
   elementIndex: number;
-  locateActivity: (_date: string) => void;
+  locateActivity: (_runIds: RunIds) => void;
   run: Activity;
   runIndex: number;
   setRunIndex: (_ndex: number) => void;
@@ -16,7 +15,11 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IR
   const heartRate = run.average_heartrate;
   const runTime = formatRunTime(run.moving_time);
   const handleClick = () => {
-    if (runIndex === elementIndex) return;
+    if (runIndex === elementIndex) {
+      setRunIndex(-1);
+      locateActivity([]);
+      return
+    };
     setRunIndex(elementIndex);
     locateActivity([run.run_id]);
   };
