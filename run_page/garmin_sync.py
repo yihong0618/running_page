@@ -154,14 +154,11 @@ class Garmin:
                 print("garmin upload failed: ", e)
         await self.req.aclose()
 
-    async def upload_activity_from_file(self, file, use_fake_garmin_device=False):
+    async def upload_activity_from_file(self, file):
         print("Uploading " + str(file))
         f = open(file, "rb")
-        # wrap fake garmin device to origin fit file, current not support gpx file
-        if use_fake_garmin_device:
-            file_body = wrap_device_info(f)
-        else:
-            file_body = BytesIO(f.read())
+
+        file_body = BytesIO(f.read())
         files = {"file": (file, file_body)}
 
         try:
@@ -179,18 +176,12 @@ class Garmin:
         except Exception as e:
             print("garmin upload failed: ", e)
 
-    async def upload_activities_files(self, files, use_fake_garmin_device=False):
-        print(
-            "start upload activities to garmin!, use_fake_garmin_device:",
-            use_fake_garmin_device,
-        )
+    async def upload_activities_files(self, files):
+        print("start upload activities to garmin!")
 
         await gather_with_concurrency(
             10,
-            [
-                self.upload_activity_from_file(file=f, use_fake_garmin_device=False)
-                for f in files
-            ],
+            [self.upload_activity_from_file(file=f) for f in files],
         )
 
         await self.req.aclose()

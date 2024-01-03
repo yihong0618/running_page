@@ -91,7 +91,7 @@ if __name__ == "__main__":
     )
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(
-        garmin_global_client.upload_activities_files(to_upload_files, False)
+        garmin_global_client.upload_activities_files(to_upload_files)
     )
     loop.run_until_complete(future)
 
