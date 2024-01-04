@@ -206,6 +206,11 @@ async def download_garmin_data(client, activity_id, file_type="gpx"):
                         os.path.join(folder, f"{activity_id}_ACTIVITY.fit"),
                         os.path.join(folder, f"{activity_id}.fit"),
                     )
+                elif file_info.filename.endswith(".gpx"):
+                    os.rename(
+                        os.path.join(folder, f"{activity_id}_ACTIVITY.gpx"),
+                        os.path.join(FOLDER_DICT["gpx"], f"{activity_id}.gpx"),
+                    )
                 else:
                     os.remove(os.path.join(folder, file_info.filename))
             os.remove(file_path)
@@ -323,4 +328,7 @@ if __name__ == "__main__":
         )
     )
     loop.run_until_complete(future)
+    # fit may contain gpx(maybe upload by user)
+    if file_type == "fit":
+        make_activities_file(SQL_FILE, FOLDER_DICT["gpx"], JSON_FILE, file_suffix="gpx")
     make_activities_file(SQL_FILE, folder, JSON_FILE, file_suffix=file_type)
