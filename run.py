@@ -31,7 +31,7 @@ def run_test():
     time.sleep(3)
 
     # git
-    run_command = "git add . && git commit -m 'keep_data update' && git push origin master"
+    run_command = "git add . && git commit -m 'keep_run_data update' && git push"
 
   run_process = subprocess.Popen(run_command, shell=True)
   run_process.wait()
