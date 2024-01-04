@@ -1,8 +1,5 @@
 import traceback
 
-from fit_tool.fit_file import FitFile
-from fit_tool.fit_file_builder import FitFileBuilder
-from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
 from io import BytesIO
 
 # the device manufacturer and product info can be found in github,
