@@ -9,20 +9,27 @@
 }
 
 .buttons {
+  position: absolute;
+  top: 10px;
+  left: 10px;
   margin: 0 auto;
+  padding-right: 70px;
 }
 
 .button {
   display: inline-block;
   position: relative;
   cursor: pointer;
-  width: 9%;
-  padding: 1.3rem;
-  margin-top: .1rem;
+  padding: 1.3rem 0.4rem;
+  margin-top: 0.1rem;
   font-size: 1rem;
   text-align: center;
   color: white;
   font-family: $global-font-family;
+}
+
+.selected {
+  color: $nike;
 }
 
 .runTitle {
