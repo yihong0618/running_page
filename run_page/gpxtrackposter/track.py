@@ -25,6 +25,12 @@ start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
 IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
+
+# Garmin stores all latitude and longitude values as 32-bit integer values.
+# This unit is called semicircle.
+# So that gives 2^32 possible values.
+# And to represent values up to 360° (or -180° to 180°), each 'degree' represents 2^32 / 360 = 11930465.
+# So dividing latitude and longitude (int32) value by 11930465 will give the decimal value.
 SEMICIRCLE = 11930465
 
 
@@ -89,7 +95,7 @@ class Track:
             stream = Stream.from_file(file_name)
             decoder = Decoder(stream)
             messages, errors = decoder.read(convert_datetimes_to_dates=False)
-            if len(errors) > 0:
+            if errors:
                 print(f"FIT file read fail: {errors}")
             self._load_fit_data(messages)
         except Exception as e:
@@ -259,7 +265,7 @@ class Track:
                 lng = record["position_long"] / SEMICIRCLE
                 _polylines.append(s2.LatLng.from_degrees(lat, lng))
                 self.polyline_container.append([lat, lng])
-        if len(self.polyline_container) > 0:
+        if self.polyline_container:
             self.start_time_local, self.end_time_local = parse_datetime_to_local(
                 self.start_time, self.end_time, self.polyline_container[0]
             )
