@@ -72,16 +72,16 @@ if __name__ == "__main__":
         )
     )
     loop.run_until_complete(future)
-
     new_ids = future.result()
+
     to_upload_files = []
     for i in new_ids:
-        if os.path.exists(os.path.join(folder, f"{i}.fit")):
-            to_upload_files.append(os.path.join(folder, f"{i}.fit"))
-        elif os.path.exists(os.path.join(folder, f"{i}.gpx")):
-            # upload files with gpx format
-            # which are manually uploaded to garmin connect
-            to_upload_files.append(os.path.join(folder, f"{i}.gpx"))
+        if os.path.exists(os.path.join(FIT_FOLDER, f"{i}.fit")):
+            # upload fit files
+            to_upload_files.append(os.path.join(FIT_FOLDER, f"{i}.fit"))
+        elif os.path.exists(os.path.join(GPX_FOLDER, f"{i}.gpx")):
+            # upload gpx files which are manually uploaded to garmin connect
+            to_upload_files.append(os.path.join(GPX_FOLDER, f"{i}.gpx"))
 
     print("Files to sync:" + " ".join(to_upload_files))
     garmin_global_client = Garmin(
@@ -100,25 +100,6 @@ if __name__ == "__main__":
     save_synced_activity_list(synced_activity)
 
     # Step 2:
-    # Generate track from gpx file
-
-    # Todo: use fit file to directly generate track after fixing issue 584
-    # https://github.com/yihong0618/running_page/issues/584
-    folder = GPX_FOLDER
-    if not os.path.exists(folder):
-        os.mkdir(folder)
-    downloaded_ids = get_downloaded_ids(folder)
-
-    loop = asyncio.get_event_loop()
-    future = asyncio.ensure_future(
-        download_new_activities(
-            secret_string_cn,
-            auth_domain,
-            downloaded_ids,
-            is_only_running,
-            folder,
-            "gpx",
-        )
-    )
-    loop.run_until_complete(future)
-    make_activities_file(SQL_FILE, folder, JSON_FILE, file_suffix="gpx")
+    # Generate track from fit/gpx file
+    make_activities_file(SQL_FILE, GPX_FOLDER, JSON_FILE, file_suffix="gpx")
+    make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, file_suffix="fit")
