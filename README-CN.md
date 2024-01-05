@@ -605,14 +605,6 @@ python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
 python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${garmin_secret_string}
 ```
 
-**注意：此脚本仅将Garmin-CN中的活动同步到Garmin，不会创建跑步页面。** 
-
-如果你想一起建立running_page，请在终端中输入以下命令。
-
-```bash
-python3(python) run_page/garmin_sync.py ${garmin_cn_secret_string} --is-cn
-```
-
 </details>
 
 

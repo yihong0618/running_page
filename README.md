@@ -417,15 +417,6 @@ Enter the following command in the terminal
 python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${garmin_secret_string}
 ```
 
-**Note: this script ONLY synchronizes activities in Garmin-CN to Garmin. It will NOT build running page.** 
-
-If you want to build running page together, enter the following command in the terminal.
-
-```bash
-# build running page from garmin-cn
-python3(python) run_page/garmin_sync.py ${garmin_cn_secret_string} --is-cn
-```
-
 </details>
 
 ### Nike Run Club
