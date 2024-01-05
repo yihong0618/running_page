@@ -20,7 +20,7 @@ const YearsStat = ({ year, onClick }: { year: string, onClick: (_year: string) =
           <br />
         </p>
       </section>
-      <hr color="red" />
+      <hr color="white" />
       {yearsArrayUpdate.map((year) => (
         <YearStat key={year} year={year} onClick={onClick} />
       ))}

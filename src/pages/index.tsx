@@ -47,6 +47,10 @@ const Index = () => {
     name: string,
     func: (_run: Activity, _value: string) => boolean
   ) => {
+
+     if(name != 'Year'){
+       setYear(thisYear)
+     }
     scrollToMap();
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
