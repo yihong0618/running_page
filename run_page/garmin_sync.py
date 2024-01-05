@@ -43,10 +43,6 @@ GARMIN_CN_URL_DICT = {
     "ACTIVITY_URL": "https://connectapi.garmin.cn/activity-service/activity/{activity_id}",
 }
 
-# set to True if you want to sync all time activities
-# default only sync last 20
-GET_ALL = False
-
 
 class Garmin:
     def __init__(self, secret_string, auth_domain, is_only_running=False):
@@ -258,22 +254,13 @@ async def download_garmin_data(client, activity_id, file_type="gpx"):
 
 
 async def get_activity_id_list(client, start=0):
-    if GET_ALL:
-        activities = await client.get_activities(start, 100)
-        if len(activities) > 0:
-            ids = list(map(lambda a: str(a.get("activityId", "")), activities))
-            print("Syncing Activity IDs")
-            return ids + await get_activity_id_list(client, start + 100)
-        else:
-            return []
+    activities = await client.get_activities(start, 100)
+    if len(activities) > 0:
+        ids = list(map(lambda a: str(a.get("activityId", "")), activities))
+        print("Syncing Activity IDs")
+        return ids + await get_activity_id_list(client, start + 100)
     else:
-        activities = await client.get_activities(start, 20)
-        if len(activities) > 0:
-            ids = list(map(lambda a: str(a.get("activityId", "")), activities))
-            print(f"Syncing Activity IDs")
-            return ids
-        else:
-            return []
+        return []
 
 
 async def gather_with_concurrency(n, tasks):
@@ -377,5 +364,7 @@ if __name__ == "__main__":
     loop.run_until_complete(future)
     # fit may contain gpx(maybe upload by user)
     if file_type == "fit":
-        make_activities_file_only(SQL_FILE, FOLDER_DICT["gpx"], JSON_FILE, file_suffix="gpx")
+        make_activities_file_only(
+            SQL_FILE, FOLDER_DICT["gpx"], JSON_FILE, file_suffix="gpx"
+        )
     make_activities_file_only(SQL_FILE, folder, JSON_FILE, file_suffix=file_type)
