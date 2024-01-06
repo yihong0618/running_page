@@ -47,10 +47,10 @@ const RunMap = ({
     (ref: MapRef) => {
       if (ref !== null) {
         const map = ref.getMap();
-        if (map) {
+        if (map && IS_CHINESE) {
             map.addControl(new MapboxLanguage({defaultLanguage: 'zh-Hans'}));
-          }
-          map.on('load', () => {
+        }
+        map.on('load', () => {
             if (!ROAD_LABEL_DISPLAY) {
               // todo delete layers
               MAP_LAYER_LIST.forEach((layerId) => {
@@ -58,8 +58,8 @@ const RunMap = ({
               });
             }
             mapRef.current = ref;
-          });
-        }
+        });
+      }
       if (mapRef.current) {
         const map = mapRef.current.getMap();
         if (map) {
