@@ -117,7 +117,7 @@ const RunMap = ({
   const fullscreenButton: React.CSSProperties = {
     position: 'absolute',
     marginTop: '29.2px',
-    right: '10px',
+    right: '0px',
     opacity: 0.3,
   };
 
