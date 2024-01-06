@@ -51,7 +51,6 @@ const RunMap = ({
         }
         map.on('load', () => {
             if (!ROAD_LABEL_DISPLAY) {
-              // todo delete layers
               MAP_LAYER_LIST.forEach((layerId) => {
                 map.removeLayer(layerId);
               });
@@ -117,7 +116,7 @@ const RunMap = ({
   const fullscreenButton: React.CSSProperties = {
     position: 'absolute',
     marginTop: '29.2px',
-    right: '10px',
+    right: '0px',
     opacity: 0.3,
   };
 
