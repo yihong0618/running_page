@@ -14,7 +14,7 @@ import {
   MAP_HEIGHT,
 } from '@/utils/const';
 import { Coordinate, IViewState, geoJsonForMap } from '@/utils/utils';
-import RunMarker from './RunMaker';
+import RunMarker from './RunMarker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.scss';
 import { FeatureCollection } from 'geojson';
@@ -46,10 +46,10 @@ const RunMap = ({
     (ref: MapRef) => {
       if (ref !== null) {
         const map = ref.getMap();
-        if (map) {
+        if (map && IS_CHINESE) {
             map.addControl(new MapboxLanguage({defaultLanguage: 'zh-Hans'}));
-          }
-          map.on('load', () => {
+        }
+        map.on('load', () => {
             if (!ROAD_LABEL_DISPLAY) {
               // todo delete layers
               MAP_LAYER_LIST.forEach((layerId) => {
@@ -57,8 +57,8 @@ const RunMap = ({
               });
             }
             mapRef.current = ref;
-          });
-        }
+        });
+      }
       if (mapRef.current) {
         const map = mapRef.current.getMap();
         if (map) {
@@ -107,7 +107,7 @@ const RunMap = ({
     [endLon, endLat] = points[points.length - 1];
   }
   let dash = USE_DASH_LINE && !isSingleRun && !isBigMap ? [2, 2] : [2, 0];
-  const onMove = React.useCallback(({ viewState }: {viewState: IViewState}) => {
+  const onMove = React.useCallback(({ viewState }: { viewState: IViewState }) => {
     setViewState(viewState);
   }, []);
   const style: React.CSSProperties = {
@@ -123,7 +123,7 @@ const RunMap = ({
 
   return (
     <Map
-      { ...viewState }
+      {...viewState}
       onMove={onMove}
       style={style}
       mapStyle="mapbox://styles/mapbox/dark-v10"
