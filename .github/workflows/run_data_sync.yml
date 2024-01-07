@@ -24,7 +24,7 @@ env:
   RUN_TYPE: keep # support strava/nike/garmin/garmin_cn/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
   ATHLETE: Alan_Hsu
   TITLE: Alan_Hsu Running
-  MIN_GRID_DISTANCE: 10 # change min distance here
+  MIN_GRID_DISTANCE: 5 # change min distance here
   TITLE_GRID: Over 5km Runs # also here
   GITHUB_NAME: Alan_Hsu # change to yours
   GITHUB_EMAIL: xulanzhong521@gmail.com # change to yours
