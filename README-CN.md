@@ -137,6 +137,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
 - **[FIT](#fit)**
+- **[佳明国内同步国际](#Garmin-CN-to-Garmin)**
 - **[Tcx+Strava(upload all tcx data to strava)](#tcx_to_strava)**
 - **[Gpx+Strava(upload all tcx data to strava)](#gpx_to_strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
@@ -569,6 +570,43 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 ```
 
 </details>
+
+### Garmin-CN to Garmin
+
+<details>
+<summary> 同步佳明 CN 数据到 佳明国际区</summary>
+
+<br>
+
+- 如果你只想同步 `type running` 使用参数 --only-run
+**The Python version must be >=3.10**
+
+#### 获取佳明 CN 的密钥
+
+在终端中输入以下命令
+
+```bash
+python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
+```
+
+#### 获取佳明全球的密钥
+
+在终端中输入以下命令
+
+```bash
+python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
+```
+
+#### 同步 佳明 CN 到 佳明全球
+
+在终端中输入以下命令
+
+```bash
+python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${garmin_secret_string}
+```
+
+</details>
+
 
 ### Nike Run Club
 

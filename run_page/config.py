@@ -20,6 +20,7 @@ SQL_FILE = os.path.join(parent, "run_page", "data.db")
 JSON_FILE = os.path.join(parent, "src", "static", "activities.json")
 CSV_FILE = os.path.join(parent, "assets", "running.csv")
 SYNCED_FILE = os.path.join(parent, "imported.json")
+SYNCED_ACTIVITY_FILE = os.path.join(parent, "synced_activity.json")
 
 # TODO: Move into nike_sync NRC THINGS
 

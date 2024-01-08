@@ -125,6 +125,15 @@ jobs:
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }}  --only-run --is-cn
 
+      - name: Run sync Garmin CN to Garmin script
+        if: env.RUN_TYPE == 'garmin_sync_cn_global'
+        run: |
+          # make garimin secret string `python run_page/garmin_sync_cn_global.py ${email} ${password} --is-cn
+          python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}
+        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}  --only-run
+
+      
       - name: Run sync Only GPX script
         if: env.RUN_TYPE == 'only_gpx'
         run: |
