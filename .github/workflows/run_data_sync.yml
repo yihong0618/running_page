@@ -168,10 +168,10 @@ jobs:
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
         run: |
-          python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 5 --special-distance2 10 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
-          python run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}" --output assets/grid.svg  --min-distance 5.0 --special-color yellow --special-color2 red --special-distance 10 --special-distance2 40 --use-localtime
+          python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 5 --special-distance2 6 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+          python run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}" --output assets/grid.svg  --min-distance 5.0 --special-color yellow --special-color2 red --special-distance 6 --special-distance2 10 --use-localtime
           python run_page/gen_svg.py --from-db --type circular --use-localtime
-          python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --athlete "${{ env.ATHLETE }}" --special-distance 5 --special-distance2 10 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
+          python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --athlete "${{ env.ATHLETE }}" --special-distance 5 --special-distance2 8 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
 
       - name: Push new runs
         if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
