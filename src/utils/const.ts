@@ -35,6 +35,8 @@ const LINE_OPACITY = 0.4;
 const MAP_HEIGHT = 600;
 //set to `false` if you want to hide the road label characters
 const ROAD_LABEL_DISPLAY = true;
+//set to `true` if you want to display only the routes without showing the map.
+const PRIVACY_MODE = true;
 //set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
 const LIGHTS_ON = true;
 
@@ -88,6 +90,7 @@ export {
   USE_DASH_LINE,
   LINE_OPACITY,
   MAP_HEIGHT,
+  PRIVACY_MODE,
   LIGHTS_ON,
 };
 
