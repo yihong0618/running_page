@@ -215,7 +215,8 @@ siteMetadata: {
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
-// styling: set to `true` if you want to display only the routes without showing the map.
+// styling: set to `true` if you want to display only the routes without showing the map
+// Note: This config only affects the page display; please refer to "privacy protection" below for data protection
 const PRIVACY_MODE = false;
 // styling: set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
 const LIGHTS_ON = true;
