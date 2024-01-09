@@ -232,6 +232,8 @@ siteMetadata: {
 const USE_DASH_LINE = true;
 // styling: 透明度：[0, 1]
 const LINE_OPACITY = 0.4;
+// styling: 默认关灯: 设置为 `false`, 仅在隐私模式关闭时生效(`PRIVACY_MODE` = false)
+const DEFAULT_LIGHTS_ON = true;
 ```
 
 > 隐私保护：设置下面环境变量：

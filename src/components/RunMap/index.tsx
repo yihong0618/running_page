@@ -42,6 +42,20 @@ const RunMap = ({
   const { provinces } = useActivities();
   const mapRef = useRef<MapRef>();
   const [lights, setLights] = useState(true);
+  const [lights, setLights] = useState(LIGHTS_ON);
+  const keepWhenLightsOff = ['runs2']
+  function switchLayerVisibility(map: MapInstance, lights: boolean) {
+    const styleJson = map.getStyle();
+    styleJson.layers.forEach(it => {
+        if (!keepWhenLightsOff.includes(it.id)) {
+          if (lights)
+            map.setLayoutProperty(it.id, 'visibility', 'visible');
+          else
+            map.setLayoutProperty(it.id, 'visibility', 'none');
+        }
+      }
+    )
+  }
   const mapRefCallback = useCallback(
     (ref: MapRef) => {
       if (ref !== null) {
@@ -49,30 +63,21 @@ const RunMap = ({
         if (map && IS_CHINESE) {
             map.addControl(new MapboxLanguage({defaultLanguage: 'zh-Hans'}));
         }
-        map.on('load', () => {
+        // all style resources have been downloaded
+        // and the first visually complete rendering of the base style has occurred.
+        map.on('style.load', () => {
             if (!ROAD_LABEL_DISPLAY) {
               MAP_LAYER_LIST.forEach((layerId) => {
                 map.removeLayer(layerId);
               });
             }
             mapRef.current = ref;
+            switchLayerVisibility(map, lights);
         });
       }
       if (mapRef.current) {
         const map = mapRef.current.getMap();
-        if (map) {
-          const styleJson = map.getStyle();
-          const keepWhenLightsOff = ['runs2']
-          styleJson.layers.forEach(it => {
-              if (!keepWhenLightsOff.includes(it.id)) {
-                if (lights)
-                  map.setLayoutProperty(it.id, 'visibility', 'visible');
-                else
-                  map.setLayoutProperty(it.id, 'visibility', 'none');
-              }
-            }
-          )
-        }
+        switchLayerVisibility(map, lights);
       }
     },
     [mapRef, lights]
