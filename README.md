@@ -215,6 +215,10 @@ siteMetadata: {
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
+// styling: set to `true` if you want to display only the routes without showing the map.
+const PRIVACY_MODE = false;
+// styling: set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
+const LIGHTS_ON = true;
 ```
 
 - To use Google Analytics, you need to modify the configuration in the `src/utils/const.ts` file.
