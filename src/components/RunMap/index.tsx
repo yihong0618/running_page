@@ -1,6 +1,7 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import React, {useRef, useCallback, useState} from 'react';
 import Map, {Layer, Source, FullscreenControl, NavigationControl, MapRef} from 'react-map-gl';
+import {MapInstance} from "react-map-gl/src/types/lib";
 import useActivities from '@/hooks/useActivities';
 import {
   MAP_LAYER_LIST,
@@ -13,6 +14,8 @@ import {
   USE_DASH_LINE,
   LINE_OPACITY,
   MAP_HEIGHT,
+  PRIVACY_MODE,
+  LIGHTS_ON,
 } from '@/utils/const';
 import { Coordinate, IViewState, geoJsonForMap } from '@/utils/utils';
 import RunMarker from './RunMarker';
@@ -42,7 +45,19 @@ const RunMap = ({
 }: IRunMapProps) => {
   const { countries, provinces } = useActivities();
   const mapRef = useRef<MapRef>();
-  const [lights, setLights] = useState(true);
+  const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
+  const keepWhenLightsOff = ['runs2']
+  function switchLayerVisibility(map: MapInstance, lights: boolean) {
+    const styleJson = map.getStyle();
+    styleJson.layers.forEach(it => {
+      if (!keepWhenLightsOff.includes(it.id)) {
+        if (lights)
+          map.setLayoutProperty(it.id, 'visibility', 'visible');
+        else
+          map.setLayoutProperty(it.id, 'visibility', 'none');
+      }
+    })
+  }
   const mapRefCallback = useCallback(
     (ref: MapRef) => {
       if (ref !== null) {
@@ -50,31 +65,21 @@ const RunMap = ({
         if (map && IS_CHINESE) {
             map.addControl(new MapboxLanguage({defaultLanguage: 'zh-Hans'}));
         }
-        map.on('load', () => {
-            if (!ROAD_LABEL_DISPLAY) {
-              // todo delete layers
-              MAP_LAYER_LIST.forEach((layerId) => {
-                map.removeLayer(layerId);
-              });
-            }
-            mapRef.current = ref;
+        // all style resources have been downloaded
+        // and the first visually complete rendering of the base style has occurred.
+        map.on('style.load', () => {
+          if (!ROAD_LABEL_DISPLAY) {
+            MAP_LAYER_LIST.forEach((layerId) => {
+              map.removeLayer(layerId);
+            });
+          }
+          mapRef.current = ref;
+          switchLayerVisibility(map, lights);
         });
       }
       if (mapRef.current) {
         const map = mapRef.current.getMap();
-        if (map) {
-          const styleJson = map.getStyle();
-          const keepWhenLightsOff = ['runs2']
-          styleJson.layers.forEach(it => {
-              if (!keepWhenLightsOff.includes(it.id)) {
-                if (lights)
-                  map.setLayoutProperty(it.id, 'visibility', 'visible');
-                else
-                  map.setLayoutProperty(it.id, 'visibility', 'none');
-              }
-            }
-          )
-        }
+        switchLayerVisibility(map, lights);
       }
     },
     [mapRef, lights]
@@ -179,7 +184,7 @@ const RunMap = ({
       )}
       <span className={styles.runTitle}>{title}</span>
       <FullscreenControl style={fullscreenButton}/>
-      <LightsControl setLights={setLights} lights={lights}/>
+      {!PRIVACY_MODE && <LightsControl setLights={setLights} lights={lights}/>}
       <NavigationControl showCompass={false} position={'bottom-right'} style={{opacity: 0.3}}/>
     </Map>
   );
