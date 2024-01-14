@@ -121,6 +121,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
 - **[FIT](#fit)**
+- **[Garmin-CN_to_Garmin(Sync Garmin-CN activities to Garmin Global)](#garmin-cn-to-garmin)**
 - **[Nike_to_Strava(Using NRC Run, Strava backup data)](#nike_to_strava)**
 - **[Tcx_to_Strava(upload all tcx data to strava)](#tcx_to_strava)**
 - **[Gpx_to_Strava(upload all gpx data to strava)](#gpx_to_strava)**
@@ -214,6 +215,11 @@ siteMetadata: {
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
+// styling: set to `true` if you want to display only the routes without showing the map
+// Note: This config only affects the page display; please refer to "privacy protection" below for data protection
+const PRIVACY_MODE = false;
+// styling: set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
+const LIGHTS_ON = true;
 ```
 
 - To use Google Analytics, you need to modify the configuration in the `src/utils/const.ts` file.
@@ -375,6 +381,45 @@ only-run：
 
 ```bash
 python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn --only-run
+```
+
+</details>
+
+### Garmin-CN to Garmin
+
+<details>
+<summary> Sync your <code>Garmin-CN</code> data to <code>Garmin</code></summary>
+
+<br>
+
+- If you only want to sync `type running` add args --only-run
+**The Python version must be >=3.10**
+
+#### Get Garmin CN Secret
+
+Enter the following command in the terminal
+
+```bash
+# to get secret_string
+python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
+```
+
+#### Get Garmin Secret
+
+Enter the following command in the terminal
+
+```bash
+# to get secret_string
+python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
+```
+
+#### Sync Garmin CN to Garmin
+
+Enter the following command in the terminal
+
+```bash
+# to sync garmin-cn to garmin-global
+python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${garmin_secret_string}
 ```
 
 </details>

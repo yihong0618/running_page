@@ -12,14 +12,8 @@ import gpxpy as mod_gpxpy
 import lxml
 import polyline
 import s2sphere as s2
-from fit_tool.fit_file import FitFile
-from fit_tool.profile.messages.activity_message import ActivityMessage
-from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
-from fit_tool.profile.messages.file_id_message import FileIdMessage
-from fit_tool.profile.messages.record_message import RecordMessage
-from fit_tool.profile.messages.session_message import SessionMessage
-from fit_tool.profile.messages.software_message import SoftwareMessage
-from fit_tool.profile.profile_type import Sport
+from garmin_fit_sdk import Decoder, Stream
+from garmin_fit_sdk.util import FIT_EPOCH_S
 from polyline_processor import filter_out
 from rich import print
 from tcxreader.tcxreader import TCXReader
@@ -31,6 +25,13 @@ start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
 IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
+
+# Garmin stores all latitude and longitude values as 32-bit integer values.
+# This unit is called semicircle.
+# So that gives 2^32 possible values.
+# And to represent values up to 360° (or -180° to 180°), each 'degree' represents 2^32 / 360 = 11930465.
+# So dividing latitude and longitude (int32) value by 11930465 will give the decimal value.
+SEMICIRCLE = 11930465
 
 
 class Track:
@@ -91,9 +92,12 @@ class Track:
             # (for example, treadmill runs pulled via garmin-connect-export)
             if os.path.getsize(file_name) == 0:
                 raise TrackLoadError("Empty FIT file")
-
-            fit = FitFile.from_file(file_name)
-            self._load_fit_data(fit)
+            stream = Stream.from_file(file_name)
+            decoder = Decoder(stream)
+            messages, errors = decoder.read(convert_datetimes_to_dates=False)
+            if errors:
+                print(f"FIT file read fail: {errors}")
+            self._load_fit_data(messages)
         except Exception as e:
             print(
                 f"Something went wrong when loading FIT. for file {self.file_names[0]}, we just ignore this file and continue"
@@ -223,59 +227,55 @@ class Track:
         )
         self.moving_dict = self._get_moving_data(gpx)
 
-    def _load_fit_data(self, fit: FitFile):
+    def _load_fit_data(self, fit: dict):
         _polylines = []
         self.polyline_container = []
-
-        for record in fit.records:
-            message = record.message
-
-            if isinstance(message, RecordMessage):
-                if message.position_lat and message.position_long:
-                    _polylines.append(
-                        s2.LatLng.from_degrees(
-                            message.position_lat, message.position_long
-                        )
-                    )
-                    self.polyline_container.append(
-                        [message.position_lat, message.position_long]
-                    )
-            elif isinstance(message, SessionMessage):
-                self.start_time = datetime.datetime.utcfromtimestamp(
-                    message.start_time / 1000
-                )
-                self.run_id = message.start_time
-                self.end_time = datetime.datetime.utcfromtimestamp(
-                    (message.start_time + message.total_elapsed_time * 1000) / 1000
-                )
-                self.length = message.total_distance
-                self.average_heartrate = (
-                    message.avg_heart_rate if message.avg_heart_rate != 0 else None
-                )
-                self.type = Sport(message.sport).name.lower()
-
-                # moving_dict
-                self.moving_dict["distance"] = message.total_distance
-                self.moving_dict["moving_time"] = datetime.timedelta(
-                    seconds=message.total_moving_time
-                    if message.total_moving_time
-                    else message.total_timer_time
-                )
-                self.moving_dict["elapsed_time"] = datetime.timedelta(
-                    seconds=message.total_elapsed_time
-                )
-                self.moving_dict["average_speed"] = (
-                    message.enhanced_avg_speed
-                    if message.enhanced_avg_speed
-                    else message.avg_speed
-                )
-
-        self.start_time_local, self.end_time_local = parse_datetime_to_local(
-            self.start_time, self.end_time, self.polyline_container[0]
+        message = fit["session_mesgs"][0]
+        self.start_time = datetime.datetime.utcfromtimestamp(
+            (message["start_time"] + FIT_EPOCH_S)
         )
-        self.start_latlng = start_point(*self.polyline_container[0])
-        self.polylines.append(_polylines)
-        self.polyline_str = polyline.encode(self.polyline_container)
+        self.run_id = self.__make_run_id(self.start_time)
+        self.end_time = datetime.datetime.utcfromtimestamp(
+            (message["start_time"] + FIT_EPOCH_S + message["total_elapsed_time"])
+        )
+        self.length = message["total_distance"]
+        self.average_heartrate = (
+            message["avg_heart_rate"] if "avg_heart_rate" in message else None
+        )
+        self.type = message["sport"].lower()
+
+        # moving_dict
+        self.moving_dict["distance"] = message["total_distance"]
+        self.moving_dict["moving_time"] = datetime.timedelta(
+            seconds=message["total_moving_time"]
+            if "total_moving_time" in message
+            else message["total_timer_time"]
+        )
+        self.moving_dict["elapsed_time"] = datetime.timedelta(
+            seconds=message["total_elapsed_time"]
+        )
+        self.moving_dict["average_speed"] = (
+            message["enhanced_avg_speed"]
+            if message["enhanced_avg_speed"]
+            else message["avg_speed"]
+        )
+        for record in fit["record_mesgs"]:
+            if "position_lat" in record and "position_long" in record:
+                lat = record["position_lat"] / SEMICIRCLE
+                lng = record["position_long"] / SEMICIRCLE
+                _polylines.append(s2.LatLng.from_degrees(lat, lng))
+                self.polyline_container.append([lat, lng])
+        if self.polyline_container:
+            self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                self.start_time, self.end_time, self.polyline_container[0]
+            )
+            self.start_latlng = start_point(*self.polyline_container[0])
+            self.polylines.append(_polylines)
+            self.polyline_str = polyline.encode(self.polyline_container)
+        else:
+            self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                self.start_time, self.end_time, None
+            )
 
     def append(self, other):
         """Append other track to self."""
