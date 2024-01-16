@@ -1,27 +1,12 @@
-import { ComponentType, lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import styles from './style.module.scss';
 import { totalStat } from '@assets/index'
+import { loadSvgComponent } from '@/utils/svgUtils';
 
 // Lazy load both github.svg and grid.svg
-const GithubSvg = lazy(() =>
-  totalStat['./github.svg']()
-    .then((res) => {
-      return { default: res as ComponentType<any> }
-    })
-    .catch(() => {
-      return { default: () => <div>Failed to load SVG</div> };
-    })
-)
+const GithubSvg = lazy(() => loadSvgComponent(totalStat, './github.svg'))
 
-const GridSvg = lazy(() =>
-  totalStat['./grid.svg']()
-    .then((res) => {
-      return { default: res as ComponentType<any> }
-    })
-    .catch(() => {
-      return { default: () => <div>Failed to load SVG</div> };
-    })
-)
+const GridSvg = lazy(() => loadSvgComponent(totalStat, './grid.svg'))
 
 const SVGStat = () => (
   <div id="svgStat">
