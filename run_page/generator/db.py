@@ -91,7 +91,7 @@ def update_or_create_activity(session, run_activity):
                 except Exception as e:
                     try:
                         location_country = str(
-                            g.reverse(f"{start_point.lat}, {start_point.lon}")
+                            g.reverse(f"{start_point.lat}, {start_point.lon}", language="zh-CN")
                         )
                     except Exception as e:
                         pass
