@@ -203,7 +203,7 @@ class Joyrun:
             points_dict_list.append(points_dict)
 
             current_time += interval
-            if pause_list and int(pause_list[0][0]) == index:
+            if pause_list and int(pause_list[0][0]) - 1 == index:
                 segment_list.append(points_dict_list[:])
                 points_dict_list.clear()
                 current_time += int(pause_list[0][1])
