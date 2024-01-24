@@ -38,7 +38,7 @@ const IS_CHINESE = true;
 const USE_ANIMATION_FOR_GRID = false;
 const CHINESE_INFO_MESSAGE = (yearLength, year) => {
   const yearStr = year === 'Total' ? 'all years' : ` ${year} `;
-  return `I have been running for over ${yearLength-1} year, below shows stats from ${yearStr}`;
+  return `I have been running for over 1 year, below shows stats from ${yearStr}`;
 };
 const ENGLISH_INFO_MESSAGE = (yearLength, year) =>
   `Running Journey with ${yearLength} Years, the table shows year ${year} data`;
