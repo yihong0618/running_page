@@ -14,7 +14,7 @@ interface ILocationStatProps {
 }
 
 const LocationStat = ({ changeYear, changeCity, changeTitle }: ILocationStatProps) => (
-  <div className="w-100 w-100-l pb5 pr5-l">
+  <div className="fl w-100 w-100-l pb5 pr5-l">
     <section className="pb4" style={{ paddingBottom: '0rem' }}>
       <p style={{ lineHeight: 1.8 }}>
         {CHINESE_LOCATION_INFO_MESSAGE_FIRST}
