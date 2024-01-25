@@ -187,7 +187,14 @@ class Joyrun:
     def parse_points_to_gpx(
         run_points_data, start_time, end_time, pause_list, interval=5
     ):
-        # TODO for now kind of same as `keep` maybe refactor later
+        """
+        parse run_data content to gpx object
+        TODO for now kind of same as `keep` maybe refactor later
+
+        :param run_points_data: [[latitude, longitude],...]
+        :param pause_list:      [[interval_index, pause_seconds],...]
+        :param interval:        time interval between each point, in seconds
+        """
 
         # format data
         segment_list = []
