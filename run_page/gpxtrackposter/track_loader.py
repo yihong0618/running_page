@@ -1,6 +1,5 @@
 """Handle parsing of GPX files"""
 
-
 # Copyright 2016-2019 Florian Pigorsch & Contributors. All rights reserved.
 # 2019-now Yihong0618
 #
