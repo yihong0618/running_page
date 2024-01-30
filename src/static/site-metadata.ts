@@ -21,7 +21,7 @@ const data: ISiteMetadataResult = {
     },
     {
       name: 'About',
-      url: 'https://yer1k.gitlab.io/website/',
+      url: 'https://yer1k.weebly.com/',
     },
   ],
 };
