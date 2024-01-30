@@ -24,8 +24,8 @@ const MAP_LAYER_LIST = [
   'country-label',
 ];
 
-const USE_GOOGLE_ANALYTICS = false;
-const GOOGLE_ANALYTICS_TRACKING_ID = '';
+const USE_GOOGLE_ANALYTICS = true;
+const GOOGLE_ANALYTICS_TRACKING_ID = 'G-PQS1DKD7VR';
 
 // styling: set to `true` if you want dash-line route
 const USE_DASH_LINE = true;
