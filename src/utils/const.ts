@@ -49,7 +49,7 @@ const CHINESE_INFO_MESSAGE = (yearLength: number, year: string): string => {
 };
 const ENGLISH_INFO_MESSAGE = (yearLength: number, year: string): string =>
   `Running Journey with ${yearLength} Years, the table shows year ${year} data.
-  \n Once at a time. \n Time will tell.`;
+  \n One at a time. \n Time will tell.`;
 
 // not support English for now
 const CHINESE_LOCATION_INFO_MESSAGE_FIRST =
