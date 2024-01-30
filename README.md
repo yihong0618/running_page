@@ -7,8 +7,8 @@
 </h3>
 
 <p align="center">
+  <a href="https://github.com/Yer1k/running_page/actions/workflows/ci.yml"><img src="https://github.com/Yer1k/running_page/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/Yer1k/running_page/actions"><img src="https://github.com/Yer1k/running_page/actions/workflows/run_data_sync.yml/badge.svg" alt="Github Action"></a>
-
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/15976103/98808834-c02f1d80-2457-11eb-9a7c-70e91faa5e30.gif" alt="demo" width="800">
