@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx creator="Garmin Connect" version="1.1"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/11.xsd"
+  xmlns:ns3="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns2="http://www.garmin.com/xmlschemas/GpxExtensions/v3">
+  <metadata>
+    <link href="connect.garmin.com">
+      <text>Garmin Connect</text>
+    </link>
+    <time>2024-01-29T05:54:58.000Z</time>
+  </metadata>
+  <trk>
+    <name>Changping Resort Skiing</name>
+    <type>resort_skiing</type>
+    <trkseg>
+      <trkpt lat="40.2376870997250080108642578125" lon="116.32223342545330524444580078125">
+        <ele>137.1999969482421875</ele>
+        <time>2024-01-29T05:55:11.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>100</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="40.23776982910931110382080078125" lon="116.322391927242279052734375">
+        <ele>137.399993896484375</ele>
+        <time>2024-01-29T05:55:14.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>101</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="40.2378869242966175079345703125" lon="116.32242067717015743255615234375">
+        <ele>137.600006103515625</ele>
+        <time>2024-01-29T05:55:17.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>104</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="40.23795372806489467620849609375" lon="116.32244045846164226531982421875">
+        <ele>137.8000030517578125</ele>
+        <time>2024-01-29T05:55:18.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>104</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="40.23792590014636516571044921875" lon="116.322516985237598419189453125">
+        <ele>138</ele>
+        <time>2024-01-29T05:55:20.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>107</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="40.23793344385921955108642578125" lon="116.322520673274993896484375">
+        <ele>138</ele>
+        <time>2024-01-29T05:55:21.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>107</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="40.23796009831130504608154296875" lon="116.3225329108536243438720703125">
+        <ele>138.399993896484375</ele>
+        <time>2024-01-29T05:55:23.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>106</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="40.23799748159945011138916015625" lon="116.32253902964293956756591796875">
+        <ele>138.8000030517578125</ele>
+        <time>2024-01-29T05:55:27.000Z</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>105</ns3:hr>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
