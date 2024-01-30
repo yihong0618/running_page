@@ -20,7 +20,7 @@
 </h3>
 
 <p align="center">
-  <a href="https://github.com/yihong0618/running_page/actions"><img src="https://github.com/yihong0618/running_page/actions/workflows/run_data_sync.yml/badge.svg" alt="Github Action"></a>
+  <a href="https://github.com/Yer1k/running_page/actions"><img src="https://github.com/Yer1k/running_page/actions/workflows/run_data_sync.yml/badge.svg" alt="Github Action"></a>
   <a href="https://t.me/running_page"><img src="https://badgen.net/badge/icon/join?icon=telegram&amp;label=usergroup" alt="Chat on telegram"></a>
 </p>
 
