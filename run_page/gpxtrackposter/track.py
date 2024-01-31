@@ -1,4 +1,5 @@
 """Create and maintain info about a given activity track (corresponding to one GPX file)."""
+
 # Copyright 2016-2019 Florian Pigorsch & Contributors. All rights reserved.
 # 2019-now yihong0618 Florian Pigorsch & Contributors. All rights reserved.
 # Use of this source code is governed by a MIT-style
@@ -247,9 +248,11 @@ class Track:
         # moving_dict
         self.moving_dict["distance"] = message["total_distance"]
         self.moving_dict["moving_time"] = datetime.timedelta(
-            seconds=message["total_moving_time"]
-            if "total_moving_time" in message
-            else message["total_timer_time"]
+            seconds=(
+                message["total_moving_time"]
+                if "total_moving_time" in message
+                else message["total_timer_time"]
+            )
         )
         self.moving_dict["elapsed_time"] = datetime.timedelta(
             seconds=message["total_elapsed_time"]
@@ -309,9 +312,11 @@ class Track:
             "elapsed_time": datetime.timedelta(
                 seconds=(moving_data.moving_time + moving_data.stopped_time)
             ),
-            "average_speed": moving_data.moving_distance / moving_data.moving_time
-            if moving_data.moving_time
-            else 0,
+            "average_speed": (
+                moving_data.moving_distance / moving_data.moving_time
+                if moving_data.moving_time
+                else 0
+            ),
         }
 
     def to_namedtuple(self):
@@ -324,9 +329,9 @@ class Track:
             "start_date_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
             "end_local": self.end_time_local.strftime("%Y-%m-%d %H:%M:%S"),
             "length": self.length,
-            "average_heartrate": int(self.average_heartrate)
-            if self.average_heartrate
-            else None,
+            "average_heartrate": (
+                int(self.average_heartrate) if self.average_heartrate else None
+            ),
             "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,
         }
