@@ -93,7 +93,8 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [s1smart](https://github.com/s1smart)             | <https://s1smart.github.io/running_page/>      | Strava      |
 | [XmchxUp](https://github.com/XmchxUp)             | <https://xmchxup.github.io/running_page/>      | Strava      |
 | [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
-| [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>            | Strava      |
+| [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
+| [Yer1k](https://github.com/Yer1k)                 | <https://yer1k.github.io/running_page/>        | Strava      |
 </details>
 
 ## How it works
