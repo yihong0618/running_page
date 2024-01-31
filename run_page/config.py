@@ -24,7 +24,7 @@ SYNCED_ACTIVITY_FILE = os.path.join(parent, "synced_activity.json")
 # TODO: Move into nike_sync NRC THINGS
 
 
-BASE_TIMEZONE = "Asia/Shanghai"
+BASE_TIMEZONE = "America/New_York" # changed from "Asia/Shanghai"
 
 
 start_point = namedtuple("start_point", "lat lon")
