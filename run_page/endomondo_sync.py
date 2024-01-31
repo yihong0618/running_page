@@ -2,6 +2,7 @@
 need to download the files from endomondo
 and store it in Workous dir in running_page
 """
+
 import json
 import os
 from collections import namedtuple
