@@ -11,7 +11,7 @@ interface ISiteMetadataResult {
 
 const data: ISiteMetadataResult = {
   siteTitle: "Dingkun's Running Page",
-  siteUrl: 'https://running.yer1k.com',
+  siteUrl: 'https://running.yer1k.com/',
   logo: 'https://yer1k.gitlab.io/website/images/avatar.png',
   description: 'Personal site and blog',
   navLinks: [
