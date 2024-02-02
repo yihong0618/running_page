@@ -46,14 +46,14 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # if your default branches is not master, please change it here
           ref: master
 
       - name: Cache Data Files
         if: inputs.save_data_in_github_cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             activities
@@ -71,9 +71,9 @@ jobs:
             ${{ inputs.data_cache_prefix }}-
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
@@ -86,7 +86,7 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
           path: ${{ env.STORE_PATH }}
@@ -100,10 +100,10 @@ jobs:
         run: PATH_PREFIX=/${{ github.event.repository.name }} pnpm build
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           # Upload dist repository
           path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v3
