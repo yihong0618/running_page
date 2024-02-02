@@ -65,7 +65,7 @@ jobs:
 
       - name: Cache Data Files
         if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             activities
