@@ -123,13 +123,13 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
 - **[FIT](#fit)**
-- **[Coros](#Coros)**
 - **[Garmin-CN_to_Garmin(Sync Garmin-CN activities to Garmin Global)](#garmin-cn-to-garmin)**
 - **[Nike_to_Strava(Using NRC Run, Strava backup data)](#nike_to_strava)**
 - **[Tcx_to_Strava(upload all tcx data to strava)](#tcx_to_strava)**
 - **[Gpx_to_Strava(upload all gpx data to strava)](#gpx_to_strava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
+- **[Coros](#Coros)**
 
 ## Download
 
@@ -298,27 +298,6 @@ Copy all your tcx files to FIT_OUT or new fit files
 ```bash
 python3(python) run_page/fit_sync.py
 ```
-
-</details>
-
-### Coros
-
-<details>
-<summary>Get your Coros data</summary>
-
-#### Enter the following command in the terminal
-
-```bash
-python run_page/coros_sync.py 'your coros account' 'your coros password'
-```
-
-#### Modify `run_data_sync.yml`  env.RUN_TYPE: _coros_
-
-#### Set the Coros account information in github action
-
-- configure the `COROS_ACCOUNT` , `COROS_PASSWORD`
-
-  ![github-action](https://img3.uploadhouse.com/fileuploads/30980/3098042335f8995623f8b50776c4fad4cf7fff8d.png)
 
 </details>
 
@@ -719,6 +698,27 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 
 ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload,
 just retry several times.**
+
+</details>
+
+### Coros
+
+<details>
+<summary>Get your Coros data</summary>
+
+#### Enter the following command in the terminal
+
+```bash
+python run_page/coros_sync.py 'your coros account' 'your coros password'
+```
+
+#### Modify `run_data_sync.yml`  env.RUN_TYPE: _coros_
+
+#### Set the Coros account information in github action
+
+- configure the `COROS_ACCOUNT` , `COROS_PASSWORD`
+
+  ![github-action](https://img3.uploadhouse.com/fileuploads/30980/3098042335f8995623f8b50776c4fad4cf7fff8d.png)
 
 </details>
 

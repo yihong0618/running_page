@@ -131,7 +131,6 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 - **[Strava](#strava)**
 - **[Nike Run Club](#nike-run-club)**
-- **[Coros高驰](#coros高驰)**
 - **[Garmin](#garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#keep)**
@@ -147,6 +146,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
+- **[Coros高驰](#coros高驰)**
 
 ## 视频教程
 
@@ -508,27 +508,6 @@ python3(python) run_page/tulipsport_sync.py nLgy****RyahI
 
 </details>
 
-### Coros高驰
-
-<details>
-<summary>获取您的 Coros高驰 数据</summary>
-
-#### 在终端中输入以下命令
-
-```bash
-python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
-```
-
-#### 修改 `run_data_sync.yml` 中 `env.RUN_TYPE: coros`
-
-#### 设置 github action中Coros高驰信息
-
-- 在github action中配置`COROS_ACCOUNT`,`COROS_PASSWORD`参数
-
-  ![github-action](https://img3.uploadhouse.com/fileuploads/30980/3098042335f8995623f8b50776c4fad4cf7fff8d.png)
-
-</details>
-
 ### Garmin
 
 <details>
@@ -659,7 +638,6 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 ![example img](https://user-images.githubusercontent.com/67903793/282300381-4e7437d0-65a9-4eed-93d1-2b70e360215f.png)
 
 1.
-
 在这里登陆[website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG),
 打开 F12 在浏览器抓 login -> XHR -> get the `refresh_token` from login api
 
@@ -694,7 +672,6 @@ python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 
 1. 注册/登陆 [Strava](https://www.strava.com/) 账号
 2.
-
 登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 
 3. 创建 `My API Application`
@@ -908,6 +885,27 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 
 </details>
 
+### Coros高驰
+
+<details>
+<summary>获取您的 Coros高驰 数据</summary>
+
+#### 在终端中输入以下命令
+
+```bash
+python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
+```
+
+#### 修改 `run_data_sync.yml` 中 `env.RUN_TYPE: coros`
+
+#### 设置 github action中Coros高驰信息
+
+- 在github action中配置`COROS_ACCOUNT`,`COROS_PASSWORD`参数
+
+  ![github-action](https://img3.uploadhouse.com/fileuploads/30980/3098042335f8995623f8b50776c4fad4cf7fff8d.png)
+
+</details>
+
 ### Total Data Analysis
 
 <details>
@@ -917,7 +915,6 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 
 - 生成数据展示 SVG
 -
-
 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
 > 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为
@@ -1056,10 +1053,10 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 2. 结合快捷指令
 
-1. 通过 iCloud
-   获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
+  1. 通过 iCloud
+     获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
 
-2. 修改下图字典参数
+  2. 修改下图字典参数
    <center> <img src="https://cdn.jujimeizuo.cn/blog/2023/10/running-page-template.jpg"> </center>
 
 3. 自动化
