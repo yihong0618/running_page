@@ -3,7 +3,7 @@
 module.exports = {
   pathPrefix: '',
   siteMetadata: {
-    siteTitle: '2Tu',
+    siteTitle: 'Zongbin Tu',
     siteUrl: 'https://workout.520wa.com',
     logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
     description: 'Personal site and blog',
