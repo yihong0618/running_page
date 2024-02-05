@@ -23,12 +23,12 @@ on:
 env:
   # please change to your own config.
   RUN_TYPE: tulipsport # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
-  ATHLETE: 2Tu
-  TITLE: 2Tu Running
+  ATHLETE: Zongbin Tu
+  TITLE: Zongbin Tu Running
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Runs # also here
-  GITHUB_NAME: 2Tu
-  GITHUB_EMAIL: enum@foxmail.com
+  GITHUB_NAME: Zongbin Tu
+  GITHUB_EMAIL: zongbin.tu@gmail.com
 
   # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
   IGNORE_START_END_RANGE: 0 # Unit meter
