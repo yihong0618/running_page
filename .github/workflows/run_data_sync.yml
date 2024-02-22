@@ -34,7 +34,7 @@ env:
   # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
   IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
   IGNORE_RANGE: 10 # Unit meter
-  SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercal, check the README
+  SAVE_DATA_IN_GITHUB_CACHE: true # if you deploy in the vercal, check the README
   DATA_CACHE_PREFIX: 'track_data'
   BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
 
