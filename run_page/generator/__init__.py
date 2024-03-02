@@ -12,7 +12,7 @@ from polyline_processor import filter_out
 
 from .db import Activity, init_db, update_or_create_activity
 
-from synced_data_file_logger import save_synced_data_file_list
+from synced_data_file_logger import save_synced_data_file_list, load_fit_name_mapping
 
 
 IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
@@ -84,8 +84,13 @@ class Generator:
             return
 
         synced_files = []
+        if file_suffix == "fit":
+            name_mapping = load_fit_name_mapping()
 
         for t in tracks:
+            activity_id = t.file_names[0].split(".")[0]
+            if file_suffix == "fit" and activity_id in name_mapping:
+                t.name = name_mapping[activity_id]
             created = update_or_create_activity(self.session, t.to_namedtuple())
             if created:
                 sys.stdout.write("+")
