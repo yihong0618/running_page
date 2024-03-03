@@ -48,7 +48,7 @@ const RunMap = ({
   const keepWhenLightsOff = ['runs2']
   function switchLayerVisibility(map: MapInstance, lights: boolean) {
     const styleJson = map.getStyle();
-    styleJson.layers.forEach(it => {
+    styleJson.layers.forEach((it: { id: string; }) => {
       if (!keepWhenLightsOff.includes(it.id)) {
         if (lights)
           map.setLayoutProperty(it.id, 'visibility', 'visible');
