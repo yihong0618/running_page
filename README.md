@@ -122,6 +122,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
 - **[FIT](#fit)**
+- **[Coros](#Coros)**
 - **[Garmin-CN_to_Garmin(Sync Garmin-CN activities to Garmin Global)](#garmin-cn-to-garmin)**
 - **[Nike_to_Strava(Using NRC Run, Strava backup data)](#nike_to_strava)**
 - **[Tcx_to_Strava(upload all tcx data to strava)](#tcx_to_strava)**
@@ -297,6 +298,27 @@ python3(python) run_page/fit_sync.py
 ```
 
 </details>
+
+### Coros
+
+<details>
+<summary>Get your Coros data</summary>
+
+#### Gets the encrypted password
+
+  - https://t.coros.com/login， Before logging on, open the developer console and get the encrypted password for subsequent data access
+  - ![corog_login.png](https://img3.uploadhouse.com/fileuploads/30980/30980073e464362e6eaa8f1988ac2e3124cd8a46.png)
+#### Set the Coros account information in github action
+  - configure the `COROS_ACCOUNT` , `COROS_PASSWORD` parameter in github action with the password '<pwd> ' as shown above
+
+Enter the following command in the terminal
+
+```bash
+python run_page/coros_sync.py 'your coros account' 'pwd obtained from console'
+```
+</details>
+
+
 
 ### Garmin
 

@@ -1,7 +1,7 @@
 name: Run Data Sync
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
   push:
@@ -13,6 +13,7 @@ on:
       - run_page/strava_sync.py
       - run_page/gen_svg.py
       - run_page/garmin_sync.py
+      - run_page/coros.py
       - run_page/keep_sync.py
       - run_page/gpx_sync.py
       - run_page/tcx_sync.py
@@ -21,7 +22,7 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support strava/nike/garmin/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
+  RUN_TYPE: pass # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   MIN_GRID_DISTANCE: 10 # change min distance here
@@ -97,6 +98,11 @@ jobs:
         run: |
           python run_page/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} --with-gpx
 
+      - name: Run sync Coros script
+        if: env.RUN_TYPE == 'coros'
+        run: |
+          python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
+
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'
         run: |
@@ -133,7 +139,7 @@ jobs:
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}  --only-run
 
-      
+
       - name: Run sync Only GPX script
         if: env.RUN_TYPE == 'only_gpx'
         run: |

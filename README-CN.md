@@ -129,6 +129,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 
 - **[Strava](#strava)**
 - **[Nike Run Club](#nike-run-club)**
+- **[Coros高驰](#coros高驰)**
 - **[Garmin](#garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
 - **[Keep](#keep)**
@@ -499,6 +500,24 @@ python3(python) run_page/tulipsport_sync.py nLgy****RyahI
 ```
 
 </details>
+
+### Coros高驰
+
+<details>
+<summary>获取您的 Coros高驰 数据</summary>
+
+#### 获取加密后的密码
+
+  - 登录高驰后台进行登录， 登录前打开控制台，获取加密后的密码，以便后续获取数据使用
+  - ![corog_login.png](https://img3.uploadhouse.com/fileuploads/30980/30980073e464362e6eaa8f1988ac2e3124cd8a46.png)
+#### 设置 github action中Coros高驰信息
+  - 在github action中配置`COROS_ACCOUNT`,`COROS_PASSWORD`参数，密码为上图中的`<pwd>`
+
+在终端中输入以下命令
+```bash
+python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
+```
+
 
 ### Garmin
 
