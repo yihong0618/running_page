@@ -38,7 +38,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 <br>
 
 | Runner                                            | page                                           | App         |
-|---------------------------------------------------|------------------------------------------------|-------------|
+| ------------------------------------------------- | ---------------------------------------------- | ----------- |
 | [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava      |
 | [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava      |
 | [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike        |
@@ -83,7 +83,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚          |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚        |
 | [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
 | [Melt](https://github.com/fpGHwd)                 | <https://running.autove.dev/>                  | Strava      |
@@ -95,7 +95,6 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
 | [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
-
 </details>
 
 ## How it works
@@ -130,7 +129,6 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
 - **[Coros](#Coros)**
-
 ## Download
 
 Clone or fork the repo.
@@ -190,8 +188,7 @@ const MAPBOX_TOKEN =
 
 ## Custom your page
 
-- Find `src/static/site-metadata.ts` in the repository directory, find the following content, and change it to what you
-  want.
+- Find `src/static/site-metadata.ts` in the repository directory, find the following content, and change it to what you want.
 
 ```typescript
 siteMetadata: {
@@ -311,8 +308,7 @@ python3(python) run_page/fit_sync.py
 - If you only want to sync `type running` add args --only-run
 - If you only want `tcx` files add args --tcx
 - If you only want `fit` files add args --fit
-- If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run
-  and obtain the Garmin secret.
+- If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
   **The Python version must be >=3.8**
 
 #### Get Garmin Secret
@@ -326,8 +322,7 @@ python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
 
 #### Execute Garmin Sync Script
 
-Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING**
-in `Github Action`.
+Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING** in `Github Action`.
 
 ```bash
 # use this secret_string
@@ -358,8 +353,7 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 - If you only want to sync `type running` add args --only-run
 - If you only want `tcx` files add args --tcx
 - If you only want `fit` files add args --fit
-- If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run
-  and obtain the Garmin secret.
+- If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
   **The Python version must be >=3.10**
 
 #### Get Garmin CN Secret
@@ -375,8 +369,7 @@ python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --i
 
 #### Execute Garmin CN Sync Script
 
-Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING_CN** in Github
-Action.
+Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING_CN** in Github Action.
 ![get_garmin_secret](docs/add_garmin_secret_cn_string.jpg)
 
 example：
@@ -401,7 +394,7 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn -
 <br>
 
 - If you only want to sync `type running` add args --only-run
-  **The Python version must be >=3.10**
+**The Python version must be >=3.10**
 
 #### Get Garmin CN Secret
 
@@ -439,9 +432,7 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 
 <br>
 
-> Please note: When you choose to deploy running_page on your own server, due to Nike has blocked some IDC's IP band,
-> maybe your server cannot sync Nike Run Club's data correctly and display `403 error`, then you have to change another
-> way to host it.
+> Please note: When you choose to deploy running_page on your own server, due to Nike has blocked some IDC's IP band, maybe your server cannot sync Nike Run Club's data correctly and display `403 error`, then you have to change another way to host it.
 
 Get Nike's `refresh_token`
 
@@ -449,9 +440,7 @@ Get Nike's `refresh_token`
 
 ![example img](https://user-images.githubusercontent.com/67903793/282300381-4e7437d0-65a9-4eed-93d1-2b70e360215f.png)
 
-1. Login from
-   this [website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG),
-   open F12 -> XHR -> get the `refresh_token` from login api.
+1. Login from this [website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG), open F12 -> XHR -> get the `refresh_token` from login api.
 
 2. copy this `refresh_token` and use it in GitHub Secrets or in command line
 
@@ -479,8 +468,7 @@ python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 <br>
 
 1. Sign in/Sign up [Strava](https://www.strava.com/) account
-2. Open after successful
-   Signin [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
+2. Open after successful Signin [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 3. Create `My API Application`: Enter the following information
 
 <br>
@@ -549,8 +537,7 @@ curl -X POST https://www.strava.com/oauth/token \
 
 7. Sync `Strava` data
 
-> The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and
-> then change it to False after it finishes running.
+> The first time you synchronize Strava data you need to change line 12 of the code False to True in strava_sync.py, and then change it to False after it finishes running.
 > If you only want to sync `type running` add args --only-run
 
 ```bash
@@ -670,8 +657,7 @@ python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 
 <br>
 
-1. finish garmin and strava setup, at the same time, you need to add additional strava config in Github Actions
-   secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
+1. finish garmin and strava setup, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
 2. Execute in the root directory:
 
 ```bash
@@ -684,9 +670,7 @@ if your garmin account region is **China**, you need to execute the command:
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
-If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin
-Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin
-workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc.
+If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc.
 
 <img width="830" alt="image" src="https://github.com/yihong0618/running_page/assets/8613196/b5076942-3133-4c89-ad66-a828211667dc">
 
@@ -696,10 +680,11 @@ the final command will be:
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
-ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload,
-just retry several times.**
+ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
 
 </details>
+
+
 
 ### Coros
 
@@ -729,8 +714,7 @@ python run_page/coros_sync.py 'your coros account' 'your coros password'
 <br>
 
 - Generate SVG data display
-- Display of
-  results:[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
+- Display of results:[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
 ```
 python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
@@ -784,11 +768,9 @@ For more display effects, see:
 
 2. Click `Workers & Pages` on the left side.
 
-3. Click `Create application` and select `Pages` tab, connect your GitHub account and select `running_page` Repo, then
-   click `Begin setup`.
+3. Click `Create application` and select `Pages` tab, connect your GitHub account and select `running_page` Repo, then click `Begin setup`.
 
-4. Scroll down to `Build settings`, choose `Create React App` from `Framework preset`, and set `Build output directory`
-   to `dist`.
+4. Scroll down to `Build settings`, choose `Create React App` from `Framework preset`, and set `Build output directory` to `dist`.
 
 5. Scroll down, click `Environment variables (advanced)`, then add a variable like the below:
 
@@ -805,8 +787,7 @@ For more display effects, see:
 
 1. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
-2. Go to the repository's `Actions -> Workflows -> All Workflows`, choose `Run Data Sync` from the left panel, and
-   click `Run workflow`.
+2. Go to the repository's `Actions -> Workflows -> All Workflows`, choose `Run Data Sync` from the left panel, and click `Run workflow`.
 
 - The `Run Data Sync` will update data and then trigger the `Publish GitHub Pages` workflow
 - Make sure the workflow runs without errors.
@@ -814,17 +795,14 @@ For more display effects, see:
 3. Open your website to check on the results
 
 - note if the website doesn't reflect the latest data, please refresh it by `F5`.
-- Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows)
-  or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
+- Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
 
 4. make sure you have write permissions in Workflow permissions settings.
 
-5. If you want to deploy your running_page to xxx.github.io instead of xxx.github.io/running_page or redirect your
-   GitHub Pages to a custom domain, you need to do three things:
+5. If you want to deploy your running_page to xxx.github.io instead of xxx.github.io/running_page or redirect your GitHub Pages to a custom domain, you need to do three things:
 
 - Rename your forked running_page repository to `xxx.github.io`, where xxx is your GitHub username
-- Modify the Build module in gh-pages.yml, remove `${{ github.event.repository.name }}` and change
-  to `run: PATH_PREFIX=/ pnpm build`
+- Modify the Build module in gh-pages.yml, remove `${{ github.event.repository.name }}` and change to `run: PATH_PREFIX=/ pnpm build`
 - In `src/static/site-metadata.ts`, set siteUrl: '' or your custom domain URL
 
 </details>
@@ -857,8 +835,7 @@ The following steps need to be taken
 
 ![image](https://user-images.githubusercontent.com/15976103/94451037-8922e680-01e0-11eb-9bb9-729f0eadcdb7.png)
 
-4. Go to repository's `Settings -> Code and automation -> Actions ->General`, Scroll to the bottom,
-   find `Workflow permissions`, choose the first option `Read and write permissions`, click `Save`.
+4. Go to repository's `Settings -> Code and automation -> Actions ->General`, Scroll to the bottom, find `Workflow permissions`, choose the first option `Read and write permissions`, click `Save`.
 
 </details>
 
@@ -882,10 +859,9 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 2. Binding shortcut instruction
 
-1. Get it via
-   icloud [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
+   1. Get it via icloud [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
 
-2. Modify the dictionary parameters in the following figure
+   2. Modify the dictionary parameters in the following figure
    <center> <img src="https://cdn.jujimeizuo.cn/blog/2023/10/running-page-template.jpg"> </center>
 
 3. Automation
@@ -906,11 +882,9 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 <br>
 
-When `SAVE_DATA_IN_GITHUB_CACHE` is set to `true` in the `run_data_sync.yml` file, the script can store fetched and
-intermediate data files in the GitHub Action Cache. This helps keep your GitHub commit history and directory clean.
+When `SAVE_DATA_IN_GITHUB_CACHE` is set to `true` in the `run_data_sync.yml` file, the script can store fetched and intermediate data files in the GitHub Action Cache. This helps keep your GitHub commit history and directory clean.
 
-If you are deploying using GitHub Pages, it is recommended to set this value to `true`, and set `BUILD_GH_PAGES` to
-true.
+If you are deploying using GitHub Pages, it is recommended to set this value to `true`, and set `BUILD_GH_PAGES` to true.
 
 </details>
 
@@ -948,8 +922,7 @@ Before submitting PR:
 - @[flopp](https://github.com/flopp) great repo [GpxTrackPoster](https://github.com/flopp/GpxTrackPoster)
 - @[danpalmer](https://github.com/danpalmer) UI design
 - @[shaonianche](https://github.com/shaonianche) icon design and doc
-- @[geekplux](https://github.com/geekplux) Friendly help and encouragement, refactored the whole front-end code, learned
-  a lot
+- @[geekplux](https://github.com/geekplux) Friendly help and encouragement, refactored the whole front-end code, learned a lot
 - @[MFYDev](https://github.com/MFYDev) Wiki
 
 # Recommended Forks

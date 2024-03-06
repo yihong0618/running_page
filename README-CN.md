@@ -38,7 +38,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 <br>
 
 | Runner                                            | page                                           | App         |
-|---------------------------------------------------|------------------------------------------------|-------------|
+| ------------------------------------------------- | ---------------------------------------------- | ----------- |
 | [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava      |
 | [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava      |
 | [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike        |
@@ -87,7 +87,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Vint](https://github.com/VintLin)                | <https://vinton.store/Running/>                | Keep        |
 | [Muyids](https://github.com/muyids)               | <https://muyids.github.io/running>             | Garmin-cn   |
 | [Gao Hao](https://github.com/efish2002)           | <https://efish2002.github.io/running_page/>    | Garmin-cn   |
-| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚          |
+| [Jinlei](https://github.com/iamjinlei0312)        | <https://jinlei.run/>                          | 咕咚        |
 | [Ray Wang](https://github.com/raywangsy)          | <https://run.raywang.pro/>                     | Garmin      |
 | [RealTiny656](https://github.com/tiny656)         | <https://tiny656.github.io/running_page/>      | JoyRun      |
 | [EINDEX](https://github.com/eindex)               | <https://workouts.eindex.me/>                  | Strava/Nike |
@@ -98,7 +98,6 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
 | [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
-
 </details>
 
 ## 它是怎么工作的
@@ -113,8 +112,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 4. Mapbox 进行地图展示
 5. Nike、Strava、佳明（佳明中国）及 Keep 等，自动备份 GPX 数据，方便备份及上传到其它软件
 
-> 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 App 的数据都同步到这里（建议本地同步，之后
-> Actions 选择正在用的 App）
+> 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 App 的数据都同步到这里（建议本地同步，之后 Actions 选择正在用的 App）
 
 > 如果你不想公开数据，可以选择 `Strava` 的模糊处理，或 `private` 仓库。
 
@@ -146,8 +144,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
-- **[Coros高驰](#coros高驰)**
-
+- **[Coros高驰](#Coros高驰)**
 ## 视频教程
 
 - https://www.youtube.com/watch?v=reLiY9p8EJk
@@ -260,8 +257,7 @@ IGNORE_BEFORE_SAVING = 1
 ```
 
 > 你可以使用`
-Google Maps` 的 [互动式多段线编码器实用程序](https://developers.google.com/maps/documentation/utilities/polylineutility)
-> ，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
+Google Maps` 的 [互动式多段线编码器实用程序](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
 
 ## 下载数据到本地
 
@@ -319,8 +315,7 @@ python3(python) run_page/fit_sync.py
 
 <br>
 
-> 确保自己的账号能用手机号 + 密码登陆 (不要忘记添加 secret 和更改自己的账号，在 GitHub Actions 中), 注：海外手机号需要换成国内
-> +86 的手机号
+> 确保自己的账号能用手机号 + 密码登陆 (不要忘记添加 secret 和更改自己的账号，在 GitHub Actions 中), 注：海外手机号需要换成国内 +86 的手机号
 
 ```bash
 python3(python) run_page/keep_sync.py ${your mobile} ${your password}
@@ -332,8 +327,7 @@ python3(python) run_page/keep_sync.py ${your mobile} ${your password}
 python3(python) run_page/keep_sync.py 13333xxxx example
 ```
 
-> 我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx 会加入到 GPX_OUT
-> 中，方便上传到其它软件
+> 我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
 
 ```bash
 python3(python) run_page/keep_sync.py ${your mobile} ${your password} --with-gpx
@@ -470,8 +464,7 @@ python3(python) run_page/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-aut
 
 如果您得到的运动路线与实际路线对比有整体偏移，可以修改代码中的参数进行修正
 
-> 咕咚最初采用 GCJ-02 坐标系，在 2014 年 3 月份左右升级为 WGS-84 坐标系，导致升级之前的运动数据在使用 WGS-84
-> 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
+> 咕咚最初采用 GCJ-02 坐标系，在 2014 年 3 月份左右升级为 WGS-84 坐标系，导致升级之前的运动数据在使用 WGS-84 坐标系的平台（Mapbox、佳明等）中显示轨迹整体偏移
 
 - 修改 `run_page/codoon_sync.py` 文件中的参数：
 
@@ -493,8 +486,7 @@ TRANS_END_DATE = "2014-03-24"
 
 <br>
 
-> 郁金香运动数据的获取方式采用开放平台授权模式，通过访问[RunningPage 授权页面](https://tulipsport.rdshoep.com)获取账号
-> TOKEN(不会过期，只能访问 2021 年之后的数据)，并在仓库的 GitHub Actions 环境配置中添加`TULIPSPORT_TOKEN`配置。
+> 郁金香运动数据的获取方式采用开放平台授权模式，通过访问[RunningPage 授权页面](https://tulipsport.rdshoep.com)获取账号 TOKEN(不会过期，只能访问 2021 年之后的数据)，并在仓库的 GitHub Actions 环境配置中添加`TULIPSPORT_TOKEN`配置。
 
 ```bash
 python3(python) run_page/tulipsport_sync.py ${tulipsport_token}
@@ -593,7 +585,7 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 <br>
 
 - 如果你只想同步 `type running` 使用参数 --only-run
-  **The Python version must be >=3.10**
+**The Python version must be >=3.10**
 
 #### 获取佳明 CN 的密钥
 
@@ -621,6 +613,7 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 
 </details>
 
+
 ### Nike Run Club
 
 <details>
@@ -628,8 +621,7 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 
 <br>
 
-> 请注意：当您选择将 running_page 部署在自己的服务器上时，由于 Nike 已经封禁了一部分 IDC 的服务器 IP 段，您的服务器可能不能正常同步
-> Nike Run Club 的数据并显示 `403 error` ，这时您将不得不选择其他的托管方式。
+> 请注意：当您选择将 running_page 部署在自己的服务器上时，由于 Nike 已经封禁了一部分 IDC 的服务器 IP 段，您的服务器可能不能正常同步 Nike Run Club 的数据并显示 `403 error` ，这时您将不得不选择其他的托管方式。
 
 获取 Nike 的 refresh_token
 
@@ -637,17 +629,11 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 
 ![example img](https://user-images.githubusercontent.com/67903793/282300381-4e7437d0-65a9-4eed-93d1-2b70e360215f.png)
 
-1.
-在这里登陆[website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG),
-打开 F12 在浏览器抓 login -> XHR -> get the `refresh_token` from login api
+1. 在这里登陆[website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG), 打开 F12 在浏览器抓 login -> XHR -> get the `refresh_token` from login api
 
 2. 复制 `refresh_token` 之后可以添加在GitHub Secrets 中，也可以直接在命令行中使用
 
-> Chrome 浏览器：按下 F12 打开浏览器开发者工具，点击 Application 选项卡，来到左侧的 Storage 面板，点击展开 Local
-> storage，点击下方的 https://unite.nike.com。接着点击右侧的 com.nike.commerce.nikedotcom.web.credential
-> Key，下方会分行显示我们选中的对象，可以看到 refresh_token ，复制 refresh_token 右侧的值。Safari 浏览器：在 Safari 打开 Nike
-> 的网页后，右击页面，选择「检查元素」，打开浏览器开发者工具。点击「来源」选项卡，在左侧找到 XHR 文件夹，点击展开，在下方找到 login
-> 文件并单击，在右侧同样可以看到 refresh_token ，复制 refresh_token 右侧的值。
+> Chrome 浏览器：按下 F12 打开浏览器开发者工具，点击 Application 选项卡，来到左侧的 Storage 面板，点击展开 Local storage，点击下方的 https://unite.nike.com。接着点击右侧的 com.nike.commerce.nikedotcom.web.credential Key，下方会分行显示我们选中的对象，可以看到 refresh_token ，复制 refresh_token 右侧的值。Safari 浏览器：在 Safari 打开 Nike 的网页后，右击页面，选择「检查元素」，打开浏览器开发者工具。点击「来源」选项卡，在左侧找到 XHR 文件夹，点击展开，在下方找到 login 文件并单击，在右侧同样可以看到 refresh_token ，复制 refresh_token 右侧的值。
 
 ```bash
 python3(python) run_page/nike_sync.py ${nike refresh_token}
@@ -671,8 +657,7 @@ python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 <br>
 
 1. 注册/登陆 [Strava](https://www.strava.com/) 账号
-2.
-登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
+2. 登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 
 3. 创建 `My API Application`
    输入下列信息：
@@ -707,8 +692,7 @@ http://localhost/exchange_token?state=&code=1dab37edd9970971fb502c9efdd087f4f347
 1dab37edd9970971fb502c9efdd087f4f3471e6
 ```
 
-![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png) 6. 使用
-Client_id、Client_secret、Code 请求 refresh_token
+![get_code](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/get_code.png) 6. 使用 Client_id、Client_secret、Code 请求 refresh_token
 在 `终端/iTerm` 中执行：
 
 ```bash
@@ -854,8 +838,7 @@ python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx xxx
 
 <br>
 
-1. 完成 garmin 和 strava 的步骤，同时，还需要在 Github Actions secret 那新增 Strava
-   配置：`secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
+1. 完成 garmin 和 strava 的步骤，同时，还需要在 Github Actions secret 那新增 Strava 配置：`secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
 2. 在项目根目录下执行：
 
 ```bash
@@ -868,10 +851,7 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
-如果要在同步到 Garmin 的运动记录中添加 Garmin 设备信息，需要添加`--use_fake_garmin_device`参数，这将在同步的 Garmin
-锻炼记录中添加一个 Garmin 设备（默认情况下为 `Garmin Forerunner 245`，您可以在`garmin_device_adaptor.py`
-中更改设备信息），运动记录中有了设备信息之后就可以同步到其他 APP 中，比如数字心动（攒上马积分）这类不能通过 Apple Watch 同步的
-APP，当然也可以同步到 Keep，悦跑圈，咕咚等 APP。
+如果要在同步到 Garmin 的运动记录中添加 Garmin 设备信息，需要添加`--use_fake_garmin_device`参数，这将在同步的 Garmin 锻炼记录中添加一个 Garmin 设备（默认情况下为 `Garmin Forerunner 245`，您可以在`garmin_device_adaptor.py`中更改设备信息），运动记录中有了设备信息之后就可以同步到其他 APP 中，比如数字心动（攒上马积分）这类不能通过 Apple Watch 同步的 APP，当然也可以同步到 Keep，悦跑圈，咕咚等 APP。
 
 <img width="830" alt="image" src="https://github.com/yihong0618/running_page/assets/8613196/b5076942-3133-4c89-ad66-a828211667dc">
 
@@ -914,11 +894,9 @@ python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PAS
 <br>
 
 - 生成数据展示 SVG
--
-展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
+- 展示效果：[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[点击查看](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
-> 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为
-> special-color2, --min-distance 10.0 用来筛选 10km 以上的)
+> 感兴趣的同学可以改下方参数 (--special-distance 10 --special-distance2 20, 10km~20km 展示为 special-color1 20km 以上展示为 special-color2, --min-distance 10.0 用来筛选 10km 以上的)
 
 ```bash
 python3(python) run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
@@ -997,16 +975,14 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 - 如果网站没有反映最新数据，请使用“F5”刷新页面
 - 某些浏览器 (比如 Chrome) 可能缓存网页不刷新，您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac) 强制清除缓存并重新加载页面
 
-4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到 `Workflow permissions`
-   的设置项，将选项配置为 `Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
+4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到 `Workflow permissions` 的设置项，将选项配置为 `Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
 
 
-5. 如果想把你的 running_page 部署在 xxx.github.io 而不是 xxx.github.io/run_page 亦或是想要添加自定义域名于 GitHub
-   Pages，需要做三点
+5. 如果想把你的 running_page 部署在 xxx.github.io 而不是 xxx.github.io/run_page 亦或是想要添加自定义域名于 GitHub Pages，需要做三点
 
-- 修改你的 fork 的 running_page 仓库改名为 xxx.github.io, xxx 是你 github 的 username
-- 修改 gh-pages.yml 中的 Build 模块，删除 `${{ github.event.repository.name }}` 改为`run: PATH_PREFIX=/ pnpm build` 即可
-- 修改 src/static/site-metadata.ts 中 `siteUrl: ''` 或是添加你的自定义域名，`siteUrl: '[your_own_domain]'`， 即可
+-  修改你的 fork 的 running_page 仓库改名为 xxx.github.io, xxx 是你 github 的 username
+-  修改 gh-pages.yml 中的 Build 模块，删除 `${{ github.event.repository.name }}` 改为`run: PATH_PREFIX=/ pnpm build` 即可
+-  修改 src/static/site-metadata.ts 中 `siteUrl: ''` 或是添加你的自定义域名，`siteUrl: '[your_own_domain]'`， 即可
 
 </details>
 
@@ -1053,10 +1029,9 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 2. 结合快捷指令
 
-  1. 通过 iCloud
-     获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
+   1. 通过 iCloud 获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
 
-  2. 修改下图字典参数
+   2. 修改下图字典参数
    <center> <img src="https://cdn.jujimeizuo.cn/blog/2023/10/running-page-template.jpg"> </center>
 
 3. 自动化
@@ -1077,8 +1052,7 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 <br>
 
-`run_data_sync.yml` 中的 `SAVE_DATA_IN_GITHUB_CACHE` 设置为 `true` 时，可以把脚本抓取和中间产生的数据文件放到 GitHub
-Actions Cache 中。这样可以让你的 GitHub commit 历史和目录保持干净。
+`run_data_sync.yml` 中的 `SAVE_DATA_IN_GITHUB_CACHE` 设置为 `true` 时，可以把脚本抓取和中间产生的数据文件放到 GitHub Actions Cache 中。这样可以让你的 GitHub commit 历史和目录保持干净。
 
 如果你用 `GitHub Pages` 部署建议把这个值设置成 `true`。
 
