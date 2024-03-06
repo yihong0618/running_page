@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
-    "ACTIVITY_URL": "https://connectapi.garmin.cn/activity-service/activity/{activity_id}",
     "DOWNLOAD_URL": "https://teamcnapi.coros.com/activity/detail/download",
+    "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query?&modeList=100,102,103",  # 100: 跑步，101: 跑步机, 102: 运动场, 103: 越野
 }
 
 
@@ -27,9 +27,6 @@ class Coros:
         )
 
         self.headers = headers
-        self.upload_url = COROS_URL_DICT.get("UPLOAD_URL")
-        self.activity_url = COROS_URL_DICT.get("ACTIVITY_URL")
-        self.login_url = COROS_URL_DICT.get("LOGIN_URL")
 
     @staticmethod
     async def login(account, password):
@@ -62,12 +59,11 @@ class Coros:
         all_activities_ids = []
 
         while True:
-            url = f"https://teamcnapi.coros.com/activity/query?size=20&pageNumber={page_number}&modeList=100,102,103"
+            url = f"{COROS_URL_DICT.get('ACTIVITY_LIST')}&pageNumber={page_number}&size=20"
             headers = self.headers
 
             async with session.get(url, headers=headers) as response:
                 data = await response.json()
-                logger.debug("activity data:", data)
                 activities = data.get("data", {}).get("dataList", None)
                 if not activities:
                     break  # 如果当前页面没有活动，结束循环
