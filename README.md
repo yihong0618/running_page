@@ -309,7 +309,7 @@ python3(python) run_page/fit_sync.py
 #### Enter the following command in the terminal
 
 ```bash
-python run_page/coros_sync.py 'your coros account' 'pwd obtained from console'
+python run_page/coros_sync.py 'your coros account' 'your coros password'
 ```
 
 #### Modify `run_data_sync.yml`  env.RUN_TYPE: _coros_
