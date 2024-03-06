@@ -46,7 +46,7 @@ const ENGLISH_INFO_MESSAGE = (yearLength, year) =>
 // not support English for now
 const CHINESE_LOCATION_INFO_MESSAGE_FIRST =
   'I have run in many locations across the world, I hope that I could light more on the map';
-const CHINESE_LOCATION_INFO_MESSAGE_SECOND = 'Next Marathon: 2024 Tokyo Marathon, 6 majors: 0/6';
+const CHINESE_LOCATION_INFO_MESSAGE_SECOND = 'Next Marathon: 2024 Chicago Marathon, 6 majors: 1/6';
 
 const INFO_MESSAGE = IS_CHINESE ? CHINESE_INFO_MESSAGE : ENGLISH_INFO_MESSAGE;
 const FULL_MARATHON_RUN_TITLE = IS_CHINESE ? 'Full Marathon' : 'Full Marathon';
