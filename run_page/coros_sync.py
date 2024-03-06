@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import hashlib
 import logging
 import os
 
@@ -125,16 +126,13 @@ async def download_and_generate(account, password):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "account", nargs="?", help="account is your coros email account"
-    )
+    parser.add_argument("account", nargs="?", help="input coros account")
 
-    parser.add_argument(
-        "password", nargs="?", help="password is your coros secret password"
-    )
+    parser.add_argument("password", nargs="?", help="input coros  password")
     options = parser.parse_args()
 
     account = options.account
     password = options.password
+    encrypted_pwd = hashlib.md5(password.encode()).hexdigest()
 
-    asyncio.run(download_and_generate(account, password))
+    asyncio.run(download_and_generate(account, encrypted_pwd))
