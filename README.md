@@ -924,7 +924,7 @@ Just enjoy it~
   Strava API Rate Limit Timeout. Retry in 799.491622 seconds
   ```
 
-- vercel git ignpre gh-pages:
+- vercel git ignore gh-pages:
 
   you can change settings -> build -> Ignored Build Step -> Custom command
 
