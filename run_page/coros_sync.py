@@ -4,7 +4,8 @@ import hashlib
 import logging
 import os
 
-import aiohttp
+import aiofiles
+import httpx
 
 from config import JSON_FILE, SQL_FILE, FIT_FOLDER
 from utils import make_activities_file
@@ -17,20 +18,16 @@ COROS_URL_DICT = {
     "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query?&modeList=100,102,103",  # 100: 跑步，101: 跑步机, 102: 运动场, 103: 越野
 }
 
+TIME_OUT = httpx.Timeout(240.0, connect=360.0)
 
 class Coros:
-    def __init__(self, headers, access_token):
-        headers.update(
-            {
-                "accesstoken": access_token,
-                "cookie": f"CPL-coros-region=2; CPL-coros-token={access_token}",
-            }
-        )
+    def __init__(self, account, password):
+        self.account = account
+        self.password = password
+        self.headers = None
+        self.req = None  # 这里先不初始化 httpx.AsyncClient，等登录后再初始化
 
-        self.headers = headers
-
-    @staticmethod
-    async def login(account, password):
+    async def login(self):
         url = COROS_URL_DICT.get("LOGIN_URL")
         headers = {
             "authority": "teamcnapi.coros.com",
@@ -48,53 +45,65 @@ class Coros:
             "sec-fetch-site": "same-site",
             "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
         }
-        data = {"account": account, "accountType": 2, "pwd": password}
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=data, headers=headers) as response:
-                resp_json = await response.json()
-                access_token = resp_json["data"]["accessToken"]
-                return Coros(headers, access_token)
+        data = {"account": self.account, "accountType": 2, "pwd": self.password}
+        async with httpx.AsyncClient(timeout=TIME_OUT) as client:
+            response = await client.post(url, json=data, headers=headers)
+            resp_json = response.json()
+            access_token = resp_json["data"]["accessToken"]
+            self.headers = {
+                "accesstoken": access_token,
+                "cookie": f"CPL-coros-region=2; CPL-coros-token={access_token}",
+            }
+            self.req = httpx.AsyncClient(timeout=TIME_OUT, headers=self.headers)
 
-    async def fetch_activity_ids(self, session):
+    async def init(self):
+        await self.login()
+
+    async def fetch_activity_ids(self):
         page_number = 1
         all_activities_ids = []
 
         while True:
             url = f"{COROS_URL_DICT.get('ACTIVITY_LIST')}&pageNumber={page_number}&size=20"
-            headers = self.headers
+            response = await self.req.get(url)
+            data = response.json()
+            activities = data.get("data", {}).get("dataList", None)
+            if not activities:
+                break  # 如果当前页面没有活动，结束循环
+            for activity in activities:
+                label_id = activity["labelId"]
+                all_activities_ids.append(label_id)
 
-            async with session.get(url, headers=headers) as response:
-                data = await response.json()
-                activities = data.get("data", {}).get("dataList", None)
-                if not activities:
-                    break  # 如果当前页面没有活动，结束循环
-                for activity in activities:
-                    label_id = activity["labelId"]
-                    all_activities_ids.append(label_id)
-
-                page_number += 1  # 准备获取下一个页面的数据
+            page_number += 1  # 准备获取下一个页面的数据
 
         return all_activities_ids
 
-    async def download_activity(self, session, label_id):
+    async def download_activity(self, label_id):
         download_folder = FIT_FOLDER
         download_url = f"{COROS_URL_DICT.get('DOWNLOAD_URL')}?labelId={label_id}&sportType=100&fileType=4"
-        headers = self.headers
-        async with session.post(download_url, headers=headers) as response:
-            resp_json = await response.json()
-            file_url = resp_json["data"]["fileUrl"]
-            fname = os.path.basename(file_url)
-            async with session.get(file_url) as res:
-                if res.status == 200:
-                    file_path = os.path.join(download_folder, fname)
-                    with open(file_path, "wb") as f:
-                        while True:
-                            chunk = await res.content.read(4096)
-                            if not chunk:
-                                break
-                            f.write(chunk)
-                    return label_id, fname
-        return None, None
+        response = await self.req.post(download_url)
+        await asyncio.sleep(2)  # 如果还需要这个延时来避免过快发起请求，保留它
+        resp_json = response.json()
+        file_url = resp_json["data"]["fileUrl"]
+        fname = os.path.basename(file_url)
+        file_path = os.path.join(download_folder, fname)
+
+        try:
+            async with self.req.stream("GET", file_url) as response:
+                response.raise_for_status()
+                async with aiofiles.open(file_path, "wb") as f:
+                    async for chunk in response.aiter_bytes():
+                        await f.write(chunk)
+        except httpx.HTTPStatusError as exc:
+            print(
+                f"Failed to download {file_url} with status code {response.status_code}: {exc}"
+            )
+            return None, None
+        except Exception as exc:
+            print(f"Error occurred while downloading {file_url}: {exc}")
+            return None, None
+
+        return label_id, fname
 
 
 def get_downloaded_ids(folder):
@@ -104,24 +113,22 @@ def get_downloaded_ids(folder):
 async def download_and_generate(account, password):
     folder = FIT_FOLDER
     downloaded_ids = get_downloaded_ids(folder)
-    client = await Coros.login(account, password)
+    coros = Coros(account, password)
+    await coros.init()
 
-    async with aiohttp.ClientSession() as session:
-        activity_ids = await client.fetch_activity_ids(session)
-        #  目前个别的 label id 和下载的id可能不一致 导致每次都会下载新的
-        print("activity_ids:", len(activity_ids))
-        print("downloaded_ids:", len(downloaded_ids))
-        # diff downloaded label id,
-        to_generate_coros_ids = list(set(activity_ids) - set(downloaded_ids))
-        print("to_generate_activity_ids: ", len(to_generate_coros_ids))
-        tasks = []
-        for label_id in to_generate_coros_ids:
-            task = client.download_activity(session, label_id)
-            tasks.append(task)
-        # 等待所有下载任务完成
-        await asyncio.gather(*tasks)
-        # 处理图片
-        make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, "fit")
+    activity_ids = await coros.fetch_activity_ids()
+    print("activity_ids: ", len(activity_ids))
+    print("downloaded_ids: ", len(downloaded_ids))
+    to_generate_coros_ids = list(set(activity_ids) - set(downloaded_ids))
+    print("to_generate_activity_ids: ", len(to_generate_coros_ids))
+
+    async def download_task(label_id):
+        return await coros.download_activity(label_id)
+    tasks = [download_task(label_id) for label_id in to_generate_coros_ids]
+    await asyncio.gather(*tasks)
+
+    # 处理图片
+    make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, "fit")
 
 
 if __name__ == "__main__":
