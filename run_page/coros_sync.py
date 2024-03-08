@@ -9,11 +9,10 @@ import httpx
 from config import JSON_FILE, SQL_FILE, FIT_FOLDER
 from utils import make_activities_file
 
-
 COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
     "DOWNLOAD_URL": "https://teamcnapi.coros.com/activity/detail/download",
-    "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query?&modeList=100,102,103",  # 100: 跑步，101: 跑步机, 102: 运动场, 103: 越野
+    "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query?&modeList=100,102,103",
 }
 
 TIME_OUT = httpx.Timeout(240.0, connect=360.0)
@@ -69,18 +68,21 @@ class Coros:
             data = response.json()
             activities = data.get("data", {}).get("dataList", None)
             if not activities:
-                break  # 如果当前页面没有活动，结束循环
+                break
             for activity in activities:
                 label_id = activity["labelId"]
+                if label_id is None:
+                    continue
                 all_activities_ids.append(label_id)
 
-            page_number += 1  # 准备获取下一个页面的数据
+            page_number += 1
 
         return all_activities_ids
 
     async def download_activity(self, label_id):
         download_folder = FIT_FOLDER
         download_url = f"{COROS_URL_DICT.get('DOWNLOAD_URL')}?labelId={label_id}&sportType=100&fileType=4"
+        file_url = None
         try:
             response = await self.req.post(download_url)
             resp_json = response.json()
@@ -127,7 +129,7 @@ async def download_and_generate(account, password):
 
     for label_id in to_generate_coros_ids:
         await coros.download_activity(label_id)
-    # 处理图片
+
     make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, "fit")
 
 
@@ -135,7 +137,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("account", nargs="?", help="input coros account")
 
-    parser.add_argument("password", nargs="?", help="input coros  password")
+    parser.add_argument("password", nargs="?", help="input coros password")
     options = parser.parse_args()
 
     account = options.account
