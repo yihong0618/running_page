@@ -21,12 +21,13 @@ COROS_URL_DICT = {
 
 TIME_OUT = httpx.Timeout(240.0, connect=360.0)
 
+
 class Coros:
     def __init__(self, account, password):
         self.account = account
         self.password = password
         self.headers = None
-        self.req = None  # 这里先不初始化 httpx.AsyncClient，等登录后再初始化
+        self.req = None
 
     async def login(self):
         url = COROS_URL_DICT.get("LOGIN_URL")
