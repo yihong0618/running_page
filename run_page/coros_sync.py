@@ -2,6 +2,7 @@ import argparse
 import asyncio
 import hashlib
 import os
+import time
 
 import aiofiles
 import httpx
@@ -127,10 +128,23 @@ async def download_and_generate(account, password):
     to_generate_coros_ids = list(set(activity_ids) - set(downloaded_ids))
     print("to_generate_activity_ids: ", len(to_generate_coros_ids))
 
-    for label_id in to_generate_coros_ids:
-        await coros.download_activity(label_id)
-
+    start_time = time.time()
+    await gather_with_concurrency(
+        10,
+        [coros.download_activity(label_d) for label_d in to_generate_coros_ids],
+    )
+    print(f"Download finished. Elapsed {time.time()-start_time} seconds")
     make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, "fit")
+
+
+async def gather_with_concurrency(n, tasks):
+    semaphore = asyncio.Semaphore(n)
+
+    async def sem_task(task):
+        async with semaphore:
+            return await task
+
+    return await asyncio.gather(*(sem_task(task) for task in tasks))
 
 
 if __name__ == "__main__":
