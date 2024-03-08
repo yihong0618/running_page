@@ -1,9 +1,7 @@
 import argparse
 import asyncio
 import hashlib
-import logging
 import os
-import time
 
 import aiofiles
 import httpx
@@ -11,7 +9,6 @@ import httpx
 from config import JSON_FILE, SQL_FILE, FIT_FOLDER
 from utils import make_activities_file
 
-logging.getLogger("asyncio").setLevel(logging.ERROR)  # 只显示错误级别的日志
 
 COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
@@ -85,7 +82,6 @@ class Coros:
         download_folder = FIT_FOLDER
         download_url = f"{COROS_URL_DICT.get('DOWNLOAD_URL')}?labelId={label_id}&sportType=100&fileType=4"
         response = await self.req.post(download_url)
-        time.sleep(1)  # 避免请求过快，本地可注释
         resp_json = response.json()
         file_url = resp_json["data"]["fileUrl"]
         fname = os.path.basename(file_url)
@@ -125,12 +121,8 @@ async def download_and_generate(account, password):
     to_generate_coros_ids = list(set(activity_ids) - set(downloaded_ids))
     print("to_generate_activity_ids: ", len(to_generate_coros_ids))
 
-    async def download_task(label_id):
-        return await coros.download_activity(label_id)
-
-    tasks = [download_task(label_id) for label_id in to_generate_coros_ids]
-    await asyncio.gather(*tasks)
-    await coros.req.aclose()
+    for label_id in to_generate_coros_ids:
+        await coros.download_activity(label_id)
     # 处理图片
     make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, "fit")
 
