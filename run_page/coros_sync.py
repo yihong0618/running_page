@@ -48,7 +48,11 @@ class Coros:
         async with httpx.AsyncClient(timeout=TIME_OUT) as client:
             response = await client.post(url, json=data, headers=headers)
             resp_json = response.json()
-            access_token = resp_json["data"]["accessToken"]
+            access_token = resp_json.get("data", {}).get("accessToken")
+            if not access_token:
+                raise Exception(
+                    "============login failed! please check your account and password==========="
+                )
             self.headers = {
                 "accesstoken": access_token,
                 "cookie": f"CPL-coros-region=2; CPL-coros-token={access_token}",
