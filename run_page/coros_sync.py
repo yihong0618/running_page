@@ -51,7 +51,7 @@ class Coros:
             access_token = resp_json.get("data", {}).get("accessToken")
             if not access_token:
                 raise Exception(
-                    "============login failed! please check your account and password==========="
+                    "============Login failed! please check your account and password==========="
                 )
             self.headers = {
                 "accesstoken": access_token,
@@ -138,6 +138,7 @@ async def download_and_generate(account, password):
         [coros.download_activity(label_d) for label_d in to_generate_coros_ids],
     )
     print(f"Download finished. Elapsed {time.time()-start_time} seconds")
+    await coros.req.aclose()
     make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, "fit")
 
 
