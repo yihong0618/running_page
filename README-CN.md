@@ -98,6 +98,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
 | [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
+| [AlienVision](https://github.com/weaming)         | <https://run.drink.cafe/>                      | Strava      |
 </details>
 
 ## 它是怎么工作的
