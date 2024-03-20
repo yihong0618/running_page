@@ -21,11 +21,11 @@ const data: ISiteMetadataResult = {
     },
     {
       name: 'Blog',
-      url: 'https://danilelxp.com/',
+      url: 'https://www.jiugoe.com/',
     },
     {
       name: 'Travel',
-      url: 'https://www.danilelxp.com/about',
+      url: 'https://www.jiugoe.com/about',
     },
   ],
 };
