@@ -22,7 +22,7 @@ def get_points_from_kml(k: kml):
 
 
 def load_kml_file(k: kml):
-    file = "scripts/import.kml"
+    file = "run_page/import.kml"
     try:
         with open(file, "rb") as f:
             kml_string = f.read()
