@@ -19,8 +19,6 @@ RUN npm config set registry https://registry.npm.taobao.org \
   &&corepack enable \
   &&pnpm install
 
-
-
 FROM develop-py AS data
 ARG app
 ARG nike_refresh_token

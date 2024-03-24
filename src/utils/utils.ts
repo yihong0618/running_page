@@ -34,9 +34,9 @@ export interface Activity {
   type: string;
   start_date: string;
   start_date_local: string;
-  location_country: string;
-  summary_polyline: string;
-  average_heartrate?: number;
+  location_country?: string|null;
+  summary_polyline?: string|null;
+  average_heartrate?: number|null;
   average_speed: number;
   streak: number;
 }
@@ -159,6 +159,9 @@ const intComma = (x = '') => {
 
 const pathForRun = (run: Activity): Coordinate[] => {
   try {
+    if (!run.summary_polyline) {
+      return [];
+    };
     const c = mapboxPolyline.decode(run.summary_polyline);
     // reverse lat long for mapbox
     c.forEach((arr) => {
@@ -408,10 +411,9 @@ const filterAndSortRuns = (
 };
 
 const sortDateFunc = (a: Activity, b: Activity) => {
-  // @ts-ignore
   return (
-    new Date(b.start_date_local.replace(' ', 'T')) -
-    new Date(a.start_date_local.replace(' ', 'T'))
+    new Date(b.start_date_local.replace(' ', 'T')).getTime() -
+    new Date(a.start_date_local.replace(' ', 'T')).getTime()
   );
 };
 const sortDateFuncReverse = (a: Activity, b: Activity) => sortDateFunc(b, a);
