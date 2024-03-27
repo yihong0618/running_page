@@ -3,7 +3,7 @@ import gcoord from 'gcoord';
 import { WebMercatorViewport } from 'viewport-mercator-project';
 import { chinaGeojson } from '@/static/run_countries';
 import { chinaCities } from '@/static/city';
-import { MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES } from './const';
+import { MAIN_COLOR, MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES } from './const';
 import { FeatureCollection, LineString } from 'geojson';
 
 export type Coordinate = [number, number];
@@ -170,7 +170,9 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
 
     return {
       type: 'Feature',
-      properties: {},
+      properties: {
+        color: MAIN_COLOR,
+      },
       geometry: {
         type: 'LineString',
         coordinates: points,

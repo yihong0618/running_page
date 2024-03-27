@@ -7,7 +7,6 @@ import {
   MAP_LAYER_LIST,
   IS_CHINESE,
   ROAD_LABEL_DISPLAY,
-  MAIN_COLOR,
   MAPBOX_TOKEN,
   PROVINCE_FILL_COLOR,
   USE_DASH_LINE,
@@ -149,7 +148,7 @@ const RunMap = ({
           id="runs2"
           type="line"
           paint={{
-            'line-color': MAIN_COLOR,
+            'line-color':  ['get', 'color'],
             'line-width': isBigMap && lights ? 1 : 2,
             'line-dasharray': dash,
             'line-opacity': isSingleRun || isBigMap || !lights ? 1 : LINE_OPACITY,
