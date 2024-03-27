@@ -7,7 +7,6 @@ import {
   MAP_LAYER_LIST,
   IS_CHINESE,
   ROAD_LABEL_DISPLAY,
-  MAIN_COLOR,
   MAPBOX_TOKEN,
   PROVINCE_FILL_COLOR,
   COUNTRY_FILL_COLOR,
@@ -154,7 +153,8 @@ const RunMap = ({
           type="fill"
           paint={{
             'fill-color': COUNTRY_FILL_COLOR,
-            'fill-opacity': 0.5,
+            // in China, fill a bit lighter while already filled provinces
+            'fill-opacity': ["case", ["==", ["get", "name"], '中国'], 0.1, 0.5],
           }}
           filter={filterCountries}
         />
