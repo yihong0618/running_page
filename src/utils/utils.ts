@@ -1,7 +1,8 @@
 import * as mapboxPolyline from '@mapbox/polyline';
 import gcoord from 'gcoord';
 import { WebMercatorViewport } from 'viewport-mercator-project';
-import { chinaGeojson } from '@/static/run_countries';
+import { chinaGeojson, RPGeometry } from '@/static/run_countries';
+import worldGeoJson from '@surbowl/world-geo-json-zh/world.zh.json';
 import { chinaCities } from '@/static/city';
 import { MAIN_COLOR, MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES } from './const';
 import { FeatureCollection, LineString } from 'geojson';
@@ -181,7 +182,10 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
   }),
 });
 
-const geoJsonForMap = () => chinaGeojson;
+const geoJsonForMap = (): FeatureCollection<RPGeometry> => ({
+    type: 'FeatureCollection',
+    features: worldGeoJson.features.concat(chinaGeojson.features),
+  })
 
 const titleForRun = (run: Activity): string => {
   const runDistance = run.distance / 1000;
