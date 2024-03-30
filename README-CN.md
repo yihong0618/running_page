@@ -185,6 +185,9 @@ docker build -t running_page:latest . --build-arg app=Strava --build-arg client_
 #Nike_to_Strava
 docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
 
+# Keep
+docker build -t running_page:latest . --build-arg app=Keep --build-arg keep_phone_number="" --build-arg keep_password=""
+
 #启动
 docker run -itd -p 80:80   running_page:latest
 
