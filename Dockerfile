@@ -2,6 +2,9 @@
 FROM python:3.10.5-slim AS develop-py
 WORKDIR /root/running_page
 COPY ./requirements.txt /root/running_page/requirements.txt
+# Add proxy for apt.
+# ENV http_proxy http://ip_address:port
+# ENV https_proxy http://ip_address:port
 RUN apt-get update \
   && apt-get install -y --no-install-recommends git \
   && apt-get purge -y --auto-remove \
@@ -14,10 +17,10 @@ FROM node:18  AS develop-node
 WORKDIR /root/running_page
 COPY ./package.json /root/running_page/package.json
 COPY ./pnpm-lock.yaml /root/running_page/pnpm-lock.yaml
-RUN npm config set registry https://registry.npm.taobao.org \
+RUN npm config rm proxy&&npm config set registry https://registry.npmjs.org/ \
   &&npm install -g corepack \
   &&corepack enable \
-  &&pnpm install
+  &&yarn install
 
 FROM develop-py AS data
 ARG app
@@ -27,6 +30,8 @@ ARG client_id
 ARG client_secret
 ARG refresh_token
 ARG YOUR_NAME
+ARG keep_phone_number
+ARG keep_password
 
 WORKDIR /root/running_page
 COPY . /root/running_page/
@@ -43,6 +48,8 @@ RUN DUMMY=${DUMMY}; \
   python3 run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token};\
   elif [ "$app" = "Nike_to_Strava" ] ; then \
   python3  run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${refresh_token};\
+  elif [ "$app" = "Keep" ] ; then \
+  python3 run_page/keep_sync.py ${keep_phone_number} ${keep_password};\
   else \
   echo "Unknown app" ; \
   fi
@@ -54,7 +61,7 @@ RUN python3 run_page/gen_svg.py --from-db --title "my running page" --type grid 
 FROM develop-node AS frontend-build
 WORKDIR /root/running_page
 COPY --from=data /root/running_page /root/running_page
-RUN pnpm run build
+RUN yarn run build
 
 FROM nginx:alpine AS web
 COPY --from=frontend-build /root/running_page/dist /usr/share/nginx/html/
