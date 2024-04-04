@@ -96,6 +96,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
 | [AlienVision](https://github.com/weaming)         | <https://run.drink.cafe/>                      | Strava      |
+| [闻笑忘](https://wenxiaowan.com)                | <https://wenxiaowan.com>                       | 苹果健身     |
 </details>
 
 ## How it works
@@ -142,8 +143,8 @@ git clone https://github.com/yihong0618/running_page.git --depth=1
 
 ```bash
 pip3 install -r requirements.txt
-npm install -g corepack && corepack enable && pnpm install
-pnpm develop
+npm install -g corepack && corepack enable && yarn install
+yarn vite
 ```
 
 Open your browser and visit <http://localhost:5173/>
