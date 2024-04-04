@@ -59,9 +59,9 @@ dependencies:
   tachyons:
     specifier: ^4.12.0
     version: 4.12.0
-  tachyons-sass:
-    specifier: git+https://github.com/tachyons-css/tachyons-sass.git
-    version: github.com/tachyons-css/tachyons-sass/2dce89b83729bddb9f4498c7d6f82b73d60d6538
+  tachyons-sass-fork-4.9.5:
+    specifier: 4.9.5
+    version: 4.9.5
   viewport-mercator-project:
     specifier: ^7.0.4
     version: 7.0.4
@@ -3275,6 +3275,12 @@ packages:
     resolution: {integrity: sha512-MVnslsN5dFswmh2+Sw+OOA4/6pQfnJrA8/wrtaf+Px347wze3MIk3lp3Q3QmbUPqrJda79s0dZtY3dgTwVHdfg==}
     dev: false
 
+  /tachyons-sass-fork-4.9.5@4.9.5:
+    resolution: {integrity: sha512-BLv+YJ5LsGxlf7JPCylxknLECSKfOn8Ub9rvl76ydlbmfF9W+b5UEr8n0ufZ7MWZQNEKx89WKynwZcZdKTOMeA==}
+    dependencies:
+      tachyons-custom: 4.9.8
+    dev: false
+
   /tachyons@4.12.0:
     resolution: {integrity: sha512-2nA2IrYFy3raCM9fxJ2KODRGHVSZNTW3BR0YnlGsLUf1DA3pk3YfWZ/DdfbnZK6zLZS+jUenlUGJsKcA5fUiZg==}
     dev: false
@@ -3615,11 +3621,3 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
-
-  github.com/tachyons-css/tachyons-sass/2dce89b83729bddb9f4498c7d6f82b73d60d6538:
-    resolution: {tarball: https://codeload.github.com/tachyons-css/tachyons-sass/tar.gz/2dce89b83729bddb9f4498c7d6f82b73d60d6538}
-    name: tachyons-sass
-    version: 4.9.5
-    dependencies:
-      tachyons-custom: 4.9.8
-    dev: false
