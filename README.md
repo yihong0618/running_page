@@ -143,8 +143,8 @@ git clone https://github.com/yihong0618/running_page.git --depth=1
 
 ```bash
 pip3 install -r requirements.txt
-npm install -g corepack && corepack enable && yarn install
-yarn vite
+npm install -g corepack && corepack enable && pnpm install
+pnpm develop
 ```
 
 Open your browser and visit <http://localhost:5173/>
