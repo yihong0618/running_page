@@ -215,7 +215,7 @@ const titleForType = (type: string): string => {
       return RUN_TITLES.RIDE_TITLE;
     case 'Indoor Ride':
       return RUN_TITLES.INDOOR_RIDE_TITLE;
-    case 'VirtualRide':
+    case 'Virtual Ride':
       return RUN_TITLES.VIRTUAL_RIDE_TITLE;
     case 'Hike':
       return RUN_TITLES.HIKE_TITLE;
