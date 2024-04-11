@@ -96,7 +96,8 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
 | [AlienVision](https://github.com/weaming)         | <https://run.drink.cafe/>                      | Strava      |
-| [闻笑忘](https://wenxiaowan.com)                | <https://wenxiaowan.com>                       | 苹果健身     |
+| [闻笑忘](https://wenxiaowan.com)                  | <https://wenxiaowan.com>                       | 苹果健身    |
+
 </details>
 
 ## How it works
@@ -131,6 +132,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
 - **[Coros](#Coros)**
+
 ## Download
 
 Clone or fork the repo.
@@ -399,7 +401,7 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn -
 <br>
 
 - If you only want to sync `type running` add args --only-run
-**The Python version must be >=3.10**
+  **The Python version must be >=3.10**
 
 #### Get Garmin CN Secret
 
@@ -689,8 +691,6 @@ ps: **when initializing for the first time, if you have a large amount of strava
 
 </details>
 
-
-
 ### Coros
 
 <details>
@@ -702,7 +702,7 @@ ps: **when initializing for the first time, if you have a large amount of strava
 python run_page/coros_sync.py 'your coros account' 'your coros password'
 ```
 
-#### Modify `run_data_sync.yml`  env.RUN_TYPE: _coros_
+#### Modify `run_data_sync.yml` env.RUN_TYPE: *coros*
 
 #### Set the Coros account information in github action
 
