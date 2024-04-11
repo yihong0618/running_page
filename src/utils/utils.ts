@@ -18,9 +18,9 @@ export interface Activity {
   type: string;
   start_date: string;
   start_date_local: string;
-  location_country?: string|null;
-  summary_polyline?: string|null;
-  average_heartrate?: number|null;
+  location_country?: string | null;
+  summary_polyline?: string | null;
+  average_heartrate?: number | null;
   average_speed: number;
   streak: number;
 }
@@ -149,7 +149,7 @@ const pathForRun = (run: Activity): Coordinate[] => {
   try {
     if (!run.summary_polyline) {
       return [];
-    };
+    }
     const c = mapboxPolyline.decode(run.summary_polyline);
     // reverse lat long for mapbox
     c.forEach((arr) => {
