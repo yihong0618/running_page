@@ -42,7 +42,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava      |
 | [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava      |
 | [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike        |
-| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Nike        |
+| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Strava        |
 | [geekplux](https://github.com/geekplux)           | <https://activities.geekplux.com>              | Nike        |
 | [guanlan](https://github.com/guanlan)             | <https://grun.vercel.app>                      | Strava      |
 | [tuzimoe](https://github.com/tuzimoe)             | <https://run.tuzi.moe>                         | Nike        |
