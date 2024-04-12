@@ -97,6 +97,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
 | [AlienVision](https://github.com/weaming)         | <https://run.drink.cafe/>                      | Strava      |
 | [闻笑忘](https://wenxiaowan.com)                | <https://wenxiaowan.com>                       | 苹果健身     |
+| [Vensent](https://github.com/Vensent)             | <https://vensent.github.io/workouts_page/>     | Garmin      |
 </details>
 
 ## How it works
