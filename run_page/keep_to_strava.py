@@ -12,7 +12,6 @@ from stravalib.exc import ActivityUploadFailed, RateLimitTimeout
 from utils import make_strava_client, upload_file_to_strava
 from keep_sync import (
     login,
-    get_all_keep_tracks,
     KEEP_DATA_TYPE_API,
     parse_raw_data_to_nametuple,
     get_to_download_runs_ids,
@@ -102,7 +101,6 @@ if __name__ == "__main__":
     )
 
     index = 1
-    print(f"{len(new_tracks)} gpx files is going to upload")
     print(f"Up to {len(new_tracks)} files are waiting to be uploaded")
     uploaded_file_paths = []
     for track in new_tracks:
