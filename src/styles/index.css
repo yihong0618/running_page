@@ -1,7 +1,7 @@
+@import './variables.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import './variables';
 
 img::selection {
   background: transparent;

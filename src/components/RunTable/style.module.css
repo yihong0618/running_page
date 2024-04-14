@@ -15,11 +15,11 @@
   font-variant: tabular-nums;
   margin: 2rem 0 5rem 0;
 
-  thead {
+  :is(thead) {
     color: --light;
     text-align: right;
 
-    th {
+    :is(th) {
       padding: 0.5rem;
     }
   }
@@ -27,7 +27,7 @@
 
 .runRow {
   cursor: pointer;
-  td {
+  :is(td) {
     padding: 0.5rem;
     border: 0;
     text-align: right;
