@@ -42,7 +42,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava      |
 | [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava      |
 | [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike        |
-| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Nike        |
+| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Strava        |
 | [geekplux](https://github.com/geekplux)           | <https://activities.geekplux.com>              | Nike        |
 | [guanlan](https://github.com/guanlan)             | <https://grun.vercel.app>                      | Strava      |
 | [tuzimoe](https://github.com/tuzimoe)             | <https://run.tuzi.moe>                         | Nike        |
@@ -96,8 +96,9 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
 | [AlienVision](https://github.com/weaming)         | <https://run.drink.cafe/>                      | Strava      |
-| [闻笑忘](https://wenxiaowan.com)                  | <https://wenxiaowan.com>                       | 苹果健身    |
-
+| [闻笑忘](https://wenxiaowan.com)                | <https://wenxiaowan.com>                       | 苹果健身     |
+| [Vensent](https://github.com/Vensent)             | <https://vensent.github.io/workouts_page/>     | Garmin      |
+| [Zeonsing](https://github.com/NoonieBao)             | <https://run.jogzeal.com/>     | Coros      |
 </details>
 
 ## How it works
