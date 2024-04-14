@@ -1,5 +1,3 @@
-@import '../../styles/variables.css';
-
 @media only screen and (max-width: 700px) {
 
   /* 当屏幕宽度小于 700px 时 */
@@ -16,7 +14,7 @@
   margin: 2rem 0 5rem 0;
 
   :is(thead) {
-    color: --light;
+    color: rgb(204, 204, 204);
     text-align: right;
 
     :is(th) {
@@ -38,7 +36,7 @@
   }
 
   &:hover {
-    background-color: lighten(--dark, 3%);
+    background-color: lighten(rgb(26, 26, 26), 3%);
   }
 }
 
@@ -52,5 +50,5 @@
 }
 
 .runDate {
-  color: --light;
+  color: rgb(204, 204, 204);
 }

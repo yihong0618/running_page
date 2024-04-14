@@ -66,7 +66,7 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
       </section>
       {year !== 'Total' && hovered && (
         <Suspense fallback="loading...">
-          <YearSVG className="mt-4 h-3/4 border-0 p-0" />
+          <YearSVG className="my-4 h-4/6 w-4/6 border-0 p-0" />
         </Suspense>
       )}
       <hr color="red" />
