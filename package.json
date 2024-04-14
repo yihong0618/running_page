@@ -35,7 +35,7 @@
     "develop": "vite dev",
     "serve": "vite serve",
     "lint": "eslint --ext .ts,.tsx src --fix",
-    "check": "prettier --write src/main.tsx src/**/*.{scss,json,ts,tsx} *.{md,yaml,json,ts,js}",
+    "check": "prettier --write src/main.tsx src/**/*.{css,json,ts,tsx} *.{md,yaml,json,ts,js}",
     "ci": "pnpm run check && pnpm run lint && pnpm run build"
   },
   "engineStrict": true,
