@@ -135,7 +135,9 @@ def parse_raw_data_to_nametuple(
             if p_hr:
                 p["hr"] = p_hr
         if with_download_gpx:
-            if str(keep_id) not in old_gpx_ids and run_data["dataType"].startswith("outdoor"):
+            if str(keep_id) not in old_gpx_ids and run_data["dataType"].startswith(
+                "outdoor"
+            ):
                 gpx_data = parse_points_to_gpx(
                     run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
                 )
@@ -176,7 +178,9 @@ def parse_raw_data_to_nametuple(
     return namedtuple("x", d.keys())(*d.values())
 
 
-def get_all_keep_tracks(email, password, old_tracks_ids, keep_sports_data_api, with_download_gpx=False):
+def get_all_keep_tracks(
+    email, password, old_tracks_ids, keep_sports_data_api, with_download_gpx=False
+):
     if with_download_gpx and not os.path.exists(GPX_FOLDER):
         os.mkdir(GPX_FOLDER)
     s = requests.Session()
@@ -318,7 +322,9 @@ def download_keep_gpx(gpx_data, keep_id):
 def run_keep_sync(email, password, keep_sports_data_api, with_download_gpx=False):
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
-    new_tracks = get_all_keep_tracks(email, password, old_tracks_ids, keep_sports_data_api, with_download_gpx)
+    new_tracks = get_all_keep_tracks(
+        email, password, old_tracks_ids, keep_sports_data_api, with_download_gpx
+    )
     generator.sync_from_app(new_tracks)
 
     activities_list = generator.load()
@@ -335,7 +341,7 @@ if __name__ == "__main__":
         dest="sync_types",
         nargs="+",
         default=["running"],
-        help =  "sync sport types from keep, default is running, you can choose from running, hiking, cycling"
+        help="sync sport types from keep, default is running, you can choose from running, hiking, cycling",
     )
     parser.add_argument(
         "--with-gpx",
@@ -345,5 +351,9 @@ if __name__ == "__main__":
     )
     options = parser.parse_args()
     for api in options.sync_types:
-        assert api in KEEP_DATA_TYPE_API, f"{api} are not supported type, please make sure that the type entered in the {KEEP_DATA_TYPE_API}"
-    run_keep_sync(options.phone_number, options.password, options.sync_types, options.with_gpx)
+        assert (
+            api in KEEP_DATA_TYPE_API
+        ), f"{api} are not supported type, please make sure that the type entered in the {KEEP_DATA_TYPE_API}"
+    run_keep_sync(
+        options.phone_number, options.password, options.sync_types, options.with_gpx
+    )

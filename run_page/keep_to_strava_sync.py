@@ -10,10 +10,7 @@ from Crypto.Cipher import AES
 from config import OUTPUT_DIR
 from stravalib.exc import ActivityUploadFailed, RateLimitTimeout
 from utils import make_strava_client, upload_file_to_strava
-from keep_sync import (
-    KEEP_DATA_TYPE_API,
-    get_all_keep_tracks
-)
+from keep_sync import KEEP_DATA_TYPE_API, get_all_keep_tracks
 
 """
 Only provide the ability to sync data from Keep's multiple sport types to Strava's corresponding sport types to help those who use multiple devices like me, the web page presentation still uses Strava (or refer to nike_to_strava_sync.py to modify it to suit you).
@@ -26,7 +23,8 @@ My own best practices:
 """
 KEEP2STRAVA_BK_PATH = os.path.join(OUTPUT_DIR, "keep2strava.json")
 
-def run_keep_sync(email, password, keep_sports_data_api,with_download_gpx=False):
+
+def run_keep_sync(email, password, keep_sports_data_api, with_download_gpx=False):
 
     if not os.path.exists(KEEP2STRAVA_BK_PATH):
         file = open(KEEP2STRAVA_BK_PATH, "w")
@@ -39,7 +37,9 @@ def run_keep_sync(email, password, keep_sports_data_api,with_download_gpx=False)
             except:
                 content = []
     old_tracks_ids = [str(a["run_id"]) for a in content]
-    _new_tracks = get_all_keep_tracks(email, password, old_tracks_ids, keep_sports_data_api, True)
+    _new_tracks = get_all_keep_tracks(
+        email, password, old_tracks_ids, keep_sports_data_api, True
+    )
     new_tracks = []
     for track in _new_tracks:
         # By default only outdoor sports have latlng as well as GPX.
@@ -49,9 +49,7 @@ def run_keep_sync(email, password, keep_sports_data_api,with_download_gpx=False)
             )
         else:
             file_path = namedtuple("x", "gpx_file_path")(None)
-        track = namedtuple("y", track._fields + file_path._fields)(
-            *(track + file_path)
-        )
+        track = namedtuple("y", track._fields + file_path._fields)(*(track + file_path))
         new_tracks.append(track)
 
     return new_tracks
@@ -69,13 +67,17 @@ if __name__ == "__main__":
         dest="sync_types",
         nargs="+",
         default=["running"],
-        help =  "sync sport types from keep, default is running, you can choose from running, hiking, cycling"
+        help="sync sport types from keep, default is running, you can choose from running, hiking, cycling",
     )
 
     options = parser.parse_args()
     for api in options.sync_types:
-        assert api in KEEP_DATA_TYPE_API, f"{api} are not supported type, please make sure that the type entered in the {KEEP_DATA_TYPE_API}"
-    new_tracks = run_keep_sync(options.phone_number, options.password, options.sync_types, True)
+        assert (
+            api in KEEP_DATA_TYPE_API
+        ), f"{api} are not supported type, please make sure that the type entered in the {KEEP_DATA_TYPE_API}"
+    new_tracks = run_keep_sync(
+        options.phone_number, options.password, options.sync_types, True
+    )
 
     # to strava.
     print("Need to load all gpx files maybe take some time")
