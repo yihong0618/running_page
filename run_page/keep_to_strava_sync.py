@@ -110,11 +110,15 @@ if __name__ == "__main__":
             uploaded_file_paths.append(track)
     time.sleep(10)
 
+    # This file is used to record which logs have been uploaded to strava
+    # to avoid intrusion into the data.db resulting in double counting of data.
     with open(KEEP2STRAVA_BK_PATH, "r") as f:
         try:
             content = json.loads(f.read())
         except:
             content = []
+
+    # Extend and Save the successfully uploaded log to the backup file.
     content.extend(
         [
             dict(
@@ -129,7 +133,7 @@ if __name__ == "__main__":
     with open(KEEP2STRAVA_BK_PATH, "w") as f:
         json.dump(content, f, indent=0)
 
-    # del gpx
+    # del the uploaded GPX file.
     for track in uploaded_file_paths:
         if track.gpx_file_path is not None:
             os.remove(track.gpx_file_path)
