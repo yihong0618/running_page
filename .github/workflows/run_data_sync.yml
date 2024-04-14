@@ -18,6 +18,7 @@ on:
       - run_page/gpx_sync.py
       - run_page/tcx_sync.py
       - run_page/garmin_to_strava_sync.py
+      - run_page/keep_to_strava_sync.py
       - requirements.txt
 
 env:

@@ -11,11 +11,8 @@ from config import OUTPUT_DIR
 from stravalib.exc import ActivityUploadFailed, RateLimitTimeout
 from utils import make_strava_client, upload_file_to_strava
 from keep_sync import (
-    login,
     KEEP_DATA_TYPE_API,
-    parse_raw_data_to_nametuple,
-    get_to_download_runs_ids,
-    get_single_run_data,
+    get_all_keep_tracks
 )
 
 """
@@ -27,57 +24,35 @@ My own best practices:
 4. running_page(Strava)
 
 """
+KEEP2STRAVA_BK_PATH = os.path.join(OUTPUT_DIR, "keep2strava.json")
 
+def run_keep_sync(email, password, keep_sports_data_api,with_download_gpx=False):
 
-def get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx=True):
-    if with_download_gpx and not os.path.exists(GPX_FOLDER):
-        os.mkdir(GPX_FOLDER)
-    s = requests.Session()
-    s, headers = login(s, email, password)
-    tracks = []
-    for api in KEEP_DATA_TYPE_API:
-        runs = get_to_download_runs_ids(s, headers, api)
-        runs = [run for run in runs if run.split("_")[1] not in old_tracks_ids]
-        print(f"{len(runs)} new keep {api} data to generate")
-        old_gpx_ids = os.listdir(GPX_FOLDER)
-        old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
-        for run in runs:
-            print(f"parsing keep id {run}")
-            try:
-                run_data = get_single_run_data(s, headers, run, api)
-                track = parse_raw_data_to_nametuple(
-                    run_data, old_gpx_ids, s, with_download_gpx
-                )
-                # By default only outdoor sports have latlng as well as GPX.
-                if track.start_latlng is not None:
-                    file_path = namedtuple("x", "gpx_file_path")(
-                        os.path.join(GPX_FOLDER, str(track.id) + ".gpx")
-                    )
-                else:
-                    file_path = namedtuple("x", "gpx_file_path")(None)
-                track = namedtuple("y", track._fields + file_path._fields)(
-                    *(track + file_path)
-                )
-                tracks.append(track)
-            except Exception as e:
-                print(f"Something wrong paring keep id {run}" + str(e))
-    return tracks
-
-
-def run_keep_sync(email, password, with_download_gpx=True):
-    keep2strava_bk_path = os.path.join(OUTPUT_DIR, "keep2strava.json")
-    if not os.path.exists(keep2strava_bk_path):
-        file = open(keep2strava_bk_path, "w")
+    if not os.path.exists(KEEP2STRAVA_BK_PATH):
+        file = open(KEEP2STRAVA_BK_PATH, "w")
         file.close()
         content = []
     else:
-        with open(keep2strava_bk_path) as f:
+        with open(KEEP2STRAVA_BK_PATH) as f:
             try:
                 content = json.loads(f.read())
             except:
                 content = []
     old_tracks_ids = [str(a["run_id"]) for a in content]
-    new_tracks = get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx)
+    _new_tracks = get_all_keep_tracks(email, password, old_tracks_ids, keep_sports_data_api, True)
+    new_tracks = []
+    for track in _new_tracks:
+        # By default only outdoor sports have latlng as well as GPX.
+        if track.start_latlng is not None:
+            file_path = namedtuple("x", "gpx_file_path")(
+                os.path.join(GPX_FOLDER, str(track.id) + ".gpx")
+            )
+        else:
+            file_path = namedtuple("x", "gpx_file_path")(None)
+        track = namedtuple("y", track._fields + file_path._fields)(
+            *(track + file_path)
+        )
+        new_tracks.append(track)
 
     return new_tracks
 
@@ -89,9 +64,18 @@ if __name__ == "__main__":
     parser.add_argument("client_id", help="strava client id")
     parser.add_argument("client_secret", help="strava client secret")
     parser.add_argument("strava_refresh_token", help="strava refresh token")
+    parser.add_argument(
+        "--sync-types",
+        dest="sync_types",
+        nargs="+",
+        default=["running"],
+        help =  "sync sport types from keep, default is running, you can choose from running, hiking, cycling"
+    )
 
     options = parser.parse_args()
-    new_tracks = run_keep_sync(options.phone_number, options.password, True)
+    for api in options.sync_types:
+        assert api in KEEP_DATA_TYPE_API, f"{api} are not supported type, please make sure that the type entered in the {KEEP_DATA_TYPE_API}"
+    new_tracks = run_keep_sync(options.phone_number, options.password, options.sync_types, True)
 
     # to strava.
     print("Need to load all gpx files maybe take some time")
@@ -124,8 +108,7 @@ if __name__ == "__main__":
             uploaded_file_paths.append(track)
     time.sleep(10)
 
-    keep2strava_bk_path = os.path.join(OUTPUT_DIR, "keep2strava.json")
-    with open(keep2strava_bk_path, "r") as f:
+    with open(KEEP2STRAVA_BK_PATH, "r") as f:
         try:
             content = json.loads(f.read())
         except:
@@ -141,11 +124,11 @@ if __name__ == "__main__":
             for track in uploaded_file_paths
         ]
     )
-    with open(keep2strava_bk_path, "w") as f:
+    with open(KEEP2STRAVA_BK_PATH, "w") as f:
         json.dump(content, f, indent=0)
 
     # del gpx
-    for track in new_tracks:
+    for track in uploaded_file_paths:
         if track.gpx_file_path is not None:
             os.remove(track.gpx_file_path)
         else:
