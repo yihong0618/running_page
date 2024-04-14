@@ -9,7 +9,7 @@ import {
   GOOGLE_ANALYTICS_TRACKING_ID,
   USE_GOOGLE_ANALYTICS,
 } from './utils/const';
-import '@/styles/index.scss';
+import '@/styles/index.css';
 import { withOptionalGAPageTracking } from './utils/trackRoute';
 
 if (USE_GOOGLE_ANALYTICS) {
