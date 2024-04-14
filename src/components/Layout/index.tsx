@@ -3,14 +3,13 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import useSiteMetadata from '@/hooks/useSiteMetadata';
-import styles from './style.module.scss';
 
 const Layout = ({ children }: React.PropsWithChildren) => {
   const { siteTitle, description } = useSiteMetadata();
 
   return (
     <>
-      <Helmet bodyAttributes={{ class: styles.body }}>
+      <Helmet>
         <html lang="en" />
         <title>{siteTitle}</title>
         <meta name="description" content={description} />
@@ -21,7 +20,9 @@ const Layout = ({ children }: React.PropsWithChildren) => {
         />
       </Helmet>
       <Header />
-      <div className="pa3 pa5-l mb5 cf">{children}</div>
+      <div className="mb-16 bg-zinc-900 p-4 text-yellow-200 no-underline lg:flex lg:p-16">
+        {children}
+      </div>
     </>
   );
 };

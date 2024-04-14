@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../styles/variables.css';
 
 .locationSVG {
   height: 100%;
@@ -25,11 +25,11 @@
   font-size: 1rem;
   text-align: center;
   color: white;
-  font-family: $global-font-family;
+  font-family: --global-font-family;
 }
 
 .selected {
-  color: $nike;
+  color: --nike;
 }
 
 .runTitle {
@@ -38,7 +38,7 @@
   position: absolute;
   bottom: 0px;
   left: 120px;
-  font-family: $global-font-family;
+  font-family: --global-font-family;
   cursor: pointer;
 }
 

@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../styles/variables.css';
 
 @media only screen and (max-width: 700px) {
 
@@ -16,7 +16,7 @@
   margin: 2rem 0 5rem 0;
 
   thead {
-    color: $light;
+    color: --light;
     text-align: right;
 
     th {
@@ -38,7 +38,7 @@
   }
 
   &:hover {
-    background-color: lighten($dark, 3%);
+    background-color: lighten(--dark, 3%);
   }
 }
 
@@ -52,5 +52,5 @@
 }
 
 .runDate {
-  color: $light;
+  color: --light;
 }
