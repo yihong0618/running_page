@@ -7,9 +7,9 @@ import {
   MAP_LAYER_LIST,
   IS_CHINESE,
   ROAD_LABEL_DISPLAY,
-  MAIN_COLOR,
   MAPBOX_TOKEN,
   PROVINCE_FILL_COLOR,
+  COUNTRY_FILL_COLOR,
   USE_DASH_LINE,
   LINE_OPACITY,
   MAP_HEIGHT,
@@ -42,7 +42,7 @@ const RunMap = ({
   geoData,
   thisYear,
 }: IRunMapProps) => {
-  const { provinces } = useActivities();
+  const { countries, provinces } = useActivities();
   const mapRef = useRef<MapRef>();
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
   const keepWhenLightsOff = ['runs2']
@@ -84,8 +84,10 @@ const RunMap = ({
     [mapRef, lights]
   );
   const filterProvinces = provinces.slice();
+  const filterCountries = countries.slice();
   // for geojson format
   filterProvinces.unshift('in', 'name');
+  filterCountries.unshift('in', 'name');
 
   const initGeoDataLength = geoData.features.length;
   const isBigMap = (viewState.zoom ?? 0) <= 3;
@@ -146,10 +148,20 @@ const RunMap = ({
           filter={filterProvinces}
         />
         <Layer
+          id="countries"
+          type="fill"
+          paint={{
+            'fill-color': COUNTRY_FILL_COLOR,
+            // in China, fill a bit lighter while already filled provinces
+            'fill-opacity': ["case", ["==", ["get", "name"], '中国'], 0.1, 0.5],
+          }}
+          filter={filterCountries}
+        />
+        <Layer
           id="runs2"
           type="line"
           paint={{
-            'line-color': MAIN_COLOR,
+            'line-color':  ['get', 'color'],
             'line-width': isBigMap && lights ? 1 : 2,
             'line-dasharray': dash,
             'line-opacity': isSingleRun || isBigMap || !lights ? 1 : LINE_OPACITY,

@@ -1,4 +1,5 @@
 import { FeatureCollection, LineString, Polygon, MultiPolygon } from 'geojson';
+import { MAIN_COLOR } from '@/utils/const';
 
 export type RPGeometry = LineString | Polygon | MultiPolygon;
 
@@ -13,6 +14,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '新疆维吾尔自治区',
         cp: [84.9023, 42.148],
         childNum: 18,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -181,6 +183,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '西藏自治区',
         cp: [87.8695, 31.6846],
         childNum: 7,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -345,6 +348,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '内蒙古自治区',
         cp: [112.5977, 46.3408],
         childNum: 12,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -587,6 +591,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '青海省',
         cp: [95.2402, 35.4199],
         childNum: 8,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -739,6 +744,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '四川省',
         cp: [101.9199, 30.1904],
         childNum: 21,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -884,6 +890,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '黑龙江省',
         cp: [126.1445, 48.7156],
         childNum: 13,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -1022,6 +1029,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '甘肃省',
         cp: [99.7129, 38.166],
         childNum: 14,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -1214,6 +1222,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '云南省',
         cp: [101.0652, 25.1807],
         childNum: 16,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -1357,6 +1366,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '广西壮族自治区',
         cp: [107.7813, 23.6426],
         childNum: 14,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -1459,6 +1469,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '湖南省',
         cp: [111.5332, 27.3779],
         childNum: 14,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -1551,6 +1562,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '陕西省',
         cp: [109.5996, 35.7396],
         childNum: 10,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -1652,6 +1664,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '广东省',
         cp: [113.4668, 22.8076],
         childNum: 21,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -1761,6 +1774,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '吉林省',
         cp: [125.7746, 43.5938],
         childNum: 9,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -1857,6 +1871,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '河北省',
         cp: [115.4004, 39.4688],
         childNum: 11,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'MultiPolygon',
@@ -1989,6 +2004,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '湖北省',
         cp: [112.2363, 31.1572],
         childNum: 17,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2083,6 +2099,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '贵州省',
         cp: [106.6113, 26.9385],
         childNum: 9,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2179,6 +2196,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '山东省',
         cp: [118.7402, 36.4307],
         childNum: 17,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2261,6 +2279,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '江西省',
         cp: [116.0156, 27.29],
         childNum: 11,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2340,6 +2359,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '河南省',
         cp: [113.0668, 33.8818],
         childNum: 17,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2420,6 +2440,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '辽宁省',
         cp: [122.0438, 41.0889],
         childNum: 14,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2490,6 +2511,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '山西省',
         cp: [112.4121, 37.6611],
         childNum: 11,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2559,6 +2581,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '安徽省',
         cp: [117.2461, 32.0361],
         childNum: 17,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2644,6 +2667,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '福建省',
         cp: [118.3008, 25.9277],
         childNum: 9,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2717,6 +2741,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '浙江省',
         cp: [120.498, 29.0918],
         childNum: 11,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2781,6 +2806,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '江苏省',
         cp: [118.8586, 32.915],
         childNum: 13,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2854,6 +2880,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '重庆市',
         cp: [107.7539, 30.1904],
         childNum: 40,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2937,6 +2964,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '宁夏回族自治区',
         cp: [105.9961, 37.3096],
         childNum: 5,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -2993,6 +3021,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '海南省',
         cp: [109.9512, 19.2041],
         childNum: 18,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -3029,6 +3058,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '台湾省',
         cp: [120.0254, 23.5986],
         childNum: 1,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -3062,6 +3092,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '北京市',
         cp: [116.4551, 40.2539],
         childNum: 19,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -3103,6 +3134,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '天津市',
         cp: [117.4219, 39.4189],
         childNum: 18,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -3143,6 +3175,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '上海市',
         cp: [121.4648, 31.2891],
         childNum: 19,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -3170,6 +3203,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '香港特别行政区',
         cp: [114.1178, 22.3242],
         childNum: 1,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
@@ -3198,6 +3232,7 @@ export const chinaGeojson: FeatureCollection<RPGeometry> = {
         name: '澳门特别行政区',
         cp: [111.5547, 22.1484],
         childNum: 1,
+        color: MAIN_COLOR,
       },
       geometry: {
         type: 'Polygon',
