@@ -17,7 +17,7 @@ from generator import Generator
 from utils import adjust_time
 import xml.etree.ElementTree as ET
 
-KEEP_DATA_TYPE_API = ["running", "hiking", "cycling"]
+KEEP_SPORT_TYPES = ["running", "hiking", "cycling"]
 KEEP2STRAVA = {
     "outdoorWalking": "Walk",
     "outdoorRunning": "Run",
@@ -26,8 +26,8 @@ KEEP2STRAVA = {
 }
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
-RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type={data_type_api}&lastDate={last_date}"
-RUN_LOG_API = "https://api.gotokeep.com/pd/v3/{data_type_api}log/{run_id}"
+RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type={sport_type}&lastDate={last_date}"
+RUN_LOG_API = "https://api.gotokeep.com/pd/v3/{sport_type}log/{run_id}"
 
 HR_FRAME_THRESHOLD_IN_DECISECOND = 100  # Maximum time difference to consider a data point as the nearest, the unit is decisecond(分秒)
 
@@ -50,13 +50,13 @@ def login(session, mobile, password):
         return session, headers
 
 
-def get_to_download_runs_ids(session, headers, data_type_api):
+def get_to_download_runs_ids(session, headers, sport_type):
     last_date = 0
     result = []
 
     while 1:
         r = session.get(
-            RUN_DATA_API.format(data_type_api=data_type_api, last_date=last_date),
+            RUN_DATA_API.format(sport_type=sport_type, last_date=last_date),
             headers=headers,
         )
         if r.ok:
@@ -74,9 +74,9 @@ def get_to_download_runs_ids(session, headers, data_type_api):
     return result
 
 
-def get_single_run_data(session, headers, run_id, data_type_api):
+def get_single_run_data(session, headers, run_id, sport_type):
     r = session.get(
-        RUN_LOG_API.format(data_type_api=data_type_api, run_id=run_id), headers=headers
+        RUN_LOG_API.format(sport_type=sport_type, run_id=run_id), headers=headers
     )
     if r.ok:
         return r.json()
@@ -205,7 +205,7 @@ def get_all_keep_tracks(
     return tracks
 
 
-def parse_points_to_gpx(run_points_data, start_time, type):
+def parse_points_to_gpx(run_points_data, start_time, sport_type):
     """
     Convert run points data to GPX format.
 
@@ -239,7 +239,7 @@ def parse_points_to_gpx(run_points_data, start_time, type):
     gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
     gpx_track = gpxpy.gpx.GPXTrack()
     gpx_track.name = "gpx from keep"
-    gpx_track.type = type
+    gpx_track.type = sport_type
     gpx.tracks.append(gpx_track)
 
     # Create first segment in our GPX track:
@@ -350,10 +350,10 @@ if __name__ == "__main__":
         help="get all keep data to gpx and download",
     )
     options = parser.parse_args()
-    for api in options.sync_types:
+    for _tpye in options.sync_types:
         assert (
-            api in KEEP_DATA_TYPE_API
-        ), f"{api} are not supported type, please make sure that the type entered in the {KEEP_DATA_TYPE_API}"
+            _tpye in KEEP_SPORT_TYPES
+        ), f"{_tpye} are not supported type, please make sure that the type entered in the {KEEP_SPORT_TYPES}"
     run_keep_sync(
         options.phone_number, options.password, options.sync_types, options.with_gpx
     )
