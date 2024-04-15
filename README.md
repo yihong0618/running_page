@@ -99,6 +99,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [闻笑忘](https://wenxiaowan.com)                | <https://wenxiaowan.com>                       | 苹果健身     |
 | [Vensent](https://github.com/Vensent)             | <https://vensent.github.io/workouts_page/>     | Garmin      |
 | [Zeonsing](https://github.com/NoonieBao)             | <https://run.jogzeal.com/>     | Coros      |
+| [yaoper](https://github.com/yaoper)               | <https://running.yaoper.cn>                    | codoon      |
 </details>
 
 ## How it works
