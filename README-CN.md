@@ -921,32 +921,14 @@ python3(python) run_page/keep_to_strava_sync.py ${your mobile} ${your password} 
     - 华为运动健康: 户外跑步，户外骑行，户外步行。
 
 #### 特性以及使用细节:
-1. 与Keep相似，但是由keep_to_strava_sync.py实现，不侵入data.db 与 activities.json。因此不会出现由于同时使用keep_sync和strava_sync而导致的数据重复统计/展示问题。当然，也因为不侵入db和activities，导致该方法也无法独立的用于将数据统计/展示在网页上(想要展示需要和Strava配合)。
+1. 与Keep相似，但是由keep_to_strava_sync.py实现，不侵入data.db 与 activities.json。因此不会出现由于同时使用keep_sync和strava_sync而导致的数据重复统计/展示问题。
 2. 上传至Strava时，会自动识别为Strava中相应的运动类型, 目前支持的运动类型为running, cycling, hiking。
-3. 针对不同的需求主要有两种使用方法：
-    3.1 如果使用该项目仅仅只是为了将华为运动健康/OPPO健康等数据同步到Strava，那么只在run_data_sync.yml中将RUN_TYPE修改为
+3. run_data_sync.yml中的修改：
 
     ```yaml
-    RUN_TYPE: keep_to_starva
+    RUN_TYPE: keep_to_starva_sync
     ```
 
-    3.2 如果使用该项目是为了展示自己的running page，而且使用的设备/APP是华为/OPPO等可以链接到Keep的设备，打算将数据统一到Strava中，并在running page上展示的用户，那么需要在/.github/workflows/run_data_sync.yml中进行两步修改
-    - RUN_TYPE改为
-        ```yaml
-        RUN_TYPE: starva
-        ```
-    - if: env.RUN_TYPE == 'keep_to_strava'改为
-        ```yaml
-        if: env.RUN_TYPE == 'strava'
-        ```
-        示例：
-
-        ```yaml
-            - name: Run sync Keep_to_strava script
-                if: env.RUN_TYPE == 'strava'
-                run: |
-                    python run_page/keep_to_strava_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }} --sync-types running cycling hiking
-        ```
 </details>
 
 ### Total Data Analysis

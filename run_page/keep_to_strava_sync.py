@@ -11,6 +11,7 @@ from config import OUTPUT_DIR
 from stravalib.exc import ActivityUploadFailed, RateLimitTimeout
 from utils import make_strava_client, upload_file_to_strava
 from keep_sync import KEEP_DATA_TYPE_API, get_all_keep_tracks
+from strava_sync import run_strava_sync
 
 """
 Only provide the ability to sync data from Keep's multiple sport types to Strava's corresponding sport types to help those who use multiple devices like me, the web page presentation still uses Strava (or refer to nike_to_strava_sync.py to modify it to suit you).
@@ -139,3 +140,7 @@ if __name__ == "__main__":
             os.remove(track.gpx_file_path)
         else:
             continue
+
+    run_strava_sync(
+        options.client_id, options.client_secret, options.strava_refresh_token
+    )
