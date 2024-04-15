@@ -101,7 +101,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [AlienVision](https://github.com/weaming)         | <https://run.drink.cafe/>                      | Strava      |
 | [Vensent](https://github.com/Vensent)             | <https://vensent.github.io/workouts_page/>     | Garmin      |
 | [Zeonsing](https://github.com/NoonieBao)          | <https://run.jogzeal.com/>                     | Coros       |
-| [yaoper](https://github.com/yaoper)               | <https://running.yaoper.cn>                    | Codoon      |
+| [yaoper](https://github.com/yaoper)               | <https://running.yaoper.cn>                    | codoon      |
 </details>
 
 ## 它是怎么工作的
