@@ -22,13 +22,13 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
-  ATHLETE: yihong0618
-  TITLE: Yihong0618 Running
+  RUN_TYPE: garmin_cn # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
+  ATHLETE: Cigar Tang
+  TITLE: Cigar Tang Running
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Runs # also here
-  GITHUB_NAME: yihong0618 # change to yours
-  GITHUB_EMAIL: zouzou0208@gmail.com # change to yours
+  GITHUB_NAME: Cigar # change to yours
+  GITHUB_EMAIL: silencealltheyear@gmail.com # change to yours
 
   # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
   IGNORE_START_END_RANGE: 10 # Unit meter
@@ -119,7 +119,7 @@ jobs:
         if: env.RUN_TYPE == 'garmin'
         run: |
           # make garimin secret string `python run_page/get_garmin_secret.py ${email} ${password}
-          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
+          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }} --only-run
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }} --only-run
 
@@ -127,7 +127,7 @@ jobs:
         if: env.RUN_TYPE == 'garmin_cn'
         run: |
           # make garimin secret string `python run_page/get_garmin_secret.py ${email} ${password} --is-cn
-          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
+          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --only-run --is-cn
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }}  --only-run --is-cn
 
