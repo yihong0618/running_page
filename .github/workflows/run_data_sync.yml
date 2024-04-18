@@ -18,6 +18,7 @@ on:
       - run_page/gpx_sync.py
       - run_page/tcx_sync.py
       - run_page/garmin_to_strava_sync.py
+      - run_page/keep_to_strava_sync.py
       - requirements.txt
 
 env:
@@ -102,6 +103,12 @@ jobs:
         if: env.RUN_TYPE == 'coros'
         run: |
           python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
+
+      - name: Run sync Keep_to_strava script
+        if: env.RUN_TYPE == 'keep_to_strava_sync'
+        run: |
+          python run_page/keep_to_strava_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }} --sync-types running cycling hiking
+        # If you only want to sync `type running` modify args --sync-types running, default script is to sync all data (rides, hikes and runs).
 
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'

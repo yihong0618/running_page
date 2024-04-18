@@ -17,10 +17,17 @@ from generator import Generator
 from utils import adjust_time
 import xml.etree.ElementTree as ET
 
+KEEP_SPORT_TYPES = ["running", "hiking", "cycling"]
+KEEP2STRAVA = {
+    "outdoorWalking": "Walk",
+    "outdoorRunning": "Run",
+    "outdoorCycling": "Ride",
+    "indoorRunning": "VirtualRun",
+}
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
-RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type=running&lastDate={last_date}"
-RUN_LOG_API = "https://api.gotokeep.com/pd/v3/runninglog/{run_id}"
+RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type={sport_type}&lastDate={last_date}"
+RUN_LOG_API = "https://api.gotokeep.com/pd/v3/{sport_type}log/{run_id}"
 
 HR_FRAME_THRESHOLD_IN_DECISECOND = 100  # Maximum time difference to consider a data point as the nearest, the unit is decisecond(分秒)
 
@@ -43,11 +50,15 @@ def login(session, mobile, password):
         return session, headers
 
 
-def get_to_download_runs_ids(session, headers):
+def get_to_download_runs_ids(session, headers, sport_type):
     last_date = 0
     result = []
+
     while 1:
-        r = session.get(RUN_DATA_API.format(last_date=last_date), headers=headers)
+        r = session.get(
+            RUN_DATA_API.format(sport_type=sport_type, last_date=last_date),
+            headers=headers,
+        )
         if r.ok:
             run_logs = r.json()["data"]["records"]
 
@@ -63,8 +74,10 @@ def get_to_download_runs_ids(session, headers):
     return result
 
 
-def get_single_run_data(session, headers, run_id):
-    r = session.get(RUN_LOG_API.format(run_id=run_id), headers=headers)
+def get_single_run_data(session, headers, run_id, sport_type):
+    r = session.get(
+        RUN_LOG_API.format(sport_type=sport_type, run_id=run_id), headers=headers
+    )
     if r.ok:
         return r.json()
 
@@ -82,7 +95,10 @@ def decode_runmap_data(text, is_geo=False):
 
 
 def parse_raw_data_to_nametuple(
-    run_data, old_gpx_ids, session, with_download_gpx=False
+    run_data,
+    old_gpx_ids,
+    session,
+    with_download_gpx=False,
 ):
     run_data = run_data["data"]
     run_points_data = []
@@ -119,11 +135,12 @@ def parse_raw_data_to_nametuple(
             if p_hr:
                 p["hr"] = p_hr
         if with_download_gpx:
-            if (
-                str(keep_id) not in old_gpx_ids
-                and run_data["dataType"] == "outdoorRunning"
+            if str(keep_id) not in old_gpx_ids and run_data["dataType"].startswith(
+                "outdoor"
             ):
-                gpx_data = parse_points_to_gpx(run_points_data_gpx, start_time)
+                gpx_data = parse_points_to_gpx(
+                    run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
+                )
                 download_keep_gpx(gpx_data, str(keep_id))
     else:
         print(f"ID {keep_id} no gps data")
@@ -139,9 +156,9 @@ def parse_raw_data_to_nametuple(
         return
     d = {
         "id": int(keep_id),
-        "name": "run from keep",
+        "name": f"{KEEP2STRAVA[run_data['dataType']]} from keep",
         # future to support others workout now only for run
-        "type": "Run",
+        "type": f"{KEEP2STRAVA[(run_data['dataType'])]}",
         "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
         "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
         "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
@@ -161,31 +178,34 @@ def parse_raw_data_to_nametuple(
     return namedtuple("x", d.keys())(*d.values())
 
 
-def get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx=False):
+def get_all_keep_tracks(
+    email, password, old_tracks_ids, keep_sports_data_api, with_download_gpx=False
+):
     if with_download_gpx and not os.path.exists(GPX_FOLDER):
         os.mkdir(GPX_FOLDER)
     s = requests.Session()
     s, headers = login(s, email, password)
-    runs = get_to_download_runs_ids(s, headers)
-    runs = [run for run in runs if run.split("_")[1] not in old_tracks_ids]
-    print(f"{len(runs)} new keep runs to generate")
     tracks = []
-    old_gpx_ids = os.listdir(GPX_FOLDER)
-    old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
-    for run in runs:
-        print(f"parsing keep id {run}")
-        try:
-            run_data = get_single_run_data(s, headers, run)
-            track = parse_raw_data_to_nametuple(
-                run_data, old_gpx_ids, s, with_download_gpx
-            )
-            tracks.append(track)
-        except Exception as e:
-            print(f"Something wrong paring keep id {run}" + str(e))
+    for api in keep_sports_data_api:
+        runs = get_to_download_runs_ids(s, headers, api)
+        runs = [run for run in runs if run.split("_")[1] not in old_tracks_ids]
+        print(f"{len(runs)} new keep {api} data to generate")
+        old_gpx_ids = os.listdir(GPX_FOLDER)
+        old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
+        for run in runs:
+            print(f"parsing keep id {run}")
+            try:
+                run_data = get_single_run_data(s, headers, run, api)
+                track = parse_raw_data_to_nametuple(
+                    run_data, old_gpx_ids, s, with_download_gpx
+                )
+                tracks.append(track)
+            except Exception as e:
+                print(f"Something wrong paring keep id {run}" + str(e))
     return tracks
 
 
-def parse_points_to_gpx(run_points_data, start_time):
+def parse_points_to_gpx(run_points_data, start_time, sport_type):
     """
     Convert run points data to GPX format.
 
@@ -219,6 +239,7 @@ def parse_points_to_gpx(run_points_data, start_time):
     gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
     gpx_track = gpxpy.gpx.GPXTrack()
     gpx_track.name = "gpx from keep"
+    gpx_track.type = sport_type
     gpx.tracks.append(gpx_track)
 
     # Create first segment in our GPX track:
@@ -292,15 +313,18 @@ def download_keep_gpx(gpx_data, keep_id):
         file_path = os.path.join(GPX_FOLDER, str(keep_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
+        return file_path
     except:
         print(f"wrong id {keep_id}")
         pass
 
 
-def run_keep_sync(email, password, with_download_gpx=False):
+def run_keep_sync(email, password, keep_sports_data_api, with_download_gpx=False):
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
-    new_tracks = get_all_keep_tracks(email, password, old_tracks_ids, with_download_gpx)
+    new_tracks = get_all_keep_tracks(
+        email, password, old_tracks_ids, keep_sports_data_api, with_download_gpx
+    )
     generator.sync_from_app(new_tracks)
 
     activities_list = generator.load()
@@ -313,10 +337,23 @@ if __name__ == "__main__":
     parser.add_argument("phone_number", help="keep login phone number")
     parser.add_argument("password", help="keep login password")
     parser.add_argument(
+        "--sync-types",
+        dest="sync_types",
+        nargs="+",
+        default=["running"],
+        help="sync sport types from keep, default is running, you can choose from running, hiking, cycling",
+    )
+    parser.add_argument(
         "--with-gpx",
         dest="with_gpx",
         action="store_true",
         help="get all keep data to gpx and download",
     )
     options = parser.parse_args()
-    run_keep_sync(options.phone_number, options.password, options.with_gpx)
+    for _tpye in options.sync_types:
+        assert (
+            _tpye in KEEP_SPORT_TYPES
+        ), f"{_tpye} are not supported type, please make sure that the type entered in the {KEEP_SPORT_TYPES}"
+    run_keep_sync(
+        options.phone_number, options.password, options.sync_types, options.with_gpx
+    )
