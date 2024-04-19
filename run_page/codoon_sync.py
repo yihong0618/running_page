@@ -9,6 +9,7 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 from collections import namedtuple
 from datetime import datetime, timedelta
+from xml.dom import minidom
 
 import eviltransform
 import gpxpy
@@ -127,6 +128,9 @@ def formated_input(
 
 
 def tcx_output(fit_array, run_data):
+    """
+    If you want to make a more detailed tcx file, please refer to oppo_sync.py
+    """
     # route ID
     fit_id = str(run_data["id"])
     # local time
@@ -149,7 +153,24 @@ def tcx_output(fit_array, run_data):
         },
     )
     # xml tree
-    tree = ET.ElementTree(training_center_database)
+    ET.ElementTree(training_center_database)
+    # Author
+    author = ET.Element(
+        "Author",
+        {
+            "xsi:type": "Application_t"
+        }
+    )
+    training_center_database.append(author)
+    author_name = ET.Element("Name")
+    author_name.text = "Connect Api"
+    author.append(author_name)
+    author_lang = ET.Element("LangID")
+    author_lang.text = "en"
+    author.append(author_lang)
+    author_part = ET.Element("PartNumber")
+    author_part.text = "006-D2449-00"
+    author.append(author_part)
     # Activities
     activities = ET.Element("Activities")
     training_center_database.append(activities)
@@ -163,7 +184,12 @@ def tcx_output(fit_array, run_data):
     activity_id.text = fit_start_time  # Codoon use start_time as ID
     activity.append(activity_id)
     #   Creator
-    activity_creator = ET.Element("Creator")
+    activity_creator = ET.Element(
+        "Creator",
+        {
+            "xsi:type": "Device_t"
+        }
+    )
     activity.append(activity_creator)
     #       Name
     activity_creator_name = ET.Element("Name")
@@ -217,9 +243,10 @@ def tcx_output(fit_array, run_data):
             tp.append(altitude_meters)
 
     # write to TCX file
-    tree.write(
-        TCX_FOLDER + "/" + fit_id + ".tcx", encoding="utf-8", xml_declaration=True
-    )
+    xmlstr = minidom.parseString(ET.tostring(training_center_database)).toprettyxml(indent="  ", encoding="UTF-8")
+    with open(TCX_FOLDER + "/" + fit_id + ".tcx", "w") as f:
+        f.write(str(xmlstr.decode("UTF-8")))
+        f.close()
 
 
 # TODO time complexity is too heigh, need to be reduced
