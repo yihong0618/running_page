@@ -573,15 +573,15 @@ References：
 3. Execute in the root directory:
 
 ```bash
-python3 run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
+python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
 ```bash
-python run_page/tcx_to_garmin_sync.py xxx --is-cn
-or Garmin Global
-python run_page/tcx_to_garmin_sync.py xxx
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
+or
+python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -600,15 +600,15 @@ python run_page/tcx_to_garmin_sync.py xxx
 3. Execute in the root directory:
 
 ```bash
-python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
+python3 run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
 ```
 
 example：
 
 ```bash
-python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
-or
-python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
+python run_page/tcx_to_garmin_sync.py xxx --is-cn
+or Garmin Global
+python run_page/tcx_to_garmin_sync.py xxx
 ```
 
 4. if you want to all files add args `--all`
