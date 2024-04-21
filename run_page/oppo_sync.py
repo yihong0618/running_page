@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from xml.dom import minidom
 
 import gpxpy
+import numpy as np
 import polyline
 import requests
 from tzlocal import get_localzone
@@ -30,34 +31,34 @@ OPPO_HEADERS = {
 Return value is like:
 [
     {
-       "dataType": 2,//ÔË¶¯ÊıÀàĞÍ 1=½¡ÉíÀà 2=ÆäËûÔË¶¯Àà
-       "startTime": 1630323565000, //¿ªÊ¼Ê±¼ä µ¥Î»ºÁÃë
-       "endTime": 1630337130000,//½áÊøÊ±¼ä µ¥Î»ºÁÃë
-       "sportMode": 10,//ÔË¶¯Ä£Ê½ ÊÒÄÚÅÜ ÏêÇé¼ûÎÄµµ¸½Â¼
+       "dataType": 2,//è¿åŠ¨æ•°ç±»å‹ 1=å¥èº«ç±» 2=å…¶ä»–è¿åŠ¨ç±»
+       "startTime": 1630323565000, //å¼€å§‹æ—¶é—´ å•ä½æ¯«ç§’
+       "endTime": 1630337130000,//ç»“æŸæ—¶é—´ å•ä½æ¯«ç§’
+       "sportMode": 10,//è¿åŠ¨æ¨¡å¼ å®¤å†…è·‘ è¯¦æƒ…è§æ–‡æ¡£é™„å½•
        "otherSportData": {
-           "avgHeartRate": 153,//Æ½¾ùĞÄÂÊ µ¥Î»£ºcount/min
-           "avgPace": 585,//Æ½¾ùÅäËÙ µ¥Î»s/km
-           "avgStepRate": 115,//Æ½¾ù²½Æµ µ¥Î»step/min
-           "bestStepRate": 135,//×î¼Ñ²½Æµ µ¥Î»step/min
-           "bestPace": 572,//×î¼ÑÅäËÙ µ¥Î»s/km
-           "totalCalories": 2176000,//×ÜÏûºÄ µ¥Î»¿¨
-           "totalDistance": 23175,//×Ü¾àÀë µ¥Î»Ã×
-           "totalSteps": 26062,//×Ü²½Êı
-           "totalTime": 13562000,//×ÜÊ±³¤£¬µ¥Î»:ºÁÃë
-           "totalClimb": 100//ÀÛ¼ÆÅÀÉı¸ß¶È£¬µ¥Î»:Ã×
+           "avgHeartRate": 153,//å¹³å‡å¿ƒç‡ å•ä½ï¼šcount/min
+           "avgPace": 585,//å¹³å‡é…é€Ÿ å•ä½s/km
+           "avgStepRate": 115,//å¹³å‡æ­¥é¢‘ å•ä½step/min
+           "bestStepRate": 135,//æœ€ä½³æ­¥é¢‘ å•ä½step/min
+           "bestPace": 572,//æœ€ä½³é…é€Ÿ å•ä½s/km
+           "totalCalories": 2176000,//æ€»æ¶ˆè€— å•ä½å¡
+           "totalDistance": 23175,//æ€»è·ç¦» å•ä½ç±³
+           "totalSteps": 26062,//æ€»æ­¥æ•°
+           "totalTime": 13562000,//æ€»æ—¶é•¿ï¼Œå•ä½:æ¯«ç§’
+           "totalClimb": 100//ç´¯è®¡çˆ¬å‡é«˜åº¦ï¼Œå•ä½:ç±³
        },
     },
     {
-       "dataType": 1,//ÔË¶¯ÊıÀàĞÍ 1=½¡ÉíÀà 2=ÆäËûÔË¶¯Àà
-       "startTime": 1630293981497 //¿ªÊ¼Ê±¼ä µ¥Î»ºÁÃë
-       "endTime": 1630294218127,//½áÊøÊ±¼ä µ¥Î»ºÁÃë
-       "sportMode": 9,//ÔË¶¯Ä£Ê½ ½¡Éí ÏêÇé¼ûÎÄµµ¸½Â¼
+       "dataType": 1,//è¿åŠ¨æ•°ç±»å‹ 1=å¥èº«ç±» 2=å…¶ä»–è¿åŠ¨ç±»
+       "startTime": 1630293981497 //å¼€å§‹æ—¶é—´ å•ä½æ¯«ç§’
+       "endTime": 1630294218127,//ç»“æŸæ—¶é—´ å•ä½æ¯«ç§’
+       "sportMode": 9,//è¿åŠ¨æ¨¡å¼ å¥èº« è¯¦æƒ…è§æ–‡æ¡£é™„å½•
        "fitnessData": {
-           "avgHeartRate": 90,//Æ½¾ùĞÄÂÊ µ¥Î»£ºcount/min
-           "courseName": "Áã»ù´¡¼õÖ¬ËéÆ¬Á·Ï°",//¿Î³ÌÃû³Æ
-           "finishNumber": 1,//¿Î³ÌÍê³É´ÎÊı
-           "trainedCalorie": 13554,//ÑµÁ·ÏûºÄµÄ¿¨Â·Àï£¬µ¥Î»:¿¨
-           "trainedDuration": 176000//Êµ¼ÊÑµÁ·Ê±¼ä£¬µ¥Î»:ms
+           "avgHeartRate": 90,//å¹³å‡å¿ƒç‡ å•ä½ï¼šcount/min
+           "courseName": "é›¶åŸºç¡€å‡è„‚ç¢ç‰‡ç»ƒä¹ ",//è¯¾ç¨‹åç§°
+           "finishNumber": 1,//è¯¾ç¨‹å®Œæˆæ¬¡æ•°
+           "trainedCalorie": 13554,//è®­ç»ƒæ¶ˆè€—çš„å¡è·¯é‡Œï¼Œå•ä½:å¡
+           "trainedDuration": 176000//å®é™…è®­ç»ƒæ—¶é—´ï¼Œå•ä½:ms
        },
     }
 ]
@@ -72,6 +73,9 @@ TIMESTAMP_THRESHOLD_IN_MILLISECOND = 5000
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
+
+# May be Forerunner 945?
+CONNECT_API_PART_NUMBER = "006-D2449-00"
 
 AVAILABLE_OUTDOOR_SPORT_MODE = [
     1,  # WALK
@@ -265,15 +269,12 @@ def get_all_oppo_tracks(
     tracks = []
     for start, end in runs:
         print(f"parsing oppo id {str(start)}-{str(end)}")
-        # try:
-        #     run_data = get_single_run_data(s, headers, start, end)
-        #     track = parse_raw_data_to_name_tuple(run_data, with_download_gpx)
-        #     tracks.append(track)
-        # except Exception as e:
-        #     print(f"Something wrong paring keep id {str(start)}-{str(end)}" + str(e))
-        run_data = get_single_run_data(s, headers, start, end)
-        track = parse_raw_data_to_name_tuple(run_data, with_download_gpx, with_download_tcx)
-        tracks.append(track)
+        try:
+            run_data = get_single_run_data(s, headers, start, end)
+            track = parse_raw_data_to_name_tuple(run_data, with_download_gpx)
+            tracks.append(track)
+        except Exception as e:
+            print(f"Something wrong paring keep id {str(start)}-{str(end)}" + str(e))
     return tracks
 
 
@@ -476,101 +477,139 @@ def parse_points_to_tcx(sport_data, points_dict_list):
     activity_creator_product = ET.Element("ProductID")
     activity_creator_product.text = "3441"
     activity_creator.append(activity_creator_product)
-    #   Lap
-    activity_lap = ET.Element("Lap", {"StartTime": fit_start_time})
-    activity.append(activity_lap)
-    #       DistanceMeters
-    activity_lap.append(formated_input(other_data, "totalDistance", "DistanceMeters"))
-    #       TotalTimeSeconds
-    chile_node = ET.Element("TotalTimeSeconds")
-    chile_node.text = str(other_data["totalTime"] / 1000)
-    activity_lap.append(chile_node)
-    #       MaximumSpeed
-    chile_node = ET.Element("MaximumSpeed")
-    chile_node.text = str(1000 / other_data["bestPace"])
-    activity_lap.append(chile_node)
-    #       Calories
-    chile_node = ET.Element("Calories")
-    chile_node.text = str(int(other_data["totalCalories"] / 1000))
-    activity_lap.append(chile_node)
-    #       AverageHeartRateBpm
-    if other_data.get("avgHeartRate"):
+
+    """
+    first, find distance split index
+    """
+    lap_split_indexes = [0]
+    points_dict_list_chunks = []
+
+    for idx, item in enumerate(points_dict_list):
+        size = len(lap_split_indexes)
+        if sports_type == "Running":
+            target_distance = 1000 * size
+        elif sports_type == "Biking":
+            target_distance = 5000 * size
+        else:
+            break
+
+        if idx + 1 != len(points_dict_list):
+            if item["distance"] < target_distance <= points_dict_list[idx + 1]["distance"]:
+                lap_split_indexes.append(idx)
+
+    if len(lap_split_indexes) == 1:
+        points_dict_list_chunks = [points_dict_list]
+    else:
+        for idx, item in enumerate(lap_split_indexes):
+            if idx + 1 == len(lap_split_indexes):
+                points_dict_list_chunks.append(points_dict_list[item: len(points_dict_list) - 1])
+            else:
+                points_dict_list_chunks.append(points_dict_list[item: lap_split_indexes[idx + 1]])
+
+    current_distance = 0
+    current_time = start_date
+
+    for item in points_dict_list_chunks:
+        #   Lap
+        lap_start_time = datetime.strftime(adjust_time(item[0]["time"], UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ")
+        activity_lap = ET.Element("Lap", {"StartTime": lap_start_time})
+        activity.append(activity_lap)
+
+        #       DistanceMeters
+        total_distance_node = ET.Element("DistanceMeters")
+        total_distance_node.text = str(item[-1]["distance"] - current_distance)
+        current_distance = item[-1]["distance"]
+        activity_lap.append(total_distance_node)
+        #       TotalTimeSeconds
+        chile_node = ET.Element("TotalTimeSeconds")
+        chile_node.text = str(item[-1]["time"] - current_time)
+        current_time = item[-1]["time"]
+        activity_lap.append(chile_node)
+        #       MaximumSpeed
+        chile_node = ET.Element("MaximumSpeed")
+        chile_node.text = str(max(node["speed"] for node in item))
+        activity_lap.append(chile_node)
+        # #       Calories
+        # chile_node = ET.Element("Calories")
+        # chile_node.text = str(int(other_data["totalCalories"] / 1000))
+        # activity_lap.append(chile_node)
+        #       AverageHeartRateBpm
         bpm = ET.Element("AverageHeartRateBpm")
         bpm_value = ET.Element("Value")
         bpm.append(bpm_value)
         bpm_value.text = str(other_data["avgHeartRate"])
+        heartrate_list = [item["value"] for item in other_data["heartRate"]]
+        bpm_value.text = str(np.mean(heartrate_list))
         activity_lap.append(bpm)
-    #       MaximumHeartRateBpm
-    if other_data.get("heartRate"):
+        #       MaximumHeartRateBpm
         bpm = ET.Element("MaximumHeartRateBpm")
         bpm_value = ET.Element("Value")
         bpm.append(bpm_value)
-        heartrate_list = [item["value"] for item in other_data["heartRate"]]
-        bpm_value.text = str(max(heartrate_list))
+        bpm_value.text = str(max(node["hr"] for node in item))
         activity_lap.append(bpm)
 
-    # Track
-    track = ET.Element("Track")
-    activity_lap.append(track)
+        # Track
+        track = ET.Element("Track")
+        activity_lap.append(track)
 
-    for p in points_dict_list:
-        tp = ET.Element("Trackpoint")
-        track.append(tp)
-        # Time
-        time_stamp = datetime.strftime(adjust_time(p["time"], UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ")
-        time_label = ET.Element("Time")
-        time_label.text = time_stamp
+        for p in item:
+            tp = ET.Element("Trackpoint")
+            track.append(tp)
+            # Time
+            time_stamp = datetime.strftime(adjust_time(p["time"], UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ")
+            time_label = ET.Element("Time")
+            time_label.text = time_stamp
 
-        tp.append(time_label)
-        if sports_type == "Biking" and p.get("cad"):
-            cadence_label = ET.Element("Cadence")
-            cadence_label.text = str(p["cad"])
-            tp.append(cadence_label)
-        if p.get("distance"):
-            distance_label = ET.Element("DistanceMeters")
-            distance_label.text = str(p["distance"])
-            tp.append(distance_label)
-        # HeartRateBpm
-        # None was converted to bytes by np.dtype, becoming a string "None" after decode...-_-
-        # as well as LatitudeDegrees and LongitudeDegrees below
-        if p.get("hr"):
-            bpm = ET.Element("HeartRateBpm")
-            bpm_value = ET.Element("Value")
-            bpm.append(bpm_value)
-            bpm_value.text = str(p["hr"])
-            tp.append(bpm)
-        #  AltitudeMeters
-        if p.get("elevation"):
-            altitude_meters = ET.Element("AltitudeMeters")
-            altitude_meters.text = str(p["elevation"] / 10)
-            tp.append(altitude_meters)
-        if p.get("latitude"):
-            position = ET.Element("Position")
-            tp.append(position)
-            #   LatitudeDegrees
-            lati = ET.Element("LatitudeDegrees")
-            lati.text = str(p["latitude"])
-            position.append(lati)
-            #   LongitudeDegrees
-            longi = ET.Element("LongitudeDegrees")
-            longi.text = str(p["longitude"])
-            position.append(longi)
-        # Extensions
-        if p.get("speed") is not None or (p.get("cad") is not None and sports_type == "Running"):
-            extensions = ET.Element("Extensions")
-            tp.append(extensions)
-            tpx = ET.Element("ns3:TPX")
-            extensions.append(tpx)
-            #   LatitudeDegrees
-            #   LatitudeDegrees
-            if p.get("speed") is not None:
-                speed = ET.Element("ns3:Speed")
-                speed.text = str(p["speed"])
-                tpx.append(speed)
-            if p.get("cad") is not None and sports_type == "Running":
-                cad = ET.Element("ns3:RunCadence")
-                cad.text = str(p["cad"] / 2)
-                tpx.append(cad)
+            tp.append(time_label)
+            if sports_type == "Biking" and p.get("cad"):
+                cadence_label = ET.Element("Cadence")
+                cadence_label.text = str(p["cad"])
+                tp.append(cadence_label)
+            if p.get("distance"):
+                distance_label = ET.Element("DistanceMeters")
+                distance_label.text = str(p["distance"])
+                tp.append(distance_label)
+            # HeartRateBpm
+            # None was converted to bytes by np.dtype, becoming a string "None" after decode...-_-
+            # as well as LatitudeDegrees and LongitudeDegrees below
+            if p.get("hr"):
+                bpm = ET.Element("HeartRateBpm")
+                bpm_value = ET.Element("Value")
+                bpm.append(bpm_value)
+                bpm_value.text = str(p["hr"])
+                tp.append(bpm)
+            #  AltitudeMeters
+            if p.get("elevation"):
+                altitude_meters = ET.Element("AltitudeMeters")
+                altitude_meters.text = str(p["elevation"] / 10)
+                tp.append(altitude_meters)
+            if p.get("latitude"):
+                position = ET.Element("Position")
+                tp.append(position)
+                #   LatitudeDegrees
+                lati = ET.Element("LatitudeDegrees")
+                lati.text = str(p["latitude"])
+                position.append(lati)
+                #   LongitudeDegrees
+                longi = ET.Element("LongitudeDegrees")
+                longi.text = str(p["longitude"])
+                position.append(longi)
+            # Extensions
+            if p.get("speed") is not None or (p.get("cad") is not None and sports_type == "Running"):
+                extensions = ET.Element("Extensions")
+                tp.append(extensions)
+                tpx = ET.Element("ns3:TPX")
+                extensions.append(tpx)
+                #   LatitudeDegrees
+                #   LatitudeDegrees
+                if p.get("speed") is not None:
+                    speed = ET.Element("ns3:Speed")
+                    speed.text = str(p["speed"])
+                    tpx.append(speed)
+                if p.get("cad") is not None and sports_type == "Running":
+                    cad = ET.Element("ns3:RunCadence")
+                    cad.text = str(p["cad"] / 2)
+                    tpx.append(cad)
     # Author
     author = ET.Element(
         "Author",
@@ -586,13 +625,12 @@ def parse_points_to_tcx(sport_data, points_dict_list):
     author_lang.text = "en"
     author.append(author_lang)
     author_part = ET.Element("PartNumber")
-    author_part.text = "006-D2449-00"
+    author_part.text = CONNECT_API_PART_NUMBER
     author.append(author_part)
     # write to TCX file
     xml_str = minidom.parseString(ET.tostring(training_center_database)).toprettyxml()
     with open(TCX_FOLDER + "/" + fit_id + ".tcx", "w") as f:
         f.write(str(xml_str))
-        f.close()
 
 
 def formated_input(

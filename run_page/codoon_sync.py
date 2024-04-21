@@ -68,7 +68,7 @@ TCX_TYPE_DICT = {
 }
 
 # only for running sports, if you want others, please change the True to False
-IS_ONLY_RUN = True
+IS_ONLY_RUN = TRUE
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
 TRANS_GCJ02_TO_WGS84 = False
@@ -246,7 +246,6 @@ def tcx_output(fit_array, run_data):
     xmlstr = minidom.parseString(ET.tostring(training_center_database)).toprettyxml(indent="  ", encoding="UTF-8")
     with open(TCX_FOLDER + "/" + fit_id + ".tcx", "w") as f:
         f.write(str(xmlstr.decode("UTF-8")))
-        f.close()
 
 
 # TODO time complexity is too heigh, need to be reduced
