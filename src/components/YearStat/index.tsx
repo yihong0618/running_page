@@ -85,7 +85,7 @@ const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick:
         <Stat
           value={`${streak} day`}
           description=" Streak"
-          className="mb0 pb0"
+          className="pb-2"
         />
         {hasHeartRate && (
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
