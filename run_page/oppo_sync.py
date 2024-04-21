@@ -17,7 +17,7 @@ from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point, TCX_FO
 from generator import Generator
 from utils import adjust_time
 
-TOKEN_REFRESH_URL = "http://sport.health.oppo.local/open/v1/oauth/token"
+TOKEN_REFRESH_URL = "https://sport.health.heytapmobi.com/open/v1/oauth/token"
 OPPO_HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
     "Content-Type": "application/json",
@@ -62,11 +62,11 @@ Return value is like:
     }
 ]
 """
-BRIEF_SPORT_DATA_API = "http://sport.health.oppo.local/open/v1/data/sport/record?startTimeMillis={start_time}&endTimeMillis={end_time}"
+BRIEF_SPORT_DATA_API = "https://sport.health.heytapmobi.com/open/v1/data/sport/record?startTimeMillis={start_time}&endTimeMillis={end_time}"
 
 # Query detailed sports records
 # The query range cannot exceed one day!
-DETAILED_SPORT_DATA_API = "http://sport.health.oppo.local/open/v2/data/sport/record?startTimeMillis={start_time}&endTimeMillis={end_time}"
+DETAILED_SPORT_DATA_API = "https://sport.health.heytapmobi.com/open/v2/data/sport/record?startTimeMillis={start_time}&endTimeMillis={end_time}"
 
 TIMESTAMP_THRESHOLD_IN_MILLISECOND = 5000
 
@@ -425,8 +425,6 @@ def get_value(index, points_dict, other_data):
 
 
 def parse_points_to_tcx(sport_data, points_dict_list):
-    other_data = sport_data["otherSportData"]
-
     # route ID
     fit_id = str(sport_data["id"])
     # local time
