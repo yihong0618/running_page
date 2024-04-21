@@ -7,7 +7,7 @@ import {
   RunIds,
 } from '@/utils/utils';
 import RunRow from './RunRow';
-import styles from './style.module.scss';
+import styles from './style.module.css';
 
 interface IRunTableProperties {
   runs: Activity[];

@@ -13,9 +13,9 @@ const YearsStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick
 
   // for short solution need to refactor
   return (
-    <div className="fl w-100-l pb5 pr5-l">
-      <section className="pb4" style={{ paddingBottom: '0rem' }}>
-        <p style={{ lineHeight: 1.8 }}>
+    <div className="w-full lg:w-full pb-16 pr-16 lg:pr-16">
+      <section className="pb-0">
+        <p className="leading-relaxed">
           {INFO_MESSAGE(years.length, year)}
           <br />
         </p>
