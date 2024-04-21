@@ -6,7 +6,7 @@ from datetime import datetime
 from tcxreader.tcxreader import TCXReader
 
 from config import TCX_FOLDER
-from run_page.garmin_sync import Garmin
+from garmin_sync import Garmin
 
 
 def get_to_generate_files(last_time):
