@@ -271,7 +271,7 @@ def get_all_oppo_tracks(
         print(f"parsing oppo id {str(start)}-{str(end)}")
         try:
             run_data = get_single_run_data(s, headers, start, end)
-            track = parse_raw_data_to_name_tuple(run_data, with_download_gpx)
+            track = parse_raw_data_to_name_tuple(run_data, with_download_gpx, with_download_tcx)
             tracks.append(track)
         except Exception as e:
             print(f"Something wrong paring keep id {str(start)}-{str(end)}" + str(e))
