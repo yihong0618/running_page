@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 from xml.dom import minidom
 
 import gpxpy
-import numpy as np
 import polyline
 import requests
 from tzlocal import get_localzone
@@ -522,7 +521,7 @@ def parse_points_to_tcx(sport_data, points_dict_list):
         activity_lap.append(total_distance_node)
         #       TotalTimeSeconds
         chile_node = ET.Element("TotalTimeSeconds")
-        chile_node.text = str(item[-1]["time"] - current_time)
+        chile_node.text = str((item[-1]["time"] - current_time).total_seconds())
         current_time = item[-1]["time"]
         activity_lap.append(chile_node)
         #       MaximumSpeed
@@ -534,19 +533,19 @@ def parse_points_to_tcx(sport_data, points_dict_list):
         # chile_node.text = str(int(other_data["totalCalories"] / 1000))
         # activity_lap.append(chile_node)
         #       AverageHeartRateBpm
-        bpm = ET.Element("AverageHeartRateBpm")
-        bpm_value = ET.Element("Value")
-        bpm.append(bpm_value)
-        bpm_value.text = str(other_data["avgHeartRate"])
-        heartrate_list = [item["value"] for item in other_data["heartRate"]]
-        bpm_value.text = str(np.mean(heartrate_list))
-        activity_lap.append(bpm)
-        #       MaximumHeartRateBpm
-        bpm = ET.Element("MaximumHeartRateBpm")
-        bpm_value = ET.Element("Value")
-        bpm.append(bpm_value)
-        bpm_value.text = str(max(node["hr"] for node in item))
-        activity_lap.append(bpm)
+        # bpm = ET.Element("AverageHeartRateBpm")
+        # bpm_value = ET.Element("Value")
+        # bpm.append(bpm_value)
+        # bpm_value.text = str(other_data["avgHeartRate"])
+        # heartrate_list = [item["value"] for item in other_data["heartRate"]]
+        # bpm_value.text = str(round(statistics.mean(heartrate_list)))
+        # activity_lap.append(bpm)
+        # #       MaximumHeartRateBpm
+        # bpm = ET.Element("MaximumHeartRateBpm")
+        # bpm_value = ET.Element("Value")
+        # bpm.append(bpm_value)
+        # bpm_value.text = str(max(node["hr"] for node in item))
+        # activity_lap.append(bpm)
 
         # Track
         track = ET.Element("Track")
@@ -608,7 +607,7 @@ def parse_points_to_tcx(sport_data, points_dict_list):
                     tpx.append(speed)
                 if p.get("cad") is not None and sports_type == "Running":
                     cad = ET.Element("ns3:RunCadence")
-                    cad.text = str(p["cad"] / 2)
+                    cad.text = str(round(p["cad"] / 2))
                     tpx.append(cad)
     # Author
     author = ET.Element(
