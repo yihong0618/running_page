@@ -159,7 +159,11 @@ class Generator:
 
     def get_old_tracks_dates(self):
         try:
-            activities = self.session.query(Activity).order_by(Activity.start_date_local.desc()).all()
+            activities = (
+                self.session.query(Activity)
+                .order_by(Activity.start_date_local.desc())
+                .all()
+            )
             return [str(a.start_date_local) for a in activities]
         except Exception as e:
             # pass the error

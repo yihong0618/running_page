@@ -169,12 +169,7 @@ def tcx_output(fit_array, run_data):
     activity_id.text = fit_start_time  # Codoon use start_time as ID
     activity.append(activity_id)
     #   Creator
-    activity_creator = ET.Element(
-        "Creator",
-        {
-            "xsi:type": "Device_t"
-        }
-    )
+    activity_creator = ET.Element("Creator", {"xsi:type": "Device_t"})
     activity.append(activity_creator)
     #       Name
     activity_creator_name = ET.Element("Name")
@@ -230,12 +225,7 @@ def tcx_output(fit_array, run_data):
             altitude_meters.text = bytes.decode(i["elevation"])
             tp.append(altitude_meters)
     # Author
-    author = ET.Element(
-        "Author",
-        {
-            "xsi:type": "Application_t"
-        }
-    )
+    author = ET.Element("Author", {"xsi:type": "Application_t"})
     training_center_database.append(author)
     author_name = ET.Element("Name")
     author_name.text = "Connect Api"

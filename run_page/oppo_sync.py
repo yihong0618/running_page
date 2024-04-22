@@ -13,7 +13,15 @@ import polyline
 import requests
 from tzlocal import get_localzone
 
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point, TCX_FOLDER, UTC_TIMEZONE
+from config import (
+    GPX_FOLDER,
+    JSON_FILE,
+    SQL_FILE,
+    run_map,
+    start_point,
+    TCX_FOLDER,
+    UTC_TIMEZONE,
+)
 from generator import Generator
 from utils import adjust_time
 
@@ -21,7 +29,7 @@ TOKEN_REFRESH_URL = "https://sport.health.heytapmobi.com/open/v1/oauth/token"
 OPPO_HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
     "Content-Type": "application/json",
-    "Accept": "application/json"
+    "Accept": "application/json",
 }
 
 # Query brief version of sports records
@@ -102,13 +110,13 @@ def get_access_token(session, client_id, client_secret, refresh_token):
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
     }
     data = {
         "clientId": client_id,
         "clientSecret": client_secret,
         "refreshToken": refresh_token,
-        "grantType": "refreshToken"
+        "grantType": "refreshToken",
     }
     r = session.post(TOKEN_REFRESH_URL, headers=headers, json=data)
     if r.ok:
@@ -129,29 +137,33 @@ def get_to_download_runs_ranges(session, sync_months, headers, start_timestamp):
             current_time = current_time + timedelta(days=-30)
             temp_start = int(current_time.timestamp() * 1000)
             sync_months = sync_months - 1
-            result.extend(parse_brief_sport_data(session, headers, temp_start, temp_end))
+            result.extend(
+                parse_brief_sport_data(session, headers, temp_start, temp_end)
+            )
     else:
         while start_datatime < current_time:
             temp_start = int(start_datatime.timestamp() * 1000)
             start_datatime = start_datatime + timedelta(days=30)
             temp_end = int(start_datatime.timestamp() * 1000)
-            result.extend(parse_brief_sport_data(session, headers, temp_start, temp_end))
+            result.extend(
+                parse_brief_sport_data(session, headers, temp_start, temp_end)
+            )
     return result
 
 
 def parse_brief_sport_data(session, headers, temp_start, temp_end):
     result = []
     r = session.get(
-        BRIEF_SPORT_DATA_API.format(
-            end_time=temp_end,
-            start_time=temp_start
-        ),
-        headers=headers
+        BRIEF_SPORT_DATA_API.format(end_time=temp_end, start_time=temp_start),
+        headers=headers,
     )
     if r.ok:
         sport_logs = r.json()["body"]
         for i in sport_logs:
-            if i["sportMode"] in AVAILABLE_INDOOR_SPORT_MODE or i["sportMode"] in AVAILABLE_OUTDOOR_SPORT_MODE:
+            if (
+                i["sportMode"] in AVAILABLE_INDOOR_SPORT_MODE
+                or i["sportMode"] in AVAILABLE_OUTDOOR_SPORT_MODE
+            ):
                 result.append((i["startTime"], i["endTime"]))
                 print(f"sync record: start_time: " + str(i["startTime"]))
         time.sleep(1)  # spider rule
@@ -160,11 +172,7 @@ def parse_brief_sport_data(session, headers, temp_start, temp_end):
 
 def get_single_run_data(session, headers, start, end):
     r = session.get(
-        DETAILED_SPORT_DATA_API.format(
-            end_time=end,
-            start_time=start
-        ),
-        headers=headers
+        DETAILED_SPORT_DATA_API.format(end_time=end, start_time=start), headers=headers
     )
     if r.ok:
         return r.json()
@@ -207,7 +215,9 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
     else:
         print(f"ID {oppo_id} no gps data")
 
-    gps_data = [(item["latitude"], item["longitude"]) for item in other_data["gpsPoint"]]
+    gps_data = [
+        (item["latitude"], item["longitude"]) for item in other_data["gpsPoint"]
+    ]
     polyline_str = polyline.encode(gps_data) if gps_data else ""
     start_latlng = start_point(*gps_data[0]) if gps_data else None
     start_date = datetime.utcfromtimestamp(start_time / 1000)
@@ -257,10 +267,13 @@ def get_all_oppo_tracks(
     s = requests.Session()
     s, headers = get_access_token(s, client_id, client_secret, refresh_token)
 
-    last_timestamp = 0 if (last_track_date == 0) \
+    last_timestamp = (
+        0
+        if (last_track_date == 0)
         else int(
-        datetime.timestamp(
-            datetime.strptime(last_track_date, "%Y-%m-%d %H:%M:%S")) * 1000
+            datetime.timestamp(datetime.strptime(last_track_date, "%Y-%m-%d %H:%M:%S"))
+            * 1000
+        )
     )
 
     runs = get_to_download_runs_ranges(s, sync_months, headers, last_timestamp + 1000)
@@ -270,14 +283,17 @@ def get_all_oppo_tracks(
         print(f"parsing oppo id {str(start)}-{str(end)}")
         try:
             run_data = get_single_run_data(s, headers, start, end)
-            track = parse_raw_data_to_name_tuple(run_data, with_download_gpx, with_download_tcx)
+            track = parse_raw_data_to_name_tuple(
+                run_data, with_download_gpx, with_download_tcx
+            )
             tracks.append(track)
         except Exception as e:
             print(f"Something wrong paring keep id {str(start)}-{str(end)}" + str(e))
     return tracks
 
 
-def switch(v): yield lambda *c: v in c
+def switch(v):
+    yield lambda *c: v in c
 
 
 def map_oppo_fit_type_to_gpx_type(oppo_type):
@@ -344,7 +360,9 @@ def parse_points_to_gpx(sport_data, points_dict_list):
         cad = p.get("cad")
         if hr is not None or cad is not None:
             hr_str = f"""<gpxtpx:hr>{hr}</gpxtpx:hr>""" if hr is not None else ""
-            cad_str = f"""<gpxtpx:cad>{p["cad"]}</gpxtpx:cad>""" if cad is not None else ""
+            cad_str = (
+                f"""<gpxtpx:cad>{p["cad"]}</gpxtpx:cad>""" if cad is not None else ""
+            )
             gpx_extension = ET.fromstring(
                 f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
                     {hr_str}
@@ -433,7 +451,9 @@ def parse_points_to_tcx(sport_data, points_dict_list):
     # local time
     start_time = sport_data["startTime"]
     start_date = datetime.utcfromtimestamp(start_time / 1000)
-    fit_start_time = datetime.strftime(adjust_time(start_date, UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ")
+    fit_start_time = datetime.strftime(
+        adjust_time(start_date, UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ"
+    )
 
     # Root node
     training_center_database = ET.Element(
@@ -463,12 +483,7 @@ def parse_points_to_tcx(sport_data, points_dict_list):
     activity_id.text = fit_start_time  # Codoon use start_time as ID
     activity.append(activity_id)
     #   Creator
-    activity_creator = ET.Element(
-        "Creator",
-        {
-            "xsi:type": "Device_t"
-        }
-    )
+    activity_creator = ET.Element("Creator", {"xsi:type": "Device_t"})
     activity.append(activity_creator)
     #       Name
     activity_creator_name = ET.Element("Name")
@@ -494,7 +509,11 @@ def parse_points_to_tcx(sport_data, points_dict_list):
             break
 
         if idx + 1 != len(points_dict_list):
-            if item["distance"] < target_distance <= points_dict_list[idx + 1]["distance"]:
+            if (
+                item["distance"]
+                < target_distance
+                <= points_dict_list[idx + 1]["distance"]
+            ):
                 lap_split_indexes.append(idx)
 
     if len(lap_split_indexes) == 1:
@@ -502,16 +521,22 @@ def parse_points_to_tcx(sport_data, points_dict_list):
     else:
         for idx, item in enumerate(lap_split_indexes):
             if idx + 1 == len(lap_split_indexes):
-                points_dict_list_chunks.append(points_dict_list[item: len(points_dict_list) - 1])
+                points_dict_list_chunks.append(
+                    points_dict_list[item : len(points_dict_list) - 1]
+                )
             else:
-                points_dict_list_chunks.append(points_dict_list[item: lap_split_indexes[idx + 1]])
+                points_dict_list_chunks.append(
+                    points_dict_list[item : lap_split_indexes[idx + 1]]
+                )
 
     current_distance = 0
     current_time = start_date
 
     for item in points_dict_list_chunks:
         #   Lap
-        lap_start_time = datetime.strftime(adjust_time(item[0]["time"], UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ")
+        lap_start_time = datetime.strftime(
+            adjust_time(item[0]["time"], UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ"
+        )
         activity_lap = ET.Element("Lap", {"StartTime": lap_start_time})
         activity.append(activity_lap)
 
@@ -556,7 +581,9 @@ def parse_points_to_tcx(sport_data, points_dict_list):
             tp = ET.Element("Trackpoint")
             track.append(tp)
             # Time
-            time_stamp = datetime.strftime(adjust_time(p["time"], UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ")
+            time_stamp = datetime.strftime(
+                adjust_time(p["time"], UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ"
+            )
             time_label = ET.Element("Time")
             time_label.text = time_stamp
 
@@ -595,7 +622,9 @@ def parse_points_to_tcx(sport_data, points_dict_list):
                 longi.text = str(p["longitude"])
                 position.append(longi)
             # Extensions
-            if p.get("speed") is not None or (p.get("cad") is not None and sports_type == "Running"):
+            if p.get("speed") is not None or (
+                p.get("cad") is not None and sports_type == "Running"
+            ):
                 extensions = ET.Element("Extensions")
                 tp.append(extensions)
                 tpx = ET.Element("ns3:TPX")
@@ -611,12 +640,7 @@ def parse_points_to_tcx(sport_data, points_dict_list):
                     cad.text = str(round(p["cad"] / 2))
                     tpx.append(cad)
     # Author
-    author = ET.Element(
-        "Author",
-        {
-            "xsi:type": "Application_t"
-        }
-    )
+    author = ET.Element("Author", {"xsi:type": "Application_t"})
     training_center_database.append(author)
     author_name = ET.Element("Name")
     author_name.text = "Connect Api"
@@ -659,7 +683,7 @@ def run_oppo_sync(
         sync_months,
         old_tracks_dates[0] if old_tracks_dates else 0,
         with_download_gpx,
-        with_download_tcx
+        with_download_tcx,
     )
     generator.sync_from_app(new_tracks)
 
@@ -690,7 +714,7 @@ if __name__ == "__main__":
         type=int,
         default=6,
         dest="sync_months",
-        help="oppo has limited the data retrieve, so the default months we can sync is 6."
+        help="oppo has limited the data retrieve, so the default months we can sync is 6.",
     )
     options = parser.parse_args()
     run_oppo_sync(
@@ -699,5 +723,5 @@ if __name__ == "__main__":
         options.refresh_token,
         options.sync_months,
         options.with_gpx,
-        options.with_tcx
+        options.with_tcx,
     )

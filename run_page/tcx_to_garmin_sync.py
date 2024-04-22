@@ -16,7 +16,10 @@ def get_to_generate_files(last_time):
     file_names = os.listdir(TCX_FOLDER)
     tcx = TCXReader()
     tcx_files = [
-        (tcx.read(os.path.join(TCX_FOLDER, i), only_gps=False), os.path.join(TCX_FOLDER, i))
+        (
+            tcx.read(os.path.join(TCX_FOLDER, i), only_gps=False),
+            os.path.join(TCX_FOLDER, i),
+        )
         for i in file_names
         if i.endswith(".tcx")
     ]
@@ -24,7 +27,7 @@ def get_to_generate_files(last_time):
         int(i[0].trackpoints[0].time.timestamp()): i[1]
         for i in tcx_files
         if len(i[0].trackpoints) > 0
-           and int(i[0].trackpoints[0].time.timestamp()) > last_time
+        and int(i[0].trackpoints[0].time.timestamp()) > last_time
     }
 
     dict(sorted(tcx_files_dict.items()))
@@ -74,7 +77,5 @@ if __name__ == "__main__":
         help="if garmin account is cn",
     )
     loop = asyncio.get_event_loop()
-    future = asyncio.ensure_future(
-        upload_tcx_files_to_garmin(parser.parse_args())
-    )
+    future = asyncio.ensure_future(upload_tcx_files_to_garmin(parser.parse_args()))
     loop.run_until_complete(future)
