@@ -277,11 +277,14 @@ def get_all_oppo_tracks(
     return tracks
 
 
+def switch(v): yield lambda *c: v in c
+
+
 def map_oppo_fit_type_to_gpx_type(oppo_type):
-    match oppo_type:
-        case 1:  # WALK
+    for case in switch(oppo_type):
+        if case(1):  # WALK
             return "Walking"
-        case 2 | 13 | 15 | 17 | 22 | 10 | 14 | 16 | 18 | 21 | 37:
+        if case(2, 13, 15, 17, 22, 10, 14, 16, 18, 21, 37):
             # RUN |
             # OUTDOOR_PHYSICAL_RUN |
             # OUTDOOR_5KM_RELAX_RUN |
@@ -290,9 +293,9 @@ def map_oppo_fit_type_to_gpx_type(oppo_type):
             # INDOOR_RUN, etc.
             # CROSS_COUNTRY
             return "Running"
-        case 19:  # MOUNTAIN_CLIMBING
+        if case(19):  # MOUNTAIN_CLIMBING
             return "Hiking"
-        case 3:  # Ride
+        if case(3):  # Ride
             return "Biking"
 
 
@@ -301,10 +304,10 @@ def map_oppo_fit_type_to_strava_activity_type(oppo_type):
     Note: should consider the supported strava activity type:
     Link: https://developers.strava.com/docs/reference/#api-models-ActivityType
     """
-    match oppo_type:
-        case 1:  # WALK
+    for case in switch(oppo_type):
+        if case(1):  # WALK
             return "Walk"
-        case 2 | 13 | 15 | 17 | 22 | 10 | 14 | 16 | 18 | 21 | 37:
+        if case(2, 13, 15, 17, 22, 10, 14, 16, 18, 21, 37):
             # RUN |
             # OUTDOOR_PHYSICAL_RUN |
             # OUTDOOR_5KM_RELAX_RUN |
@@ -313,9 +316,9 @@ def map_oppo_fit_type_to_strava_activity_type(oppo_type):
             # INDOOR_RUN, etc.
             # CROSS_COUNTRY
             return "Run"
-        case 19:  # MOUNTAIN_CLIMBING
+        if case(19):  # MOUNTAIN_CLIMBING
             return "Hike"
-        case 3:  # Ride
+        if case(3):  # Ride
             return "Ride"
 
 

@@ -46,6 +46,8 @@ FitType = np.dtype(
 # device info
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
 did = "24-00000000-03e1-7dd7-0033-c5870033c588"
+# May be Forerunner 945?
+CONNECT_API_PART_NUMBER = "006-D2449-00"
 
 # fixed params
 base_url = "https://api.codoon.com"
@@ -62,13 +64,13 @@ TYPE_DICT = {
 
 # for tcx type
 TCX_TYPE_DICT = {
-    0: "Hike",
+    0: "Hiking",
     1: "Running",
-    2: "Ride",
+    2: "Biking",
 }
 
 # only for running sports, if you want others, please change the True to False
-IS_ONLY_RUN = TRUE
+IS_ONLY_RUN = True
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
 TRANS_GCJ02_TO_WGS84 = False
@@ -154,23 +156,6 @@ def tcx_output(fit_array, run_data):
     )
     # xml tree
     ET.ElementTree(training_center_database)
-    # Author
-    author = ET.Element(
-        "Author",
-        {
-            "xsi:type": "Application_t"
-        }
-    )
-    training_center_database.append(author)
-    author_name = ET.Element("Name")
-    author_name.text = "Connect Api"
-    author.append(author_name)
-    author_lang = ET.Element("LangID")
-    author_lang.text = "en"
-    author.append(author_lang)
-    author_part = ET.Element("PartNumber")
-    author_part.text = "006-D2449-00"
-    author.append(author_part)
     # Activities
     activities = ET.Element("Activities")
     training_center_database.append(activities)
@@ -193,8 +178,11 @@ def tcx_output(fit_array, run_data):
     activity.append(activity_creator)
     #       Name
     activity_creator_name = ET.Element("Name")
-    activity_creator_name.text = "咕咚"
+    activity_creator_name.text = "Codoon"
     activity_creator.append(activity_creator_name)
+    activity_creator_product = ET.Element("ProductID")
+    activity_creator_product.text = "3441"
+    activity_creator.append(activity_creator_product)
     #   Lap
     activity_lap = ET.Element("Lap", {"StartTime": fit_start_time})
     activity.append(activity_lap)
@@ -241,11 +229,27 @@ def tcx_output(fit_array, run_data):
             altitude_meters = ET.Element("AltitudeMeters")
             altitude_meters.text = bytes.decode(i["elevation"])
             tp.append(altitude_meters)
-
+    # Author
+    author = ET.Element(
+        "Author",
+        {
+            "xsi:type": "Application_t"
+        }
+    )
+    training_center_database.append(author)
+    author_name = ET.Element("Name")
+    author_name.text = "Connect Api"
+    author.append(author_name)
+    author_lang = ET.Element("LangID")
+    author_lang.text = "en"
+    author.append(author_lang)
+    author_part = ET.Element("PartNumber")
+    author_part.text = CONNECT_API_PART_NUMBER
+    author.append(author_part)
     # write to TCX file
-    xmlstr = minidom.parseString(ET.tostring(training_center_database)).toprettyxml(indent="  ", encoding="UTF-8")
+    xml_str = minidom.parseString(ET.tostring(training_center_database)).toprettyxml()
     with open(TCX_FOLDER + "/" + fit_id + ".tcx", "w") as f:
-        f.write(str(xmlstr.decode("UTF-8")))
+        f.write(str(xml_str))
 
 
 # TODO time complexity is too heigh, need to be reduced
