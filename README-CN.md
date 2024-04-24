@@ -145,6 +145,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[FIT](#fit)**
 - **[佳明国内同步国际](#Garmin-CN-to-Garmin)**
 - **[Tcx+Strava(upload all tcx data to strava)](#tcx_to_strava)**
+- **[Tcx+Garmin(upload all tcx data to Garmin)](#tcx_to_garmin)**
 - **[Gpx+Strava(upload all tcx data to strava)](#gpx_to_strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
@@ -775,6 +776,31 @@ python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret} ${s
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
 或
 python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
+```
+
+> 如果你已经上传过需要跳过判断增加参数 `--all`
+
+### TCX_to_Garmin
+
+<details>
+<summary>上传所有的 tcx 格式的跑步数据到 Garmin</summary>
+
+<br>
+
+1. 完成 garmin 的步骤
+2. 把 tcx 文件全部拷贝到 TCX_OUT 中
+3. 在项目根目录下执行：
+
+```bash
+python3 run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
+```
+
+示例：
+
+```bash
+python run_page/tcx_to_garmin_sync.py xxx --is-cn
+或佳明国际
+python run_page/tcx_to_garmin_sync.py xxx
 ```
 
 > 如果你已经上传过需要跳过判断增加参数 `--all`
