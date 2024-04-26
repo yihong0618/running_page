@@ -49,7 +49,7 @@ const Index = () => {
   ) => {
     scrollToMap();
     if (name != 'Year') {
-      setYear(thisYear)
+      setYear(thisYear);
     }
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
@@ -151,9 +151,9 @@ const Index = () => {
         const titleEl = target.querySelector('title');
         if (titleEl) {
           // If the runDate exists in the <title> element, it means that a date square has been clicked.
-          const [runDate] = titleEl.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
-            `${+thisYear + 1}`,
-          ];
+          const [runDate] = titleEl.innerHTML.match(
+            /\d{4}-\d{1,2}-\d{1,2}/
+          ) || [`${+thisYear + 1}`];
           const runIDsOnDate = runs
             .filter((r) => r.start_date_local.slice(0, 10) === runDate)
             .map((r) => r.run_id);
@@ -163,7 +163,7 @@ const Index = () => {
           locateActivity(runIDsOnDate);
         }
       }
-    }
+    };
     svgStat.addEventListener('click', handleClick);
     return () => {
       svgStat && svgStat.removeEventListener('click', handleClick);
@@ -172,8 +172,8 @@ const Index = () => {
 
   return (
     <Layout>
-      <div className="fl w-30-l">
-        <h1 className="f1 fw9 i">
+      <div className="w-full lg:w-1/3">
+        <h1 className="my-12 text-5xl font-extrabold italic">
           <a href="/">{siteTitle}</a>
         </h1>
         {(viewState.zoom ?? 0) <= 3 && IS_CHINESE ? (
@@ -186,7 +186,7 @@ const Index = () => {
           <YearsStat year={year} onClick={changeYear} />
         )}
       </div>
-      <div className="fl w-100 w-70-l">
+      <div className="w-full lg:w-2/3">
         <RunMap
           title={title}
           viewState={viewState}
