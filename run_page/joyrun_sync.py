@@ -130,7 +130,9 @@ class Joyrun:
         self.session.headers.update({"ypcookie": loginCookie})
         self.session.cookies.clear()
         self.session.cookies.set("ypcookie", quote(loginCookie).lower())
-        self.session.headers.update(self.device_info_headers)  # 更新设备信息中的 uid 字段
+        self.session.headers.update(
+            self.device_info_headers
+        )  # 更新设备信息中的 uid 字段
 
     def login_by_phone(self):
         params = {
@@ -184,18 +186,38 @@ class Joyrun:
         return points
 
     @staticmethod
-    def parse_points_to_gpx(run_points_data, start_time, end_time, interval=5):
-        # TODO for now kind of same as `keep` maybe refactor later
+    def parse_points_to_gpx(
+        run_points_data, start_time, end_time, pause_list, interval=5
+    ):
+        """
+        parse run_data content to gpx object
+        TODO for now kind of same as `keep` maybe refactor later
+
+        :param run_points_data: [[latitude, longitude],...]
+        :param pause_list:      [[interval_index, pause_seconds],...]
+        :param interval:        time interval between each point, in seconds
+        """
+
+        # format data
+        segment_list = []
         points_dict_list = []
-        i = 0
-        for point in run_points_data[:-1]:
+        current_time = start_time
+
+        for index, point in enumerate(run_points_data[:-1]):
             points_dict = {
                 "latitude": point[0],
                 "longitude": point[1],
-                "time": datetime.utcfromtimestamp(start_time + interval * i),
+                "time": datetime.utcfromtimestamp(current_time),
             }
-            i += 1
             points_dict_list.append(points_dict)
+
+            current_time += interval
+            if pause_list and int(pause_list[0][0]) - 1 == index:
+                segment_list.append(points_dict_list[:])
+                points_dict_list.clear()
+                current_time += int(pause_list[0][1])
+                pause_list.pop(0)
+
         points_dict_list.append(
             {
                 "latitude": run_points_data[-1][0],
@@ -203,18 +225,22 @@ class Joyrun:
                 "time": datetime.utcfromtimestamp(end_time),
             }
         )
+        segment_list.append(points_dict_list)
+
+        # gpx part
         gpx = gpxpy.gpx.GPX()
         gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx_track.name = "gpx from joyrun"
         gpx.tracks.append(gpx_track)
 
-        # Create first segment in our GPX track:
-        gpx_segment = gpxpy.gpx.GPXTrackSegment()
-        gpx_track.segments.append(gpx_segment)
-        for p in points_dict_list:
-            point = gpxpy.gpx.GPXTrackPoint(**p)
-            gpx_segment.points.append(point)
+        # add segment list to our GPX track:
+        for point_list in segment_list:
+            gpx_segment = gpxpy.gpx.GPXTrackSegment()
+            gpx_track.segments.append(gpx_segment)
+            for p in point_list:
+                point = gpxpy.gpx.GPXTrackPoint(**p)
+                gpx_segment.points.append(point)
 
         return gpx.to_xml()
 
@@ -237,12 +263,13 @@ class Joyrun:
 
         start_time = run_data["starttime"]
         end_time = run_data["endtime"]
+        pause_list = run_data["pause"]
         run_points_data = self.parse_content_to_ponits(run_data["content"])
         if with_gpx:
             # pass the track no points
             if run_points_data:
                 gpx_data = self.parse_points_to_gpx(
-                    run_points_data, start_time, end_time
+                    run_points_data, start_time, end_time, pause_list
                 )
                 download_joyrun_gpx(gpx_data, str(joyrun_id))
         try:

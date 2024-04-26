@@ -2,6 +2,7 @@
 new garmin ids to strava;
 not the same logic as nike_to_strava_sync
 """
+
 import argparse
 import asyncio
 import os
