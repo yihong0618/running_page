@@ -59,14 +59,14 @@ if __name__ == "__main__":
     for i in to_upload_time_list:
         tcx_file = to_upload_dict.get(i)
         try:
-            upload_file_to_strava(client, tcx_file, "tcx")
+            upload_file_to_strava(client, tcx_file, "tcx", False)
         except RateLimitTimeout as e:
             timeout = e.timeout
             print(f"Strava API Rate Limit Timeout. Retry in {timeout} seconds")
             print()
             time.sleep(timeout)
             # try previous again
-            upload_file_to_strava(client, tcx_file, "tcx")
+            upload_file_to_strava(client, tcx_file, "tcx", False)
 
         except ActivityUploadFailed as e:
             print(f"Upload faild error {str(e)}")

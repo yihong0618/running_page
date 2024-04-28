@@ -70,7 +70,7 @@ if __name__ == "__main__":
     index = 1
     for i in new_ids:
         f = os.path.join(folder, f"{i}.{file_type}")
-        upload_file_to_strava(strava_client, f, file_type)
+        upload_file_to_strava(strava_client, f, file_type, False)
         if index % 10 == 0:
             print("For the rate limit will sleep 10s")
             time.sleep(10)
