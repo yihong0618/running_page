@@ -208,7 +208,7 @@ const Index = () => {
           <YearsStat year={year} onClick={changeYear} onClickTypeInYear={changeTypeInYear}/>
         )}
       </div>
-      <div className="w-full lg:w-2/3">
+      <div className="w-full lg:w-4/5">
         <RunMap
           title={title}
           viewState={viewState}
