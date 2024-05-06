@@ -780,6 +780,8 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 
 > 如果你已经上传过需要跳过判断增加参数 `--all`
 
+</details>
+
 ### TCX_to_Garmin
 
 <details>
