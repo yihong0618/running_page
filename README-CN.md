@@ -1186,6 +1186,10 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 谢谢就够了
 
+# Raycast 插件
+
+<a title="Install running-page Raycast Extension" href="https://www.raycast.com/Lemon/running-page"><img src="https://www.raycast.com/Lemon/running-page/install_button@2x.png?v=1.1" height="64" alt="" style="height: 64px;"></a>
+
 # FAQ
 
 - Strava 100 每 15 分钟的请求，1000 每日限制
