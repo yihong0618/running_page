@@ -971,6 +971,10 @@ Before submitting PR:
 
 Just enjoy it~
 
+# Raycast Extension
+
+<a title="Install running-page Raycast Extension" href="https://www.raycast.com/Lemon/running-page"><img src="https://www.raycast.com/Lemon/running-page/install_button@2x.png?v=1.1" height="64" alt="" style="height: 64px;"></a>
+
 # FAQ
 
 - Strava Api limit
