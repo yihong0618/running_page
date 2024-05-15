@@ -100,6 +100,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Vensent](https://github.com/Vensent)             | <https://vensent.github.io/workouts_page/>     | Garmin      |
 | [Zeonsing](https://github.com/NoonieBao)             | <https://run.jogzeal.com/>     | Coros      |
 | [yaoper](https://github.com/yaoper)               | <https://running.yaoper.cn>                    | codoon      |
+| [laqieer](https://github.com/laqieer)             | <https://laqieer.github.io/running_page/>      | Strava      |
 </details>
 
 ## How it works
