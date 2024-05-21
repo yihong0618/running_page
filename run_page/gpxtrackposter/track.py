@@ -195,10 +195,11 @@ class Track:
         # determinate source
         if gpx.creator:
             self.source = gpx.creator
-        elif gpx.tracks[0].source:
+        if gpx.tracks[0].source:
             self.source = gpx.tracks[0].source
         if self.source == "xingzhe":
             self.start_time_local = self.start_time
+            self.end_time_local = self.end_time
             self.run_id = gpx.tracks[0].number
         # determinate name
         if gpx.name:
@@ -240,9 +241,10 @@ class Track:
             self.start_latlng = start_point(*polyline_container[0])
         except:
             pass
-        self.start_time_local, self.end_time_local = parse_datetime_to_local(
-            self.start_time, self.end_time, polyline_container[0]
-        )
+        if not self.start_time_local:
+            self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                self.start_time, self.end_time, polyline_container[0]
+            )
         self.polyline_str = polyline.encode(polyline_container)
         self.average_heartrate = (
             sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
