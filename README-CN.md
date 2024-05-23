@@ -103,6 +103,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Zeonsing](https://github.com/NoonieBao)          | <https://run.jogzeal.com/>                     | Coros       |
 | [yaoper](https://github.com/yaoper)               | <https://running.yaoper.cn>                    | codoon      |
 | [NoZTurn](https://github.com/NoZTurn)             | <https://run.jiangkai.org>                     | Strava      |
+| [laqieer](https://github.com/laqieer)             | <https://laqieer.github.io/running_page/>      | Strava      |
 </details>
 
 ## 它是怎么工作的
@@ -780,6 +781,8 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 
 > 如果你已经上传过需要跳过判断增加参数 `--all`
 
+</details>
+
 ### TCX_to_Garmin
 
 <details>
@@ -1183,6 +1186,10 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 # 赞赏
 
 谢谢就够了
+
+# Raycast 插件
+
+<a title="Install running-page Raycast Extension" href="https://www.raycast.com/Lemon/running-page"><img src="https://www.raycast.com/Lemon/running-page/install_button@2x.png?v=1.1" height="64" alt="" style="height: 64px;"></a>
 
 # FAQ
 
