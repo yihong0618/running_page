@@ -1,12 +1,18 @@
-import React from 'react';
-import { ReactComponent as GitHubSvg } from '@assets/github.svg';
-import { ReactComponent as GridSvg } from '@assets/grid.svg';
-import styles from './style.module.scss';
+import { lazy, Suspense } from 'react';
+import { totalStat } from '@assets/index';
+import { loadSvgComponent } from '@/utils/svgUtils';
+
+// Lazy load both github.svg and grid.svg
+const GithubSvg = lazy(() => loadSvgComponent(totalStat, './github.svg'));
+
+const GridSvg = lazy(() => loadSvgComponent(totalStat, './grid.svg'));
 
 const SVGStat = () => (
   <div id="svgStat">
-    <GitHubSvg className={styles.runSVG} />
-    <GridSvg className={styles.runSVG} />
+    <Suspense fallback={<div className="text-center">Loading...</div>}>
+      <GithubSvg className="mt-4 h-auto w-full" />
+      <GridSvg className="mt-4 h-auto w-full" />
+    </Suspense>
   </div>
 );
 

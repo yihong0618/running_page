@@ -1,5 +1,3 @@
-@import '../../styles/variables.scss';
-
 @media only screen and (max-width: 700px) {
 
   /* 当屏幕宽度小于 700px 时 */
@@ -15,18 +13,19 @@
   font-variant: tabular-nums;
   margin: 2rem 0 5rem 0;
 
-  thead {
-    color: $light;
+  :is(thead) {
+    color: rgb(204, 204, 204);
     text-align: right;
 
-    th {
+    :is(th) {
       padding: 0.5rem;
     }
   }
 }
 
 .runRow {
-  td {
+  cursor: pointer;
+  :is(td) {
     padding: 0.5rem;
     border: 0;
     text-align: right;
@@ -37,7 +36,7 @@
   }
 
   &:hover {
-    background-color: lighten($dark, 3%);
+    background-color: lighten(rgb(26, 26, 26), 3%);
   }
 }
 
@@ -47,9 +46,9 @@
 
 .tableContainer {
   width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .runDate {
-  color: $light;
+  color: rgb(204, 204, 204);
 }

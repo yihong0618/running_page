@@ -19,13 +19,13 @@ FOLDER_DICT = {
 SQL_FILE = os.path.join(parent, "run_page", "data.db")
 JSON_FILE = os.path.join(parent, "src", "static", "activities.json")
 SYNCED_FILE = os.path.join(parent, "imported.json")
+SYNCED_ACTIVITY_FILE = os.path.join(parent, "synced_activity.json")
 
-# TODO: Move into nike_sync
-BASE_URL = "https://api.nike.com/sport/v3/me"
-TOKEN_REFRESH_URL = "https://unite.nike.com/tokenRefresh"
-NIKE_CLIENT_ID = "HlHa2Cje3ctlaOqnxvgZXNaAs7T9nAuH"
+# TODO: Move into nike_sync NRC THINGS
+
+
 BASE_TIMEZONE = "Asia/Shanghai"
-
+UTC_TIMEZONE = "UTC"
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")

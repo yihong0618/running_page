@@ -1,4 +1,5 @@
 import argparse
+from base64 import b64decode
 import json
 import logging
 import os.path
@@ -11,13 +12,10 @@ import gpxpy.gpx
 import httpx
 from config import (
     BASE_TIMEZONE,
-    BASE_URL,
     GPX_FOLDER,
     JSON_FILE,
-    NIKE_CLIENT_ID,
     OUTPUT_DIR,
     SQL_FILE,
-    TOKEN_REFRESH_URL,
     run_map,
 )
 from generator import Generator
@@ -26,6 +24,16 @@ from utils import adjust_time, make_activities_file
 # logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nike_sync")
 
+BASE_URL = "https://api.nike.com/sport/v3/me"
+TOKEN_REFRESH_URL = "https://api.nike.com/idn/shim/oauth/2.0/token"
+NIKE_CLIENT_ID = "VmhBZWFmRUdKNkc4ZTlEeFJVejhpRTUwQ1o5TWlKTUc="
+NIKE_UX_ID = "Y29tLm5pa2Uuc3BvcnQucnVubmluZy5pb3MuNS4xNQ=="
+NIKE_HEADERS = {
+    "Host": "api.nike.com",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
+
 
 class Nike:
     def __init__(self, refresh_token):
@@ -33,10 +41,12 @@ class Nike:
 
         response = self.client.post(
             TOKEN_REFRESH_URL,
+            headers=NIKE_HEADERS,
             json={
                 "refresh_token": refresh_token,
-                "client_id": NIKE_CLIENT_ID,
+                "client_id": b64decode(NIKE_CLIENT_ID).decode(),
                 "grant_type": "refresh_token",
+                "ux_id": b64decode(NIKE_UX_ID).decode(),
             },
             timeout=60,
         )

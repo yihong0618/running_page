@@ -1,4 +1,5 @@
 """Assorted utility methods for use in creating posters."""
+
 # Copyright 2016-2019 Florian Pigorsch & Contributors. All rights reserved.
 #
 # Use of this source code is governed by a MIT-style
@@ -129,16 +130,19 @@ def format_float(f):
 
 
 def parse_datetime_to_local(start_time, end_time, point):
-    # just parse the start time, because start/end maybe different
-    offset = start_time.utcoffset()
-    if offset:
-        return start_time + offset, end_time + offset
-    lat, lng = point
-    try:
-        timezone = get_tz(lng=lng, lat=lat)
-    except:
-        # just a little trick when tzfpy support windows will delete this
+    if not point:
+        timezone = "Asia/Shanghai"
+    else:
+        # just parse the start time, because start/end maybe different
+        offset = start_time.utcoffset()
+        if offset:
+            return start_time + offset, end_time + offset
         lat, lng = point
-        timezone = tf.timezone_at(lng=lng, lat=lat)
+        try:
+            timezone = get_tz(lng=lng, lat=lat)
+        except:
+            # just a little trick when tzfpy support windows will delete this
+            lat, lng = point
+            timezone = tf.timezone_at(lng=lng, lat=lat)
     tc_offset = datetime.now(pytz.timezone(timezone)).utcoffset()
     return start_time + tc_offset, end_time + tc_offset

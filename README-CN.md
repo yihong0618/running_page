@@ -42,7 +42,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava      |
 | [shaonianche](https://github.com/shaonianche)     | <https://run.duanfei.org>                      | Strava      |
 | [yihong0618](https://github.com/yihong0618)       | <https://yihong.run>                           | Nike        |
-| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Nike        |
+| [superleeyom](https://github.com/superleeyom)     | <https://running.leeyom.top>                   | Strava        |
 | [geekplux](https://github.com/geekplux)           | <https://activities.geekplux.com>              | Nike        |
 | [guanlan](https://github.com/guanlan)             | <https://grun.vercel.app>                      | Strava      |
 | [tuzimoe](https://github.com/tuzimoe)             | <https://run.tuzi.moe>                         | Nike        |
@@ -95,7 +95,15 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [deepinwine](https://github.com/deepinwine)       | <https://deepin.autove.dev/>                   | Garmin-cn   |
 | [Jeffggmm](https://github.com/Jeffggmm)           | <https://jeffggmm.github.io/workouts_page/>    | Garmin      |
 | [s1smart](https://github.com/s1smart)             | <https://s1smart.github.io/running_page/>      | Strava      |
-
+| [Ryan](https://github.com/85Ryan)                 | <https://85ryan.github.io/gooorun/>            | Strava      |
+| [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
+| [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
+| [AlienVision](https://github.com/weaming)         | <https://run.drink.cafe/>                      | Strava      |
+| [Vensent](https://github.com/Vensent)             | <https://vensent.github.io/workouts_page/>     | Garmin      |
+| [Zeonsing](https://github.com/NoonieBao)          | <https://run.jogzeal.com/>                     | Coros       |
+| [yaoper](https://github.com/yaoper)               | <https://running.yaoper.cn>                    | codoon      |
+| [NoZTurn](https://github.com/NoZTurn)             | <https://run.jiangkai.org>                     | Strava      |
+| [laqieer](https://github.com/laqieer)             | <https://laqieer.github.io/running_page/>      | Strava      |
 </details>
 
 ## 它是怎么工作的
@@ -136,12 +144,14 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[GPX](#gpx)**
 - **[TCX](#tcx)**
 - **[FIT](#fit)**
+- **[佳明国内同步国际](#Garmin-CN-to-Garmin)**
 - **[Tcx+Strava(upload all tcx data to strava)](#tcx_to_strava)**
+- **[Tcx+Garmin(upload all tcx data to Garmin)](#tcx_to_garmin)**
 - **[Gpx+Strava(upload all tcx data to strava)](#gpx_to_strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
-
+- **[Coros高驰](#Coros高驰)**
 ## 视频教程
 
 - https://www.youtube.com/watch?v=reLiY9p8EJk
@@ -180,6 +190,9 @@ docker build -t running_page:latest . --build-arg app=Strava --build-arg client_
 
 #Nike_to_Strava
 docker build -t running_page:latest . --build-arg app=Nike_to_Strava  --build-arg nike_refresh_token="" --build-arg client_id=""  --build-arg client_secret=""  --build-arg refresh_token=""
+
+# Keep
+docker build -t running_page:latest . --build-arg app=Keep --build-arg keep_phone_number="" --build-arg keep_password=""
 
 #启动
 docker run -itd -p 80:80   running_page:latest
@@ -230,6 +243,11 @@ siteMetadata: {
 const USE_DASH_LINE = true;
 // styling: 透明度：[0, 1]
 const LINE_OPACITY = 0.4;
+// styling: 开启隐私模式(不显示地图仅显示轨迹): 设置为 `true`
+// 注意：此配置仅影响页面显示，数据保护请参考下方的 "隐私保护"
+const PRIVACY_MODE = false;
+// styling: 默认关灯: 设置为 `false`, 仅在隐私模式关闭时生效(`PRIVACY_MODE` = false)
+const LIGHTS_ON = true;
 ```
 
 > 隐私保护：设置下面环境变量：
@@ -319,7 +337,7 @@ python3(python) run_page/keep_sync.py ${your mobile} ${your password}
 python3(python) run_page/keep_sync.py 13333xxxx example
 ```
 
-> 我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件
+> 我增加了 keep 可以导出 gpx 功能（因 keep 的原因，距离和速度会有一定缺失）, 执行如下命令，导出的 gpx 会加入到 GPX_OUT 中，方便上传到其它软件。
 
 ```bash
 python3(python) run_page/keep_sync.py ${your mobile} ${your password} --with-gpx
@@ -328,8 +346,21 @@ python3(python) run_page/keep_sync.py ${your mobile} ${your password} --with-gpx
 示例：
 
 ```bash
-python3(python) run_page/keep_sync.py 13333xxxx example --with-gpx
+python3(python) run_page/keep_sync.py 13333xxxx example --with-gpx 
 ```
+
+> 增加了 keep 对其他运动类型的支持，目前可选的有running, cycling, hiking，默认的运动数据类型为running。
+
+```bash
+python3(python) run_page/keep_sync.py ${your mobile} ${your password} --with-gpx --sync-types running cycling hiking
+```
+
+示例：
+
+```bash
+python3(python) run_page/keep_sync.py 13333xxxx example --with-gpx --sync-types running cycling hiking
+```
+
 
 </details>
 
@@ -569,6 +600,43 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 
 </details>
 
+### Garmin-CN to Garmin
+
+<details>
+<summary> 同步佳明 CN 数据到 佳明国际区</summary>
+
+<br>
+
+- 如果你只想同步 `type running` 使用参数 --only-run
+**The Python version must be >=3.10**
+
+#### 获取佳明 CN 的密钥
+
+在终端中输入以下命令
+
+```bash
+python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
+```
+
+#### 获取佳明全球的密钥
+
+在终端中输入以下命令
+
+```bash
+python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
+```
+
+#### 同步 佳明 CN 到 佳明全球
+
+在终端中输入以下命令
+
+```bash
+python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${garmin_secret_string}
+```
+
+</details>
+
+
 ### Nike Run Club
 
 <details>
@@ -580,10 +648,15 @@ python3(python) run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 
 获取 Nike 的 refresh_token
 
-1. 登录 [Nike](https://www.nike.com) 官网
-2. In Developer -> Application-> Storage -> https:unite.nike.com 中找到 refresh_token
+**全部需要在大陆以外的全局 ip 下进行**
 
-![image](https://user-images.githubusercontent.com/15976103/94448123-23812b00-01dd-11eb-8143-4b0839c31d90.png) 3. 在项目根目录下执行：
+![example img](https://user-images.githubusercontent.com/67903793/282300381-4e7437d0-65a9-4eed-93d1-2b70e360215f.png)
+
+1. 在这里登陆[website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG), 打开 F12 在浏览器抓 login -> XHR -> get the `refresh_token` from login api
+
+2. 复制 `refresh_token` 之后可以添加在GitHub Secrets 中，也可以直接在命令行中使用
+
+> Chrome 浏览器：按下 F12 打开浏览器开发者工具，点击 Application 选项卡，来到左侧的 Storage 面板，点击展开 Local storage，点击下方的 https://unite.nike.com。接着点击右侧的 com.nike.commerce.nikedotcom.web.credential Key，下方会分行显示我们选中的对象，可以看到 refresh_token ，复制 refresh_token 右侧的值。Safari 浏览器：在 Safari 打开 Nike 的网页后，右击页面，选择「检查元素」，打开浏览器开发者工具。点击「来源」选项卡，在左侧找到 XHR 文件夹，点击展开，在下方找到 login 文件并单击，在右侧同样可以看到 refresh_token ，复制 refresh_token 右侧的值。
 
 ```bash
 python3(python) run_page/nike_sync.py ${nike refresh_token}
@@ -710,6 +783,33 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 
 </details>
 
+### TCX_to_Garmin
+
+<details>
+<summary>上传所有的 tcx 格式的跑步数据到 Garmin</summary>
+
+<br>
+
+1. 完成 garmin 的步骤
+2. 把 tcx 文件全部拷贝到 TCX_OUT 中
+3. 在项目根目录下执行：
+
+```bash
+python3 run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
+```
+
+示例：
+
+```bash
+python run_page/tcx_to_garmin_sync.py xxx --is-cn
+或佳明国际
+python run_page/tcx_to_garmin_sync.py xxx
+```
+
+> 如果你已经上传过需要跳过判断增加参数 `--all`
+
+</details>
+
 ### GPX_to_Strava
 
 <details>
@@ -815,6 +915,53 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 
 </details>
 
+### Coros高驰
+
+<details>
+<summary>获取您的 Coros高驰 数据</summary>
+
+#### 在终端中输入以下命令
+
+```bash
+python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
+```
+
+#### 修改 `run_data_sync.yml` 中 `env.RUN_TYPE: coros`
+
+#### 设置 github action中Coros高驰信息
+
+- 在github action中配置`COROS_ACCOUNT`,`COROS_PASSWORD`参数
+
+  ![github-action](https://img3.uploadhouse.com/fileuploads/30980/3098042335f8995623f8b50776c4fad4cf7fff8d.png)
+
+</details>
+
+### Keep_to_Strava
+<details>
+<summary>获取您的Keep数据，然后同步到Strava</summary>
+
+示例:
+```bash
+python3(python) run_page/keep_to_strava_sync.py ${your mobile} ${your password} ${client_id} ${client_secret} ${strava_refresh_token} --sync-types running cycling hiking
+```
+
+#### 解决的需求：
+1. 适用于由Strava总览/展示数据，但是有多种运动类型，且数据来自不同设备的用户。
+2. 适用于期望将华为运动健康/OPPO健康等数据同步到Strava的用户(前提是手机APP端已经开启了和Keep之间的数据同步)。
+3. 理论上华为/OPPO等可以通过APP同步到Keep的设备，均可通过此方法自动同步到Strava，目前已通过测试的APP有
+    - 华为运动健康: 户外跑步，户外骑行，户外步行。
+
+#### 特性以及使用细节:
+1. 与Keep相似，但是由keep_to_strava_sync.py实现，不侵入data.db 与 activities.json。因此不会出现由于同时使用keep_sync和strava_sync而导致的数据重复统计/展示问题。
+2. 上传至Strava时，会自动识别为Strava中相应的运动类型, 目前支持的运动类型为running, cycling, hiking。
+3. run_data_sync.yml中的修改：
+
+    ```yaml
+    RUN_TYPE: keep_to_starva_sync
+    ```
+
+</details>
+
 ### Total Data Analysis
 
 <details>
@@ -905,6 +1052,13 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 - 某些浏览器 (比如 Chrome) 可能缓存网页不刷新，您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac) 强制清除缓存并重新加载页面
 
 4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到 `Workflow permissions` 的设置项，将选项配置为 `Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
+
+
+5. 如果想把你的 running_page 部署在 xxx.github.io 而不是 xxx.github.io/run_page 亦或是想要添加自定义域名于 GitHub Pages，需要做三点
+
+-  修改你的 fork 的 running_page 仓库改名为 xxx.github.io, xxx 是你 github 的 username
+-  修改 gh-pages.yml 中的 Build 模块，删除 `${{ github.event.repository.name }}` 改为`run: PATH_PREFIX=/ pnpm build` 即可
+-  修改 src/static/site-metadata.ts 中 `siteUrl: ''` 或是添加你的自定义域名，`siteUrl: '[your_own_domain]'`， 即可
 
 </details>
 
@@ -1033,6 +1187,10 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 谢谢就够了
 
+# Raycast 插件
+
+<a title="Install running-page Raycast Extension" href="https://www.raycast.com/Lemon/running-page"><img src="https://www.raycast.com/Lemon/running-page/install_button@2x.png?v=1.1" height="64" alt="" style="height: 64px;"></a>
+
 # FAQ
 
 - Strava 100 每 15 分钟的请求，1000 每日限制
@@ -1049,7 +1207,7 @@ curl https://api.github.com/repos/yihong0618/running_page/actions/workflows -H "
 
 - vercel git
 
-  如果想 ignpre gh-pages 可以在 `settings` -> `build` -> `Ignored Build Step` -> `Custom` 输入命令：
+  如果想 ignore gh-pages 可以在 `settings` -> `build` -> `Ignored Build Step` -> `Custom` 输入命令：
 
   ```bash
   if [ "$VERCEL_GIT_COMMIT_REF" != "gh-pages" ]; then exit 1; else exit 0;

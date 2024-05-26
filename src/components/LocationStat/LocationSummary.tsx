@@ -1,4 +1,3 @@
-import React from 'react';
 import Stat from '@/components/Stat';
 import useActivities from '@/hooks/useActivities';
 
@@ -6,7 +5,7 @@ import useActivities from '@/hooks/useActivities';
 const LocationSummary = () => {
   const { years, countries, provinces, cities } = useActivities();
   return (
-    <div style={{ cursor: 'pointer' }}>
+    <div className="cursor-pointer">
       <section>
         {years ? <Stat value={`${years.length}`} description=" 年里我跑过" /> : null}
         {countries ? <Stat value={countries.length} description=" 个国家" /> : null}

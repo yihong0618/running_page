@@ -1,4 +1,3 @@
-import React from 'react';
 import Stat from '@/components/Stat';
 import useActivities from '@/hooks/useActivities';
 
@@ -9,7 +8,7 @@ const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
   const citiesArr = Object.entries(cities);
   citiesArr.sort((a, b) => b[1] - a[1]);
   return (
-    <div style={{ cursor: 'pointer' }}>
+    <div className="cursor-pointer">
       <section>
         {citiesArr.map(([city, distance]) => (
           <Stat
