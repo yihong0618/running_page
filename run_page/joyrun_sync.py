@@ -258,7 +258,8 @@ class Joyrun:
                         f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
                         <gpxtpx:hr>{heart_rate_list[i]}</gpxtpx:hr>
                         </gpxtpx:TrackPointExtension>
-                    """)
+                    """
+                    )
                     i += 1
                     point.extensions.append(gpx_extension_hr)
                 gpx_segment.points.append(point)
@@ -304,6 +305,7 @@ class Joyrun:
             # fix #66
             if heart_rate < 0:
                 heart_rate = None
+        total_elevation_gain = None
         # pass the track no points
         if run_points_data:
             gpx_data = self.parse_points_to_gpx(
@@ -313,6 +315,11 @@ class Joyrun:
                 heart_rate_list,
                 altitude_list,
                 pause_list,
+            )
+            total_elevation_gain = (
+                gpx_data.get_uphill_downhill().uphill
+                if gpx_data.has_elevations()
+                else None
             )
             if with_gpx:
                 # pass the track no points
@@ -351,6 +358,7 @@ class Joyrun:
                 seconds=int((run_data["endtime"] - run_data["starttime"]))
             ),
             "average_speed": run_data["meter"] / run_data["second"],
+            "total_elevation_gain": total_elevation_gain,
             "location_country": location_country,
         }
         return namedtuple("x", d.keys())(*d.values())
