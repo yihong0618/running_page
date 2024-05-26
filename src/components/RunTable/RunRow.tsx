@@ -11,6 +11,7 @@ interface IRunRowProperties {
 
 const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IRunRowProperties) => {
   const distance = (run.distance / 1000.0).toFixed(2);
+  const elevation_gain = run.total_elevation_gain?.toFixed(0);
   const paceParts = run.average_speed ? formatPace(run.average_speed) : null;
   const heartRate = run.average_heartrate;
   const runTime = formatRunTime(run.moving_time);
@@ -32,6 +33,7 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IR
     >
       <td>{titleForRun(run)}</td>
       <td>{distance}</td>
+      <td>{elevation_gain}</td>
       {paceParts && <td>{paceParts}</td>}
       <td>{heartRate && heartRate.toFixed(0)}</td>
       <td>{runTime}</td>

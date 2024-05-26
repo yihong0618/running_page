@@ -30,6 +30,8 @@ const RunTable = ({
   // TODO refactor?
   const sortKMFunc: SortFunc = (a, b) =>
     sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance;
+  const sortElevationGainFunc: SortFunc = (a, b) =>
+    sortFuncInfo === 'Elevation Gain' ? a.total_elevation_gain - b.total_elevation_gain : b.total_elevation_gain - a.total_elevation_gain;
   const sortPaceFunc: SortFunc = (a, b) =>
     sortFuncInfo === 'Pace'
       ? a.average_speed - b.average_speed
@@ -50,6 +52,7 @@ const RunTable = ({
     sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
   const sortFuncMap = new Map([
     ['KM', sortKMFunc],
+    ['Elevation Gain', sortElevationGainFunc],
     ['Pace', sortPaceFunc],
     ['BPM', sortBPMFunc],
     ['Time', sortRunTimeFunc],
