@@ -477,7 +477,7 @@ class Codoon:
         for p in points_dict_list:
             point = gpxpy.gpx.GPXTrackPoint(**p)
             gpx_segment.points.append(point)
-        return gpx.to_xml()
+        return gpx
 
     def get_single_run_record(self, route_id):
         print(f"Get single run for codoon id {route_id}")
@@ -528,11 +528,18 @@ class Codoon:
                     p["latitude"] = latlng_data[i][0]
                     p["longitude"] = latlng_data[i][1]
 
-        if with_gpx:
-            # pass the track no points
-            if str(log_id) not in old_gpx_ids and run_points_data:
-                gpx_data = self.parse_points_to_gpx(run_points_data)
-                download_codoon_gpx(gpx_data, str(log_id))
+        total_elevation_gain = None
+        if run_points_data:
+            gpx_data = self.parse_points_to_gpx(run_points_data)
+            total_elevation_gain = (
+                gpx_data.get_uphill_downhill().uphill
+                if gpx_data.has_elevations()
+                else None
+            )
+            if with_gpx:
+                # pass the track no points
+                if str(log_id) not in old_gpx_ids:
+                    download_codoon_gpx(gpx_data.to_xml(), str(log_id))
         heart_rate_dict = run_data.get("heart_rate")
         heart_rate = None
         if heart_rate_dict:
@@ -569,6 +576,7 @@ class Codoon:
                 seconds=int((end_date.timestamp() - start_date.timestamp()))
             ),
             "average_speed": run_data["total_length"] / run_data["total_time"],
+            "total_elevation_gain": total_elevation_gain,
             "location_country": location_country,
             "source": "Codoon",
         }
