@@ -108,6 +108,7 @@ def parse_raw_data_to_nametuple(
 
     start_time = run_data["startTime"]
     avg_heart_rate = None
+    total_elevation_gain = None
     decoded_hr_data = []
     if run_data["heartRate"]:
         avg_heart_rate = run_data["heartRate"].get("averageHeartRate", None)
@@ -134,14 +135,17 @@ def parse_raw_data_to_nametuple(
             p_hr = find_nearest_hr(decoded_hr_data, int(p["timestamp"]), start_time)
             if p_hr:
                 p["hr"] = p_hr
-        if with_download_gpx:
-            if str(keep_id) not in old_gpx_ids and run_data["dataType"].startswith(
-                "outdoor"
-            ):
-                gpx_data = parse_points_to_gpx(
-                    run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
-                )
-                download_keep_gpx(gpx_data, str(keep_id))
+        if run_data["dataType"].startswith("outdoor"):
+            gpx_data = parse_points_to_gpx(
+                run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
+            )
+            total_elevation_gain = (
+                gpx_data.get_uphill_downhill().uphill
+                if gpx_data.has_elevations()
+                else None
+            )
+            if with_download_gpx and str(keep_id) not in old_gpx_ids:
+                download_keep_gpx(gpx_data.to_xml(), str(keep_id))
     else:
         print(f"ID {keep_id} no gps data")
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
@@ -174,6 +178,7 @@ def parse_raw_data_to_nametuple(
             seconds=int((run_data["endTime"] - run_data["startTime"]) / 1000)
         ),
         "average_speed": run_data["distance"] / run_data["duration"],
+        "total_elevation_gain": total_elevation_gain,
         "location_country": str(run_data.get("region", "")),
     }
     return namedtuple("x", d.keys())(*d.values())
@@ -262,7 +267,7 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
             )
             point.extensions.append(gpx_extension_hr)
         gpx_segment.points.append(point)
-    return gpx.to_xml()
+    return gpx
 
 
 def find_nearest_hr(
