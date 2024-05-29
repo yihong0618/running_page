@@ -531,11 +531,7 @@ class Codoon:
         total_elevation_gain = None
         if run_points_data:
             gpx_data = self.parse_points_to_gpx(run_points_data)
-            total_elevation_gain = (
-                gpx_data.get_uphill_downhill().uphill
-                if gpx_data.has_elevations()
-                else None
-            )
+            total_elevation_gain = gpx_data.get_uphill_downhill().uphill
             if with_gpx:
                 # pass the track no points
                 if str(log_id) not in old_gpx_ids:

@@ -139,11 +139,7 @@ def parse_raw_data_to_nametuple(
             gpx_data = parse_points_to_gpx(
                 run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
             )
-            total_elevation_gain = (
-                gpx_data.get_uphill_downhill().uphill
-                if gpx_data.has_elevations()
-                else None
-            )
+            total_elevation_gain = gpx_data.get_uphill_downhill().uphill
             if with_download_gpx and str(keep_id) not in old_gpx_ids:
                 download_keep_gpx(gpx_data.to_xml(), str(keep_id))
     else:

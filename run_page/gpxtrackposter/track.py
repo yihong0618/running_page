@@ -229,9 +229,7 @@ class Track:
             sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
         )
         self.moving_dict = self._get_moving_data(gpx)
-        self.total_elevation_gain = (
-            gpx.get_uphill_downhill().uphill if gpx.has_elevations() else None
-        )
+        self.total_elevation_gain = gpx.get_uphill_downhill().uphill
 
     def _load_fit_data(self, fit: dict):
         _polylines = []
@@ -345,7 +343,7 @@ class Track:
                 int(self.average_heartrate) if self.average_heartrate else None
             ),
             "total_elevation_gain": (
-                int(self.total_elevation_gain) if self.total_elevation_gain else None
+                int(self.total_elevation_gain) if self.total_elevation_gain else 0
             ),
             "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,

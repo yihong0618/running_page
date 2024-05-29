@@ -316,11 +316,7 @@ class Joyrun:
                 altitude_list,
                 pause_list,
             )
-            total_elevation_gain = (
-                gpx_data.get_uphill_downhill().uphill
-                if gpx_data.has_elevations()
-                else None
-            )
+            total_elevation_gain = gpx_data.get_uphill_downhill().uphill
             if with_gpx:
                 # pass the track no points
                 if str(joyrun_id) not in old_gpx_ids:
