@@ -98,7 +98,7 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
     # end_date = datetime.strftime(summary["end_date"], "%Y-%m-%d %H:%M:%S")
     # end_date_local = datetime.strftime(summary["end_date_local"], "%Y-%m-%d %H:%M:%S")
     average_heartrate = int(detail["avg_hr"])
-    total_elevation_gain = None
+    elevation_gain = None
     map = run_map("")
     start_latlng = None
     distance = summary["distance"]
@@ -123,7 +123,7 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
             map = run_map(polyline.encode(latlng_list))
 
             altitude_list = [point[2] for point in detail["map_data_list"]]
-            total_elevation_gain = compute_elevation_gain(altitude_list)
+            elevation_gain = compute_elevation_gain(altitude_list)
 
     activity_db_instance = {
         "id": id,
@@ -138,7 +138,7 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
         "moving_time": moving_time,
         "elapsed_time": elapsed_time,
         "average_speed": average_speed,
-        "total_elevation_gain": total_elevation_gain,
+        "elevation_gain": elevation_gain,
         "location_country": location_country,
     }
     return namedtuple("activity_db_instance", activity_db_instance.keys())(

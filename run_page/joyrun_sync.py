@@ -305,7 +305,7 @@ class Joyrun:
             # fix #66
             if heart_rate < 0:
                 heart_rate = None
-        total_elevation_gain = None
+        elevation_gain = None
         # pass the track no points
         if run_points_data:
             gpx_data = self.parse_points_to_gpx(
@@ -316,7 +316,7 @@ class Joyrun:
                 altitude_list,
                 pause_list,
             )
-            total_elevation_gain = gpx_data.get_uphill_downhill().uphill
+            elevation_gain = gpx_data.get_uphill_downhill().uphill
             if with_gpx:
                 # pass the track no points
                 if str(joyrun_id) not in old_gpx_ids:
@@ -354,7 +354,7 @@ class Joyrun:
                 seconds=int((run_data["endtime"] - run_data["starttime"]))
             ),
             "average_speed": run_data["meter"] / run_data["second"],
-            "total_elevation_gain": total_elevation_gain,
+            "elevation_gain": elevation_gain,
             "location_country": location_country,
         }
         return namedtuple("x", d.keys())(*d.values())

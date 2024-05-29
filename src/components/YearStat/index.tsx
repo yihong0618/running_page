@@ -27,7 +27,7 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
   let totalSecondsAvail = 0;
   runs.forEach((run) => {
     sumDistance += run.distance || 0;
-    sumElevationGain += run.total_elevation_gain || 0;
+    sumElevationGain += run.elevation_gain || 0;
     if (run.average_speed) {
       pace += run.average_speed;
       totalMetersAvail += run.distance || 0;

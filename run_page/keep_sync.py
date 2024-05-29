@@ -108,7 +108,7 @@ def parse_raw_data_to_nametuple(
 
     start_time = run_data["startTime"]
     avg_heart_rate = None
-    total_elevation_gain = None
+    elevation_gain = None
     decoded_hr_data = []
     if run_data["heartRate"]:
         avg_heart_rate = run_data["heartRate"].get("averageHeartRate", None)
@@ -139,7 +139,7 @@ def parse_raw_data_to_nametuple(
             gpx_data = parse_points_to_gpx(
                 run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
             )
-            total_elevation_gain = gpx_data.get_uphill_downhill().uphill
+            elevation_gain = gpx_data.get_uphill_downhill().uphill
             if with_download_gpx and str(keep_id) not in old_gpx_ids:
                 download_keep_gpx(gpx_data.to_xml(), str(keep_id))
     else:
@@ -165,7 +165,7 @@ def parse_raw_data_to_nametuple(
         "end_local": datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
         "length": run_data["distance"],
         "average_heartrate": int(avg_heart_rate) if avg_heart_rate else None,
-        "total_elevation_gain": run_data["accumulativeUpliftedHeight"],
+        "elevation_gain": run_data["accumulativeUpliftedHeight"],
         "map": run_map(polyline_str),
         "start_latlng": start_latlng,
         "distance": run_data["distance"],
@@ -174,7 +174,7 @@ def parse_raw_data_to_nametuple(
             seconds=int((run_data["endTime"] - run_data["startTime"]) / 1000)
         ),
         "average_speed": run_data["distance"] / run_data["duration"],
-        "total_elevation_gain": total_elevation_gain,
+        "elevation_gain": elevation_gain,
         "location_country": str(run_data.get("region", "")),
     }
     return namedtuple("x", d.keys())(*d.values())

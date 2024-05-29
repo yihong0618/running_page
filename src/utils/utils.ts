@@ -22,7 +22,7 @@ export interface Activity {
   location_country?: string | null;
   summary_polyline?: string | null;
   average_heartrate?: number | null;
-  total_elevation_gain?: number | null;
+  elevation_gain: number;
   average_speed: number;
   streak: number;
 }
