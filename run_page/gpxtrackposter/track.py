@@ -342,9 +342,7 @@ class Track:
             "average_heartrate": (
                 int(self.average_heartrate) if self.average_heartrate else None
             ),
-            "elevation_gain": (
-                int(self.elevation_gain) if self.elevation_gain else 0
-            ),
+            "elevation_gain": (int(self.elevation_gain) if self.elevation_gain else 0),
             "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,
         }
