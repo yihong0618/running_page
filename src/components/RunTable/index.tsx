@@ -31,7 +31,9 @@ const RunTable = ({
   const sortKMFunc: SortFunc = (a, b) =>
     sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance;
   const sortElevationGainFunc: SortFunc = (a, b) =>
-    sortFuncInfo === 'Elevation Gain' ? a.elevation_gain - b.elevation_gain : b.elevation_gain - a.elevation_gain;
+    sortFuncInfo === 'Elevation Gain'
+      ? (a.elevation_gain ?? 0) - (b.elevation_gain ?? 0)
+      : (b.elevation_gain ?? 0) - (a.elevation_gain ?? 0);
   const sortPaceFunc: SortFunc = (a, b) =>
     sortFuncInfo === 'Pace'
       ? a.average_speed - b.average_speed
