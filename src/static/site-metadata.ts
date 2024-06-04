@@ -25,7 +25,7 @@ const data: ISiteMetadataResult = {
     },
     {
       name: 'About',
-      url: 'https://https://cigar.design/about/',
+      url: 'https://cigar.design/about/',
     },
   ],
 };
