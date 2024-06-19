@@ -400,13 +400,13 @@ TRANS_GCJ02_TO_WGS84 = True
 ![image](https://user-images.githubusercontent.com/15976103/102352588-e3af3000-3fe2-11eb-8131-14946b0262eb.png)
 
 ```bash
-python3(python) run_page/joyrun_sync.py ${your mobile} ${your 验证码}
+python3(python) run_page/joyrun_sync.py ${your mobile} ${your 验证码} --athlete ${your own name}
 ```
 
 示例：
 
 ```bash
-python3(python) run_page/joyrun_sync.py 13333xxxx xxxx
+python3(python) run_page/joyrun_sync.py 13333xxxx xxxx --athlete yihong0618
 ```
 
 joyrun 导出 gpx 文件
@@ -431,6 +431,12 @@ python3(python) run_page/joyrun_sync.py 13333xxxx example --with-gpx
 
 ```bash
 python3(python) run_page/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx --from-uid-sid --with-gpx
+```
+
+> 支持配置min_grid_distance，默认为10
+
+```bash
+python3(python) run_page/joyrun_sync.py 13333xxxx xxxx --athlete yihong0618 --min_grid_distance 5 
 ```
 
 </details>
