@@ -101,6 +101,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Zeonsing](https://github.com/NoonieBao)             | <https://run.jogzeal.com/>     | Coros      |
 | [yaoper](https://github.com/yaoper)               | <https://running.yaoper.cn>                    | codoon      |
 | [laqieer](https://github.com/laqieer)             | <https://laqieer.github.io/running_page/>      | Strava      |
+| [Guoxin](https://github.com/guoxinl)              | <https://running.guoxin.space/>                | Strava      |
 </details>
 
 ## How it works
