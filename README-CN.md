@@ -148,7 +148,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[佳明国内同步国际](#Garmin-CN-to-Garmin)**
 - **[Tcx+Strava(upload all tcx data to strava)](#tcx_to_strava)**
 - **[Tcx+Garmin(upload all tcx data to Garmin)](#tcx_to_garmin)**
-- **[Gpx+Strava(upload all tcx data to strava)](#gpx_to_strava)**
+- **[Gpx+Strava(upload all gpx data to strava)](#gpx_to_strava)**
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
