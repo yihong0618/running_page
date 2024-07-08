@@ -105,6 +105,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [NoZTurn](https://github.com/NoZTurn)             | <https://run.jiangkai.org>                     | Strava      |
 | [laqieer](https://github.com/laqieer)             | <https://laqieer.github.io/running_page/>      | Strava      |
 | [Guoxin](https://github.com/guoxinl)              | <https://running.guoxin.space/>                | Strava      |
+| [Darren](https://github.com/Flavored4179)         | <https://run.wdoc.top/>                        | tcx         |
 </details>
 
 ## 它是怎么工作的
