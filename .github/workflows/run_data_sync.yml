@@ -25,7 +25,7 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: garmin # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon/oppo, Please change the 'pass' it to your own
+  RUN_TYPE: garmin_cn # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon/oppo, Please change the 'pass' it to your own
   ATHLETE: runking
   TITLE: Runking Running
   MIN_GRID_DISTANCE: 10 # change min distance here
