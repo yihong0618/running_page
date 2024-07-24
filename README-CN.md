@@ -136,6 +136,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 ## 支持
 
 - **[Strava](#strava)**
+- **[New Way To Sync Nike Run Club](#nike-run-club-new)** ：NFC同步的新方式
 - **[Nike Run Club](#nike-run-club)**
 - **[Garmin](#garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
@@ -644,6 +645,32 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 
 </details>
 
+### Nike Run Club New
+
+<details>
+<summary>Get your <code>Nike Run Club</code> data</summary>
+
+<br>
+
+> Please note:由于nike run club已经在中国大陆停止运营，所以只能通过vpn的方式进行登录。在开始之前先确认自己是全局的非中国大陆的代理，能够正确的访问`nike.com`而不是`nike.com.cn` 如下图所示.
+
+![nike.com](https://github.com/user-attachments/assets/8ce6ae8f-4bc6-4522-85ec-3e5b7590e96d)
+<br>
+
+1. 登录/注册 [NikeRunClub](https://www.nike.com/) 账号
+   ![login](https://github.com/user-attachments/assets/659341fb-4abf-491e-bda7-bfca968921b3)
+2. 登录成功后,键盘打开F12->Application->localstorage-> 复制键为`https://www.nike.com`的值中的`access_token`的内容.
+   ![developer_mode](https://github.com/user-attachments/assets/c932318d-a123-4505-8fd8-b46946c25d29)
+3. 修改 `nike_sync.py` 文件中的代码,并且把你刚才复制的内容粘贴进去 如下图所示.
+   ![nike_sync.py](https://github.com/user-attachments/assets/6de91725-ed17-4338-96d5-727eb75cee24)
+4. 在根目录执行,你应该就可以看到下图中的内容，然后你就可以正常在你的手机版NRC里登录你的账号了:
+
+```bash
+python3(python) run_page/nike_sync.py aaaaa
+```
+![tg_image_166091873](https://github.com/user-attachments/assets/9d4851d6-849a-4bb7-8ffe-5358fa7328b2)
+
+如果你想自动化同步NRC中的运动数据,去 [issue692](https://github.com/yihong0618/running_page/issues/692#issuecomment-2218849713)中查看相关内容.
 
 ### Nike Run Club
 

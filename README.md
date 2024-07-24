@@ -125,6 +125,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 
 - **[Garmin](#garmin)**
 - **[Garmin-CN](#garmin-cnchina)**
+- **[New Way To Sync Nike Run Club](#nike-run-club-new)**
 - **[Nike Run Club](#nike-run-club)**
 - **[Strava](#strava)**
 - **[GPX](#gpx)**
@@ -437,6 +438,32 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 
 </details>
 
+### Nike Run Club New
+
+<details>
+<summary>Get your <code>Nike Run Club</code> data</summary>
+
+<br>
+
+> Please note:Due to the discontinuation of Nike Run Club in mainland China, you can only log in through a VPN. Before starting, please ensure that you are using a global non-mainland China proxy, allowing you to access `nike.com` instead of `nike.com.cn`, as shown in the following image.
+
+![nike.com](https://github.com/user-attachments/assets/8ce6ae8f-4bc6-4522-85ec-3e5b7590e96d)
+<br>
+
+1. Sign in/Sign up [NikeRunClub](https://www.nike.com/) account
+   ![login](https://github.com/user-attachments/assets/659341fb-4abf-491e-bda7-bfca968921b3)
+2. after successful login,openF12->Application->localstorage-> copy the content of "access_token" from the value of key`https://www.nike.com`.
+![developer_mode](https://github.com/user-attachments/assets/c932318d-a123-4505-8fd8-b46946c25d29)
+3. modify the code in the "nike_sync.py" file and paste the content you just copied as shown in the following image.
+![nike_sync.py](https://github.com/user-attachments/assets/6de91725-ed17-4338-96d5-727eb75cee24)
+4. Execute in the root directory , you should be able to see the image below, and then you can log into your account on the mobile as usual:
+
+```bash
+python3(python) run_page/nike_sync.py aaaaa
+```
+![tg_image_166091873](https://github.com/user-attachments/assets/9d4851d6-849a-4bb7-8ffe-5358fa7328b2)
+
+if you want to automate the submission of NRC data, you can refer to [issue692](https://github.com/yihong0618/running_page/issues/692#issuecomment-2218849713).
 ### Nike Run Club
 
 <details>
