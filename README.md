@@ -464,6 +464,9 @@ python3(python) run_page/nike_sync.py aaaaa
 ![tg_image_166091873](https://github.com/user-attachments/assets/9d4851d6-849a-4bb7-8ffe-5358fa7328b2)
 
 if you want to automate the submission of NRC data, you can refer to [issue692](https://github.com/yihong0618/running_page/issues/692#issuecomment-2218849713).
+
+</details>
+
 ### Nike Run Club
 
 <details>

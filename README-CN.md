@@ -672,6 +672,8 @@ python3(python) run_page/nike_sync.py aaaaa
 
 如果你想自动化同步NRC中的运动数据,去 [issue692](https://github.com/yihong0618/running_page/issues/692#issuecomment-2218849713)中查看相关内容.
 
+</details>
+
 ### Nike Run Club
 
 <details>
