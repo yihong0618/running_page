@@ -92,7 +92,7 @@ def get_strava_last_time(client, is_milliseconds=True):
         return 0
 
 
-def upload_file_to_strava(client, file_name, data_type, force_to_run=True):
+def upload_file_to_strava(client, file_name, data_type, force_to_run=False):
     with open(file_name, "rb") as f:
         try:
             if force_to_run:
