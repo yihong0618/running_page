@@ -84,13 +84,8 @@ class Generator:
             return
 
         synced_files = []
-        if file_suffix == "fit":
-            name_mapping = load_fit_name_mapping()
 
         for t in tracks:
-            activity_id = t.file_names[0].split(".")[0]
-            if file_suffix == "fit" and activity_id in name_mapping:
-                t.name = name_mapping[activity_id]
             created = update_or_create_activity(self.session, t.to_namedtuple())
             if created:
                 sys.stdout.write("+")
@@ -200,6 +195,19 @@ class Generator:
         try:
             activities = self.session.query(Activity).all()
             return [str(a.run_id) for a in activities]
+        except Exception as e:
+            # pass the error
+            print(f"something wrong with {str(e)}")
+            return []
+
+    def get_old_tracks_dates(self):
+        try:
+            activities = (
+                self.session.query(Activity)
+                .order_by(Activity.start_date_local.desc())
+                .all()
+            )
+            return [str(a.start_date_local) for a in activities]
         except Exception as e:
             # pass the error
             print(f"something wrong with {str(e)}")

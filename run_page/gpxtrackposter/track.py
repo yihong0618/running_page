@@ -64,7 +64,7 @@ class Track:
             # (for example, treadmill runs pulled via garmin-connect-export)
             if os.path.getsize(file_name) == 0:
                 raise TrackLoadError("Empty GPX file")
-            with open(file_name, "rb") as file:
+            with open(file_name, "r", encoding="utf-8", errors="ignore") as file:
                 self._load_gpx_data(mod_gpxpy.parse(file))
         except Exception as e:
             print(
@@ -291,10 +291,6 @@ class Track:
                 lng = record["position_long"] / SEMICIRCLE
                 _polylines.append(s2.LatLng.from_degrees(lat, lng))
                 self.polyline_container.append([lat, lng])
-        for record in fit["device_info_mesgs"]:
-            if "device_index" in record and record["device_index"] == "creator":
-                self.source = f'{record["manufacturer"]} {record["garmin_product"]} fit'
-                break
         if self.polyline_container:
             self.start_time_local, self.end_time_local = parse_datetime_to_local(
                 self.start_time, self.end_time, self.polyline_container[0]
