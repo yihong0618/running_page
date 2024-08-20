@@ -20,12 +20,14 @@ const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick:
   }
   let sumDistance = 0;
   let streak = 0;
+  let sumElevationGain = 0;
   let heartRate = 0;
   let heartRateNullCount = 0;
   const workoutsCounts = {};
 
   runs.forEach((run) => {
     sumDistance += run.distance || 0;
+    sumElevationGain += run.elevation_gain || 0;
     if (run.average_speed) {
       if(workoutsCounts[run.type]){
         var [oriCount, oriSecondsAvail, oriMetersAvail] = workoutsCounts[run.type]
@@ -82,6 +84,13 @@ const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick:
             }}
           />
         ))}
+        { sumElevationGain > 0 &&
+          <Stat
+            value={`${(sumElevationGain).toFixed(0)} `}
+            description="M Elevation Gain"
+            className="pb-2"
+          />
+        }
         <Stat
           value={`${streak} day`}
           description=" Streak"

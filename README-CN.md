@@ -2,6 +2,15 @@
 
 ## note2: 2023.09.26 garmin need secret_string(and in Actions) get `python run_page/garmin_sync.py ${secret_string}` if cn `python run_page/garmin_sync.py ${secret_string} --is-cn`
 
+## note3: 2024.08.19: Added `Elevation Gain` field, If you forked the project before this update, please run the following command:
+    - To resolve errors: `sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: activities.elevation_gain`
+    - For old data: To include `Elevation Gain` for past activities, perform a full reimport. 
+    - If you don't have a local environment, set `RUN_TYPE` to `db_updater` in the `.github/workflows/run_data_sync.yml` file once then change back. 
+
+    ```bash
+      python run_page/db_updater.py
+    ```
+
 # [打造个人户外运动主页](http://workouts.ben29.xyz)
 
 ![screenshot](https://user-images.githubusercontent.com/6956444/163125711-24d0ad99-490d-4c04-b89f-5b7fe776eb38.png)

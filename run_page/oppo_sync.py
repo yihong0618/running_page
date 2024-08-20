@@ -189,6 +189,7 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
     start_time = sport_data["startTime"]
     other_data = sport_data["otherSportData"]
     avg_heart_rate = None
+    elevation_gain = None
     if other_data:
         avg_heart_rate = other_data.get("avgHeartRate", None)
         # fix #66
@@ -206,9 +207,10 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
 
         point_dict = prepare_track_points(sport_data, with_gpx)
 
+        gpx_data = parse_points_to_gpx(sport_data, point_dict)
+        elevation_gain = gpx_data.get_uphill_downhill().uphill
         if with_gpx is True:
-            gpx_data = parse_points_to_gpx(sport_data, point_dict)
-            download_keep_gpx(gpx_data, str(oppo_id))
+            download_keep_gpx(gpx_data.to_xml(), str(oppo_id))
         if with_tcx is True:
             parse_points_to_tcx(sport_data, point_dict)
 
@@ -247,6 +249,7 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
             seconds=int((sport_data["endTime"] - sport_data["startTime"]) / 1000)
         ),
         "average_speed": other_data["totalDistance"] / other_data["totalTime"] * 1000,
+        "elevation_gain": elevation_gain,
         "location_country": location_country,
         "source": sport_data["deviceName"],
     }
@@ -372,7 +375,7 @@ def parse_points_to_gpx(sport_data, points_dict_list):
             )
             point.extensions.append(gpx_extension)
         gpx_segment.points.append(point)
-    return gpx.to_xml()
+    return gpx
 
 
 def download_keep_gpx(gpx_data, keep_id):

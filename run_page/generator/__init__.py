@@ -12,7 +12,7 @@ from polyline_processor import filter_out
 
 from .db import Activity, init_db, update_or_create_activity
 
-from synced_data_file_logger import save_synced_data_file_list, load_fit_name_mapping
+from synced_data_file_logger import save_synced_data_file_list
 
 
 IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
@@ -67,6 +67,8 @@ class Generator:
             if IGNORE_BEFORE_SAVING:
                 activity.summary_polyline = filter_out(activity.summary_polyline)
             activity.source = "strava"
+            #  strava use total_elevation_gain as elevation_gain
+            activity.elevation_gain = activity.total_elevation_gain
             created = update_or_create_activity(self.session, activity)
             if created:
                 sys.stdout.write("+")

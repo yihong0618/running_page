@@ -98,6 +98,7 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
     # end_date = datetime.strftime(summary["end_date"], "%Y-%m-%d %H:%M:%S")
     # end_date_local = datetime.strftime(summary["end_date_local"], "%Y-%m-%d %H:%M:%S")
     average_heartrate = int(detail["avg_hr"])
+    elevation_gain = None
     map = run_map("")
     start_latlng = None
     distance = summary["distance"]
@@ -121,6 +122,9 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
             latlng_list = [[float(point[0]), float(point[1])] for point in point_list]
             map = run_map(polyline.encode(latlng_list))
 
+            altitude_list = [point[2] for point in detail["map_data_list"]]
+            elevation_gain = compute_elevation_gain(altitude_list)
+
     activity_db_instance = {
         "id": id,
         "name": name,
@@ -134,11 +138,20 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
         "moving_time": moving_time,
         "elapsed_time": elapsed_time,
         "average_speed": average_speed,
+        "elevation_gain": elevation_gain,
         "location_country": location_country,
     }
     return namedtuple("activity_db_instance", activity_db_instance.keys())(
         *activity_db_instance.values()
     )
+
+
+def compute_elevation_gain(altitudes):
+    total_gain = 0
+    for i in range(1, len(altitudes)):
+        if altitudes[i] > altitudes[i - 1]:
+            total_gain += altitudes[i] - altitudes[i - 1]
+    return total_gain
 
 
 def find_last_tulipsport_start_time(track_ids):

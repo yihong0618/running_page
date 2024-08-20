@@ -47,6 +47,7 @@ class Track:
         self.length = 0
         self.special = False
         self.average_heartrate = None
+        self.elevation_gain = None
         self.moving_dict = {}
         self.run_id = 0
         self.start_latlng = []
@@ -166,6 +167,7 @@ class Track:
             except:
                 pass
             self.polyline_str = polyline.encode(polyline_container)
+        self.elevation_gain = tcx.ascent
         self.moving_dict = {
             "distance": self.length,
             "moving_time": datetime.timedelta(seconds=moving_time),
@@ -250,6 +252,7 @@ class Track:
             sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
         )
         self.moving_dict = self._get_moving_data(gpx)
+        self.elevation_gain = gpx.get_uphill_downhill().uphill
 
     def _load_fit_data(self, fit: dict):
         _polylines = []
@@ -265,6 +268,9 @@ class Track:
         self.length = message["total_distance"]
         self.average_heartrate = (
             message["avg_heart_rate"] if "avg_heart_rate" in message else None
+        )
+        self.elevation_gain = (
+            message["total_ascent"] if "total_ascent" in message else None
         )
         self.type = message["sport"].lower()
 
@@ -320,6 +326,10 @@ class Track:
             )
             self.file_names.extend(other.file_names)
             self.special = self.special or other.special
+            self.average_heartrate = self.average_heartrate or other.average_heartrate
+            self.elevation_gain = (
+                self.elevation_gain if self.elevation_gain else 0
+            ) + (other.elevation_gain if other.elevation_gain else 0)
         except:
             print(
                 f"something wrong append this {self.end_time},in files {str(self.file_names)}"
@@ -355,6 +365,7 @@ class Track:
             "average_heartrate": (
                 int(self.average_heartrate) if self.average_heartrate else None
             ),
+            "elevation_gain": (int(self.elevation_gain) if self.elevation_gain else 0),
             "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,
             "source": self.source,
