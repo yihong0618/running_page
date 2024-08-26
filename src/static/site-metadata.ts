@@ -17,7 +17,7 @@ const data: ISiteMetadataResult = {
   navLinks: [
     {
       name: 'Blog',
-      url: 'https://github.com/Jasonkayzk/',
+      url: 'https://jasonkayzk.github.io/',
     },
     {
       name: 'About',
