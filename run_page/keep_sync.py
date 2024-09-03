@@ -112,7 +112,7 @@ def parse_raw_data_to_nametuple(
     if run_data["heartRate"]:
         avg_heart_rate = run_data["heartRate"].get("averageHeartRate", None)
         heart_rate_data = run_data["heartRate"].get("heartRates", None)
-        if heart_rate_data is not None:
+        if heart_rate_data:
             decoded_hr_data = decode_runmap_data(heart_rate_data)
         # fix #66
         if avg_heart_rate and avg_heart_rate < 0:
