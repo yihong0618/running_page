@@ -106,7 +106,7 @@ const locationForRun = (
   let [city, province, country] = ['', '', ''];
   if (location) {
     // Only for Chinese now
-    // should fiter 臺灣
+    // should filter 臺灣
     const cityMatch = extractLocations(location);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
 
