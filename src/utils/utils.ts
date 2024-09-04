@@ -137,6 +137,7 @@ const locationForRun = (
     }
     if (provinceMatch) {
       [province] = provinceMatch;
+      // try to extract city coord from location_country info
       coordinate = extractCoordinate(location);
     }
     const l = location.split(',');
@@ -179,6 +180,7 @@ const pathForRun = (run: Activity): Coordinate[] => {
         ? [arr[1], arr[0]]
         : gcoord.transform([arr[1], arr[0]], gcoord.GCJ02, gcoord.WGS84);
     });
+    // try to use location city coordinate instead , if runpath is incomplete
     if (c.length === 2 && String(c[0]) === String(c[1])) {
       const { coordinate } = locationForRun(run);
       if (coordinate?.[0] && coordinate?.[1]) {
