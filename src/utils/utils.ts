@@ -36,9 +36,8 @@ const titleForShow = (run: Activity): string => {
   if (run.name) {
     name = run.name;
   }
-  return `${name} ${date} ${distance} KM ${
-    !run.summary_polyline ? '(No map data for this run)' : ''
-  }`;
+  return `${name} ${date} ${distance} KM ${!run.summary_polyline ? '(No map data for this run)' : ''
+    }`;
 };
 
 const formatPace = (d: number): string => {
@@ -93,7 +92,21 @@ const extractLocations = (str: string): string[] => {
   return locations;
 };
 
+const extractCoordinate = (str: string): [number, number] | null => {
+  const pattern = /'latitude': ([-]?\d+\.\d+).*?'longitude': ([-]?\d+\.\d+)/;
+  const match = str.match(pattern);
+
+  if (match) {
+    const latitude = parseFloat(match[1]);
+    const longitude = parseFloat(match[2]);
+    return [longitude, latitude];
+  }
+
+  return null;
+};
+
 const cities = chinaCities.map((c) => c.name);
+const locationCache = new Map<number, ReturnType<typeof locationForRun>>();
 // what about oversea?
 const locationForRun = (
   run: Activity
@@ -101,12 +114,17 @@ const locationForRun = (
   country: string;
   province: string;
   city: string;
+  coordinate: [number, number] | null;
 } => {
+  if (locationCache.has(run.run_id)) {
+    return locationCache.get(run.run_id)!;
+  }
   let location = run.location_country;
   let [city, province, country] = ['', '', ''];
+  let coordinate = null;
   if (location) {
     // Only for Chinese now
-    // should fiter 臺灣
+    // should filter 臺灣
     const cityMatch = extractLocations(location);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
 
@@ -119,6 +137,8 @@ const locationForRun = (
     }
     if (provinceMatch) {
       [province] = provinceMatch;
+      // try to extract city coord from location_country info
+      coordinate = extractCoordinate(location);
     }
     const l = location.split(',');
     // or to handle keep location format
@@ -136,7 +156,9 @@ const locationForRun = (
     province = city;
   }
 
-  return { country, province, city };
+  const r = { country, province, city, coordinate };
+  locationCache.set(run.run_id, r);
+  return r;
 };
 
 const intComma = (x = '') => {
@@ -158,6 +180,13 @@ const pathForRun = (run: Activity): Coordinate[] => {
         ? [arr[1], arr[0]]
         : gcoord.transform([arr[1], arr[0]], gcoord.GCJ02, gcoord.WGS84);
     });
+    // try to use location city coordinate instead , if runpath is incomplete
+    if (c.length === 2 && String(c[0]) === String(c[1])) {
+      const { coordinate } = locationForRun(run);
+      if (coordinate?.[0] && coordinate?.[1]) {
+        return [coordinate, coordinate];
+      }
+    }
     return c;
   } catch (err) {
     return [];
@@ -183,9 +212,9 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
 });
 
 const geoJsonForMap = (): FeatureCollection<RPGeometry> => ({
-    type: 'FeatureCollection',
-    features: worldGeoJson.features.concat(chinaGeojson.features),
-  })
+  type: 'FeatureCollection',
+  features: worldGeoJson.features.concat(chinaGeojson.features),
+})
 
 const titleForRun = (run: Activity): string => {
   const runDistance = run.distance / 1000;
@@ -231,6 +260,9 @@ const getBoundsForGeoData = (
   }
   if (points.length === 0) {
     return { longitude: 20, latitude: 20, zoom: 3 };
+  }
+  if (points.length === 2 && String(points[0]) === String(points[1])) {
+    return { longitude: points[0][0], latitude: points[0][1], zoom: 9 };
   }
   // Calculate corner values of bounds
   const pointsLong = points.map((point) => point[0]) as number[];
