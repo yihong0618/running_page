@@ -60,6 +60,7 @@ TYPE_DICT = {
     "cycling": "Ride",
     "CYCLING": "Ride",
     "Ride": "Ride",
+    "EBikeRide": "Ride",
     "road_biking": "Ride",
     "VirtualRide": "VirtualRide",
     "indoor_cycling": "Indoor Ride",
