@@ -994,7 +994,7 @@ python3(python) run_page/keep_to_strava_sync.py ${your mobile} ${your password} 
 3. run_data_sync.yml中的修改：
 
     ```yaml
-    RUN_TYPE: keep_to_starva_sync
+    RUN_TYPE: keep_to_strava_sync
     ```
 
 </details>
