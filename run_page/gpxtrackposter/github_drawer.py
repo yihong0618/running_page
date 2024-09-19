@@ -37,6 +37,9 @@ class GithubDrawer(TracksDrawer):
             )
             year_length = total_length_year_dict.get(year, 0)
             year_length = format_float(self.poster.m2u(year_length))
+
+            if str(year_length) == "0.0":
+                continue
             try:
                 month_names = [
                     locale.nl_langinfo(day)[:3]  # Get only first three letters
