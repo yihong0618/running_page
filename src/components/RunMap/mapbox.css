@@ -295,6 +295,7 @@
 a.mapboxgl-ctrl-logo {
   width: 88px;
   height: 23px;
+  opacity: .4;
   margin: 0 0 -4px -4px;
   display: block;
   background-repeat: no-repeat;
@@ -317,6 +318,7 @@ a.mapboxgl-ctrl-logo.mapboxgl-compact {
   }
 }
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+  display: none;
   padding: 0 5px;
   background-color: hsla(0, 0%, 100%, 0.5);
   margin: 0;
