@@ -10,14 +10,16 @@
       python run_page/get_garmin_secret.py ${email} ${password} --is-cn
     ```
 
-5. 2024.08.19: Added `Elevation Gain` field, If you forked the project before this update, please run the following command:
+5. 2024.09.29: Added `Elevation Gain` field, If you forked the project before this update, please run the following command:
     - To resolve errors: `sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: activities.elevation_gain`
-    - For old data: To include `Elevation Gain` for past activities, perform a full reimport. 
     - If you don't have a local environment, set `RUN_TYPE` to `db_updater` in the `.github/workflows/run_data_sync.yml` file once then change back. 
 
     ```bash
       python run_page/db_updater.py
     ```
+    - For old data: To include `Elevation Gain` for past activities, perform a full reimport. 
+    - To show the 'Elevation Gain' column, modify `SHOW_ELEVATION_GAIN` in `src/utils/const.ts`
+    - note: `Elevation Gain` may be inaccurate. You can use Strava's "Correct Elevation" or Garmin's "Elev Corrections" feature for more precise data. 
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
@@ -242,6 +244,8 @@ const LINE_OPACITY = 0.4;
 const PRIVACY_MODE = false;
 // styling: set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
 const LIGHTS_ON = true;
+// set to `true` if you want to show the 'Elevation Gain' column
+const SHOW_ELEVATION_GAIN = true;
 ```
 
 - To use Google Analytics, you need to modify the configuration in the `src/utils/const.ts` file.

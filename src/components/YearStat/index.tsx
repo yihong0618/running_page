@@ -5,6 +5,7 @@ import { formatPace } from '@/utils/utils';
 import useHover from '@/hooks/useHover';
 import { yearStats } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
+import { SHOW_ELEVATION_GAIN } from "@/utils/const";
 
 const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) => void }) => {
   let { activities: runs, years } = useActivities();
@@ -61,7 +62,7 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
         <Stat value={year} description=" Journey" />
         <Stat value={runs.length} description=" Runs" />
         <Stat value={sumDistance} description=" KM" />
-        <Stat value={sumElevationGain} description=" Elevation Gain" />
+        {SHOW_ELEVATION_GAIN && <Stat value={sumElevationGain} description=" Elevation Gain" />}
         <Stat value={avgPace} description=" Avg Pace" />
         <Stat value={`${streak} day`} description=" Streak" />
         {hasHeartRate && (
