@@ -5,7 +5,7 @@ import os
 import time
 import zlib
 from collections import namedtuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import eviltransform
 import gpxpy
@@ -66,7 +66,7 @@ def get_to_download_runs_ids(session, headers, sport_type):
                 logs = [j["stats"] for j in i["logs"]]
                 result.extend(k["id"] for k in logs if not k["isDoubtful"])
             last_date = r.json()["data"]["lastTimestamp"]
-            since_time = datetime.utcfromtimestamp(last_date / 1000)
+            since_time = datetime.fromtimestamp(last_date / 1000, tz=timezone.utc)
             print(f"pares keep ids data since {since_time}")
             time.sleep(1)  # spider rule
             if not last_date:
@@ -146,10 +146,10 @@ def parse_raw_data_to_nametuple(
         print(f"ID {keep_id} no gps data")
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
     start_latlng = start_point(*run_points_data[0]) if run_points_data else None
-    start_date = datetime.utcfromtimestamp(start_time / 1000)
+    start_date = datetime.fromtimestamp(start_time / 1000, tz=timezone.utc)
     tz_name = run_data.get("timezone", "")
     start_date_local = adjust_time(start_date, tz_name)
-    end = datetime.utcfromtimestamp(run_data["endTime"] / 1000)
+    end = datetime.fromtimestamp(run_data["endTime"] / 1000, tz=timezone.utc)
     end_local = adjust_time(end, tz_name)
     if not run_data["duration"]:
         print(f"ID {keep_id} has no total time just ignore please check")
@@ -227,9 +227,10 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
         points_dict = {
             "latitude": point["latitude"],
             "longitude": point["longitude"],
-            "time": datetime.utcfromtimestamp(
+            "time": datetime.fromtimestamp(
                 (point["timestamp"] * 100 + start_time)
-                / 1000  # note that the timestamp of a point is decisecond(分秒)
+                / 1000,  # note that the timestamp of a point is decisecond(分秒)
+                tz=timezone.utc,
             ),
             "elevation": point.get("verticalAccuracy"),
             "hr": point.get("hr"),
