@@ -106,13 +106,14 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [PPZ](https://github.com/8824PPZ)                 | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                 | <https://running.yer1k.com/>                   | Strava      |
 | [AlienVision](https://github.com/weaming)         | <https://run.drink.cafe/>                      | Strava      |
-| [闻笑忘](https://wenxiaowan.com)                | <https://wenxiaowan.com>                       | 苹果健身     |
+| [闻笑忘](https://wenxiaowan.com)                   | <https://wenxiaowan.com>                       | 苹果健身    |
 | [Vensent](https://github.com/Vensent)             | <https://vensent.github.io/workouts_page/>     | Garmin      |
-| [Zeonsing](https://github.com/NoonieBao)             | <https://run.jogzeal.com/>     | Coros      |
+| [Zeonsing](https://github.com/NoonieBao)          | <https://run.jogzeal.com/>                     | Coros       |
 | [yaoper](https://github.com/yaoper)               | <https://running.yaoper.cn>                    | codoon      |
 | [laqieer](https://github.com/laqieer)             | <https://laqieer.github.io/running_page/>      | Strava      |
 | [Guoxin](https://github.com/guoxinl)              | <https://running.guoxin.space/>                | Strava      |
-| [laihj](https://github.com/laihj)                       | <https://run.laihjx.com/>                | 苹果健身      |
+| [laihj](https://github.com/laihj)                 | <https://run.laihjx.com/>                      | 苹果健身     |
+| [Ginta](https://github.com/mar-heaven)            | <https://running.ginta.top/>                   | Keep         |
 </details>
 
 ## How it works
@@ -465,17 +466,20 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 1. Sign in/Sign up [NikeRunClub](https://www.nike.com/) account
    ![login](https://github.com/user-attachments/assets/659341fb-4abf-491e-bda7-bfca968921b3)
 2. after successful login,openF12->Application->localstorage-> copy the content of "access_token" from the value of key`https://www.nike.com`.
-![developer_mode](https://github.com/user-attachments/assets/c932318d-a123-4505-8fd8-b46946c25d29)
-3. modify the code in the "nike_sync.py" file and paste the content you just copied as shown in the following image.
-![nike_sync.py](https://github.com/user-attachments/assets/6de91725-ed17-4338-96d5-727eb75cee24)
-4. Execute in the root directory , you should be able to see the image below, and then you can log into your account on the mobile as usual:
+3. Execute in the root directory , you should be able to see the image below, and then you can log into your account on the mobile as usual:
 
 ```bash
-python3(python) run_page/nike_sync.py aaaaa
+python3(python) run_page/nike_sync.py ${access_token}
 ```
 ![tg_image_166091873](https://github.com/user-attachments/assets/9d4851d6-849a-4bb7-8ffe-5358fa7328b2)
 
 if you want to automate the submission of NRC data, you can refer to [issue692](https://github.com/yihong0618/running_page/issues/692#issuecomment-2218849713).
+
+If you've previously synced activities and want to continue syncing new ones, with `--continue-sync` args
+
+```bash
+python3(python) run_page/nike_sync.py ${access_token} --continue-sync
+```
 
 </details>
 

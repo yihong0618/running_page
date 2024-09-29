@@ -6,7 +6,7 @@ import subprocess
 import sys
 import time
 from collections import namedtuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from hashlib import md5
 from urllib.parse import quote
 from xml.etree import ElementTree
@@ -218,7 +218,7 @@ class Joyrun:
             points_dict = {
                 "latitude": point[0],
                 "longitude": point[1],
-                "time": datetime.utcfromtimestamp(current_time),
+                "time": datetime.fromtimestamp(current_time, tz=timezone.utc),
             }
             if altitude_list and len(altitude_list) > index:
                 points_dict["elevation"] = altitude_list[index]
@@ -234,7 +234,7 @@ class Joyrun:
         last = {
             "latitude": run_points_data[-1][0],
             "longitude": run_points_data[-1][1],
-            "time": datetime.utcfromtimestamp(end_time),
+            "time": datetime.fromtimestamp(end_time, tz=timezone.utc),
         }
         if altitude_list and len(altitude_list) > len(run_points_data):
             last["elevation"] = altitude_list[len(run_points_data) - 1]
@@ -326,9 +326,9 @@ class Joyrun:
 
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
         start_latlng = start_point(*run_points_data[0]) if run_points_data else None
-        start_date = datetime.utcfromtimestamp(start_time)
+        start_date = datetime.fromtimestamp(start_time, tz=timezone.utc)
         start_date_local = adjust_time(start_date, BASE_TIMEZONE)
-        end = datetime.utcfromtimestamp(end_time)
+        end = datetime.fromtimestamp(end_time, tz=timezone.utc)
         # only for China now
         end_local = adjust_time(end, BASE_TIMEZONE)
         location_country = None
