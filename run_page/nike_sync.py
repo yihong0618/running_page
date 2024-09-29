@@ -39,7 +39,7 @@ class Nike:
     def __init__(self, access_token):
         self.client = httpx.Client()
 
-        # HINT: if you have old nrc refresh_token un comments this liens it still works
+        # HINT: if you have old nrc refresh_token un comments this lines it still works
 
         # response = self.client.post(
         #     TOKEN_REFRESH_URL,
