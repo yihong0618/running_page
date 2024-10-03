@@ -30,8 +30,8 @@ env:
   TITLE: Yihong0618 Running
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Runs # also here
-  GITHUB_NAME: yihong0618 # change to yours
-  GITHUB_EMAIL: zouzou0208@gmail.com # change to yours
+  GITHUB_NAME: "action@github.com" # default Actions bot you can change it to yours
+  GITHUB_EMAIL: "GitHub Action" # default Actions bot you can change it to yours
 
   # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
   IGNORE_START_END_RANGE: 10 # Unit meter
