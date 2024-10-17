@@ -232,9 +232,11 @@ const USE_DASH_LINE = true;
 const LINE_OPACITY = 0.4;
 // styling: set to `true` if you want to display only the routes without showing the map
 // Note: This config only affects the page display; please refer to "privacy protection" below for data protection
-const PRIVACY_MODE = false;
+// update for now 2024/11/17 the privacy mode is true
+const PRIVACY_MODE = true;
+// update for now 2024/11/17 the lights on default is false
 // styling: set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
-const LIGHTS_ON = true;
+const LIGHTS_ON = false;
 ```
 
 - To use Google Analytics, you need to modify the configuration in the `src/utils/const.ts` file.

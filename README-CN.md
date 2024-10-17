@@ -246,11 +246,13 @@ siteMetadata: {
 const USE_DASH_LINE = true;
 // styling: 透明度：[0, 1]
 const LINE_OPACITY = 0.4;
+// update for now 2024/11/17 the privacy mode is true
 // styling: 开启隐私模式(不显示地图仅显示轨迹): 设置为 `true`
 // 注意：此配置仅影响页面显示，数据保护请参考下方的 "隐私保护"
-const PRIVACY_MODE = false;
+const PRIVACY_MODE = true;
+// update for now 2024/11/17 the lights on default is false
 // styling: 默认关灯: 设置为 `false`, 仅在隐私模式关闭时生效(`PRIVACY_MODE` = false)
-const LIGHTS_ON = true;
+const LIGHTS_ON = false;
 ```
 
 > 隐私保护：设置下面环境变量：
