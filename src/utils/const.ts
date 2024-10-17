@@ -38,10 +38,12 @@ const LINE_OPACITY = 0.4;
 const MAP_HEIGHT = 600;
 //set to `false` if you want to hide the road label characters
 const ROAD_LABEL_DISPLAY = true;
+// update for now 2024/11/17 the privacy mode is true
 //set to `true` if you want to display only the routes without showing the map.
 const PRIVACY_MODE = false;
+// update for now 2024/11/17 the lights on default is false
 //set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
-const LIGHTS_ON = true;
+const LIGHTS_ON =false;
 
 // IF you outside China please make sure IS_CHINESE = false
 const IS_CHINESE = true;
