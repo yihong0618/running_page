@@ -1,5 +1,5 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React, {useRef, useCallback, useState} from 'react';
+import React, {useRef, useCallback, useState, useEffect} from 'react';
 import Map, {Layer, Source, FullscreenControl, NavigationControl, MapRef} from 'react-map-gl';
 import {MapInstance} from "react-map-gl/src/types/lib";
 import useActivities from '@/hooks/useActivities';
@@ -128,6 +128,18 @@ const RunMap = ({
     opacity: 0.3,
   };
 
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (mapRef.current) {
+        mapRef.current.getMap().resize();
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   return (
     <Map
       {...viewState}
@@ -136,7 +148,6 @@ const RunMap = ({
       mapStyle="mapbox://styles/mapbox/dark-v10"
       ref={mapRefCallback}
       mapboxAccessToken={MAPBOX_TOKEN}
-      onRender={(event) => event.target.resize()}
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
       <Source id="data" type="geojson" data={geoData}>
