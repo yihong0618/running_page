@@ -6,6 +6,7 @@
 # license that can be found in the LICENSE file.
 
 import datetime
+from datetime import timezone
 import os
 from collections import namedtuple
 
@@ -258,12 +259,13 @@ class Track:
         _polylines = []
         self.polyline_container = []
         message = fit["session_mesgs"][0]
-        self.start_time = datetime.datetime.utcfromtimestamp(
-            (message["start_time"] + FIT_EPOCH_S)
+        self.start_time = datetime.datetime.fromtimestamp(
+            (message["start_time"] + FIT_EPOCH_S), tz=timezone.utc
         )
         self.run_id = self.__make_run_id(self.start_time)
-        self.end_time = datetime.datetime.utcfromtimestamp(
-            (message["start_time"] + FIT_EPOCH_S + message["total_elapsed_time"])
+        self.end_time = datetime.datetime.fromtimestamp(
+            (message["start_time"] + FIT_EPOCH_S + message["total_elapsed_time"]),
+            tz=timezone.utc,
         )
         self.length = message["total_distance"]
         self.average_heartrate = (

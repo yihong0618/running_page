@@ -3,6 +3,7 @@
   "description": "ben_29",
   "version": "1.0.0",
   "author": "Ben Bell <ben_29@live.com>",
+  "packageManager": "pnpm@8.9.0+sha256.8f5264ad1d100da11a6add6bb8a94c6f1e913f9e9261b2a551fabefad2ec0fec",
   "dependencies": {
     "@mapbox/mapbox-gl-language": "^1.0.0",
     "@mapbox/polyline": "^1.1.1",
@@ -29,7 +30,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "data:clean": "rm run_page/data.db {GPX,TCX,FIT}_OUT/* activities/* src/static/activities.json",
+    "data:clean": "rm -f run_page/data.db {GPX,TCX,FIT}_OUT/* activities/* src/static/activities.json",
     "data:download:garmin": "python3 run_page/garmin_sync.py",
     "data:analysis": "python3 run_page/gen_svg.py --from-db --type github --output assets/github.svg",
     "build": "vite build",

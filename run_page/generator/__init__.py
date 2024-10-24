@@ -65,7 +65,10 @@ class Generator:
             if self.only_run and activity.type != "Run":
                 continue
             if IGNORE_BEFORE_SAVING:
-                activity.summary_polyline = filter_out(activity.summary_polyline)
+                if activity.map and activity.map.summary_polyline:
+                    activity.map.summary_polyline = filter_out(
+                        activity.map.summary_polyline
+                    )
             activity.source = "strava"
             #  strava use total_elevation_gain as elevation_gain
             activity.elevation_gain = activity.total_elevation_gain
@@ -88,7 +91,9 @@ class Generator:
         synced_files = []
 
         for t in tracks:
-            created = update_or_create_activity(self.session, t.to_namedtuple())
+            created = update_or_create_activity(
+                self.session, t.to_namedtuple(run_from=file_suffix)
+            )
             if created:
                 sys.stdout.write("+")
             else:

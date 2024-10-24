@@ -30,8 +30,8 @@ env:
   TITLE: Workouts
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Workouts # also here
-  GITHUB_NAME: ben_29  # change to yours
-  GITHUB_EMAIL: ben_29@live.com # change to yours
+  GITHUB_NAME: "action@github.com" # default Actions bot you can change it to yours
+  GITHUB_EMAIL: "GitHub Action" # default Actions bot you can change it to yours
 
   # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
   IGNORE_START_END_RANGE: 0 # Unit meter

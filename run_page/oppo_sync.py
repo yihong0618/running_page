@@ -5,7 +5,7 @@ import os
 import time
 import xml.etree.ElementTree as ET
 from collections import namedtuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from xml.dom import minidom
 
 import gpxpy
@@ -222,9 +222,9 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
     ]
     polyline_str = polyline.encode(gps_data) if gps_data else ""
     start_latlng = start_point(*gps_data[0]) if gps_data else None
-    start_date = datetime.utcfromtimestamp(start_time / 1000)
+    start_date = datetime.fromtimestamp(start_time / 1000, tz=timezone.utc)
     start_date_local = adjust_time(start_date, str(get_localzone()))
-    end = datetime.utcfromtimestamp(sport_data["endTime"] / 1000)
+    end = datetime.fromtimestamp(sport_data["endTime"] / 1000, tz=timezone.utc)
     end_local = adjust_time(end, str(get_localzone()))
     location_country = None
     if not other_data["totalTime"]:
@@ -416,7 +416,7 @@ def prepare_track_points(sport_data, with_gpx):
             points_dict = {
                 "latitude": other_data.get("gpsPoint")[i]["latitude"],
                 "longitude": other_data.get("gpsPoint")[i]["longitude"],
-                "time": datetime.utcfromtimestamp(temp_timestamp / 1000),
+                "time": datetime.fromtimestamp(temp_timestamp / 1000, tz=timezone.utc),
                 "hr": other_data.get("heartRate")[j]["value"],
             }
             points_dict_list.append(get_value(j, points_dict, other_data))
@@ -425,7 +425,7 @@ def prepare_track_points(sport_data, with_gpx):
 
         for i in range(value_size):
             temp_timestamp = other_data.get("heartRate")[i]["timestamp"]
-            temp_date = datetime.utcfromtimestamp(temp_timestamp / 1000)
+            temp_date = datetime.fromtimestamp(temp_timestamp / 1000, tz=timezone.utc)
             points_dict = {
                 "time": temp_date,
                 "hr": other_data.get("heartRate")[i]["value"],
@@ -453,7 +453,7 @@ def parse_points_to_tcx(sport_data, points_dict_list):
     fit_id = str(sport_data["id"])
     # local time
     start_time = sport_data["startTime"]
-    start_date = datetime.utcfromtimestamp(start_time / 1000)
+    start_date = datetime.fromtimestamp(start_time / 1000, tz=timezone.utc)
     fit_start_time = datetime.strftime(
         adjust_time(start_date, UTC_TIMEZONE), "%Y-%m-%dT%H:%M:%SZ"
     )

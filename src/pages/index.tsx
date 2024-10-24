@@ -230,7 +230,7 @@ const Index = () => {
         )}
       </div>
       {/* Enable Audiences in Vercel Analytics: https://vercel.com/docs/concepts/analytics/audiences/quickstart */}
-      <Analytics />
+      {import.meta.env.VERCEL && <Analytics /> }
     </Layout>
   );
 };
