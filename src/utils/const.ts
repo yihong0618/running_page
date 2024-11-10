@@ -44,6 +44,8 @@ const PRIVACY_MODE = false;
 // update for now 2024/11/17 the lights on default is false
 //set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
 const LIGHTS_ON =false;
+// richer title for the activity types (like garmin style)
+const RICH_TITLE = false;
 
 // IF you outside China please make sure IS_CHINESE = false
 const IS_CHINESE = true;
@@ -74,6 +76,7 @@ const RUN_TREADMILL_TITLE = IS_CHINESE ? '跑步机' : 'Treadmill Run';
 const HIKING_TITLE = IS_CHINESE ? '徒步' : 'Hiking';
 const CYCLING_TITLE = IS_CHINESE ? '骑行' : 'Cycling';
 const SKIING_TITLE = IS_CHINESE ? '滑雪' : 'Skiing';
+const WALKING_TITLE = IS_CHINESE ? '步行' : 'Walking';
 
 const ACTIVITY_TYPES = {
   RUN_GENERIC_TITLE,
@@ -82,6 +85,7 @@ const ACTIVITY_TYPES = {
   HIKING_TITLE,
   CYCLING_TITLE,
   SKIING_TITLE,
+  WALKING_TITLE,
 }
 
 const RUN_TITLES = {
@@ -112,6 +116,7 @@ export {
   MAP_HEIGHT,
   PRIVACY_MODE,
   LIGHTS_ON,
+  RICH_TITLE,
   ACTIVITY_TYPES,
 };
 

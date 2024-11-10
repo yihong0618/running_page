@@ -4,7 +4,7 @@ import { WebMercatorViewport } from 'viewport-mercator-project';
 import { chinaGeojson, RPGeometry } from '@/static/run_countries';
 import worldGeoJson from '@surbowl/world-geo-json-zh/world.zh.json';
 import { chinaCities } from '@/static/city';
-import { MAIN_COLOR, MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES, ACTIVITY_TYPES } from './const';
+import { MAIN_COLOR, MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES, ACTIVITY_TYPES, RICH_TITLE } from './const';
 import { FeatureCollection, LineString } from 'geojson';
 
 export type Coordinate = [number, number];
@@ -81,17 +81,27 @@ const scrollToMap = () => {
   }
 };
 
-const pattern = /([\u4e00-\u9fa5]{2,}(市|自治州|特别行政区))/g;
-const extractLocations = (str: string): string[] => {
+const extractCities = (str: string): string[] => {
   const locations = [];
   let match;
-
+  const pattern = /([\u4e00-\u9fa5]{2,}(市|自治州|特别行政区|盟|地区))/g;
   while ((match = pattern.exec(str)) !== null) {
     locations.push(match[0]);
   }
 
   return locations;
 };
+
+const extractDistricts = (str: string): string[] => {
+  const locations = [];
+  let match;
+  const pattern = /([\u4e00-\u9fa5]{2,}(区|县))/g;
+  while ((match = pattern.exec(str)) !== null) {
+    locations.push(match[0]);
+  }
+
+  return locations;
+}
 
 const extractCoordinate = (str: string): [number, number] | null => {
   const pattern = /'latitude': ([-]?\d+\.\d+).*?'longitude': ([-]?\d+\.\d+)/;
@@ -126,7 +136,7 @@ const locationForRun = (
   if (location) {
     // Only for Chinese now
     // should filter 臺灣
-    const cityMatch = extractLocations(location);
+    const cityMatch = extractCities(location);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
 
     if (cityMatch) {
@@ -155,6 +165,12 @@ const locationForRun = (
   }
   if (MUNICIPALITY_CITIES_ARR.includes(city)) {
     province = city;
+    if (location) {
+      const districtMatch = extractDistricts(location);
+      if (districtMatch.length > 0) {
+        city = districtMatch[districtMatch.length - 1];
+      }
+    }
   }
 
   const r = { country, province, city, coordinate };
@@ -217,9 +233,17 @@ const geoJsonForMap = (): FeatureCollection<RPGeometry> => ({
   features: worldGeoJson.features.concat(chinaGeojson.features),
 })
 
-const getActivityType = (act: Activity): string => {
+const getActivitySport = (act: Activity): string => {
   if (act.type === 'Run') {
-    if (act.subtype === 'generic') return ACTIVITY_TYPES.RUN_GENERIC_TITLE;
+    if (act.subtype === 'generic') {
+      const runDistance = act.distance / 1000;
+      if (runDistance > 20 && runDistance < 40) {
+        return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
+      } else if (runDistance >= 40) {
+        return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
+      }
+      return ACTIVITY_TYPES.RUN_GENERIC_TITLE;
+    }
     else if (act.subtype === 'trail') return ACTIVITY_TYPES.RUN_TRAIL_TITLE;
     else if (act.subtype === 'treadmill') return ACTIVITY_TYPES.RUN_TREADMILL_TITLE;
     else return ACTIVITY_TYPES.RUN_GENERIC_TITLE;
@@ -230,6 +254,9 @@ const getActivityType = (act: Activity): string => {
   else if (act.type === 'cycling') {
     return ACTIVITY_TYPES.CYCLING_TITLE;
   }
+  else if (act.type === 'walking') {
+    return ACTIVITY_TYPES.WALKING_TITLE;
+  }
   // if act.type contains 'skiing'
   else if (act.type.includes('skiing')) {
     return ACTIVITY_TYPES.SKIING_TITLE;
@@ -238,15 +265,17 @@ const getActivityType = (act: Activity): string => {
 }
 
 const titleForRun = (run: Activity): string => {
-  // 1. try to use user defined name
-  if (run.name != 'none') {
-    return run.name;
-  }
-  // 2. try to use location+type if the location is available, eg. 'Shanghai Run'
-  const { city, province } = locationForRun(run);
-  const activity_type = getActivityType(run);
-  if (city && city.length > 0) {
-    return `${city} ${activity_type}`;
+  if (RICH_TITLE) {
+    // 1. try to use user defined name
+    if (run.name != 'none') {
+      return run.name;
+    }
+    // 2. try to use location+type if the location is available, eg. 'Shanghai Run'
+    const { city, province } = locationForRun(run);
+    const activity_sport = getActivitySport(run);
+    if (city && city.length > 0 && activity_sport.length > 0) {
+      return `${city} ${activity_sport}`;
+    }
   }
   // 3. use time+length if location or type is not available
   const runDistance = run.distance / 1000;
