@@ -4,7 +4,7 @@ import { WebMercatorViewport } from 'viewport-mercator-project';
 import { chinaGeojson, RPGeometry } from '@/static/run_countries';
 import worldGeoJson from '@surbowl/world-geo-json-zh/world.zh.json';
 import { chinaCities } from '@/static/city';
-import { MAIN_COLOR, MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES } from './const';
+import { MAIN_COLOR, MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES, ACTIVITY_TYPES } from './const';
 import { FeatureCollection, LineString } from 'geojson';
 
 export type Coordinate = [number, number];
@@ -17,6 +17,7 @@ export interface Activity {
   distance: number;
   moving_time: string;
   type: string;
+  subtype: string;
   start_date: string;
   start_date_local: string;
   location_country?: string | null;
@@ -216,7 +217,38 @@ const geoJsonForMap = (): FeatureCollection<RPGeometry> => ({
   features: worldGeoJson.features.concat(chinaGeojson.features),
 })
 
+const getActivityType = (act: Activity): string => {
+  if (act.type === 'Run') {
+    if (act.subtype === 'generic') return ACTIVITY_TYPES.RUN_GENERIC_TITLE;
+    else if (act.subtype === 'trail') return ACTIVITY_TYPES.RUN_TRAIL_TITLE;
+    else if (act.subtype === 'treadmill') return ACTIVITY_TYPES.RUN_TREADMILL_TITLE;
+    else return ACTIVITY_TYPES.RUN_GENERIC_TITLE;
+  }
+  else if (act.type === 'hiking') {
+    return ACTIVITY_TYPES.HIKING_TITLE;
+  }
+  else if (act.type === 'cycling') {
+    return ACTIVITY_TYPES.CYCLING_TITLE;
+  }
+  // if act.type contains 'skiing'
+  else if (act.type.includes('skiing')) {
+    return ACTIVITY_TYPES.SKIING_TITLE;
+  }
+  return "";
+}
+
 const titleForRun = (run: Activity): string => {
+  // 1. try to use user defined name
+  if (run.name != 'none') {
+    return run.name;
+  }
+  // 2. try to use location+type if the location is available, eg. 'Shanghai Run'
+  const { city, province } = locationForRun(run);
+  const activity_type = getActivityType(run);
+  if (city && city.length > 0) {
+    return `${city} ${activity_type}`;
+  }
+  // 3. use time+length if location or type is not available
   const runDistance = run.distance / 1000;
   const runHour = +run.start_date_local.slice(11, 13);
   if (runDistance > 20 && runDistance < 40) {
