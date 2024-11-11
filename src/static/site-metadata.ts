@@ -11,21 +11,21 @@ interface ISiteMetadataResult {
 
 const data: ISiteMetadataResult = {
   siteTitle: 'Cigar\'s Running Page',
-  siteUrl: 'https://running.cigar.design',
+  siteUrl: 'https://running.cigatang.space',
   logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
   description: 'Cigar\'s personal site and blog',
   navLinks: [
     {
       name: 'Home',
-      url: 'https://cigar.design',
+      url: 'https://cigatang.space',
     },
     {
       name: 'Photos',
-      url: 'https://lens.cigar.design',
+      url: 'https://photos.cigatang.space',
     },
     {
       name: 'About',
-      url: 'https://cigar.design/about/',
+      url: 'https://cigatang.space/about/',
     },
   ],
 };
