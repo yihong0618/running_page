@@ -65,7 +65,7 @@ if __name__ == "__main__":
         )
     )
     loop.run_until_complete(future)
-    new_ids = future.result()
+    new_ids, id2title = future.result()
     print(f"To upload to strava {len(new_ids)} files")
     index = 1
     for i in new_ids:
