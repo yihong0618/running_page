@@ -344,7 +344,7 @@ class Track:
             "name": (
                 self.track_name if self.track_name else "none"
             ),  # maybe change later
-            "type": self.type,  # Run for now only support run for now maybe change later
+            "type": self.type,
             "subtype": (self.subtype if self.subtype else "none"),
             "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
