@@ -1071,7 +1071,7 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 
 5. 下滑点击 `环境变量 (高级)`，并添加一个如下的变量：
 
-   > 变量名称 = `PYTHON_VERSION`, 值 = `3.8`
+   > 变量名称 = `PYTHON_VERSION`, 值 = `3.11`
 
 6. 点击 `保存并部署`，完成部署。
 
