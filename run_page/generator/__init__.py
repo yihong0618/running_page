@@ -122,6 +122,7 @@ class Generator:
         self.session.commit()
 
     def load(self):
+        # if sub_type is not in the db, just add an empty string to it
         activities = (
             self.session.query(Activity)
             .filter(Activity.distance > 0.1)
