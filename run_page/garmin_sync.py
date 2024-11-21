@@ -367,6 +367,14 @@ if __name__ == "__main__":
         os.mkdir(folder)
     downloaded_ids = get_downloaded_ids(folder)
 
+    if file_type == "fit":
+        gpx_folder = FOLDER_DICT["gpx"]
+        if not os.path.exists(gpx_folder):
+            os.mkdir(gpx_folder)
+        downloaded_gpx_ids = get_downloaded_ids(gpx_folder)
+        # merge downloaded_ids:list
+        downloaded_ids = list(set(downloaded_ids + downloaded_gpx_ids))
+
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(
         download_new_activities(
