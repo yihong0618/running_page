@@ -267,7 +267,7 @@ const getActivitySport = (act: Activity): string => {
 const titleForRun = (run: Activity): string => {
   if (RICH_TITLE) {
     // 1. try to use user defined name
-    if (run.name != 'none') {
+    if (run.name != '') {
       return run.name;
     }
     // 2. try to use location+type if the location is available, eg. 'Shanghai Run'
