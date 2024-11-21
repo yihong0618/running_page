@@ -298,7 +298,7 @@ async def download_new_activities(
     for id in to_generate_garmin_ids:
         try:
             activity_summary = await client.get_activity_summary(id)
-            activity_title = activity_summary.get("activityName", "none")
+            activity_title = activity_summary.get("activityName", "")
             to_generate_garmin_id2title[id] = activity_title
         except Exception as e:
             print(f"Failed to get activity summary {id}: {str(e)}")

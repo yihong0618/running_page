@@ -341,11 +341,9 @@ class Track:
     def to_namedtuple(self, run_from="gpx"):
         d = {
             "id": self.run_id,
-            "name": (
-                self.track_name if self.track_name else "none"
-            ),  # maybe change later
+            "name": (self.track_name if self.track_name else ""),  # maybe change later
             "type": self.type,
-            "subtype": (self.subtype if self.subtype else "none"),
+            "subtype": (self.subtype if self.subtype else ""),
             "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
             "start_date_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
