@@ -5,7 +5,16 @@ import time
 
 import geopy
 from geopy.geocoders import Nominatim
-from sqlalchemy import Column, Float, Integer, Interval, String, create_engine, inspect, text
+from sqlalchemy import (
+    Column,
+    Float,
+    Integer,
+    Interval,
+    String,
+    create_engine,
+    inspect,
+    text,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -142,7 +151,7 @@ def update_or_create_activity(session, run_activity):
 def add_missing_columns(engine, model):
     inspector = inspect(engine)
     table_name = model.__tablename__
-    columns = {col['name'] for col in inspector.get_columns(table_name)}
+    columns = {col["name"] for col in inspector.get_columns(table_name)}
     missing_columns = []
 
     for column in model.__table__.columns:
@@ -152,7 +161,11 @@ def add_missing_columns(engine, model):
         with engine.connect() as conn:
             for column in missing_columns:
                 column_type = str(column.type)
-                conn.execute(text(f'ALTER TABLE {table_name} ADD COLUMN {column.name} {column_type}'))
+                conn.execute(
+                    text(
+                        f"ALTER TABLE {table_name} ADD COLUMN {column.name} {column_type}"
+                    )
+                )
 
 
 def init_db(db_path):
@@ -160,10 +173,10 @@ def init_db(db_path):
         f"sqlite:///{db_path}", connect_args={"check_same_thread": False}
     )
     Base.metadata.create_all(engine)
-    
+
     # check missing columns
     add_missing_columns(engine, Activity)
-    
+
     sm = sessionmaker(bind=engine)
     session = sm()
     # apply the changes
