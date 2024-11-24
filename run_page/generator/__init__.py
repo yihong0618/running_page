@@ -76,9 +76,11 @@ class Generator:
             sys.stdout.flush()
         self.session.commit()
 
-    def sync_from_data_dir(self, data_dir, file_suffix="gpx"):
+    def sync_from_data_dir(self, data_dir, file_suffix="gpx", activity_title_dict={}):
         loader = track_loader.TrackLoader()
-        tracks = loader.load_tracks(data_dir, file_suffix=file_suffix)
+        tracks = loader.load_tracks(
+            data_dir, file_suffix=file_suffix, activity_title_dict=activity_title_dict
+        )
         print(f"load {len(tracks)} tracks")
         if not tracks:
             print("No tracks found.")
@@ -120,6 +122,7 @@ class Generator:
         self.session.commit()
 
     def load(self):
+        # if sub_type is not in the db, just add an empty string to it
         activities = (
             self.session.query(Activity)
             .filter(Activity.distance > 0.1)
