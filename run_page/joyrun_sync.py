@@ -303,6 +303,7 @@ class Joyrun:
             "name": "run from joyrun",
             # future to support others workout now only for run
             "type": "Run",
+            "subtype": "Run",
             "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
             "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
             "start_date_local": datetime.strftime(
