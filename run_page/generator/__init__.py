@@ -46,6 +46,10 @@ class Generator:
         print("Access ok")
 
     def sync(self, force):
+        """
+        Sync activities means sync from strava
+        TODO, better name later
+        """
         self.check_access()
 
         print("Start syncing")
@@ -68,6 +72,7 @@ class Generator:
                     activity.map.summary_polyline = filter_out(
                         activity.map.summary_polyline
                     )
+            activity.subtype = activity.type
             created = update_or_create_activity(self.session, activity)
             if created:
                 sys.stdout.write("+")
