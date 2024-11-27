@@ -11,7 +11,7 @@ interface ISiteMetadataResult {
 
 const data: ISiteMetadataResult = {
   siteTitle: 'ClF3\'s Running Page',
-  siteUrl: 'https://rptest.clf3.org',
+  siteUrl: 'https://clf3.github.io/running_page',
   logo: 'https://icons.clf3.org/tianyi.ico',
   description: 'Personal site and blog',
   navLinks: [
