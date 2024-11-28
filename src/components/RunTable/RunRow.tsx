@@ -1,4 +1,4 @@
-import { formatPace, colorFromType, formatRunTime, Activity, RunIds } from '@/utils/utils';
+import { formatPace, colorFromType, formatRunTime, Activity, RunIds, titleForRun } from '@/utils/utils';
 import styles from './style.module.css';
 
 interface IRunRowProperties {
@@ -33,7 +33,7 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IR
       onClick={handleClick}
       style={{color: colorFromType(type)}}
     >
-      <td>{run.name}</td>
+      <td>{titleForRun(run)}</td>
       <td>{type}</td>
       <td>{distance}</td>
       <td>{elevation_gain}</td>

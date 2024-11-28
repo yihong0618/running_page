@@ -263,7 +263,7 @@ const titleForType = (type: string): string => {
       return RUN_TITLES.RIDE_TITLE;
     case 'Indoor Ride':
       return RUN_TITLES.INDOOR_RIDE_TITLE;
-    case 'Virtual Ride':
+    case 'VirtualRide':
       return RUN_TITLES.VIRTUAL_RIDE_TITLE;
     case 'Hike':
       return RUN_TITLES.HIKE_TITLE;
@@ -306,30 +306,8 @@ const typeForRun = (run: Activity): string => {
         return 'Half Marathon';
       }
       return 'Trail Run';
-    case 'Ride':
-      return 'Ride';
-    case 'Indoor Ride':
-      return 'Indoor Ride';
-    case 'VirtualRide':
-      return 'Virtual Ride';
-    case 'Hike':
-      return 'Hike';
-    case 'Rowing':
-      return 'Rowing';
-    case 'Swim':
-      return 'Swim';
-    case 'RoadTrip':
-      return 'RoadTrip';
-    case 'Flight':
-      return 'Flight';
-    case 'Kayaking':
-      return 'Kayaking';
-    case 'Snowboard':
-      return 'Snowboard';
-    case 'Ski':
-      return 'Ski';
     default:
-      return 'Run';
+      return type;
   }
 }
 
@@ -342,7 +320,7 @@ const titleForRun = (run: Activity): string => {
     }
     // 2. try to use location+type if the location is available, eg. 'Shanghai Run'
     const { city, province } = locationForRun(run);
-    const activity_sport = titleForType(run);
+    const activity_sport = titleForType(typeForRun(run));
     if (city && city.length > 0 && activity_sport.length > 0) {
       return `${city} ${activity_sport}`;
     }
