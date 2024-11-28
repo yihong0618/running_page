@@ -40,22 +40,6 @@ class Nike:
     def __init__(self, access_token):
         self.client = httpx.Client()
 
-        # HINT: if you have old nrc refresh_token un comments this lines it still works
-
-        # response = self.client.post(
-        #     TOKEN_REFRESH_URL,
-        #     headers=NIKE_HEADERS,
-        #     json={
-        #         "refresh_token": access_token,  # its refresh_token for tesy here
-        #         "client_id": b64decode(NIKE_CLIENT_ID).decode(),
-        #         "grant_type": "refresh_token",
-        #         "ux_id": b64decode(NIKE_UX_ID).decode(),
-        #     },
-        #     timeout=60,
-        # )
-        # response.raise_for_status()
-        # access_token = response.json()["access_token"]
-
         self.client.headers.update({"Authorization": f"Bearer {access_token}"})
 
     def get_activities_since_timestamp(self, timestamp):
@@ -362,6 +346,7 @@ def parse_no_gpx_data(activity):
         "id": int(nike_id),
         "name": "run from nike",
         "type": "Run",
+        "subtype": "Run",
         "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
         "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
         "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),

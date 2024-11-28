@@ -41,6 +41,7 @@ class Track:
         self.file_names = []
         self.polylines = []
         self.polyline_str = ""
+        self.track_name = None
         self.start_time = None
         self.end_time = None
         self.start_time_local = None
@@ -213,6 +214,8 @@ class Track:
             self.name = self.type + " from " + self.source
 
         for t in gpx.tracks:
+            if self.track_name is None:
+                self.track_name = t.name
             for s in t.segments:
                 try:
                     extensions = [
@@ -357,7 +360,7 @@ class Track:
     def to_namedtuple(self):
         d = {
             "id": self.run_id,
-            "name": self.name,
+            "name": (self.track_name if self.track_name else ""),  # maybe change later
             "type": self.type,
             "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),

@@ -47,6 +47,10 @@ class Generator:
         print("Access ok")
 
     def sync(self, force):
+        """
+        Sync activities means sync from strava
+        TODO, better name later
+        """
         self.check_access()
 
         print("Start syncing")
@@ -80,9 +84,11 @@ class Generator:
             sys.stdout.flush()
         self.session.commit()
 
-    def sync_from_data_dir(self, data_dir, file_suffix="gpx"):
+    def sync_from_data_dir(self, data_dir, file_suffix="gpx", activity_title_dict={}):
         loader = track_loader.TrackLoader()
-        tracks = loader.load_tracks(data_dir, file_suffix=file_suffix)
+        tracks = loader.load_tracks(
+            data_dir, file_suffix=file_suffix, activity_title_dict=activity_title_dict
+        )
         print(f"load {len(tracks)} tracks")
         if not tracks:
             print("No tracks found.")

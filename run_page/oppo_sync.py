@@ -235,6 +235,7 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
         "name": "activity from oppo",
         # future to support others workout now only for run
         "type": map_oppo_fit_type_to_strava_activity_type(sport_data["sportMode"]),
+        "subtype": map_oppo_fit_type_to_strava_activity_type(sport_data["sportMode"]),
         "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
         "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
         "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),

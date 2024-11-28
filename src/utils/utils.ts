@@ -20,6 +20,7 @@ import {
   KAYAKING_COLOR,
   SNOWBOARD_COLOR,
   TRAIL_RUN_COLOR,
+  RICH_TITLE,
 } from './const';
 import { FeatureCollection, LineString } from 'geojson';
 
@@ -94,17 +95,27 @@ const scrollToMap = () => {
   }
 };
 
-const pattern = /([\u4e00-\u9fa5]{2,}(市|自治州|特别行政区|盟|地区))/g;
-const extractLocations = (str: string): string[] => {
+const extractCities = (str: string): string[] => {
   const locations = [];
   let match;
-
+  const pattern = /([\u4e00-\u9fa5]{2,}(市|自治州|特别行政区|盟|地区))/g;
   while ((match = pattern.exec(str)) !== null) {
     locations.push(match[0]);
   }
 
   return locations;
 };
+
+const extractDistricts = (str: string): string[] => {
+  const locations = [];
+  let match;
+  const pattern = /([\u4e00-\u9fa5]{2,}(区|县))/g;
+  while ((match = pattern.exec(str)) !== null) {
+    locations.push(match[0]);
+  }
+
+  return locations;
+}
 
 const extractCoordinate = (str: string): [number, number] | null => {
   const pattern = /'latitude': ([-]?\d+\.\d+).*?'longitude': ([-]?\d+\.\d+)/;
@@ -139,7 +150,7 @@ const locationForRun = (
   if (location) {
     // Only for Chinese now
     // should filter 臺灣
-    const cityMatch = extractLocations(location);
+    const cityMatch = extractCities(location);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
 
     if (cityMatch) {
@@ -168,6 +179,12 @@ const locationForRun = (
   }
   if (MUNICIPALITY_CITIES_ARR.includes(city)) {
     province = city;
+    if (location) {
+      const districtMatch = extractDistricts(location);
+      if (districtMatch.length > 0) {
+        city = districtMatch[districtMatch.length - 1];
+      }
+    }
   }
 
   const r = { country, province, city, coordinate };
@@ -318,6 +335,19 @@ const typeForRun = (run: Activity): string => {
 
 const titleForRun = (run: Activity): string => {
   const type = run.type;
+  if (RICH_TITLE) {
+    // 1. try to use user defined name
+    if (run.name != '') {
+      return run.name;
+    }
+    // 2. try to use location+type if the location is available, eg. 'Shanghai Run'
+    const { city, province } = locationForRun(run);
+    const activity_sport = titleForType(run);
+    if (city && city.length > 0 && activity_sport.length > 0) {
+      return `${city} ${activity_sport}`;
+    }
+  }
+  // 3. use time+length if location or type is not available
   if (type == 'Run' || type == 'Trail Run'){
       const runDistance = run.distance / 1000;
       if (runDistance >= 40) {
