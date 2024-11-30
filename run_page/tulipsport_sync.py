@@ -65,6 +65,7 @@ def get_all_activity_summaries(session, headers, start_time=None):
                         "moving_time": moving_time,
                         "elapsed_time": moving_time,
                         "type": "Run",
+                        "subtype": "Run",
                         "start_date": start_date,
                         "start_date_local": start_date_local,
                         "end_date": start_date + moving_time,

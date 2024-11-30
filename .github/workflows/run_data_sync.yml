@@ -13,14 +13,19 @@ on:
       - run_page/strava_sync.py
       - run_page/gen_svg.py
       - run_page/garmin_sync.py
+      - run_page/coros_sync.py
       - run_page/keep_sync.py
       - run_page/gpx_sync.py
       - run_page/tcx_sync.py
+      - run_page/tcx_to_garmin_sync.py
       - run_page/garmin_to_strava_sync.py
+      - run_page/keep_to_strava_sync.py
+      - run_page/oppo_sync.py
       - requirements.txt
 
 env:
   # please change to your own config.
+<<<<<<< HEAD
   RUN_TYPE: nike # support strava/nike/garmin/garmin_cn/keep/only_gpx/nike_to_strava/strava_to_garmin/strava_to_garmin_cn, Please change the 'pass' it to your own
   ATHLETE: lizhimiao
   TITLE: lizhimiao Running
@@ -28,6 +33,23 @@ env:
   TITLE_GRID: Over 4 km Runs # also here
   GITHUB_NAME: zhimiaoli
   GITHUB_EMAIL: zhi@miao.li
+=======
+  RUN_TYPE: pass # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon/oppo, Please change the 'pass' it to your own
+  ATHLETE: yihong0618
+  TITLE: Yihong0618 Running
+  MIN_GRID_DISTANCE: 10 # change min distance here
+  TITLE_GRID: Over 10km Runs # also here
+
+  # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
+  IGNORE_START_END_RANGE: 10 # Unit meter
+  # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
+  IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
+  IGNORE_RANGE: 10 # Unit meter
+  SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercal, check the README
+  DATA_CACHE_PREFIX: 'track_data'
+  BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
+  SAVE_TO_PARQENT: false # If you want to save the data to the repo, set it to `true`
+>>>>>>> 6c18048a344a58a2a3ae9516f01677c202bc4e6a
 
 jobs:
   sync:
@@ -40,13 +62,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         id: setup_python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
           cache: pip
           cache-dependency-path: 'requirements.txt'
 
@@ -56,7 +78,7 @@ jobs:
 
       - name: Cache Data Files
         if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             activities
@@ -88,6 +110,17 @@ jobs:
         run: |
           python run_page/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} --with-gpx
 
+      - name: Run sync Coros script
+        if: env.RUN_TYPE == 'coros'
+        run: |
+          python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
+
+      - name: Run sync Keep_to_strava script
+        if: env.RUN_TYPE == 'keep_to_strava_sync'
+        run: |
+          python run_page/keep_to_strava_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }} --sync-types running cycling hiking
+        # If you only want to sync `type running` modify args --sync-types running, default script is to sync all data (rides, hikes and runs).
+
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'
         run: |
@@ -98,6 +131,12 @@ jobs:
         if: env.RUN_TYPE == 'codoon'
         run: |
           python run_page/codoon_sync.py ${{ secrets.CODOON_MOBILE }} ${{ secrets.CODOON_PASSWORD }}
+
+      - name: Run sync tcx to Garmin script
+        if: env.RUN_TYPE == 'tcx_to_garmin'
+        run: |
+            # python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
+            python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
 
       # for garmin if you want generate `tcx` you can add --tcx command in the args.
       - name: Run sync Garmin script
@@ -124,7 +163,7 @@ jobs:
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}  --only-run
 
-      
+
       - name: Run sync Only GPX script
         if: env.RUN_TYPE == 'only_gpx'
         run: |
@@ -165,6 +204,13 @@ jobs:
         run: |
           python run_page/tulipsport_sync.py ${{ secrets.TULIPSPORT_TOKEN }} --with-gpx
 
+      - name: Run sync Oppo heytap script, note currently this script is not worked
+        if: env.RUN_TYPE == 'oppo'
+        run: |
+            python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-tcx
+        # If you want to sync fit activity in gpx format, please consider the following script:
+        # python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-gpx
+
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
         run: |
@@ -173,11 +219,17 @@ jobs:
           python run_page/gen_svg.py --from-db --type circular --use-localtime
           python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --athlete "${{ env.ATHLETE }}" --special-distance 4 --special-distance2 10 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
 
+      - name: Save data to parqent
+        if: env.SAVE_TO_PARQENT == 'true'
+        run: |
+          pip install duckdb
+          python run_page/save_to_parqent.py
+
       - name: Push new runs
         if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
         run: |
-          git config --local user.email "${{ env.GITHUB_EMAIL }}"
-          git config --local user.name "${{ env.GITHUB_NAME }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add .
           git commit -m 'update new runs' || echo "nothing to commit"
           git push || echo "nothing to push"

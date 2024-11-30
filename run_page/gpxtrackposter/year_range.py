@@ -1,4 +1,5 @@
 """Represent a range of years, with ability to update based on a track"""
+
 # Copyright 2016-2019 Florian Pigorsch & Contributors. All rights reserved.
 #
 # Use of this source code is governed by a MIT-style
@@ -27,6 +28,7 @@ class YearRange:
         """Inits YearRange with empty bounds -- to be built after init"""
         self.from_year = None
         self.to_year = None
+        self.years_dict = dict()
 
     def parse(self, s: str) -> bool:
         """Parse a plaintext range of years into a pair of years
@@ -68,6 +70,11 @@ class YearRange:
             self.from_year = t.year
         elif t.year > self.to_year:
             self.to_year = t.year
+        """record the year which has running data"""
+        if t.year not in self.years_dict:
+            self.years_dict[t.year] = 1
+        else:
+            self.years_dict[t.year] += 1
 
     def contains(self, t: datetime.datetime) -> bool:
         """Return True if current year range contains t, False if not"""
@@ -80,6 +87,11 @@ class YearRange:
         if self.from_year is None:
             return None
         return 1 + self.to_year - self.from_year
+
+    @property
+    def real_year(self):
+        """Return number of years which has running data"""
+        return len(self.years_dict)
 
     def all(self):
         return list(range(int(self.from_year), int(self.to_year) + 1))

@@ -2,6 +2,7 @@
 need to download the files from endomondo
 and store it in Workous dir in running_page
 """
+
 import json
 import os
 from collections import namedtuple
@@ -53,6 +54,7 @@ def parse_run_endomondo_to_nametuple(en_dict):
         "id": en_dict.get("id"),
         "name": "run from endomondo",
         "type": "Run",  # TODO others
+        "subtype": "Run",  # TODO others
         "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
         "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
         "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),

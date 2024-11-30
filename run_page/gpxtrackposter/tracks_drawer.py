@@ -1,4 +1,5 @@
 """Contains the base class TracksDrawer, which other Drawers inherit from."""
+
 # Copyright 2016-2019 Florian Pigorsch & Contributors. All rights reserved.
 #
 # Use of this source code is governed by a MIT-style
@@ -45,6 +46,11 @@ class TracksDrawer:
 
         diff = length_range.diameter()
         if diff == 0:
+            return color1
+        if (
+            self.poster.length_range.upper() / 1000
+            < self.poster.special_distance["special_distance2"]
+        ):
             return color1
 
         return interpolate_color(color1, color2, (length - length_range.lower()) / diff)
