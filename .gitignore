@@ -1,12 +1,13 @@
 # Project dependencies
+.yarn
 .cache
 *.pyc
 node_modules
 yarn-error.log
 
-/public
 # Build directory
 /build
+/dist
 .DS_Store
 .sass-cache/
 _posts/
@@ -18,3 +19,4 @@ _site/
 .idea
 
 config.yaml
+.venv/

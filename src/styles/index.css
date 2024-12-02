@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+img::selection {
+  background: transparent;
+}
+
+img::-moz-selection {
+  background: transparent;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+iframe {
+  border: none;
+}
+
+hr {
+  border-top: none;
+  border-bottom: 1px solid;
+  border-color: #0003;
+  margin: 2rem 0;
+}
