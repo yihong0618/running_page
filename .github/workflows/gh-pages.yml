@@ -78,12 +78,8 @@ jobs:
       - uses: pnpm/action-setup@v3
         name: Install pnpm
         with:
-<<<<<<< HEAD
-          node-version: '14'
-=======
           version: 8
           run_install: false
->>>>>>> upstream/master
 
       - name: Get pnpm store directory
         shell: bash
@@ -106,23 +102,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-<<<<<<< HEAD
-          # Git branch where site will be deployed
-          target_branch: gh-pages
-          # Create incremental commit instead of doing push force
-          keep_history: true
-          # Build directory to deploy
-          build_dir: public
-          # Write the given domain name to the CNAME file
-          #fqdn: run.madless.club # optional
-          # Prevent Jekyll from building the site
-          jekyll: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-=======
           # Upload dist repository
           path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
->>>>>>> upstream/master
