@@ -18,7 +18,7 @@ on:
       - src/**.json
 
   schedule:
-    - cron: "5 1,15 * * *"
+    - cron: "5 0,15 * * *"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
