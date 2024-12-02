@@ -23,15 +23,10 @@ on:
         type: string
         default: track_data
 
-<<<<<<< HEAD
-  schedule:
-    - cron: "5 0,15 * * *"
-=======
 permissions:
   contents: read
   pages: write
   id-token: write
->>>>>>> upstream/master
 
 # Allow one concurrent deployment
 concurrency:
