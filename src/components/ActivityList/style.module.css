@@ -1,0 +1,64 @@
+.activityList {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filterContainer select {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.summaryContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.activityCard {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  width: 280px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.activityCard:hover {
+  transform: translateY(-5px);
+}
+
+.activityName {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.activityDetails p {
+  margin: 8px 0;
+  color: #555;
+}
+
+.activityDetails strong {
+  color: #000;
+}
+
+.chart {
+  height: 100px;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
