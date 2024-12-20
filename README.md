@@ -103,7 +103,8 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [laqieer](https://github.com/laqieer)             | <https://laqieer.github.io/running_page/>      | Strava      |
 | [Guoxin](https://github.com/guoxinl)              | <https://running.guoxin.space/>                | Strava      |
 | [laihj](https://github.com/laihj)                 | <https://run.laihjx.com/>                      | 苹果健身     |
-| [Ginta](https://github.com/mar-heaven)            | <https://running.ginta.top/>                   | Keep         |
+| [Ginta](https://github.com/mar-heaven)            | <https://running.ginta.top/>                   | Keep        |
+| [Samuel](https://github.com/SamuelDixxon)         | <https://samueldixxon.github.io/running_page/> | Keep        |
 </details>
 
 ## How it works
