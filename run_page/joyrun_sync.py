@@ -342,13 +342,18 @@ class Joyrun:
             for seen_start in list(seen_runs.keys()):
                 if abs((start_time - seen_start).total_seconds()) <= threshold:
                     if distance > seen_runs[seen_start]["distance"]:
-                        seen_runs[seen_start] = {"run_data": run_data, "distance": distance}
+                        seen_runs[seen_start] = {
+                            "run_data": run_data,
+                            "distance": distance,
+                        }
                     is_duplicate = True
                     break
             if not is_duplicate:
                 seen_runs[start_time] = {"run_data": run_data, "distance": distance}
             for run in seen_runs.values():
-                track = self.parse_raw_data_to_nametuple(run["run_data"], old_gpx_ids, with_gpx)
+                track = self.parse_raw_data_to_nametuple(
+                    run["run_data"], old_gpx_ids, with_gpx
+                )
                 tracks.append(track)
         return tracks
 
@@ -476,7 +481,9 @@ if __name__ == "__main__":
 
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
-    tracks = j.get_all_joyrun_tracks(old_tracks_ids, options.with_gpx, options.threshold)
+    tracks = j.get_all_joyrun_tracks(
+        old_tracks_ids, options.with_gpx, options.threshold
+    )
     generator.sync_from_app(tracks)
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
