@@ -324,7 +324,7 @@ class Joyrun:
         }
         return namedtuple("x", d.keys())(*d.values())
 
-    def get_all_joyrun_tracks(self, old_tracks_ids, with_gpx=False):
+    def get_all_joyrun_tracks(self, old_tracks_ids, with_gpx=False, threshold=10):
         run_ids = self.get_runs_records_ids()
         old_tracks_ids = [int(i) for i in old_tracks_ids if i.isdigit()]
 
