@@ -2,9 +2,6 @@
 FROM python:3.10.5-slim AS develop-py
 WORKDIR /root/running_page
 COPY ./requirements.txt /root/running_page/requirements.txt
-# Add proxy for apt.
-# ENV http_proxy http://ip_address:port
-# ENV https_proxy http://ip_address:port
 RUN apt-get update \
   && apt-get install -y --no-install-recommends git \
   && apt-get purge -y --auto-remove \
@@ -17,10 +14,9 @@ FROM node:18  AS develop-node
 WORKDIR /root/running_page
 COPY ./package.json /root/running_page/package.json
 COPY ./pnpm-lock.yaml /root/running_page/pnpm-lock.yaml
-RUN npm config rm proxy&&npm config set registry https://registry.npmjs.org/ \
-  &&npm install -g corepack \
-  &&corepack enable \
-  &&pnpm install
+RUN npm config set registry https://registry.npmjs.org/ \
+  && corepack enable \
+  && pnpm install
 
 FROM develop-py AS data
 ARG app
