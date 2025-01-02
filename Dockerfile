@@ -14,7 +14,7 @@ FROM node:18  AS develop-node
 WORKDIR /root/running_page
 COPY ./package.json /root/running_page/package.json
 COPY ./pnpm-lock.yaml /root/running_page/pnpm-lock.yaml
-RUN npm config set registry https://registry.npmjs.org/ \
+RUN npm config set registry https://registry.npmmirror.com \
   && corepack enable \
   && pnpm install
 
