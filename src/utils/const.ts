@@ -27,8 +27,8 @@ const MAP_LAYER_LIST = [
   'country-label',
 ];
 
-const USE_GOOGLE_ANALYTICS = false;
-const GOOGLE_ANALYTICS_TRACKING_ID = '';
+const USE_GOOGLE_ANALYTICS = true;
+const GOOGLE_ANALYTICS_TRACKING_ID = 'G-VE6W8T1XTT';
 
 // styling: set to `true` if you want dash-line route
 const USE_DASH_LINE = true;
@@ -43,19 +43,20 @@ const ROAD_LABEL_DISPLAY = true;
 const PRIVACY_MODE = false;
 // update for now 2024/11/17 the lights on default is false
 //set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
-const LIGHTS_ON =false;
+const LIGHTS_ON = true;
 // richer title for the activity types (like garmin style)
-const RICH_TITLE = false;
+const RICH_TITLE = true;
 
 // IF you outside China please make sure IS_CHINESE = false
-const IS_CHINESE = true;
-const USE_ANIMATION_FOR_GRID = false;
+const IS_CHINESE = false;
+const USE_ANIMATION_FOR_GRID = true;
 const CHINESE_INFO_MESSAGE = (yearLength: number, year: string): string => {
   const yearStr = year === 'Total' ? '所有' : ` ${year} `;
   return `我用 App 记录自己跑步 ${yearLength} 年了，下面列表展示的是${yearStr}的数据`;
 };
 const ENGLISH_INFO_MESSAGE = (yearLength: number, year: string): string =>
-  `Running Journey with ${yearLength} Years, the table shows year ${year} data`;
+  `Running Journey spanning ${yearLength} Years. Please feel free to click each 
+  year to view more detailed data. \n One at a time. \n Time will tell.`;
 
 // not support English for now
 const CHINESE_LOCATION_INFO_MESSAGE_FIRST =
