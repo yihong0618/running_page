@@ -1,5 +1,4 @@
-import React from 'react';
-import styles from './style.module.scss';
+import styles from './style.module.css';
 
 interface ILightsProps {
   setLights: (_lights: boolean) => void;
