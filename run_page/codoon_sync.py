@@ -558,7 +558,7 @@ class Codoon:
             if polyline_str=="":
                 sub_type = "Treadmill"
             else:
-                sub_type = "Outdoor"
+                sub_type = "Outdoor Run"
         if not run_data["total_time"]:
             print(f"ID {log_id} has no total time just ignore please check")
             return

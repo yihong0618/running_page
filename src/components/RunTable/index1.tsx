@@ -1,0 +1,113 @@
+import React, { useState } from 'react';
+import {
+  sortDateFunc,
+  sortDateFuncReverse,
+  convertMovingTime2Sec,
+  Activity,
+  RunIds,
+} from '@/utils/utils';
+import RunRow from './RunRow';
+import styles from './style.module.css';
+
+interface IRunTableProperties {
+  runs: Activity[];
+  locateActivity: (_runIds: RunIds) => void;
+  setActivity: (_runs: Activity[]) => void;
+  runIndex: number;
+  setRunIndex: (_index: number) => void;
+}
+
+type SortFunc = (_a: Activity, _b: Activity) => number;
+
+const RunTable = ({
+  runs,
+  locateActivity,
+  setActivity,
+  runIndex,
+  setRunIndex,
+}: IRunTableProperties) => {
+  const [sortFuncInfo, setSortFuncInfo] = useState('');
+  // TODO refactor?
+  const sortTypeFunc: SortFunc = (a, b) =>
+    sortFuncInfo === 'Type' ? a.type > b.type ? 1:-1 : b.type < a.type ? -1:1;
+  const sortKMFunc: SortFunc = (a, b) =>
+    sortFuncInfo === 'KM' ? a.distance - b.distance : b.distance - a.distance;
+  const sortElevationGainFunc: SortFunc = (a, b) =>
+    sortFuncInfo === 'Elevation Gain'
+      ? (a.elevation_gain ?? 0) - (b.elevation_gain ?? 0)
+      : (b.elevation_gain ?? 0) - (a.elevation_gain ?? 0);
+  const sortPaceFunc: SortFunc = (a, b) =>
+    sortFuncInfo === 'Pace'
+      ? a.average_speed - b.average_speed
+      : b.average_speed - a.average_speed;
+  const sortBPMFunc: SortFunc = (a, b) => {
+    return sortFuncInfo === 'BPM'
+      ? (a.average_heartrate ?? 0) - (b.average_heartrate ?? 0)
+      : (b.average_heartrate ?? 0) - (a.average_heartrate ?? 0);
+  };
+  const sortRunTimeFunc: SortFunc = (a, b) => {
+    const aTotalSeconds = convertMovingTime2Sec(a.moving_time);
+    const bTotalSeconds = convertMovingTime2Sec(b.moving_time);
+    return sortFuncInfo === 'Time'
+      ? aTotalSeconds - bTotalSeconds
+      : bTotalSeconds - aTotalSeconds;
+  };
+  // 点击标题头的排序
+  const sortRouteFunc: SortFunc = (a, b) =>
+    sortFuncInfo === 'Route' ? (a.route ?? '') > (b.route ?? '') ? 1:-1 : (b.route ?? '') < (a.route ?? '') ? -1:1;
+  const sortPartnerFunc: SortFunc = (a, b) =>
+    sortFuncInfo === 'Partner' ? (a.partner ?? '') > (b.partner ?? '') ? 1:-1 : (b.partner ?? '') < (a.partner ?? '') ? -1:1;
+  const sortDateFuncClick =
+    sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
+  const sortFuncMap = new Map([
+    ['Type', sortTypeFunc],
+    ['KM', sortKMFunc],
+    ['Elevation Gain', sortElevationGainFunc],
+    ['Pace', sortPaceFunc],
+    ['BPM', sortBPMFunc],
+    ['Time', sortRunTimeFunc],
+    ['Route', sortRouteFunc],
+    ['Date', sortDateFuncClick],
+    ['Partner', sortPartnerFunc],
+  ]);
+
+  const handleClick: React.MouseEventHandler<HTMLElement> = (e) => {
+    const funcName = (e.target as HTMLElement).innerHTML;
+    const f = sortFuncMap.get(funcName);
+
+    setRunIndex(-1);
+    setSortFuncInfo(sortFuncInfo === funcName ? '' : funcName);
+    setActivity(runs.sort(f));
+  };
+
+  return (
+    <div className={styles.tableContainer}>
+      <table className={styles.runTable} cellSpacing="0" cellPadding="0">
+        <thead>
+          <tr>
+            <th />
+            {Array.from(sortFuncMap.keys()).map((k) => (
+              <th key={k} onClick={handleClick}>
+                {k}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {runs.map((run, elementIndex) => (
+            <RunRow
+              key={run.run_id}
+              elementIndex={elementIndex}
+              locateActivity={locateActivity}
+              run={run}
+              runIndex={runIndex}
+              setRunIndex={setRunIndex}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default RunTable;
