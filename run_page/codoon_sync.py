@@ -60,6 +60,7 @@ TYPE_DICT = {
     0: "Hike",
     1: "Run",
     2: "Ride",
+    5: "Hike",
 }
 
 # for tcx type
@@ -477,7 +478,7 @@ class Codoon:
         for p in points_dict_list:
             point = gpxpy.gpx.GPXTrackPoint(**p)
             gpx_segment.points.append(point)
-        return gpx.to_xml()
+        return gpx
 
     def get_single_run_record(self, route_id):
         print(f"Get single run for codoon id {route_id}")
@@ -528,11 +529,14 @@ class Codoon:
                     p["latitude"] = latlng_data[i][0]
                     p["longitude"] = latlng_data[i][1]
 
-        if with_gpx:
-            # pass the track no points
-            if str(log_id) not in old_gpx_ids and run_points_data:
-                gpx_data = self.parse_points_to_gpx(run_points_data)
-                download_codoon_gpx(gpx_data, str(log_id))
+        elevation_gain = 0
+        if run_points_data:
+            gpx_data = self.parse_points_to_gpx(run_points_data)
+            elevation_gain = gpx_data.get_uphill_downhill().uphill
+            if with_gpx:
+                # pass the track no points
+                if str(log_id) not in old_gpx_ids:
+                    download_codoon_gpx(gpx_data.to_xml(), str(log_id))
         heart_rate_dict = run_data.get("heart_rate")
         heart_rate = None
         if heart_rate_dict:
@@ -548,14 +552,19 @@ class Codoon:
         if IS_ONLY_RUN and sport_type != 1:
             return
         cast_type = TYPE_DICT[sport_type] if sport_type in TYPE_DICT else sport_type
+        if sport_type == 1:
+            if polyline_str=="":
+                sub_type = "Treadmill"
+            else:
+                sub_type = "Outdoor"
         if not run_data["total_time"]:
             print(f"ID {log_id} has no total time just ignore please check")
             return
         d = {
             "id": log_id,
-            "name": str(cast_type) + " from codoon",
-            "type": cast_type,
-            "subtype": cast_type,
+            "name": str(cast_type) ,
+            "type": sub_type,
+            "subtype": sub_type,
             "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
             "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
             "start_date_local": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
@@ -570,6 +579,7 @@ class Codoon:
                 seconds=int((end_date.timestamp() - start_date.timestamp()))
             ),
             "average_speed": run_data["total_length"] / run_data["total_time"],
+            "elevation_gain": elevation_gain,
             "location_country": location_country,
             "source": "Codoon",
         }
@@ -635,4 +645,4 @@ if __name__ == "__main__":
     generator.sync_from_app(tracks)
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
-        json.dump(activities_list, f)
+        json.dump(activities_list, f, indent=0)

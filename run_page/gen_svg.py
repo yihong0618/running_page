@@ -23,6 +23,7 @@ def main():
     """Handle command line arguments and call other modules as needed."""
 
     p = poster.Poster()
+    # grid是轨迹图，github是日历图,Circuar是隐藏的雷达射线图
     drawers = {
         "grid": grid_drawer.GridDrawer(p),
         "circular": circular_drawer.CircularDrawer(p),
@@ -66,8 +67,8 @@ def main():
         "--athlete",
         metavar="NAME",
         type=str,
-        default="John Doe",
-        help='Athlete name to display (default: "John Doe").',
+        default="Daniel Yu",
+        help='Athlete name to display (default: "Daniel Yu").',
     )
     args_parser.add_argument(
         "--special",
@@ -180,15 +181,6 @@ def main():
         help="activities db file",
     )
 
-    args_parser.add_argument(
-        "--github-style",
-        dest="github_style",
-        metavar="GITHUB_STYLE",
-        type=str,
-        default="align-firstday",
-        help='github svg style; "align-firstday", "align-monday" (default: "align-firstday").',
-    )
-
     for _, drawer in drawers.items():
         drawer.create_args(args_parser)
 
@@ -215,7 +207,9 @@ def main():
     if args.from_db:
         # for svg from db here if you want gpx please do not use --from-db
         # args.type == "grid" means have polyline data or not
-        tracks = loader.load_tracks_from_db(SQL_FILE, args.type == "grid")
+        tracks = loader.load_tracks_from_db(
+            SQL_FILE, args.type == "grid", args.type == "circular"
+        )
     else:
         tracks = loader.load_tracks(args.gpx_dir)
     if not tracks:
@@ -253,8 +247,8 @@ def main():
     p.drawer_type = "plain" if is_circular else "title"
     if args.type == "github":
         p.height = 55 + p.years.real_year * 43
-    p.github_style = args.github_style
     # for special circular
+    # Daniel 这里还是改成按年份生成不同的
     if is_circular:
         years = p.years.all()[:]
         for y in years:
@@ -264,6 +258,19 @@ def main():
             p.draw(drawers[args.type], os.path.join("assets", f"year_{str(y)}.svg"))
     else:
         p.draw(drawers[args.type], args.output)
+
+    #先画一个汇总的图
+    # if not is_circular: 
+    #     p.draw(drawers[args.type], args.output)
+
+    # years = p.years.all()[:]
+    # for y in years:
+    #     p.years.from_year, p.years.to_year = y, y
+    #     # p.YEAR=y
+    #     # may be refactor
+    #     p.set_tracks(tracks)
+    #     p.draw(drawers[args.type], os.path.join("assets", args.type +f"_year_{str(y)}.svg"))
+    
 
 
 if __name__ == "__main__":

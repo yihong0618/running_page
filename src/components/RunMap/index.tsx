@@ -156,6 +156,7 @@ const RunMap = ({
           type="fill"
           paint={{
             'fill-color': PROVINCE_FILL_COLOR,
+            'fill-opacity': 0.2,
           }}
           filter={filterProvinces}
         />
@@ -173,7 +174,7 @@ const RunMap = ({
           id="runs2"
           type="line"
           paint={{
-            'line-color':  ['get', 'color'],
+            'line-color': ['get', 'color'],
             'line-width': isBigMap && lights ? 1 : 2,
             'line-dasharray': dash,
             'line-opacity': isSingleRun || isBigMap || !lights ? 1 : LINE_OPACITY,

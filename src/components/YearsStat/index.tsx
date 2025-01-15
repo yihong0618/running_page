@@ -2,7 +2,8 @@ import YearStat from '@/components/YearStat';
 import useActivities from '@/hooks/useActivities';
 import { INFO_MESSAGE } from '@/utils/const';
 
-const YearsStat = ({ year, onClick }: { year: string, onClick: (_year: string) => void }) => {
+const YearsStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick: (_year: string) => void,
+    onClickTypeInYear: (_year: string, _type: string) => void }) => {
   const { years } = useActivities();
   // make sure the year click on front
   let yearsArrayUpdate = years.slice();
@@ -21,11 +22,11 @@ const YearsStat = ({ year, onClick }: { year: string, onClick: (_year: string) =
       </section>
       <hr color="red" />
       {yearsArrayUpdate.map((year) => (
-        <YearStat key={year} year={year} onClick={onClick} />
+        <YearStat key={year} year={year} onClick={onClick} onClickTypeInYear={onClickTypeInYear}/>
       ))}
       {// eslint-disable-next-line no-prototype-builtins
         yearsArrayUpdate.hasOwnProperty('Total') ? (
-          <YearStat key="Total" year="Total" onClick={onClick} />
+          <YearStat key="Total" year="Total" onClick={onClick} onClickTypeInYear={onClickTypeInYear}/>
         ) : (
           <div />
         )}

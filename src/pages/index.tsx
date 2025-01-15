@@ -15,6 +15,7 @@ import {
   filterAndSortRuns,
   filterCityRuns,
   filterTitleRuns,
+  filterTypeRuns,
   filterYearRuns,
   geoJsonForRuns,
   getBoundsForGeoData,
@@ -53,7 +54,7 @@ const Index = () => {
     }
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
-    setTitle(`${item} ${name} Running Heatmap`);
+    setTitle(`${item} ${name} Heatmap`);
   };
 
   const changeYear = (y: string) => {
@@ -77,6 +78,26 @@ const Index = () => {
   const changeTitle = (title: string) => {
     changeByItem(title, 'Title', filterTitleRuns);
   };
+
+  const changeType = (type: string) => {
+    changeByItem(type, 'Type', filterTypeRuns);
+  };
+
+  const changeTypeInYear = (year:string, type: string) => {
+    scrollToMap();
+    // type in year, filter year first, then type
+    if(year != 'Total'){
+      setYear(year);
+      setActivity(filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc, type, filterTypeRuns));
+    }
+    else {
+      setYear(thisYear);
+      setActivity(filterAndSortRuns(activities, type, filterTypeRuns, sortDateFunc));
+    }
+    setRunIndex(-1);
+    setTitle(`${year} ${type} Type Heatmap`);
+  };
+
 
   const locateActivity = (runIds: RunIds) => {
     const ids = new Set(runIds);
@@ -109,8 +130,8 @@ const Index = () => {
   useEffect(() => {
     const runsNum = runs.length;
     // maybe change 20 ?
-    const sliceNume = runsNum >= 20 ? runsNum / 20 : 1;
-    let i = sliceNume;
+    const sliceNum = runsNum >= 10 ? runsNum / 10 : 1;
+    let i = sliceNum;
     const id = setInterval(() => {
       if (i >= runsNum) {
         clearInterval(id);
@@ -118,8 +139,8 @@ const Index = () => {
 
       const tempRuns = runs.slice(0, i);
       setGeoData(geoJsonForRuns(tempRuns));
-      i += sliceNume;
-    }, 100);
+      i += sliceNum;
+    }, 10);
     setIntervalId(id);
   }, [runs]);
 
@@ -172,7 +193,7 @@ const Index = () => {
 
   return (
     <Layout>
-      <div className="w-full lg:w-1/3">
+      <div className="w-full lg:w-1/4">
         <h1 className="my-12 text-5xl font-extrabold italic">
           <a href="/">{siteTitle}</a>
         </h1>
@@ -180,13 +201,14 @@ const Index = () => {
           <LocationStat
             changeYear={changeYear}
             changeCity={changeCity}
-            changeTitle={changeTitle}
+            changeType={changeType}
+            onClickTypeInYear={changeTypeInYear}
           />
         ) : (
-          <YearsStat year={year} onClick={changeYear} />
+          <YearsStat year={year} onClick={changeYear} onClickTypeInYear={changeTypeInYear}/>
         )}
       </div>
-      <div className="w-full lg:w-2/3">
+      <div className="w-full lg:w-4/5">
         <RunMap
           title={title}
           viewState={viewState}

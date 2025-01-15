@@ -6,7 +6,7 @@ import useSiteMetadata from '@/hooks/useSiteMetadata';
 import styles from './style.module.css';
 
 const Layout = ({ children }: React.PropsWithChildren) => {
-  const { siteTitle, description } = useSiteMetadata();
+  const { siteTitle, description, keywords } = useSiteMetadata();
 
   return (
     <>
@@ -14,7 +14,7 @@ const Layout = ({ children }: React.PropsWithChildren) => {
         <html lang="en" />
         <title>{siteTitle}</title>
         <meta name="description" content={description} />
-        <meta name="keywords" content="running" />
+        <meta name="keywords" content={keywords} />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
