@@ -547,12 +547,13 @@ class Codoon:
         start_date = self._gt(start_time)
         end_date = self._gt(end_time)
         location_country = None
-        sub_type="Outdoor"
+        
         sport_type = run_data["sports_type"]
         # only support run now, if you want all type comments these two lines
         if IS_ONLY_RUN and sport_type != 1:
             return
         cast_type = TYPE_DICT[sport_type] if sport_type in TYPE_DICT else sport_type
+        sub_type=cast_type
         if sport_type == 1:
             if polyline_str=="":
                 sub_type = "Treadmill"
