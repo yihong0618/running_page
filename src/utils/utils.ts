@@ -328,7 +328,7 @@ const titleForRun = (run: Activity): string => {
     }
   }
   // 3. use time+length if location or type is not available
-  if (run.name == 'Run' || type == 'Trail Run'){
+  if (run.name == 'Run' || type == 'Outdoor Run'){
       const runDistance = run.distance / 1000;
       if (runDistance >= 40) {
         return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
