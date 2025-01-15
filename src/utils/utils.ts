@@ -48,7 +48,7 @@ export interface Activity {
 
 const titleForShow = (run: Activity): string => {
   const date = run.start_date_local.slice(0, 11);
-  const distance = (run.distance / 1000.0).toFixed(2);
+  const distance = (run.distance / 1000.0).toFixed(1);
   let name = 'Run';
   if (run.name) {
     name = run.name;
@@ -317,8 +317,8 @@ const titleForRun = (run: Activity): string => {
   const type = run.type;
   if (RICH_TITLE) {
     // 1. try to use user defined name
-    if (run.name != '') {
-      return run.name;
+    if (run.type != '') {
+      return run.type;
     }
     // 2. try to use location+type if the location is available, eg. 'Shanghai Run'
     const { city, province } = locationForRun(run);
@@ -328,7 +328,7 @@ const titleForRun = (run: Activity): string => {
     }
   }
   // 3. use time+length if location or type is not available
-  if (type == 'Run' || type == 'Trail Run'){
+  if (run.name == 'Run' || type == 'Trail Run'){
       const runDistance = run.distance / 1000;
       if (runDistance >= 40) {
         return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
@@ -342,9 +342,9 @@ const titleForRun = (run: Activity): string => {
 
 const colorFromType = (workoutType: string): string => {
   switch (workoutType) {
-    case 'Run':
+    case 'Outdoor Run':
       return RUN_COLOR;
-    case 'Trail Run':
+    case 'Treadmill':
       return TRAIL_RUN_COLOR;
     case 'Ride':
     case 'Indoor Ride':

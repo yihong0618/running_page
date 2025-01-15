@@ -172,8 +172,8 @@ const Index = () => {
 
   return (
     <Layout>
-      <div className="w-full lg:w-1/3">
-        <h1 className="my-12 text-5xl font-extrabold italic">
+      <div className="w-full lg:w-2/7">
+        <h1 className="my-12 text-2xl font-extrabold italic">
           <a href="/">{siteTitle}</a>
         </h1>
         {(viewState.zoom ?? 0) <= 3 && IS_CHINESE ? (
@@ -186,7 +186,7 @@ const Index = () => {
           <YearsStat year={year} onClick={changeYear} />
         )}
       </div>
-      <div className="w-full lg:w-2/3">
+      <div className="w-full lg:w-5/7">
         <RunMap
           title={title}
           viewState={viewState}
