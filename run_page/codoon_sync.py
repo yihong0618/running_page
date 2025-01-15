@@ -547,6 +547,7 @@ class Codoon:
         start_date = self._gt(start_time)
         end_date = self._gt(end_time)
         location_country = None
+        sub_type="Outdoor"
         sport_type = run_data["sports_type"]
         # only support run now, if you want all type comments these two lines
         if IS_ONLY_RUN and sport_type != 1:
