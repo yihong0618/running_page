@@ -11,9 +11,9 @@ interface ISiteMetadataResult {
 }
 
 const data: ISiteMetadataResult = {
-  siteTitle: 'Workouts Map',
+  siteTitle: 'Daniel Yu的跑步地图',
   siteUrl: 'https://danielyu316.github.io/running_page/',
-  logo: 'https://avatars3.githubusercontent.com/u/6956444?s=460&u=97e1062227c4088db3c987146455245c6fa78441',
+  logo: 'https://himg.bdimg.com/sys/portrait/item/pp.1.3668f5f3.hau1M2vJz1JAREz-mN-lyQ.jpg',
   description: 'Personal site and blog',
   keywords: 'workouts, running, fitness',
   navLinks: [

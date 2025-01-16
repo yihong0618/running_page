@@ -197,7 +197,7 @@ const RunMap = ({
       <span className={styles.runTitle}>{title}</span>
       <FullscreenControl style={fullscreenButton}/>
       {!PRIVACY_MODE && <LightsControl setLights={setLights} lights={lights}/>}
-      <NavigationControl showCompass={false} position={'bottom-right'} style={{opacity: 0.3}}/>
+      <NavigationControl showCompass={true} position={'bottom-right'} style={{opacity: 0.3}}/>
     </Map>
   );
 };

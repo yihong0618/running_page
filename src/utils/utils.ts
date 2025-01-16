@@ -253,13 +253,13 @@ const geoJsonForMap = (): FeatureCollection<RPGeometry> => ({
 
 const titleForType = (type: string): string => {
   switch (type) {
-    case 'Run':
+    case 'Outdoor Run':
       return RUN_TITLES.RUN_TITLE;
     case 'Full Marathon':
       return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
     case 'Half Marathon':
       return RUN_TITLES.HALF_MARATHON_RUN_TITLE;
-    case 'Trail Run':
+    case 'Treadmill':
       return RUN_TITLES.TRAIL_RUN_TITLE;
     case 'Ride':
       return RUN_TITLES.RIDE_TITLE;
@@ -292,7 +292,7 @@ const typeForRun = (run: Activity): string => {
   const type = run.type
   var distance = run.distance / 1000;
   switch (type) {
-    case 'Run':
+    case 'Outdoor Run':
       if (distance >= 40) {
         return 'Full Marathon';
       }
@@ -300,14 +300,14 @@ const typeForRun = (run: Activity): string => {
         return 'Half Marathon';
       }
       return 'Run';
-    case 'Trail Run':
+    case 'Treadmill':
       if (distance >= 40) {
         return 'Full Marathon';
       }
       else if (distance > 20) {
         return 'Half Marathon';
       }
-      return 'Trail Run';
+      return 'Treadmill';
     default:
       return type;
   }
@@ -318,7 +318,7 @@ const titleForRun = (run: Activity): string => {
   if (RICH_TITLE) {
     // 1. try to use user defined name
     if (run.type != '') {
-      return run.type;
+      return titleForType(typeForRun(run));
     }
     // 2. try to use location+type if the location is available, eg. 'Shanghai Run'
     const { city, province } = locationForRun(run);
@@ -328,7 +328,7 @@ const titleForRun = (run: Activity): string => {
     }
   }
   // 3. use time+length if location or type is not available
-  if (run.name == 'Run' || type == 'Outdoor Run'){
+  if ( type == 'Outdoor Run'){
       const runDistance = run.distance / 1000;
       if (runDistance >= 40) {
         return RUN_TITLES.FULL_MARATHON_RUN_TITLE;
@@ -347,6 +347,7 @@ const colorFromType = (workoutType: string): string => {
     case 'Treadmill':
       return TRAIL_RUN_COLOR;
     case 'Ride':
+      return RIDE_COLOR;
     case 'Indoor Ride':
       return RIDE_COLOR;
     case 'VirtualRide':
