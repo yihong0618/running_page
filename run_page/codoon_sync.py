@@ -436,8 +436,9 @@ class Codoon:
             raise Exception("get runs records error")
 
         runs = r.json()["data"]["log_list"]
+        # 只抽取type在6以下的，因为6以上是锻炼
         if IS_ONLY_RUN:
-            runs = [run for run in runs if run["sports_type"] == 1]
+            runs = [run for run in runs if run["sports_type"] < 6]
         print(f"{len(runs)} runs to parse")
         if r.json()["data"]["has_more"]:
             return runs + self.get_runs_records(page + 1)
