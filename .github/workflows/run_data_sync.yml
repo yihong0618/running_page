@@ -120,7 +120,7 @@ jobs:
       - name: Run sync Codoon script
         if: env.RUN_TYPE == 'codoon'
         run: |
-          python run_page/codoon_sync.py "15901826465" "yhf123456"
+          python run_page/codoon_sync.py ${{ secrets.CODOON_MOBILE }} ${{ secrets.CODOON_PASSWORD }}
 
       - name: Run sync tcx to Garmin script
         if: env.RUN_TYPE == 'tcx_to_garmin'
