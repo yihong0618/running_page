@@ -6,6 +6,7 @@
 # license that can be found in the LICENSE file.
 
 import datetime
+from datetime import timezone
 import os
 from collections import namedtuple
 
@@ -40,6 +41,7 @@ class Track:
         self.file_names = []
         self.polylines = []
         self.polyline_str = ""
+        self.track_name = None
         self.start_time = None
         self.end_time = None
         self.start_time_local = None
@@ -51,6 +53,8 @@ class Track:
         self.run_id = 0
         self.start_latlng = []
         self.type = "Run"
+        self.subtype = None  # for fit file
+        self.device = ""
 
     def load_gpx(self, file_name):
         """
@@ -188,6 +192,8 @@ class Track:
         polyline_container = []
         heart_rate_list = []
         for t in gpx.tracks:
+            if self.track_name is None:
+                self.track_name = t.name
             for s in t.segments:
                 try:
                     extensions = [
@@ -232,18 +238,23 @@ class Track:
         _polylines = []
         self.polyline_container = []
         message = fit["session_mesgs"][0]
-        self.start_time = datetime.datetime.utcfromtimestamp(
-            (message["start_time"] + FIT_EPOCH_S)
+        self.start_time = datetime.datetime.fromtimestamp(
+            (message["start_time"] + FIT_EPOCH_S), tz=timezone.utc
         )
         self.run_id = self.__make_run_id(self.start_time)
-        self.end_time = datetime.datetime.utcfromtimestamp(
-            (message["start_time"] + FIT_EPOCH_S + message["total_elapsed_time"])
+        self.end_time = datetime.datetime.fromtimestamp(
+            (message["start_time"] + FIT_EPOCH_S + message["total_elapsed_time"]),
+            tz=timezone.utc,
         )
         self.length = message["total_distance"]
         self.average_heartrate = (
             message["avg_heart_rate"] if "avg_heart_rate" in message else None
         )
-        self.type = message["sport"].lower()
+        if message["sport"].lower() == "running":
+            self.type = "Run"
+        else:
+            self.type = message["sport"].lower()
+        self.subtype = message["sub_sport"] if "sub_sport" in message else None
 
         # moving_dict
         self.moving_dict["distance"] = message["total_distance"]
@@ -279,6 +290,14 @@ class Track:
             self.start_time_local, self.end_time_local = parse_datetime_to_local(
                 self.start_time, self.end_time, None
             )
+
+        # The FIT file created by Garmin
+        if "file_id_mesgs" in fit:
+            device_message = fit["file_id_mesgs"][0]
+            if "manufacturer" in device_message:
+                self.device = device_message["manufacturer"]
+            if "garmin_product" in device_message:
+                self.device += " " + device_message["garmin_product"]
 
     def append(self, other):
         """Append other track to self."""
@@ -319,11 +338,12 @@ class Track:
             ),
         }
 
-    def to_namedtuple(self):
+    def to_namedtuple(self, run_from="gpx"):
         d = {
             "id": self.run_id,
-            "name": "run from gpx",  # maybe change later
-            "type": "Run",  # Run for now only support run for now maybe change later
+            "name": (self.track_name if self.track_name else ""),  # maybe change later
+            "type": self.type,
+            "subtype": (self.subtype if self.subtype else ""),
             "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
             "start_date_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
