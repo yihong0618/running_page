@@ -180,6 +180,15 @@ def main():
         help="activities db file",
     )
 
+    args_parser.add_argument(
+        "--github-style",
+        dest="github_style",
+        metavar="GITHUB_STYLE",
+        type=str,
+        default="align-firstday",
+        help='github svg style; "align-firstday", "align-monday" (default: "align-firstday").',
+    )
+
     for _, drawer in drawers.items():
         drawer.create_args(args_parser)
 
@@ -246,6 +255,7 @@ def main():
     p.drawer_type = "plain" if is_circular else "title"
     if args.type == "github":
         p.height = 55 + p.years.real_year * 43
+    p.github_style = args.github_style
     # for special circular
     if is_circular:
         years = p.years.all()[:]
