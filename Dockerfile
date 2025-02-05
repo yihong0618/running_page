@@ -2,7 +2,9 @@
 FROM python:3.10.5-slim AS develop-py
 WORKDIR /root/running_page
 COPY ./requirements.txt /root/running_page/requirements.txt
-RUN apt-get update \
+RUN sed -i 's@http://archive.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g' /etc/apt/sources.list \
+  && sed -i 's@http://security.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g' /etc/apt/sources.list \
+  && apt-get update \
   && apt-get install -y --no-install-recommends git \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* \
@@ -14,12 +16,9 @@ FROM node:18  AS develop-node
 WORKDIR /root/running_page
 COPY ./package.json /root/running_page/package.json
 COPY ./pnpm-lock.yaml /root/running_page/pnpm-lock.yaml
-RUN npm config set registry https://registry.npm.taobao.org \
-  &&npm install -g corepack \
-  &&corepack enable \
-  &&pnpm install
-
-
+RUN npm config set registry https://registry.npmmirror.com \
+  && corepack enable \
+  && COREPACK_NPM_REGISTRY=https://registry.npmmirror.com pnpm install
 
 FROM develop-py AS data
 ARG app
@@ -29,6 +28,8 @@ ARG client_id
 ARG client_secret
 ARG refresh_token
 ARG YOUR_NAME
+ARG keep_phone_number
+ARG keep_password
 
 WORKDIR /root/running_page
 COPY . /root/running_page/
@@ -45,6 +46,8 @@ RUN DUMMY=${DUMMY}; \
   python3 run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token};\
   elif [ "$app" = "Nike_to_Strava" ] ; then \
   python3  run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${refresh_token};\
+  elif [ "$app" = "Keep" ] ; then \
+  python3 run_page/keep_sync.py ${keep_phone_number} ${keep_password};\
   else \
   echo "Unknown app" ; \
   fi

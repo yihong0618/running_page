@@ -2,9 +2,11 @@
 import argparse
 import json
 import os
+import subprocess
+import sys
 import time
 from collections import namedtuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from hashlib import md5
 from urllib.parse import quote
 
@@ -130,7 +132,9 @@ class Joyrun:
         self.session.headers.update({"ypcookie": loginCookie})
         self.session.cookies.clear()
         self.session.cookies.set("ypcookie", quote(loginCookie).lower())
-        self.session.headers.update(self.device_info_headers)  # 更新设备信息中的 uid 字段
+        self.session.headers.update(
+            self.device_info_headers
+        )  # 更新设备信息中的 uid 字段
 
     def login_by_phone(self):
         params = {
@@ -152,7 +156,7 @@ class Joyrun:
 
     def get_runs_records_ids(self):
         payload = {
-            "year": 0,
+            "year": 0,  # as of the "year". when set to 2023, it means fetch records during currentYear ~ 2023. set to 0 means fetch all.
         }
         r = self.session.post(
             f"{self.base_url}/userRunList.aspx",
@@ -185,37 +189,61 @@ class Joyrun:
         return points
 
     @staticmethod
-    def parse_points_to_gpx(run_points_data, start_time, end_time, interval=5):
-        # TODO for now kind of same as `keep` maybe refactor later
+    def parse_points_to_gpx(
+        run_points_data, start_time, end_time, pause_list, interval=5
+    ):
+        """
+        parse run_data content to gpx object
+        TODO for now kind of same as `keep` maybe refactor later
+
+        :param run_points_data: [[latitude, longitude],...]
+        :param pause_list:      [[interval_index, pause_seconds],...]
+        :param interval:        time interval between each point, in seconds
+        """
+
+        # format data
+        segment_list = []
         points_dict_list = []
-        i = 0
-        for point in run_points_data[:-1]:
+        current_time = start_time
+
+        for index, point in enumerate(run_points_data[:-1]):
             points_dict = {
                 "latitude": point[0],
                 "longitude": point[1],
-                "time": datetime.utcfromtimestamp(start_time + interval * i),
+                "time": datetime.fromtimestamp(current_time, tz=timezone.utc),
             }
-            i += 1
             points_dict_list.append(points_dict)
+
+            current_time += interval
+            if pause_list and int(pause_list[0][0]) - 1 == index:
+                segment_list.append(points_dict_list[:])
+                points_dict_list.clear()
+                current_time += int(pause_list[0][1])
+                pause_list.pop(0)
+
         points_dict_list.append(
             {
                 "latitude": run_points_data[-1][0],
                 "longitude": run_points_data[-1][1],
-                "time": datetime.utcfromtimestamp(end_time),
+                "time": datetime.fromtimestamp(end_time, tz=timezone.utc),
             }
         )
+        segment_list.append(points_dict_list)
+
+        # gpx part
         gpx = gpxpy.gpx.GPX()
         gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx_track.name = "gpx from joyrun"
         gpx.tracks.append(gpx_track)
 
-        # Create first segment in our GPX track:
-        gpx_segment = gpxpy.gpx.GPXTrackSegment()
-        gpx_track.segments.append(gpx_segment)
-        for p in points_dict_list:
-            point = gpxpy.gpx.GPXTrackPoint(**p)
-            gpx_segment.points.append(point)
+        # add segment list to our GPX track:
+        for point_list in segment_list:
+            gpx_segment = gpxpy.gpx.GPXTrackSegment()
+            gpx_track.segments.append(gpx_segment)
+            for p in point_list:
+                point = gpxpy.gpx.GPXTrackPoint(**p)
+                gpx_segment.points.append(point)
 
         return gpx.to_xml()
 
@@ -238,12 +266,13 @@ class Joyrun:
 
         start_time = run_data["starttime"]
         end_time = run_data["endtime"]
+        pause_list = run_data["pause"]
         run_points_data = self.parse_content_to_ponits(run_data["content"])
         if with_gpx:
             # pass the track no points
             if run_points_data:
                 gpx_data = self.parse_points_to_gpx(
-                    run_points_data, start_time, end_time
+                    run_points_data, start_time, end_time, pause_list
                 )
                 download_joyrun_gpx(gpx_data, str(joyrun_id))
         try:
@@ -261,9 +290,9 @@ class Joyrun:
 
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
         start_latlng = start_point(*run_points_data[0]) if run_points_data else None
-        start_date = datetime.utcfromtimestamp(start_time)
+        start_date = datetime.fromtimestamp(start_time, tz=timezone.utc)
         start_date_local = adjust_time(start_date, BASE_TIMEZONE)
-        end = datetime.utcfromtimestamp(end_time)
+        end = datetime.fromtimestamp(end_time, tz=timezone.utc)
         # only for China now
         end_local = adjust_time(end, BASE_TIMEZONE)
         location_country = None
@@ -275,6 +304,7 @@ class Joyrun:
             "name": "run from joyrun",
             # future to support others workout now only for run
             "type": "Run",
+            "subtype": "Run",
             "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
             "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
             "start_date_local": datetime.strftime(
@@ -295,7 +325,7 @@ class Joyrun:
         }
         return namedtuple("x", d.keys())(*d.values())
 
-    def get_all_joyrun_tracks(self, old_tracks_ids, with_gpx=False):
+    def get_all_joyrun_tracks(self, old_tracks_ids, with_gpx=False, threshold=10):
         run_ids = self.get_runs_records_ids()
         old_tracks_ids = [int(i) for i in old_tracks_ids if i.isdigit()]
 
@@ -303,11 +333,101 @@ class Joyrun:
         old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
         new_run_ids = list(set(run_ids) - set(old_tracks_ids))
         tracks = []
+        seen_runs = {}  # Dictionary to keep track of unique runs with start time as key
         for i in new_run_ids:
             run_data = self.get_single_run_record(i)
-            track = self.parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_gpx)
-            tracks.append(track)
+            start_time = datetime.fromtimestamp(run_data["runrecord"]["starttime"])
+            distance = run_data["runrecord"]["meter"]
+
+            is_duplicate = False
+            for seen_start in list(seen_runs.keys()):
+                if abs((start_time - seen_start).total_seconds()) <= threshold:
+                    if distance > seen_runs[seen_start]["distance"]:
+                        seen_runs[seen_start] = {
+                            "run_data": run_data,
+                            "distance": distance,
+                        }
+                    is_duplicate = True
+                    break
+            if not is_duplicate:
+                seen_runs[start_time] = {"run_data": run_data, "distance": distance}
+            for run in seen_runs.values():
+                track = self.parse_raw_data_to_nametuple(
+                    run["run_data"], old_gpx_ids, with_gpx
+                )
+                tracks.append(track)
         return tracks
+
+
+def _generate_svg_profile(athlete, min_grid_distance):
+    # To generate svg for 'Total' in the left-up map
+    if not athlete:
+        # Skip to avoid override
+        print("Skipping gen_svg. Fill your name with --athlete if you don't want skip")
+        return
+    print(
+        f"Running scripts for [Make svg GitHub profile] with athlete={athlete} min_grid_distance={min_grid_distance}"
+    )
+    cmd_args_list = [
+        [
+            sys.executable,
+            "run_page/gen_svg.py",
+            "--from-db",
+            "--title",
+            f"{athlete} Running",
+            "--type",
+            "github",
+            "--athlete",
+            athlete,
+            "--special-distance",
+            "10",
+            "--special-distance2",
+            "20",
+            "--special-color",
+            "yellow",
+            "--special-color2",
+            "red",
+            "--output",
+            "assets/github.svg",
+            "--use-localtime",
+            "--min-distance",
+            "0.5",
+        ],
+        [
+            sys.executable,
+            "run_page/gen_svg.py",
+            "--from-db",
+            "--title",
+            f"Over {min_grid_distance} Running",
+            "--type",
+            "grid",
+            "--athlete",
+            athlete,
+            "--special-distance",
+            "20",
+            "--special-distance2",
+            "40",
+            "--special-color",
+            "yellow",
+            "--special-color2",
+            "red",
+            "--output",
+            "assets/grid.svg",
+            "--use-localtime",
+            "--min-distance",
+            str(min_grid_distance),
+        ],
+        [
+            sys.executable,
+            "run_page/gen_svg.py",
+            "--from-db",
+            "--type",
+            "circular",
+            "--use-localtime",
+        ],
+    ]
+    for cmd_args in cmd_args_list:
+        subprocess.run(cmd_args, check=True)
 
 
 if __name__ == "__main__":
@@ -315,6 +435,18 @@ if __name__ == "__main__":
     parser.add_argument("phone_number_or_uid", help="joyrun phone number or uid")
     parser.add_argument(
         "identifying_code_or_sid", help="joyrun identifying_code from sms or sid"
+    )
+    parser.add_argument(
+        "--athlete",
+        dest="athlete",
+        help="athlete, keep same with {env.ATHLETE}",
+    )
+    parser.add_argument(
+        "--min_grid_distance",
+        dest="min_grid_distance",
+        help="min_grid_distance, keep same with {env.MIN_GRID_DISTANCE}",
+        type=int,
+        default=10,
     )
     parser.add_argument(
         "--with-gpx",
@@ -327,6 +459,13 @@ if __name__ == "__main__":
         dest="from_uid_sid",
         action="store_true",
         help="from uid and sid for download datas",
+    )
+    parser.add_argument(
+        "--threshold",
+        dest="threshold",
+        help="threshold in seconds to consider runs as duplicates",
+        type=int,
+        default=10,
     )
     options = parser.parse_args()
     if options.from_uid_sid:
@@ -343,8 +482,13 @@ if __name__ == "__main__":
 
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
-    tracks = j.get_all_joyrun_tracks(old_tracks_ids, options.with_gpx)
+    tracks = j.get_all_joyrun_tracks(
+        old_tracks_ids, options.with_gpx, options.threshold
+    )
     generator.sync_from_app(tracks)
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
         json.dump(activities_list, f)
+
+    print("Data export to DB done")
+    _generate_svg_profile(options.athlete, options.min_grid_distance)
