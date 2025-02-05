@@ -75,20 +75,17 @@ jobs:
         with:
           node-version: '20'
       - name: Enable corepack
-        run: corepack enable
-
-      
+        run: npm install -g corepack@latest && corepack enable pnpm 
 
       - name: Get pnpm store directory
         shell: bash
         run: |
-          export COREPACK_ENABLE_STRICT_SIGNATURES=false
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
-          path: ~/.pnpm-store  # 手动指定一个常见的 pnpm 存储路径path: ${{ env.STORE_PATH }}
+          path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
