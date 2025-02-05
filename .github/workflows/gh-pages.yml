@@ -77,8 +77,10 @@ jobs:
       - name: Enable corepack
         run: corepack enable
 
-      - name: Clear corepack cache
-        run: rm -rf ~/.corepack
+      - name: Update corepack and pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Get pnpm store directory
         shell: bash
