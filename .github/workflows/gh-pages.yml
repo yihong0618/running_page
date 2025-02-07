@@ -42,6 +42,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pages: write
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -99,7 +102,10 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist repository
+          name: pages-artifact
           path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: pages-artifact
