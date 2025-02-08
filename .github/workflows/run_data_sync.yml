@@ -217,7 +217,7 @@ jobs:
       - name: Save data to parqent
         if: env.SAVE_TO_PARQENT == 'true'
         run: |
-          pip install duckdb
+          pip install duckdb==1.1.0
           python run_page/save_to_parqent.py
 
       - name: Push new runs
