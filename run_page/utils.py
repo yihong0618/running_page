@@ -60,9 +60,13 @@ def make_activities_file(
         json.dump(activities_list, f, indent=0)
 
 
-def make_activities_file_only(sql_file, data_dir, json_file, file_suffix="gpx"):
+def make_activities_file_only(
+    sql_file, data_dir, json_file, file_suffix="gpx", activity_title_dict={}
+):
     generator = Generator(sql_file)
-    generator.sync_from_data_dir(data_dir, file_suffix=file_suffix)
+    generator.sync_from_data_dir(
+        data_dir, file_suffix=file_suffix, activity_title_dict=activity_title_dict
+    )
     activities_list = generator.loadForMapping()
     with open(json_file, "w") as f:
         json.dump(activities_list, f, indent=0)
