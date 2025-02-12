@@ -1,4 +1,5 @@
 import YearStat from '@/components/YearStat';
+
 import {
   CHINESE_LOCATION_INFO_MESSAGE_FIRST,
   CHINESE_LOCATION_INFO_MESSAGE_SECOND,
@@ -19,7 +20,10 @@ const LocationStat = ({
   changeCity,
   changeType,
   onClickTypeInYear
-}: ILocationStatProps) => (
+}: ILocationStatProps) => {
+     // 用于控制显示哪个组件的状态
+    
+  return (
   <div className="w-full pb-16 lg:w-full lg:pr-16">
     <section className="pb-0">
       <p className="leading-relaxed">
@@ -30,7 +34,7 @@ const LocationStat = ({
         .
         <br />
         <br />
-        Yesterday you said tomorrow.
+        Just Run.
       </p>
     </section>
     <hr color="red" />
@@ -40,5 +44,6 @@ const LocationStat = ({
     <YearStat year="Total" onClick={changeYear} onClickTypeInYear={onClickTypeInYear}/>
   </div>
 );
+};
 
 export default LocationStat;

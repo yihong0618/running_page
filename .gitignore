@@ -12,6 +12,8 @@ yarn-error.log
 .sass-cache/
 _posts/
 _site/
+/GPX_OUT
+/TCX_OUT
 
 .mypy_cache
 
@@ -21,3 +23,5 @@ _site/
 config.yaml
 .venv/
 /.vs
+run.bat
+sync.bat

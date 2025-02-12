@@ -100,7 +100,7 @@ const scrollToMap = () => {
 const extractCities = (str: string): string[] => {
   const locations = [];
   let match;
-  const pattern = /([\u4e00-\u9fa5]{2,}(市|自治州|特别行政区|盟|地区))/g;
+  const pattern = /([\u4e00-\u9fa5]{2,}(市|自治州|特别行政区|盟|地区|路线))/g;
   while ((match = pattern.exec(str)) !== null) {
     locations.push(match[0]);
   }
@@ -111,7 +111,7 @@ const extractCities = (str: string): string[] => {
 const extractDistricts = (str: string): string[] => {
   const locations = [];
   let match;
-  const pattern = /([\u4e00-\u9fa5]{2,}(区|县))/g;
+  const pattern = /([\u4e00-\u9fa5]{2,}(区|县|路线))/g;
   while ((match = pattern.exec(str)) !== null) {
     locations.push(match[0]);
   }
@@ -155,12 +155,20 @@ const locationForRun = (
     const cityMatch = extractCities(location);
     const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
 
-    if (cityMatch) {
+    if (cityMatch  && cityMatch.length > 0) {
       city = cities.find((value) => cityMatch.includes(value)) as string;
 
+      // if (!city) {
+      //   city = '';
+      // }
       if (!city) {
-        city = '';
-      }
+        if (cityMatch[0].includes("路线")) {
+            city = cityMatch[0];
+        } else {
+            city = '';
+        }
+    }
+      
     }
     if (provinceMatch) {
       [province] = provinceMatch;
