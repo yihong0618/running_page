@@ -15,6 +15,7 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IR
   const heartRate = run.average_heartrate;
   const type = run.type;
   const runTime = formatRunTime(run.moving_time);
+  const route = run.route;
   const handleClick = () => {
     if (runIndex === elementIndex) {
       setRunIndex(-1);
@@ -38,6 +39,7 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IR
       <td>{heartRate && heartRate.toFixed(0)}</td>
       <td>{runTime}</td>
       <td className={styles.runDate}>{run.start_date_local}</td>
+      <td>{route}</td>
     </tr>
   );
 };

@@ -242,7 +242,7 @@ const buttonStyle = {
           <YearsStat year={year} onClick={changeYear} onClickTypeInYear={changeTypeInYear}/>
         )} */}
         <button onClick={handleToggle} style={buttonStyle}>
-                {state.showLocationStat ? '按年份显示' : '按地点显示'}
+                {state.showLocationStat ? '按地点显示' : '按年份显示'}
             </button>
             {state.showLocationStat ? (
                 <LocationStat
@@ -255,7 +255,7 @@ const buttonStyle = {
                 <YearsStat year={year} onClick={changeYear} onClickTypeInYear={changeTypeInYear} />
             )}
       </div>
-      <div className="w-full lg:w-4/5">
+      <div className="w-full lg:w-4/5" style={{ height: '400px' }}>
         <RunMap
           title={title}
           viewState={viewState}

@@ -25,8 +25,8 @@ const LocationStat = ({
     
   return (
   <div className="w-full pb-16 lg:w-full lg:pr-16">
-    <section className="pb-0">
-      <p className="leading-relaxed">
+    {/* <section className="pb-0"> */}
+      {/* <p className="leading-relaxed">
         {CHINESE_LOCATION_INFO_MESSAGE_FIRST}
         .
         <br />
@@ -35,12 +35,12 @@ const LocationStat = ({
         <br />
         <br />
         Just Run.
-      </p>
-    </section>
-    <hr color="red" />
+      </p> */}
+    {/* </section> */}
+    {/* <hr color="red" /> */}
     <LocationSummary />
     <CitiesStat onClick={changeCity} />
-    <PeriodStat onClick={changeType} />
+    {/* <PeriodStat onClick={changeType} /> */}
     <YearStat year="Total" onClick={changeYear} onClickTypeInYear={onClickTypeInYear}/>
   </div>
 );

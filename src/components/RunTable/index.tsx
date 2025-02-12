@@ -39,6 +39,15 @@ const RunTable = ({
       ? (a.average_heartrate ?? 0) - (b.average_heartrate ?? 0)
       : (b.average_heartrate ?? 0) - (a.average_heartrate ?? 0);
   };
+  const sortRouteFunc: SortFunc = (a, b) => {
+     // 处理 a.route 的值，将 null 或 undefined 转换为空字符串
+     const routeA = a.route === null || a.route === undefined ? '' : a.route;
+     // 处理 b.route 的值，将 null 或 undefined 转换为空字符串
+     const routeB = b.route === null || b.route === undefined ? '' : b.route;
+    return sortFuncInfo === 'Route'
+      ? routeA.localeCompare(routeB, 'zh')
+      : routeB.localeCompare(routeA, 'zh');
+  };
   const sortRunTimeFunc: SortFunc = (a, b) => {
     const aTotalSeconds = convertMovingTime2Sec(a.moving_time);
     const bTotalSeconds = convertMovingTime2Sec(b.moving_time);
@@ -54,6 +63,7 @@ const RunTable = ({
     ['BPM', sortBPMFunc],
     ['Time', sortRunTimeFunc],
     ['Date', sortDateFuncClick],
+    ['Route', sortRouteFunc],
   ]);
 
   const handleClick: React.MouseEventHandler<HTMLElement> = (e) => {
