@@ -65,8 +65,11 @@ const RunTable = ({
     setActivity(runs.sort(f));
   };
 
+  // 截取前 10 条记录
+  const slicedRuns = runs.slice(0, 10);
+
   return (
-    <div className={styles.tableContainer}>
+    <div className={styles.tableContainer} style={{ maxHeight: '400px', overflowY: 'auto' }}>
       <table className={styles.runTable} cellSpacing="0" cellPadding="0">
         <thead>
           <tr>
