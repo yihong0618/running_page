@@ -6,6 +6,7 @@ import { formatPace, colorFromType } from '@/utils/utils';
 import useHover from '@/hooks/useHover';
 import { yearStats } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
+import React, { useState } from 'react';
 
 const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick: (_year: string) => void ,
     onClickTypeInYear: (_year: string, _type: string) => void }) => {
@@ -49,18 +50,18 @@ const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick:
   const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
     0
   );
-
+  const [clickedType, setClickedType] = useState<string | null>(null);
   const workoutsArr = Object.entries(workoutsCounts);
   workoutsArr.sort((a, b) => {
     return b[1][0] - a[1][0]
   });
   return (
-    <div
+    <div 
       className="cursor-pointer"
       onClick={() => onClick(year)}
       {...eventHandlers}
     >
-      <section>
+      <section >
         <Stat value={year} description=" Journey" />
         { sumDistance > 0 &&
           <WorkoutStat
@@ -81,14 +82,17 @@ const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick:
             onClick={(e: Event) => {
               onClickTypeInYear(year, type);
               e.stopPropagation();
+              setClickedType(prev => prev === type ? null : type);
             }}
+            color={clickedType === type ? 'red' : 'inherit'}
           />
         ))}
-        { sumElevationGain > 0 &&
+        {/* 展示不显示高度数据了 */}
+        {/* { sumElevationGain > 0 &&
           <Stat
             value={`${(sumElevationGain).toFixed(0)} `}
             description="M Elevation Gain"
-            className="pb-2"
+            className="pb-1"
           />
         }
         <Stat
@@ -98,13 +102,14 @@ const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick:
         />
         {hasHeartRate && (
           <Stat value={avgHeartRate} description=" Avg Heart Rate" />
-        )}
+        )} */}
       </section>
       {year !== 'Total' && hovered && (
         <Suspense fallback="loading...">
           <YearSVG className="my-4 h-4/6 w-4/6 border-0 p-0" />
         </Suspense>
       )}
+    
       <hr color="red" />
     </div>
   );

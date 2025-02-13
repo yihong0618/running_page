@@ -33,9 +33,9 @@ const GOOGLE_ANALYTICS_TRACKING_ID = '';
 // styling: set to `true` if you want dash-line route
 const USE_DASH_LINE = false;
 // styling: route line opacity: [0, 1]
-const LINE_OPACITY = 0.8;
+const LINE_OPACITY = 1;
 // styling: map height
-const MAP_HEIGHT = 600;
+const MAP_HEIGHT = 400;
 //set to `false` if you want to hide the road label characters
 const ROAD_LABEL_DISPLAY = true;
 // update for now 2024/11/17 the privacy mode is true
@@ -135,8 +135,8 @@ const red = 'rgb(255,0,0)';//大红色
 // issues #92 and #198
 export const NEED_FIX_MAP = false;
 export const MAIN_COLOR = green;
-export const RUN_COLOR = green;
-export const RIDE_COLOR = gold;
+export const RUN_COLOR = 'rgb(16, 30, 231)';
+export const RIDE_COLOR = 'rgb(241, 160, 7)';
 export const VIRTUAL_RIDE_COLOR = veryPeri;
 export const HIKE_COLOR = pink;
 export const SWIM_COLOR = gold;

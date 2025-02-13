@@ -41,7 +41,7 @@ const LocationStat = ({
     <LocationSummary />
     <CitiesStat onClick={changeCity} />
     {/* <PeriodStat onClick={changeType} /> */}
-    <YearStat year="Total" onClick={changeYear} onClickTypeInYear={onClickTypeInYear}/>
+    {/* <YearStat year="Total" onClick={changeYear} onClickTypeInYear={onClickTypeInYear}/> */}
   </div>
 );
 };

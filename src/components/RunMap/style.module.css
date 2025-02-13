@@ -22,11 +22,11 @@
   margin-top: 0.1rem;
   font-size: 1rem;
   text-align: center;
-  color: white;
+  color: rgb(7, 101, 241);
 }
 
 .selected {
-  color: rgb(0,237,94);
+  color: rgb(247, 132, 1);
 }
 
 .runTitle {
@@ -36,6 +36,7 @@
   bottom: 0px;
   left: 120px;
   cursor: pointer;
+  color: rgb(20, 3, 253);
 }
 
 .lights {

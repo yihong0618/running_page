@@ -255,8 +255,8 @@ const buttonStyle = {
                 <YearsStat year={year} onClick={changeYear} onClickTypeInYear={changeTypeInYear} />
             )}
       </div>
-      <div className="w-full lg:w-4/5" style={{ height: '400px' }}>
-        <RunMap
+      <div className="w-full lg:w-4/5" >
+        <RunMap 
           title={title}
           viewState={viewState}
           geoData={geoData}

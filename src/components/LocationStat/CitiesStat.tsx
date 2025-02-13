@@ -14,15 +14,12 @@ const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
 
    // 新增：用于记录当前被点击的城市
    const [clickedCity, setClickedCity] = useState<string | null>(null);
-   // 新增：自定义点击处理函数
    const handleClick = (cityStr: string) => {
-    // 使用正则表达式提取数字前面的部分并去除首尾空格
-    // const regex = /^(\D+)\s*\d/;
-    // const match = cityStr.match(regex);
-    // const city = match ? match[1].trim() : cityStr.trim();
     const city = cityStr.trim();
        // 调用传入的 onClick 函数
+       console.log('Before onClick:', city); // 打印点击的城市
        onClick(city);
+       console.log('After onClick:', city); // 确认 onClick 调用后的值
        // 更新 clickedCity 状态
        setClickedCity(prev => prev === city ? null : city);
    };
@@ -30,14 +27,15 @@ const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
 
   return (
     <div className="cursor-pointer">
-      <h1>路线统计</h1>
+      <h2>路线统计</h2>
+      <br></br>
       {/* 显示 clickedCity 的值 */}
-     
+      {/* <p>Clicked City: {clickedCity || 'None'}</p> */}
       <section style={{
-            maxHeight: '400px', // 设置最大高度为 400px
+            maxHeight: '350px', // 设置最大高度为 400px
             overflowY: 'auto',  // 当内容超过最大高度时显示垂直滚动条
             border: '0px solid #ccc', // 为了便于观察，可以添加边框
-            padding: '10px' // 添加一些内边距
+            padding: '0px' // 添加一些内边距
         }}>
   {citiesArr.map(([city, distance]) => {
     // 移除 "跑点" 两个字
@@ -50,7 +48,7 @@ const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
     // const isClicked = processedCity === clickedCity;
     // 新增：根据是否被点击设置样式
     const statStyle = {
-        textDecoration: isClicked ? 'underline' : 'none',
+        // textDecoration: isClicked ? 'underline' : 'none',
         color: isClicked ? 'red' : 'inherit'
     };
     
@@ -61,19 +59,19 @@ const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
         value={processedCity}
         description={` ${(distance / 1000).toFixed(0)} KM`}
         citySize={2}
-        onClick={() => onClick(processedCity)}
+        onClick={() => handleClick(processedCity)}
         style={statStyle} // 新增：应用样式
       />
      
     );
   })}
 </section>
-<p>Clicked City: {clickedCity || 'None'}</p>
+
      
 <div>
         
       </div>
-      <hr color="red" />
+      {/* <hr color="red" /> */}
     </div>
   );
 };

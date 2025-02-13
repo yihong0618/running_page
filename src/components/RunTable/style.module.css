@@ -1,11 +1,13 @@
 @media only screen and (max-width: 700px) {
 
-  /* 当屏幕宽度小于 700px 时 */
-  .runTable th:nth-child(4),
-  .runTable td:nth-child(4) {
-    display: none;
-    /* 隐藏第四列 */
-  }
+   /* 当屏幕宽度小于 700px 时 */
+   .runTable th:nth-child(4),
+   .runTable td:nth-child(4),
+   .runTable th:nth-child(7),
+   .runTable td:nth-child(7) {
+     display: none;
+     /* 隐藏第 4 列和第 7 列 */
+   }
 }
 
 .runTable {
@@ -14,7 +16,7 @@
   margin: 2rem 0 5rem 0;
 
   :is(thead) {
-    color: rgb(204, 204, 204);
+    color: rgb(9, 13, 245);
     text-align: right;
 
     :is(th) {
@@ -49,6 +51,6 @@
   overflow-x: auto;
 }
 
-.runDate {
+/* .runDate {
   color: rgb(204, 204, 204);
-}
+} */

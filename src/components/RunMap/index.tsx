@@ -90,7 +90,7 @@ const RunMap = ({
   filterCountries.unshift('in', 'name');
 
   const initGeoDataLength = geoData.features.length;
-  const isBigMap = (viewState.zoom ?? 0) <= 3;
+  const isBigMap = (viewState.zoom ?? 0) <= 5;
   if (isBigMap && IS_CHINESE) {
     // Show boundary and line together, combine geoData(only when not combine yet)
     if(geoData.features.length === initGeoDataLength){
@@ -145,7 +145,7 @@ const RunMap = ({
       {...viewState}
       onMove={onMove}
       style={style}
-      mapStyle="mapbox://styles/mapbox/dark-v10"
+      mapStyle="mapbox://styles/mapbox/light-v10"
       ref={mapRefCallback}
       mapboxAccessToken={MAPBOX_TOKEN}
     >
@@ -156,7 +156,7 @@ const RunMap = ({
           type="fill"
           paint={{
             'fill-color': PROVINCE_FILL_COLOR,
-            'fill-opacity': 0.2,
+            'fill-opacity': 0.7,
           }}
           filter={filterProvinces}
         />
@@ -197,7 +197,7 @@ const RunMap = ({
       <span className={styles.runTitle}>{title}</span>
       <FullscreenControl style={fullscreenButton}/>
       {!PRIVACY_MODE && <LightsControl setLights={setLights} lights={lights}/>}
-      <NavigationControl showCompass={true} position={'bottom-right'} style={{opacity: 0.3}}/>
+      <NavigationControl showCompass={true} position={'bottom-right'} style={{opacity: 0.9}}/>
     </Map>
   );
 };
