@@ -6,7 +6,7 @@ import time
 import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta, timezone
-
+import sqlite3
 import eviltransform
 import gpxpy
 import polyline
@@ -58,8 +58,28 @@ def login(session, mobile, password):
 
 
 def get_to_download_runs_ids(session, headers, sport_type):
+    # 连接到SQLite数据库
+    conn = sqlite3.connect(SQL_FILE)
+    cursor = conn.cursor()
+
+    # 从activities表中获取start_date字段的最后一个日期
+    try:
+        cursor.execute("SELECT start_date FROM activities ORDER BY start_date DESC LIMIT 1")
+        result = cursor.fetchone()
+        if result:
+            lastdate = result[0]
+        else:
+            lastdate = None
+    except sqlite3.Error as e:
+        print(f"数据库查询出错: {e}")
+        lastdate = None
+    finally:
+        conn.close()
+
+    if lastdate:
+        lastdate_obj = datetime.strptime(lastdate, "%Y-%m-%d %H:%M:%S")
      # 将 2025-2-1 转换为时间戳
-    target_date = datetime(2025, 2, 1, tzinfo=timezone.utc)
+    target_date = lastdate_obj.replace(tzinfo=timezone.utc)  #datetime(2025, 2, 1, tzinfo=timezone.utc)
     target_timestamp = int(target_date.timestamp() * 1000)  # 转换为毫秒
     last_date = 0
     result = []
