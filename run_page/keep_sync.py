@@ -19,10 +19,17 @@ import xml.etree.ElementTree as ET
 
 KEEP_SPORT_TYPES = ["running", "hiking", "cycling"]
 KEEP2STRAVA = {
-    "outdoorWalking": "Walk",
+    "outdoorWalking": "Hike",
+    "outdoorRunning": "Outdoor Run",
+    "outdoorCycling": "Ride",
+    "VirtualRun": "Treadmill",
+}
+# for multi sports
+TYPE_DICT = {
+    "outdoorWalking": "Hike",
     "outdoorRunning": "Run",
     "outdoorCycling": "Ride",
-    "indoorRunning": "VirtualRun",
+    "VirtualRun": "Run",
 }
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
@@ -51,6 +58,9 @@ def login(session, mobile, password):
 
 
 def get_to_download_runs_ids(session, headers, sport_type):
+     # 将 2025-2-1 转换为时间戳
+    target_date = datetime(2025, 2, 1, tzinfo=timezone.utc)
+    target_timestamp = int(target_date.timestamp() * 1000)  # 转换为毫秒
     last_date = 0
     result = []
 
@@ -64,12 +74,19 @@ def get_to_download_runs_ids(session, headers, sport_type):
 
             for i in run_logs:
                 logs = [j["stats"] for j in i["logs"]]
-                result.extend(k["id"] for k in logs if not k["isDoubtful"])
+                for k in logs:
+                    if not k["isDoubtful"]:
+                        # 假设每条记录有一个时间戳字段，这里假设为 "timestamp"，你需要根据实际情况修改
+                        record_timestamp = k.get("startTime", 0)
+                        record_date = datetime.fromtimestamp(record_timestamp / 1000, tz=timezone.utc)
+                        if record_date >= target_date:
+                            result.append(k["id"])
+                # result.extend(k["id"] for k in logs if not k["isDoubtful"])
             last_date = r.json()["data"]["lastTimestamp"]
             since_time = datetime.fromtimestamp(last_date / 1000, tz=timezone.utc)
             print(f"pares keep ids data since {since_time}")
             time.sleep(1)  # spider rule
-            if not last_date:
+            if  last_date<target_timestamp:
                 break
     return result
 
@@ -151,12 +168,16 @@ def parse_raw_data_to_nametuple(
     start_date_local = adjust_time(start_date, tz_name)
     end = datetime.fromtimestamp(run_data["endTime"] / 1000, tz=timezone.utc)
     end_local = adjust_time(end, tz_name)
+    elevation_gain = 0
+    if run_data["accumulativeClimbingDistance"]:
+        elevation_gain = run_data["accumulativeClimbingDistance"]
     if not run_data["duration"]:
         print(f"ID {keep_id} has no total time just ignore please check")
         return
+    cast_type = TYPE_DICT[run_data['dataType']] if run_data['dataType'] in TYPE_DICT else run_data['dataType']
     d = {
         "id": int(keep_id),
-        "name": f"{KEEP2STRAVA[run_data['dataType']]} from keep",
+        "name": cast_type,
         # future to support others workout now only for run
         "type": f"{KEEP2STRAVA[(run_data['dataType'])]}",
         "subtype": f"{KEEP2STRAVA[(run_data['dataType'])]}",
@@ -174,6 +195,7 @@ def parse_raw_data_to_nametuple(
             seconds=int((run_data["endTime"] - run_data["startTime"]) / 1000)
         ),
         "average_speed": run_data["distance"] / run_data["duration"],
+        "elevation_gain": elevation_gain,
         "location_country": str(run_data.get("region", "")),
     }
     return namedtuple("x", d.keys())(*d.values())
@@ -342,7 +364,7 @@ if __name__ == "__main__":
         "--sync-types",
         dest="sync_types",
         nargs="+",
-        default=["running"],
+        default=KEEP_SPORT_TYPES, #change to support all types
         help="sync sport types from keep, default is running, you can choose from running, hiking, cycling",
     )
     parser.add_argument(
