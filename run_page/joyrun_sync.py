@@ -8,6 +8,7 @@ import time
 from collections import namedtuple
 from datetime import datetime, timedelta, timezone
 from hashlib import md5
+from typing import List
 from urllib.parse import quote
 
 import gpxpy
@@ -187,6 +188,23 @@ class Joyrun:
             points = []
         return points
 
+    class Pause(object):
+        def __init__(self, pause_data_point: List[int]):
+            self.index = pause_data_point[0]
+            self.duration = pause_data_point[1]
+        
+        def __repr__(self):
+            return f"Pause(index=${self.index}, duration=${self.duration})"
+
+    class PauseList:
+        def __init__(self, pause_list: List[List[int]]):
+            self._list = []
+            for pause in pause_list:
+                self._list.append(Joyrun.Pause(pause))
+        
+        def next(self) -> "Joyrun.Pause":
+            return self._list.pop(0) if self._list else None
+
     @staticmethod
     def parse_points_to_gpx(
         run_points_data, start_time, end_time, pause_list, interval=5
@@ -204,8 +222,13 @@ class Joyrun:
         segment_list = []
         points_dict_list = []
         current_time = start_time
+        
+        # Initialize Pause
+        pause_list = Joyrun.PauseList(pause_list)
+        pause = pause_list.next()
 
         for index, point in enumerate(run_points_data[:-1]):
+            # New Track Point
             points_dict = {
                 "latitude": point[0],
                 "longitude": point[1],
@@ -213,12 +236,15 @@ class Joyrun:
             }
             points_dict_list.append(points_dict)
 
+            # Increment time
             current_time += interval
-            if pause_list and int(pause_list[0][0]) - 1 == index:
+            
+            # Check pause
+            if pause and pause.index - 1 == index:                
                 segment_list.append(points_dict_list[:])
                 points_dict_list.clear()
-                current_time += int(pause_list[0][1])
-                pause_list.pop(0)
+                current_time += int(pause.duration)
+                pause = pause_list.next()
 
         points_dict_list.append(
             {
