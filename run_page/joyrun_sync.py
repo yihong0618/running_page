@@ -192,7 +192,7 @@ class Joyrun:
         def __init__(self, pause_data_point: List[int]):
             self.index = pause_data_point[0]
             self.duration = pause_data_point[1]
-        
+
         def __repr__(self):
             return f"Pause(index=${self.index}, duration=${self.duration})"
 
@@ -201,7 +201,7 @@ class Joyrun:
             self._list = []
             for pause in pause_list:
                 self._list.append(Joyrun.Pause(pause))
-        
+
         def next(self) -> "Joyrun.Pause":
             return self._list.pop(0) if self._list else None
 
@@ -221,57 +221,52 @@ class Joyrun:
         # GPX instance
         gpx = gpxpy.gpx.GPX()
         gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
-        
+
         # GPX Track
         track = gpxpy.gpx.GPXTrack()
         track.name = f"gpx from joyrun {start_time}"
         gpx.tracks.append(track)
 
-        # format data
-        segment_list = []
-        points_dict_list = []
-        current_time = start_time
-        
+        # GPX Track Segment
+        track_segment = gpxpy.gpx.GPXTrackSegment()
+        track.segments.append(track_segment)
+
         # Initialize Pause
         pause_list = Joyrun.PauseList(pause_list)
         pause = pause_list.next()
 
+        current_time = start_time
         for index, point in enumerate(run_points_data[:-1]):
             # New Track Point
-            points_dict = {
-                "latitude": point[0],
-                "longitude": point[1],
-                "time": datetime.fromtimestamp(current_time, tz=timezone.utc),
-            }
-            points_dict_list.append(points_dict)
+            track_point = gpxpy.gpx.GPXTrackPoint(
+                latitude=point[0],
+                longitude=point[1],
+                time=datetime.fromtimestamp(current_time, tz=timezone.utc),
+            )
+            track_segment.points.append(track_point)
 
             # Increment time
             current_time += interval
-            
+
             # Check pause
-            if pause and pause.index - 1 == index:                
-                segment_list.append(points_dict_list[:])
-                points_dict_list.clear()
+            if pause and pause.index - 1 == index:
+                # New Segment
+                track_segment = gpxpy.gpx.GPXTrackSegment()
+                track.segments.append(track_segment)
+                # Add paused duration
                 current_time += int(pause.duration)
+                # Next pause
                 pause = pause_list.next()
 
         # Last Track Point uses end_time
-        points_dict_list.append(
-            {
-                "latitude": run_points_data[-1][0],
-                "longitude": run_points_data[-1][1],
-                "time": datetime.fromtimestamp(end_time, tz=timezone.utc),
-            }
+        last_point = run_points_data[-1]
+        track_segment.points.append(
+            gpxpy.gpx.GPXTrackPoint(
+                latitude=last_point[0],
+                longitude=last_point[1],
+                time=datetime.fromtimestamp(end_time, tz=timezone.utc),
+            )
         )
-        segment_list.append(points_dict_list)
-
-        # add segment list to our GPX track:
-        for point_list in segment_list:
-            gpx_segment = gpxpy.gpx.GPXTrackSegment()
-            track.segments.append(gpx_segment)
-            for p in point_list:
-                point = gpxpy.gpx.GPXTrackPoint(**p)
-                gpx_segment.points.append(point)
 
         return gpx.to_xml()
 
