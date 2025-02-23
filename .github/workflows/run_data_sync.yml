@@ -1,4 +1,4 @@
-name: Run Data Sync
+﻿name: Run Data Sync
 
 on:
   workflow_dispatch:
@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Set up Python
         id: setup_python
