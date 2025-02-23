@@ -218,6 +218,15 @@ class Joyrun:
         :param interval:        time interval between each point, in seconds
         """
 
+        # GPX instance
+        gpx = gpxpy.gpx.GPX()
+        gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+        
+        # GPX Track
+        track = gpxpy.gpx.GPXTrack()
+        track.name = f"gpx from joyrun {start_time}"
+        gpx.tracks.append(track)
+
         # format data
         segment_list = []
         points_dict_list = []
@@ -246,6 +255,7 @@ class Joyrun:
                 current_time += int(pause.duration)
                 pause = pause_list.next()
 
+        # Last Track Point uses end_time
         points_dict_list.append(
             {
                 "latitude": run_points_data[-1][0],
@@ -255,17 +265,10 @@ class Joyrun:
         )
         segment_list.append(points_dict_list)
 
-        # gpx part
-        gpx = gpxpy.gpx.GPX()
-        gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
-        gpx_track = gpxpy.gpx.GPXTrack()
-        gpx_track.name = "gpx from joyrun"
-        gpx.tracks.append(gpx_track)
-
         # add segment list to our GPX track:
         for point_list in segment_list:
             gpx_segment = gpxpy.gpx.GPXTrackSegment()
-            gpx_track.segments.append(gpx_segment)
+            track.segments.append(gpx_segment)
             for p in point_list:
                 point = gpxpy.gpx.GPXTrackPoint(**p)
                 gpx_segment.points.append(point)
