@@ -350,11 +350,11 @@ class Joyrun:
                     break
             if not is_duplicate:
                 seen_runs[start_time] = {"run_data": run_data, "distance": distance}
-            for run in seen_runs.values():
-                track = self.parse_raw_data_to_nametuple(
-                    run["run_data"], old_gpx_ids, with_gpx
-                )
-                tracks.append(track)
+        for run in seen_runs.values():
+            track = self.parse_raw_data_to_nametuple(
+                run["run_data"], old_gpx_ids, with_gpx
+            )
+            tracks.append(track)
         return tracks
 
 
