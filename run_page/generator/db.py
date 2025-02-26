@@ -101,25 +101,26 @@ def update_or_create_activity(session, run_activity):
         if not activity:
             start_point = run_activity.start_latlng
             location_country = getattr(run_activity, "location_country", "")
+            #不好用，还卡，所以注释掉
             # or China for #176 to fix
-            if not location_country and start_point or location_country == "China":
-                try:
-                    location_country = str(
-                        g.reverse(
-                            f"{start_point.lat}, {start_point.lon}", language="zh-CN"
-                        )
-                    )
-                # limit (only for the first time)
-                except Exception as e:
-                    try:
-                        location_country = str(
-                            g.reverse(
-                                f"{start_point.lat}, {start_point.lon}",
-                                language="zh-CN",
-                            )
-                        )
-                    except Exception as e:
-                        pass
+            # if not location_country and start_point or location_country == "China":
+            #     try:
+            #         location_country = str(
+            #             g.reverse(
+            #                 f"{start_point.lat}, {start_point.lon}", language="zh-CN"
+            #             )
+            #         )
+            #     # limit (only for the first time)
+            #     except Exception as e:
+            #         try:
+            #             location_country = str(
+            #                 g.reverse(
+            #                     f"{start_point.lat}, {start_point.lon}",
+            #                     language="zh-CN",
+            #                 )
+            #             )
+            #         except Exception as e:
+            #             pass
 
             activity = Activity(
                 run_id=run_activity.id,
@@ -156,7 +157,7 @@ def update_or_create_activity(session, run_activity):
             else:
     # 这里可以根据需求修改默认值，例如设置为 0.0
                 elevation_gain = 0.0
-            #activity.elevation_gain = float(run_activity.elevation_gain)
+            activity.elevation_gain = elevation_gain
             activity.summary_polyline = (
                 run_activity.map and run_activity.map.summary_polyline or ""
             )

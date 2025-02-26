@@ -11,7 +11,7 @@ import eviltransform
 import gpxpy
 import polyline
 import requests
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE, RUNDATA_FOLDER, run_map, start_point
 from Crypto.Cipher import AES
 from generator import Generator
 from utils import adjust_time
@@ -116,8 +116,18 @@ def get_single_run_data(session, headers, run_id, sport_type):
         RUN_LOG_API.format(sport_type=sport_type, run_id=run_id), headers=headers
     )
     if r.ok:
-        return r.json()
+        
+        data = r.json()
+        file_path = os.path.join(RUNDATA_FOLDER, f"{run_id}.json")
+         # 将数据写入 JSON 文件
+        try:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+            # print(f"Data saved to {file_path}")
+        except Exception as e:
+            print(f"Error saving data to {file_path}: {e}")
 
+        return data
 
 def decode_runmap_data(text, is_geo=False):
     _bytes = base64.b64decode(text)

@@ -6,6 +6,7 @@ from utils import adjust_time_to_utc, adjust_timestamp_to_utc, to_date
 from datetime import datetime, timedelta
 from xml.dom import minidom
 from tzlocal import get_localzone
+from config import TCX_FOLDER
 import numpy as np
 import random
 
@@ -19,8 +20,8 @@ parent = os.path.dirname(current)
 
 RUNDATA_FOLDER=os.path.join(parent, "RUN_DATA")
 
-
-codoon_folder = os.path.join(RUNDATA_FOLDER, 'Codoon')
+codoon_folder=RUNDATA_FOLDER
+# codoon_folder = os.path.join(RUNDATA_FOLDER, 'Codoon')
 codoon_tcx_folder = os.path.join(RUNDATA_FOLDER, 'Codoon_TCX')
 codoon_done_folder = os.path.join(RUNDATA_FOLDER, 'Codoon_Done')
 codoon_fail_folder = os.path.join(RUNDATA_FOLDER, 'Codoon_Fail')
@@ -292,7 +293,7 @@ def tcx_output(fit_array, run_data,filename):
     # new_filename = f"{sports_type}_{Roomtype}_{start_time}.json".replace(':', '')
     # 构造新的文件名
     tcx_filename = f"{sports_type}_{Roomtype}_{start_time}{datastr}.tcx".replace(':', '')
-    tcx_file_path = os.path.join(codoon_tcx_folder, tcx_filename)
+    tcx_file_path = os.path.join(TCX_FOLDER, tcx_filename)
     
     # tree = ET.ElementTree(training_center_database)
     # tree.write(tcx_file_path, encoding='utf-8', xml_declaration=True)
@@ -440,7 +441,7 @@ def tcx_job(run_data,filename):
                         fit_array, unix_time, None, latitude, longitude, elevation,distance,speed,cadence,watts
                     )
 
-    # if fit_array is not None:
+    if fit_array is not None:
         # order array
         fit_array = np.sort(fit_array, order="time")
         # write to TCX file
