@@ -188,16 +188,16 @@ class Joyrun:
             points = []
         return points
 
-    class Pause(object):
-        def __init__(self, pause_data_point: List[int]):
-            self.index = pause_data_point[0]
-            self.duration = pause_data_point[1]
+    class Pause:
+        def __init__(self, pause_data_point: List[str]):
+            self.index = int(pause_data_point[0])
+            self.duration = int(pause_data_point[1])
 
         def __repr__(self):
             return f"Pause(index=${self.index}, duration=${self.duration})"
 
     class PauseList:
-        def __init__(self, pause_list: List[List[int]]):
+        def __init__(self, pause_list: List[List[str]]):
             self._list = []
             for pause in pause_list:
                 self._list.append(Joyrun.Pause(pause))
@@ -254,7 +254,7 @@ class Joyrun:
                 track_segment = gpxpy.gpx.GPXTrackSegment()
                 track.segments.append(track_segment)
                 # Add paused duration
-                current_time += int(pause.duration)
+                current_time += pause.duration
                 # Next pause
                 pause = pause_list.next()
 
