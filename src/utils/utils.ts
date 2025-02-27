@@ -25,11 +25,13 @@ import {
 import { FeatureCollection, LineString } from 'geojson';
 
 export type Coordinate = [number, number];
+//add new type to highlight route
+export type RunId = number;
 
-export type RunIds = Array<number> | [];
+export type RunIds = RunId[];
 
 export interface Activity {
-  run_id: number;
+  run_id: RunId;
   name: string;
   distance: number;
   moving_time: string;
@@ -233,8 +235,8 @@ const pathForRun = (run: Activity): Coordinate[] => {
     return [];
   }
 };
-
-const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
+//add new ids to selectedIds
+const geoJsonForRuns = (runs: Activity[],selectedIds: RunIds = []): FeatureCollection<LineString> => ({
   type: 'FeatureCollection',
   features: runs.map((run) => {
     const points = pathForRun(run);
@@ -243,6 +245,8 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
       type: 'Feature',
       properties: {
         'color': colorFromType(run.type),
+        isSelected: selectedIds.includes(run.run_id), // 👈 新增选中标记
+        
       },
       geometry: {
         type: 'LineString',
@@ -411,6 +415,7 @@ const getBoundsForGeoData = (
     [Math.min(...pointsLong), Math.min(...pointsLat)],
     [Math.max(...pointsLong), Math.max(...pointsLat)],
   ];
+  // 计算所有坐标点的最小/最大经纬度
   const viewState = new WebMercatorViewport({
     width: 800,
     height: 600,

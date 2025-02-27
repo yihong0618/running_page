@@ -16,7 +16,7 @@ import {
   PRIVACY_MODE,
   LIGHTS_ON,
 } from '@/utils/const';
-import { Coordinate, IViewState, geoJsonForMap } from '@/utils/utils';
+import { Coordinate, IViewState, geoJsonForMap,RunIds,Activity } from '@/utils/utils';
 import RunMarker from './RunMarker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.css';
@@ -32,6 +32,8 @@ interface IRunMapProps {
   changeYear: (_year: string) => void;
   geoData: FeatureCollection<RPGeometry>;
   thisYear: string;
+  selectedRunIds: RunIds;
+  
 }
 
 const RunMap = ({
@@ -41,6 +43,8 @@ const RunMap = ({
   changeYear,
   geoData,
   thisYear,
+  selectedRunIds,
+ 
 }: IRunMapProps) => {
   const { countries, provinces } = useActivities();
   const mapRef = useRef<MapRef>();
@@ -101,17 +105,36 @@ const RunMap = ({
     }
   }
 
-  const isSingleRun =
-    geoData.features.length === 1 &&
-    geoData.features[0].geometry.coordinates.length;
+  // const isSingleRun =
+  //   geoData.features.length === 1 &&
+  //   geoData.features[0].geometry.coordinates.length;
+  // 替换原有 isSingleRun 逻辑
+const isSingleRun = selectedRunIds.length === 1;
   let startLon = 0;
   let startLat = 0;
   let endLon = 0;
   let endLat = 0;
+
   if (isSingleRun) {
-    const points = geoData.features[0].geometry.coordinates as Coordinate[];
-    [startLon, startLat] = points[0];
-    [endLon, endLat] = points[points.length - 1];
+    // 从所有轨迹中查找选中轨迹
+    // 👇 直接从 geoData 查找选中轨迹
+    // const selectedFeature = geoData.features.find(f => 
+    //   f.properties?.run_id === selectedRunIds[0]
+    // );
+    const selectedFeature = geoData.features.find(f => 
+      f.properties?.isSelected // 👈 直接使用已生成的选中标记
+    );
+
+    if (selectedFeature?.geometry?.coordinates) {
+      const points = selectedFeature.geometry.coordinates as Coordinate[];
+      [startLon, startLat] = points[0];
+      [endLon, endLat] = points[points.length - 1];
+    }
+
+  // if (isSingleRun) {
+  //   const points = geoData.features[0].geometry.coordinates as Coordinate[];
+    // [startLon, startLat] = points[0];
+    // [endLon, endLat] = points[points.length - 1];
   }
   let dash = USE_DASH_LINE && !isSingleRun && !isBigMap ? [2, 2] : [2, 0];
   const onMove = React.useCallback(({ viewState }: { viewState: IViewState }) => {
@@ -156,7 +179,7 @@ const RunMap = ({
           type="fill"
           paint={{
             'fill-color': PROVINCE_FILL_COLOR,
-            'fill-opacity': 0.7,
+            'fill-opacity': 0.8,
           }}
           filter={filterProvinces}
         />
@@ -166,7 +189,7 @@ const RunMap = ({
           paint={{
             'fill-color': COUNTRY_FILL_COLOR,
             // in China, fill a bit lighter while already filled provinces
-            'fill-opacity': ["case", ["==", ["get", "name"], '中国'], 0.1, 0.5],
+            'fill-opacity': ["case", ["==", ["get", "name"], '中国'], 0.2, 0.8],
           }}
           filter={filterCountries}
         />
@@ -174,10 +197,25 @@ const RunMap = ({
           id="runs2"
           type="line"
           paint={{
-            'line-color': ['get', 'color'],
-            'line-width': isBigMap && lights ? 1 : 2,
+            'line-color': [
+              'case',
+              ['get', 'isSelected'], // 👈 根据选中状态
+              '#ff0000', // 选中颜色
+              ['get', 'color'] // 默认颜色
+            ],
+            'line-width': [
+              'case',
+              ['get', 'isSelected'], 
+              4, // 选中加粗
+              (isBigMap && lights) ? 1 : 2 // 默认
+            ],
             'line-dasharray': dash,
-            'line-opacity': isSingleRun || isBigMap || !lights ? 1 : LINE_OPACITY,
+            'line-opacity': [
+              'case',
+              ['get', 'isSelected'],
+              1, // 选中不透明
+              0.3 // 非选中半透明
+            ],
             'line-blur': 1,
           }}
           layout={{
@@ -198,7 +236,11 @@ const RunMap = ({
       <FullscreenControl style={fullscreenButton}/>
       {!PRIVACY_MODE && <LightsControl setLights={setLights} lights={lights}/>}
       <NavigationControl showCompass={true} position={'bottom-right'} style={{opacity: 0.9}}/>
+      {/* {console.log('实时 isSingleRun:', isSingleRun)}; */}
+      {/* {console.log('当前选中ID数量:', selectedRunIds.length)};
+      {console.log('geoData 轨迹数量:', geoData.features.length)}; */}
     </Map>
+    
   );
 };
 

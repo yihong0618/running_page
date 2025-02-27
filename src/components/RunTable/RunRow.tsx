@@ -19,11 +19,11 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IR
   const handleClick = () => {
     if (runIndex === elementIndex) {
       setRunIndex(-1);
-      locateActivity([]);
+      locateActivity([]); // 👈 清空选择
       return
     };
     setRunIndex(elementIndex);
-    locateActivity([run.run_id]);
+    locateActivity([run.run_id]); // 👈 传递选中run_id
   };
 
   return (

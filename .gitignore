@@ -16,6 +16,7 @@ _site/
 /TCX_OUT
 RUN_DATA
 temppy
+runalyze
 Garmin_secret
 Filetemp
 databack
@@ -23,9 +24,8 @@ databack
 
 /.vscode
 .idea
-
+*.bat
 config.yaml
 .venv/
 /.vs
-run.bat
-sync.bat
+

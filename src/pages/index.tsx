@@ -24,11 +24,12 @@ import {
   sortDateFunc,
   titleForShow,
   RunIds,
+  RunId,
 } from '@/utils/utils';
 
 const SHOW_LOCATION_STAT = 'SHOW_LOCATION_STAT';
   const SHOW_YEARS_STAT = 'SHOW_YEARS_STAT';
-  const reducer = (state, action) => {
+  const reducer = (state: any, action: { type: any; }) => {
     switch (action.type) {
         case SHOW_LOCATION_STAT:
             return { showLocationStat: true };
@@ -49,7 +50,7 @@ const Index = () => {
   const [title, setTitle] = useState('');
   const [geoData, setGeoData] = useState(geoJsonForRuns(runs));
   // for auto zoom
-  const bounds = getBoundsForGeoData(geoData);
+  const bounds = getBoundsForGeoData(geoData);  // 计算当前 geoData 的边界
   const [intervalId, setIntervalId] = useState<number>();
 
   const [viewState, setViewState] = useState<IViewState>({
@@ -110,53 +111,74 @@ const Index = () => {
     setRunIndex(-1);
     setTitle(`${year} ${type} Type Heatmap`);
   };
+  
+  // 新增状态保存选中ID
+  const [selectedRunIds, setSelectedRunIds] = useState<RunIds>([]);
 
-
+  // 修改后的 locateActivity
   const locateActivity = (runIds: RunIds) => {
+     // 类型安全校验
+    if (!Array.isArray(runIds)) return;
     const ids = new Set(runIds);
-
     const selectedRuns = !runIds.length
       ? runs
       : runs.filter((r: any) => ids.has(r.run_id));
-
+    // console.log(selectedRuns)
+    // setSelectedRunIds(runIds); // 👈 仅记录选中ID，不修改原始数据
     if (!selectedRuns.length) {
       return;
-    }
-
+    } 
     const lastRun = selectedRuns.sort(sortDateFunc)[0];
-
     if (!lastRun) {
       return;
     }
-    setGeoData(geoJsonForRuns(selectedRuns));
     setTitle(titleForShow(lastRun));
     clearInterval(intervalId);
     scrollToMap();
-  };
+    // setGeoData(geoJsonForRuns(selectedRuns)); // 👈 直接覆盖原有数据
+    // 计算选中轨迹的边界
+    const selectedGeoData = geoJsonForRuns(selectedRuns);
+    console.log('选中记录：',selectedGeoData)
+    if (selectedGeoData.features[0].geometry.coordinates.length > 0) {
+      // 处理无数据的情况，可能提示用户或跳过缩放
+      setSelectedRunIds(runIds);
+      const selectedBounds = getBoundsForGeoData(selectedGeoData);
+      setViewState(prev => ({
+        ...prev,
+        ...selectedBounds,
+        // transitionDuration: 1000
+      }));
+      
+    }
+  }
 
+  // useEffect(() => {
+  //   setViewState({
+  //     ...bounds,
+  //   });
+  // }, [geoData]); // 👈 自动设置经纬度中心点和缩放级别
+
+  // useEffect(() => {
+  //   const runsNum = runs.length;
+  //   // maybe change 20 ?
+  //   const sliceNum = runsNum >= 10 ? runsNum / 10 : 1;
+  //   let i = sliceNum;
+  //   const id = setInterval(() => {
+  //     if (i >= runsNum) {
+  //       clearInterval(id);
+  //     }
+
+  //     const tempRuns = runs.slice(0, i);
+  //     setGeoData(geoJsonForRuns(tempRuns));
+  //     i += sliceNum;
+  //   }, 10);
+  //   setIntervalId(id);
+  // }, [runs]);
   useEffect(() => {
-    setViewState({
-      ...bounds,
-    });
-  }, [geoData]);
-
-  useEffect(() => {
-    const runsNum = runs.length;
-    // maybe change 20 ?
-    const sliceNum = runsNum >= 10 ? runsNum / 10 : 1;
-    let i = sliceNum;
-    const id = setInterval(() => {
-      if (i >= runsNum) {
-        clearInterval(id);
-      }
-
-      const tempRuns = runs.slice(0, i);
-      setGeoData(geoJsonForRuns(tempRuns));
-      i += sliceNum;
-    }, 10);
-    setIntervalId(id);
-  }, [runs]);
-
+    // 生成包含所有轨迹且带 isSelected 标记的 geoData
+    setGeoData(geoJsonForRuns(runs, selectedRunIds));
+  }, [runs, selectedRunIds]); // 当 runs 或选中ID变化时触发
+  // console.log('geoData:', geoData);
   useEffect(() => {
     if (year !== 'Total') {
       return;
@@ -242,7 +264,7 @@ const buttonStyle = {
           <YearsStat year={year} onClick={changeYear} onClickTypeInYear={changeTypeInYear}/>
         )} */}
         <button onClick={handleToggle} style={buttonStyle}>
-                {state.showLocationStat ? '按地点显示' : '按年份显示'}
+                {state.showLocationStat ? '切换至年份统计' : '切换至地点统计'}
             </button>
             {state.showLocationStat ? (
                 <LocationStat
@@ -259,10 +281,13 @@ const buttonStyle = {
         <RunMap 
           title={title}
           viewState={viewState}
-          geoData={geoData}
+          geoData={geoData}  // 👈 最终传递给 Mapbox
           setViewState={setViewState}
           changeYear={changeYear}
           thisYear={year}
+          // 新增传递选中ID
+          selectedRunIds={selectedRunIds}
+          
         />
         {year === 'Total' ? (
           <SVGStat />
