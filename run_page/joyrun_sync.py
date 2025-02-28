@@ -7,7 +7,7 @@ import subprocess
 import sys
 import time
 import warnings
-from collections import namedtuple, deque
+from collections import namedtuple
 from datetime import datetime, timedelta, timezone
 from hashlib import md5
 from typing import List
