@@ -193,36 +193,42 @@ const isSingleRun = selectedRunIds.length === 1;
           }}
           filter={filterCountries}
         />
-        <Layer
-          id="runs2"
-          type="line"
-          paint={{
-            'line-color': [
-              'case',
-              ['get', 'isSelected'], // 👈 根据选中状态
-              '#ff0000', // 选中颜色
-              ['get', 'color'] // 默认颜色
-            ],
-            'line-width': [
-              'case',
-              ['get', 'isSelected'], 
-              4, // 选中加粗
-              (isBigMap && lights) ? 1 : 2 // 默认
-            ],
-            'line-dasharray': dash,
-            'line-opacity': [
-              'case',
-              ['get', 'isSelected'],
-              1, // 选中不透明
-              0.3 // 非选中半透明
-            ],
-            'line-blur': 1,
-          }}
-          layout={{
-            'line-join': 'round',
-            'line-cap': 'round',
-          }}
-        />
+        
+  <Layer
+    id="runs2-unselected"
+    type="line"
+    paint={{
+      'line-color': ['get', 'color'],
+      'line-width': (isBigMap && lights) ? 1 : 2,
+      'line-opacity': 0.7,
+      'line-dasharray': dash,
+      'line-blur': 1
+    }}
+    filter={["==", ["get", "isSelected"], false]} // 👈 直接根据 isSelected 属性
+    layout={{
+      'line-join': 'round',
+      'line-cap': 'round',
+    }}
+  />
+
+  {/* Layer4：选中的轨迹 */}
+  <Layer
+    id="runs2-selected"
+    type="line"
+    paint={{
+      'line-color': '#ff0000',
+      'line-width': 6,
+      'line-opacity': 1,
+      'line-dasharray': dash,
+      'line-blur': 0
+    }}
+    filter={["==", ["get", "isSelected"], true]} // 👈 精确匹配选中状态
+    layout={{
+      'line-join': 'round',
+      'line-cap': 'round',
+    }}
+  />
+
       </Source>
       {isSingleRun && (
         <RunMarker
@@ -236,9 +242,7 @@ const isSingleRun = selectedRunIds.length === 1;
       <FullscreenControl style={fullscreenButton}/>
       {!PRIVACY_MODE && <LightsControl setLights={setLights} lights={lights}/>}
       <NavigationControl showCompass={true} position={'bottom-right'} style={{opacity: 0.9}}/>
-      {/* {console.log('实时 isSingleRun:', isSingleRun)}; */}
-      {/* {console.log('当前选中ID数量:', selectedRunIds.length)};
-      {console.log('geoData 轨迹数量:', geoData.features.length)}; */}
+  
     </Map>
     
   );

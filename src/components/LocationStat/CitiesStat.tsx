@@ -17,9 +17,9 @@ const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
    const handleClick = (cityStr: string) => {
     const city = cityStr.trim();
        // 调用传入的 onClick 函数
-       console.log('Before onClick:', city); // 打印点击的城市
+      
        onClick(city);
-       console.log('After onClick:', city); // 确认 onClick 调用后的值
+      
        // 更新 clickedCity 状态
        setClickedCity(prev => prev === city ? null : city);
    };
@@ -38,7 +38,7 @@ const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
             padding: '0px' // 添加一些内边距
         }}>
   {citiesArr.map(([city, distance]) => {
-    // 移除 "跑点" 两个字
+    // 移除 "路线" 两个字
     const processedCity = city.replace("路线", "");
 
   

@@ -55,7 +55,12 @@ const titleForShow = (run: Activity): string => {
   if (run.name) {
     name = run.name;
   }
-  return `${name} ${date} ${distance} KM ${!run.summary_polyline ? '(No map data for this workout)' : ''
+  const type=run.type;
+  let  route='';
+  if (run.route){
+    route=run.route;
+  }
+  return `${type} ${date} ${distance}  KM ${run.route?'@'+route:''} ${!run.summary_polyline ? '(No map data for this workout)' : ''
     }`;
 };
 
@@ -82,12 +87,15 @@ const convertMovingTime2Sec = (moving_time: string): number => {
 
 const formatRunTime = (moving_time: string): string => {
   const totalSeconds = convertMovingTime2Sec(moving_time);
-  const seconds = totalSeconds % 60;
-  const minutes = (totalSeconds - seconds) / 60;
-  if (minutes === 0) {
-    return seconds + 's';
-  }
-  return minutes + 'min';
+  const totalMinutes = Math.floor(totalSeconds / 60); // 总分钟数
+
+  // 分解小时和分钟
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+ 
+    return `${hours}:${minutes.toString().padStart(2, '0')}`;
+  
 };
 
 // for scroll to the map
@@ -421,9 +429,32 @@ const getBoundsForGeoData = (
     height: 600,
   }).fitBounds(cornersLongLat, { padding: 200 });
   let { longitude, latitude, zoom } = viewState;
-  if (features.length > 1) {
-    zoom = 11.5;
-  }
+  // if (features.length > 1) {
+  //   zoom = 12;
+  // }
+  // 计算经纬度范围
+const longSpan = Math.max(...pointsLong) - Math.min(...pointsLong);
+const latSpan = Math.max(...pointsLat) - Math.min(...pointsLat);
+// 根据范围调整缩放级别
+const baseZoom = viewState.zoom;
+// console.log(baseZoom)
+let adaptiveZoom = baseZoom;
+// 当经纬跨度均小于阈值时视为集中区域（单位：度）
+const CONCENTRATION_THRESHOLD = 0.01; // 约500米范围
+if (longSpan < CONCENTRATION_THRESHOLD && latSpan < CONCENTRATION_THRESHOLD) {
+  // 计算集中程度比例（0~1区间）
+  const concentrationRatio = Math.max(
+    longSpan / CONCENTRATION_THRESHOLD,
+    latSpan / CONCENTRATION_THRESHOLD
+  );
+  // console.log(concentrationRatio)
+  // 动态增加缩放级别（示例公式）
+  adaptiveZoom = baseZoom + (1 - concentrationRatio) ; // 最大增加2级
+}
+// 结合原有逻辑
+if (features.length > 1) {
+  zoom = Math.min(adaptiveZoom, 20); // 确保不超过12级
+}
   return { longitude, latitude, zoom };
 };
 
