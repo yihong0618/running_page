@@ -8,6 +8,7 @@ import time
 from collections import namedtuple
 from datetime import datetime, timedelta, timezone
 from hashlib import md5
+from typing import List
 from urllib.parse import quote
 
 import gpxpy
@@ -187,6 +188,23 @@ class Joyrun:
             points = []
         return points
 
+    class Pause:
+        def __init__(self, pause_data_point: List[str]):
+            self.index = int(pause_data_point[0])
+            self.duration = int(pause_data_point[1])
+
+        def __repr__(self):
+            return f"Pause(index=${self.index}, duration=${self.duration})"
+
+    class PauseList:
+        def __init__(self, pause_list: List[List[str]]):
+            self._list = []
+            for pause in pause_list:
+                self._list.append(Joyrun.Pause(pause))
+
+        def next(self) -> "Joyrun.Pause":
+            return self._list.pop(0) if self._list else None
+
     @staticmethod
     def parse_points_to_gpx(
         run_points_data, start_time, end_time, pause_list, interval=5
@@ -200,49 +218,55 @@ class Joyrun:
         :param interval:        time interval between each point, in seconds
         """
 
-        # format data
-        segment_list = []
-        points_dict_list = []
-        current_time = start_time
-
-        for index, point in enumerate(run_points_data[:-1]):
-            points_dict = {
-                "latitude": point[0],
-                "longitude": point[1],
-                "time": datetime.fromtimestamp(current_time, tz=timezone.utc),
-            }
-            points_dict_list.append(points_dict)
-
-            current_time += interval
-            if pause_list and int(pause_list[0][0]) - 1 == index:
-                segment_list.append(points_dict_list[:])
-                points_dict_list.clear()
-                current_time += int(pause_list[0][1])
-                pause_list.pop(0)
-
-        points_dict_list.append(
-            {
-                "latitude": run_points_data[-1][0],
-                "longitude": run_points_data[-1][1],
-                "time": datetime.fromtimestamp(end_time, tz=timezone.utc),
-            }
-        )
-        segment_list.append(points_dict_list)
-
-        # gpx part
+        # GPX instance
         gpx = gpxpy.gpx.GPX()
         gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
-        gpx_track = gpxpy.gpx.GPXTrack()
-        gpx_track.name = "gpx from joyrun"
-        gpx.tracks.append(gpx_track)
 
-        # add segment list to our GPX track:
-        for point_list in segment_list:
-            gpx_segment = gpxpy.gpx.GPXTrackSegment()
-            gpx_track.segments.append(gpx_segment)
-            for p in point_list:
-                point = gpxpy.gpx.GPXTrackPoint(**p)
-                gpx_segment.points.append(point)
+        # GPX Track
+        track = gpxpy.gpx.GPXTrack()
+        track.name = f"gpx from joyrun {start_time}"
+        gpx.tracks.append(track)
+
+        # GPX Track Segment
+        track_segment = gpxpy.gpx.GPXTrackSegment()
+        track.segments.append(track_segment)
+
+        # Initialize Pause
+        pause_list = Joyrun.PauseList(pause_list)
+        pause = pause_list.next()
+
+        current_time = start_time
+        for index, point in enumerate(run_points_data[:-1]):
+            # New Track Point
+            track_point = gpxpy.gpx.GPXTrackPoint(
+                latitude=point[0],
+                longitude=point[1],
+                time=datetime.fromtimestamp(current_time, tz=timezone.utc),
+            )
+            track_segment.points.append(track_point)
+
+            # Increment time
+            current_time += interval
+
+            # Check pause
+            if pause and pause.index - 1 == index:
+                # New Segment
+                track_segment = gpxpy.gpx.GPXTrackSegment()
+                track.segments.append(track_segment)
+                # Add paused duration
+                current_time += pause.duration
+                # Next pause
+                pause = pause_list.next()
+
+        # Last Track Point uses end_time
+        last_point = run_points_data[-1]
+        track_segment.points.append(
+            gpxpy.gpx.GPXTrackPoint(
+                latitude=last_point[0],
+                longitude=last_point[1],
+                time=datetime.fromtimestamp(end_time, tz=timezone.utc),
+            )
+        )
 
         return gpx.to_xml()
 
@@ -350,11 +374,11 @@ class Joyrun:
                     break
             if not is_duplicate:
                 seen_runs[start_time] = {"run_data": run_data, "distance": distance}
-            for run in seen_runs.values():
-                track = self.parse_raw_data_to_nametuple(
-                    run["run_data"], old_gpx_ids, with_gpx
-                )
-                tracks.append(track)
+        for run in seen_runs.values():
+            track = self.parse_raw_data_to_nametuple(
+                run["run_data"], old_gpx_ids, with_gpx
+            )
+            tracks.append(track)
         return tracks
 
 
