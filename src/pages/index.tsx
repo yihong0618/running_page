@@ -9,6 +9,7 @@ import YearsStat from '@/components/YearsStat';
 import useActivities from '@/hooks/useActivities';
 import useSiteMetadata from '@/hooks/useSiteMetadata';
 import { IS_CHINESE } from '@/utils/const';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import {
   Activity,
   IViewState,
