@@ -1,15 +1,18 @@
 # some code from https://github.com/fieryd/PKURunningHelper great thanks
 import argparse
+import ast
 import json
 import os
 import subprocess
 import sys
 import time
+import warnings
 from collections import namedtuple
 from datetime import datetime, timedelta, timezone
 from hashlib import md5
 from typing import List
 from urllib.parse import quote
+from xml.etree import ElementTree as etree
 
 import gpxpy
 import polyline
@@ -205,17 +208,70 @@ class Joyrun:
         def next(self) -> "Joyrun.Pause":
             return self._list.pop(0) if self._list else None
 
+    class HeartRateList:
+        def __init__(self, hear_rate_data_string: str):
+            self._list = Joyrun.HeartRateList._parse_heartrate(hear_rate_data_string)
+
+        def next(self) -> int:
+            return self._list.pop(0) if self._list else None
+
+        @staticmethod
+        def _parse_heartrate(heart_rate_str) -> List[int]:
+            if not heart_rate_str:
+                return []
+
+            try:
+                parsed_data = ast.literal_eval(heart_rate_str)
+                if isinstance(parsed_data, list):
+                    return parsed_data
+                else:
+                    warnings.warn(
+                        f'"heartrate" evaluated to {type(parsed_data)}, want List[int]'
+                    )
+                    return []
+            except (ValueError, SyntaxError) as e:
+                warnings.warn(f'Failed to evaluate "heartrate": {e}')
+                return []
+
+    @staticmethod
+    def new_track_point(
+        latitude, longitude, time, heart_rate
+    ) -> gpxpy.gpx.GPXTrackPoint:
+        track_point = gpxpy.gpx.GPXTrackPoint(
+            latitude=latitude,
+            longitude=longitude,
+            time=datetime.fromtimestamp(time, tz=timezone.utc),
+        )
+
+        # Extension
+        extension_element = etree.Element("gpxtpx:TrackPointExtension")
+        track_point.extensions.append(extension_element)
+
+        ## Heart rate
+        if heart_rate:
+            heart_rate_element = etree.Element("gpxtpx:hr")
+            heart_rate_element.text = str(heart_rate)
+            extension_element.append(heart_rate_element)
+
+        return track_point
+
     @staticmethod
     def parse_points_to_gpx(
-        run_points_data, start_time, end_time, pause_list, interval=5
+        run_points_data,
+        start_time,
+        end_time,
+        pause_list,
+        heart_rate_data_string,
+        interval=5,
     ):
         """
         parse run_data content to gpx object
         TODO for now kind of same as `keep` maybe refactor later
 
-        :param run_points_data: [[latitude, longitude],...]
-        :param pause_list:      [[interval_index, pause_seconds],...]
-        :param interval:        time interval between each point, in seconds
+        :param run_points_data:        [[latitude, longitude],...]
+        :param pause_list:             [[interval_index, pause_seconds],...]
+        :param heart_rate_data_string: heart rate list in string format
+        :param interval:               time interval between each point, in seconds
         """
 
         # GPX instance
@@ -235,15 +291,17 @@ class Joyrun:
         pause_list = Joyrun.PauseList(pause_list)
         pause = pause_list.next()
 
+        # Extension data instances
+        heart_rate_list = Joyrun.HeartRateList(heart_rate_data_string)
+
         current_time = start_time
         for index, point in enumerate(run_points_data[:-1]):
             # New Track Point
-            track_point = gpxpy.gpx.GPXTrackPoint(
-                latitude=point[0],
-                longitude=point[1],
-                time=datetime.fromtimestamp(current_time, tz=timezone.utc),
+            track_segment.points.append(
+                Joyrun.new_track_point(
+                    point[0], point[1], current_time, heart_rate_list.next()
+                )
             )
-            track_segment.points.append(track_point)
 
             # Increment time
             current_time += interval
@@ -261,10 +319,8 @@ class Joyrun:
         # Last Track Point uses end_time
         last_point = run_points_data[-1]
         track_segment.points.append(
-            gpxpy.gpx.GPXTrackPoint(
-                latitude=last_point[0],
-                longitude=last_point[1],
-                time=datetime.fromtimestamp(end_time, tz=timezone.utc),
+            Joyrun.new_track_point(
+                last_point[0], last_point[1], end_time, heart_rate_list.next()
             )
         )
 
@@ -295,7 +351,11 @@ class Joyrun:
             # pass the track no points
             if run_points_data:
                 gpx_data = self.parse_points_to_gpx(
-                    run_points_data, start_time, end_time, pause_list
+                    run_points_data,
+                    start_time,
+                    end_time,
+                    pause_list,
+                    run_data["heartrate"],
                 )
                 download_joyrun_gpx(gpx_data, str(joyrun_id))
         try:
@@ -475,7 +535,7 @@ if __name__ == "__main__":
         "--with-gpx",
         dest="with_gpx",
         action="store_true",
-        help="get all joyrun data to gpx and download",
+        help="get all joyrun data to gpx and download, including heart rate data in best effort",
     )
     parser.add_argument(
         "--from-uid-sid",
