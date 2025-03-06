@@ -1,4 +1,4 @@
-import { formatPace, titleForRun, formatRunTime, Activity, RunIds } from '@/utils/utils';
+import { formatPace, titleForRun, getActivitySport, formatRunTime, Activity, RunIds } from '@/utils/utils';
 import styles from './style.module.css';
 
 interface IRunRowProperties {
@@ -31,6 +31,7 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IR
       onClick={handleClick}
     >
       <td>{titleForRun(run)}</td>
+      <td>{getActivitySport(run)}</td>
       <td>{distance}</td>
       {paceParts && <td>{paceParts}</td>}
       <td>{heartRate && heartRate.toFixed(0)}</td>
