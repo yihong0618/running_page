@@ -108,6 +108,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Evan](https://github.com/LinghaoChan)            | <https://github.com/LinghaoChan/running>       | Keep        |
 | [Shuqi](https://github.com/zhufengme)             | <https://runner-shuqi.devlink.cn/>             | Garmin      |
 | [shugoal](https://github.com/shugoal)            | <https://shugoal.github.io/wk-shu/>             | Garmin      |
+| [Daniel](https://danielyu316.github.io/running_page)            | <https://danielyu316.github.io/running_page/>             | Codoon      |
 </details>
 
 ## How it works
