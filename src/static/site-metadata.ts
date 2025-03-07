@@ -24,8 +24,8 @@ const data: ISiteMetadataResult = {
       url: 'https://www.jiugoe.com/',
     },
     {
-      name: 'Travel',
-      url: 'https://www.jiugoe.com/about',
+      name: 'Footprint',
+      url: 'https://www.jiugoe.com/footprint',
     },
   ],
 };
