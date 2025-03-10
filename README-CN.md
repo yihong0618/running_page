@@ -106,6 +106,9 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [laqieer](https://github.com/laqieer)             | <https://laqieer.github.io/running_page/>      | Strava      |
 | [Guoxin](https://github.com/guoxinl)              | <https://running.guoxin.space/>                | Strava      |
 | [Darren](https://github.com/Flavored4179)         | <https://run.wdoc.top/>                        | tcx         |
+| [Evan](https://github.com/LinghaoChan)            | <https://github.com/LinghaoChan/running>       | Keep        |
+| [Shuqi](https://github.com/zhufengme)            | <https://runner-shuqi.devlink.cn/>              | Garmin      |
+| [shugoal](https://github.com/shugoal)            | <https://shugoal.github.io/wk-shu/>             | Garmin      |
 </details>
 
 ## 它是怎么工作的

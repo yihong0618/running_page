@@ -105,6 +105,10 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [laihj](https://github.com/laihj)                 | <https://run.laihjx.com/>                      | 苹果健身     |
 | [Ginta](https://github.com/mar-heaven)            | <https://running.ginta.top/>                   | Keep        |
 | [Samuel](https://github.com/SamuelDixxon)         | <https://samueldixxon.github.io/running_page/> | Keep        |
+| [Evan](https://github.com/LinghaoChan)            | <https://github.com/LinghaoChan/running>       | Keep        |
+| [Shuqi](https://github.com/zhufengme)             | <https://runner-shuqi.devlink.cn/>             | Garmin      |
+| [shugoal](https://github.com/shugoal)            | <https://shugoal.github.io/wk-shu/>             | Garmin      |
+| [Daniel](https://danielyu316.github.io/running_page)            | <https://danielyu316.github.io/running_page/>             | Codoon      |
 </details>
 
 ## How it works
