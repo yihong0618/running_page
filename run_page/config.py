@@ -61,14 +61,21 @@ TYPE_DICT = {
     "CYCLING": "Ride",
     "Ride": "Ride",
     "EBikeRide": "Ride",
+    "E-Bike": "Ride",
     "road_biking": "Ride",
+    "Road Bike": "Ride",
+    "Mountain Bike": "Ride",
     "VirtualRide": "VirtualRide",
     "indoor_cycling": "Indoor Ride",
+    "Indoor Bike ": "Indoor Ride",
     "walking": "Hike",
+    "Walk": "Hike",
     "hiking": "Hike",
     "Walk": "Hike",
     "Hike": "Hike",
     "Swim": "Swim",
+    "Pool Swim": "Swim",
+    "Open Water": "Swim",
     "rowing": "Rowing",
     "RoadTrip": "RoadTrip",
     "flight": "Flight",
@@ -76,6 +83,7 @@ TYPE_DICT = {
     "Snowboard": "Snowboard",
     "resort_skiing_snowboarding_ws": "Ski",  # garmin
     "AlpineSki": "Ski",  # strava
+    "Ski": "Ski",
     "Ski": "Ski",
 }
 
