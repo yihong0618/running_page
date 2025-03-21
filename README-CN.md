@@ -139,7 +139,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 ## 支持
 
 - **[Strava](#strava)**
-- **[New Way To Sync Nike Run Club](#nike-run-club-new)** ：NFC同步的新方式
+- **[New Way To Sync Nike Run Club](#nike-run-club-new)** ：NFC 同步的新方式
 - **[Nike Run Club](#nike-run-club)**
 - **[Garmin](#garmin)**
 - **[Garmin-cn](#garmin-cn-大陆用户请用这个)**
@@ -157,7 +157,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Nike+Strava(Using NRC Run, Strava backup data)](#nikestrava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
-- **[Coros高驰](#Coros高驰)**
+- **[Coros 高驰](#Coros高驰)**
 ## 视频教程
 
 - https://www.youtube.com/watch?v=reLiY9p8EJk
@@ -250,11 +250,11 @@ const USE_DASH_LINE = true;
 // styling: 透明度：[0, 1]
 const LINE_OPACITY = 0.4;
 // update for now 2024/11/17 the privacy mode is true
-// styling: 开启隐私模式(不显示地图仅显示轨迹): 设置为 `true`
+// styling: 开启隐私模式 (不显示地图仅显示轨迹): 设置为 `true`
 // 注意：此配置仅影响页面显示，数据保护请参考下方的 "隐私保护"
 const PRIVACY_MODE = true;
 // update for now 2024/11/17 the lights on default is false
-// styling: 默认关灯: 设置为 `false`, 仅在隐私模式关闭时生效(`PRIVACY_MODE` = false)
+// styling: 默认关灯：设置为 `false`, 仅在隐私模式关闭时生效 (`PRIVACY_MODE` = false)
 const LIGHTS_ON = false;
 ```
 
@@ -357,7 +357,7 @@ python3(python) run_page/keep_sync.py ${your mobile} ${your password} --with-gpx
 python3(python) run_page/keep_sync.py 13333xxxx example --with-gpx 
 ```
 
-> 增加了 keep 对其他运动类型的支持，目前可选的有running, cycling, hiking，默认的运动数据类型为running。
+> 增加了 keep 对其他运动类型的支持，目前可选的有 running, cycling, hiking，默认的运动数据类型为 running。
 
 ```bash
 python3(python) run_page/keep_sync.py ${your mobile} ${your password} --with-gpx --sync-types running cycling hiking
@@ -441,7 +441,7 @@ python3(python) run_page/joyrun_sync.py 13333xxxx example --with-gpx
 python3(python) run_page/joyrun_sync.py 1393xx30xxxx 97e5fe4997d20f9b1007xxxxx --from-uid-sid --with-gpx
 ```
 
-> 支持配置min_grid_distance，默认为10
+> 支持配置 min_grid_distance，默认为 10
 
 ```bash
 python3(python) run_page/joyrun_sync.py 13333xxxx xxxx --athlete yihong0618 --min_grid_distance 5 
@@ -657,16 +657,16 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 
 <br>
 
-> Please note:由于nike run club已经在中国大陆停止运营，所以只能通过 vpn 的方式进行登录。在开始之前先确认自己是全局的非中国大陆的代理，能够正确的访问`nike.com`而不是`nike.com.cn` 如下图所示.
+> Please note:由于 nike run club 已经在中国大陆停止运营，所以只能通过 vpn 的方式进行登录。在开始之前先确认自己是全局的非中国大陆的代理，能够正确的访问`nike.com`而不是`nike.com.cn` 如下图所示。
 
 ![nike.com](https://github.com/user-attachments/assets/8ce6ae8f-4bc6-4522-85ec-3e5b7590e96d)
 <br>
 
 1. 登录/注册 [NikeRunClub](https://www.nike.com/) 账号
    ![login](https://github.com/user-attachments/assets/659341fb-4abf-491e-bda7-bfca968921b3)
-2. 登录成功后,键盘打开F12->Application->localstorage-> 复制键为`https://www.nike.com`的值中的`access_token`的内容.
+2. 登录成功后，键盘打开 F12->Application->localstorage-> 复制键为`https://www.nike.com`的值中的`access_token`的内容。
    ![developer_mode](https://github.com/user-attachments/assets/c932318d-a123-4505-8fd8-b46946c25d29)
-3. 在根目录执行,你应该就可以看到下图中的内容，然后你就可以正常在你的手机版NRC里登录你的账号了:
+3. 在根目录执行，你应该就可以看到下图中的内容，然后你就可以正常在你的手机版 NRC 里登录你的账号了：
 
 ```bash
 python3(python) run_page/nike_sync.py ${access_token}
@@ -679,7 +679,7 @@ python3(python) run_page/nike_sync.py ${access_token} --continue-sync
 
 ![tg_image_166091873](https://github.com/user-attachments/assets/9d4851d6-849a-4bb7-8ffe-5358fa7328b2)
 
-如果你想自动化同步NRC中的运动数据,去 [issue692](https://github.com/yihong0618/running_page/issues/692#issuecomment-2218849713)中查看相关内容.
+如果你想自动化同步 NRC 中的运动数据，去 [issue692](https://github.com/yihong0618/running_page/issues/692#issuecomment-2218849713)中查看相关内容。
 
 </details>
 
@@ -700,9 +700,9 @@ python3(python) run_page/nike_sync.py ${access_token} --continue-sync
 
 1. 在这里登陆[website](https://unite.nike.com/s3/unite/mobile.html?androidSDKVersion=3.1.0&corsoverride=https%3A%2F%2Funite.nike.com&uxid=com.nike.sport.running.droid.3.8&backendEnvironment=identity&view=login&clientId=VhAeafEGJ6G8e9DxRUz8iE50CZ9MiJMG), 打开 F12 在浏览器抓 login -> XHR -> get the `refresh_token` from login api
 
-2. 复制 `refresh_token` 之后可以添加在GitHub Secrets 中，也可以直接在命令行中使用
+2. 复制 `refresh_token` 之后可以添加在 GitHub Secrets 中，也可以直接在命令行中使用
 
-> Chrome 浏览器：按下 F12 打开浏览器开发者工具，点击 Application 选项卡，来到左侧的 Storage 面板，点击展开 Local storage，点击下方的 https://unite.nike.com。接着点击右侧的 com.nike.commerce.nikedotcom.web.credential Key，下方会分行显示我们选中的对象，可以看到 refresh_token ，复制 refresh_token 右侧的值。Safari 浏览器：在 Safari 打开 Nike 的网页后，右击页面，选择「检查元素」，打开浏览器开发者工具。点击「来源」选项卡，在左侧找到 XHR 文件夹，点击展开，在下方找到 login 文件并单击，在右侧同样可以看到 refresh_token ，复制 refresh_token 右侧的值。
+> Chrome 浏览器：按下 F12 打开浏览器开发者工具，点击 Application 选项卡，来到左侧的 Storage 面板，点击展开 Local storage，点击下方的 https://unite.nike.com。接着点击右侧的 com.nike.commerce.nikedotcom.web.credential Key，下方会分行显示我们选中的对象，可以看到 refresh_token，复制 refresh_token 右侧的值。Safari 浏览器：在 Safari 打开 Nike 的网页后，右击页面，选择「检查元素」，打开浏览器开发者工具。点击「来源」选项卡，在左侧找到 XHR 文件夹，点击展开，在下方找到 login 文件并单击，在右侧同样可以看到 refresh_token，复制 refresh_token 右侧的值。
 
 ```bash
 python3(python) run_page/nike_sync.py ${nike refresh_token}
@@ -961,10 +961,10 @@ python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }
 
 </details>
 
-### Coros高驰
+### Coros 高驰
 
 <details>
-<summary>获取您的 Coros高驰 数据</summary>
+<summary>获取您的 Coros 高驰 数据</summary>
 
 #### 在终端中输入以下命令
 
@@ -974,9 +974,9 @@ python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PAS
 
 #### 修改 `run_data_sync.yml` 中 `env.RUN_TYPE: coros`
 
-#### 设置 github action中Coros高驰信息
+#### 设置 github action 中 Coros 高驰信息
 
-- 在github action中配置`COROS_ACCOUNT`,`COROS_PASSWORD`参数
+- 在 github action 中配置 `COROS_ACCOUNT`,`COROS_PASSWORD` 参数
 
   ![github-action](https://img3.uploadhouse.com/fileuploads/30980/3098042335f8995623f8b50776c4fad4cf7fff8d.png)
 
@@ -984,23 +984,23 @@ python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PAS
 
 ### Keep_to_Strava
 <details>
-<summary>获取您的Keep数据，然后同步到Strava</summary>
+<summary>获取您的 Keep 数据，然后同步到 Strava</summary>
 
-示例:
+示例：
 ```bash
 python3(python) run_page/keep_to_strava_sync.py ${your mobile} ${your password} ${client_id} ${client_secret} ${strava_refresh_token} --sync-types running cycling hiking
 ```
 
 #### 解决的需求：
-1. 适用于由Strava总览/展示数据，但是有多种运动类型，且数据来自不同设备的用户。
-2. 适用于期望将华为运动健康/OPPO健康等数据同步到Strava的用户(前提是手机APP端已经开启了和Keep之间的数据同步)。
-3. 理论上华为/OPPO等可以通过APP同步到Keep的设备，均可通过此方法自动同步到Strava，目前已通过测试的APP有
-    - 华为运动健康: 户外跑步，户外骑行，户外步行。
+1. 适用于由 Strava 总览/展示数据，但是有多种运动类型，且数据来自不同设备的用户。
+2. 适用于期望将华为运动健康/OPPO 健康等数据同步到 Strava 的用户 (前提是手机 APP 端已经开启了和 Keep 之间的数据同步)。
+3. 理论上华为/OPPO 等可以通过 APP 同步到 Keep 的设备，均可通过此方法自动同步到 Strava，目前已通过测试的 APP 有
+    - 华为运动健康：户外跑步，户外骑行，户外步行。
 
-#### 特性以及使用细节:
-1. 与Keep相似，但是由keep_to_strava_sync.py实现，不侵入data.db 与 activities.json。因此不会出现由于同时使用keep_sync和strava_sync而导致的数据重复统计/展示问题。
-2. 上传至Strava时，会自动识别为Strava中相应的运动类型, 目前支持的运动类型为running, cycling, hiking。
-3. run_data_sync.yml中的修改：
+#### 特性以及使用细节：
+1. 与 Keep 相似，但是由 keep_to_strava_sync.py 实现，不侵入 data.db 与 activities.json。因此不会出现由于同时使用 keep_sync 和 strava_sync 而导致的数据重复统计/展示问题。
+2. 上传至 Strava 时，会自动识别为 Strava 中相应的运动类型，目前支持的运动类型为 running, cycling, hiking。
+3. run_data_sync.yml 中的修改：
 
     ```yaml
     RUN_TYPE: keep_to_strava_sync
@@ -1104,7 +1104,7 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 
 -  修改你的 fork 的 running_page 仓库改名为 xxx.github.io, xxx 是你 github 的 username
 -  修改 gh-pages.yml 中的 Build 模块，删除 `${{ github.event.repository.name }}` 改为`run: PATH_PREFIX=/ pnpm build` 即可
--  修改 src/static/site-metadata.ts 中 `siteUrl: ''` 或是添加你的自定义域名，`siteUrl: '[your_own_domain]'`， 即可
+-  修改 src/static/site-metadata.ts 中 `siteUrl: ''` 或是添加你的自定义域名，`siteUrl: '[your_own_domain]'`，即可
 
 </details>
 
