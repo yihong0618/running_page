@@ -74,6 +74,7 @@ TYPE_DICT = {
     "Walk": "Hike",
     "Hike": "Hike",
     "Swim": "Swim",
+    "swimming": "Swim",
     "Pool Swim": "Swim",
     "Open Water": "Swim",
     "rowing": "Rowing",
