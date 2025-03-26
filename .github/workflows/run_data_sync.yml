@@ -17,7 +17,10 @@ on:
       - run_page/keep_sync.py
       - run_page/gpx_sync.py
       - run_page/tcx_sync.py
+      - run_page/tcx_to_garmin_sync.py
       - run_page/garmin_to_strava_sync.py
+      - run_page/keep_to_strava_sync.py
+      - run_page/oppo_sync.py
       - requirements.txt
 
 env:
@@ -33,7 +36,7 @@ env:
   # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
   IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
   IGNORE_RANGE: 10 # Unit meter
-  SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercal, check the README
+  SAVE_DATA_IN_GITHUB_CACHE: true # if you deploy in the vercal, check the README
   DATA_CACHE_PREFIX: 'track_data'
   BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
   SAVE_TO_PARQENT: false # If you want to save the data to the repo, set it to `true`
@@ -212,10 +215,10 @@ jobs:
           python run_page/gen_svg.py --from-db --title "$TITLE" --type github --github-style "align-firstday" --athlete "$ATHLETE" --special-distance 10 --special-distance2 21.1 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
           python run_page/gen_svg.py --from-db --title "$TITLE_GRID" --type grid --athlete "$ATHLETE" --output assets/grid.svg --special-color yellow --special-color2 red --special-distance 15 --special-distance2 21.1 --use-localtime --min-distance "$MIN_GRID_DISTANCE"
           python run_page/gen_svg.py --from-db --type circular --use-localtime
-          python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --github-style "align-firstday" --athlete "$ATHLETE" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
+          python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language en_US --title "$(date +"%Y") Running" --type github --github-style "align-firstday" --athlete "$ATHLETE" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
         # if you want use the style:the start day of each year always aligns with Monday. please use the following script:
         # python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
-        # python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
+        # python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language en_US --title "$(date +"%Y") Running" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
 
 
       - name: Save data to parqent
