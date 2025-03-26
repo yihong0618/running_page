@@ -1,5 +1,5 @@
 name: Publish GitHub Pages
- 
+
 # Controls when the action will run.
 on:
   workflow_dispatch:
@@ -50,7 +50,7 @@ jobs:
           # if your default branches is not master, please change it here
           ref: master
           fetch-depth: 0
-          persist-credentials: true 
+          persist-credentials: false 
 
       - name: Cache Data Files
         if: inputs.save_data_in_github_cache
