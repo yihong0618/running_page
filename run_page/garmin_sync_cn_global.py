@@ -11,7 +11,7 @@ import sys
 
 from config import FIT_FOLDER, GPX_FOLDER, JSON_FILE, SQL_FILE, config
 from garmin_sync import Garmin, get_downloaded_ids
-from garmin_sync import download_new_activities, gather_with_concurrency
+from garmin_sync import download_new_activities
 from utils import make_activities_file
 
 if __name__ == "__main__":

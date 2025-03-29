@@ -165,7 +165,7 @@ def parse_brief_sport_data(session, headers, temp_start, temp_end):
                 or i["sportMode"] in AVAILABLE_OUTDOOR_SPORT_MODE
             ):
                 result.append((i["startTime"], i["endTime"]))
-                print(f"sync record: start_time: " + str(i["startTime"]))
+                print("sync record: start_time: " + str(i["startTime"]))
         time.sleep(1)  # spider rule
     return result
 
