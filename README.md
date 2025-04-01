@@ -1,8 +1,5 @@
-# 2025
-![](https://github.com/zbhydra/running_page/blob/master/assets/github_2025.svg)
+![](https://github.com/zbhydra/running_page/blob/master/assets/github.svg)
 
-# 2024
-![](https://github.com/zbhydra/running_page/blob/master/assets/github_2024.svg)
 
 
 ## Note
