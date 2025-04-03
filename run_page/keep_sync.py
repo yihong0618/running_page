@@ -131,7 +131,7 @@ def parse_raw_data_to_nametuple(
                 p["longitude"] = run_points_data[i][1]
 
         for p in run_points_data_gpx:
-            if "timestamp"  not in p:
+            if "timestamp" not in p:
                 if "unixTimestamp" in p:
                     p["timestamp"] = p["unixTimestamp"] 
                 else:
