@@ -77,6 +77,17 @@ const HIKING_TITLE = IS_CHINESE ? '徒步' : 'Hiking';
 const CYCLING_TITLE = IS_CHINESE ? '骑行' : 'Cycling';
 const SKIING_TITLE = IS_CHINESE ? '滑雪' : 'Skiing';
 const WALKING_TITLE = IS_CHINESE ? '步行' : 'Walking';
+const ACTIVITY_COUNT_TITLE = IS_CHINESE ? '活动次数' : 'Activity Count';
+const MAX_DISTANCE_TITLE = IS_CHINESE ? '最远距离' : 'Max Distance';
+const MAX_SPEED_TITLE = IS_CHINESE ? '最快速度' : 'Max Speed';
+const TOTAL_TIME_TITLE = IS_CHINESE ? '总时间' : 'Total Time';
+const AVERAGE_SPEED_TITLE = IS_CHINESE ? '平均速度' : 'Average Speed';
+const TOTAL_DISTANCE_TITLE = IS_CHINESE ? '总距离' : 'Total Distance';
+const YEARLY_TITLE = IS_CHINESE ? '按年' : 'Yearly';
+const MONTHLY_TITLE = IS_CHINESE ? '按月' : 'Monthly';
+const WEEKLY_TITLE = IS_CHINESE ? '按周' : 'Weekly';
+const DAILY_TITLE = IS_CHINESE ? '按天' : 'Daily';
+const LOCATION_TITLE = IS_CHINESE ? '位置' : 'Location';
 
 const ACTIVITY_TYPES = {
   RUN_GENERIC_TITLE,
@@ -96,6 +107,19 @@ const RUN_TITLES = {
   AFTERNOON_RUN_TITLE,
   EVENING_RUN_TITLE,
   NIGHT_RUN_TITLE,
+};
+const ACTIVITY_TOTAL = {
+    ACTIVITY_COUNT_TITLE,
+    MAX_DISTANCE_TITLE,
+    MAX_SPEED_TITLE,
+    TOTAL_TIME_TITLE,
+    AVERAGE_SPEED_TITLE,
+    TOTAL_DISTANCE_TITLE,
+    YEARLY_TITLE,
+    MONTHLY_TITLE,
+    WEEKLY_TITLE,
+    DAILY_TITLE,
+    LOCATION_TITLE
 };
 
 export {
@@ -118,6 +142,7 @@ export {
   LIGHTS_ON,
   RICH_TITLE,
   ACTIVITY_TYPES,
+  ACTIVITY_TOTAL
 };
 
 const nike = 'rgb(224,237,94)'; // if you want change the main color change here src/styles/variables.scss
