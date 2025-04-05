@@ -11,6 +11,9 @@ jobs:
         python-version: ['3.11', '3.12']
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
         id: setup_python
@@ -25,4 +28,4 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Check formatting (black)
-        run: black . --check
+        run: black . --diff --color && black . --check

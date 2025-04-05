@@ -44,14 +44,14 @@ Return value is like:
        "sportMode": 10,//运动模式 室内跑 详情见文档附录
        "otherSportData": {
            "avgHeartRate": 153,//平均心率 单位：count/min
-           "avgPace": 585,//平均配速 单位s/km
-           "avgStepRate": 115,//平均步频 单位step/min
-           "bestStepRate": 135,//最佳步频 单位step/min
-           "bestPace": 572,//最佳配速 单位s/km
+           "avgPace": 585,//平均配速 单位 s/km
+           "avgStepRate": 115,//平均步频 单位 step/min
+           "bestStepRate": 135,//最佳步频 单位 step/min
+           "bestPace": 572,//最佳配速 单位 s/km
            "totalCalories": 2176000,//总消耗 单位卡
            "totalDistance": 23175,//总距离 单位米
            "totalSteps": 26062,//总步数
-           "totalTime": 13562000,//总时长，单位:毫秒
+           "totalTime": 13562000,//总时长，单位：毫秒
            "totalClimb": 100//累计爬升高度，单位:米
        },
     },
@@ -64,7 +64,7 @@ Return value is like:
            "avgHeartRate": 90,//平均心率 单位：count/min
            "courseName": "零基础减脂碎片练习",//课程名称
            "finishNumber": 1,//课程完成次数
-           "trainedCalorie": 13554,//训练消耗的卡路里，单位:卡
+           "trainedCalorie": 13554,//训练消耗的卡路里，单位：卡
            "trainedDuration": 176000//实际训练时间，单位:ms
        },
     }
@@ -165,7 +165,7 @@ def parse_brief_sport_data(session, headers, temp_start, temp_end):
                 or i["sportMode"] in AVAILABLE_OUTDOOR_SPORT_MODE
             ):
                 result.append((i["startTime"], i["endTime"]))
-                print(f"sync record: start_time: " + str(i["startTime"]))
+                print("sync record: start_time: " + str(i["startTime"]))
         time.sleep(1)  # spider rule
     return result
 
