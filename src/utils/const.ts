@@ -67,7 +67,6 @@ const HALF_MARATHON_RUN_TITLE = IS_CHINESE ? '半程马拉松' : 'Half Marathon'
 const RUN_TITLE = IS_CHINESE ? '跑步' : 'Run';
 const TRAIL_RUN_TITLE = IS_CHINESE ? '越野跑' : 'Trail Run';
 const SWIM_TITLE = IS_CHINESE ? '游泳' : 'Swim';
-
 const RIDE_TITLE = IS_CHINESE ? '骑行' : 'Ride';
 const INDOOR_RIDE_TITLE = IS_CHINESE ? '室内骑行' : 'Indoor Ride';
 const VIRTUAL_RIDE_TITLE = IS_CHINESE ? '虚拟骑行' : 'Virtual Ride';
@@ -78,6 +77,18 @@ const SNOWBOARD_TITLE = IS_CHINESE ? '单板滑雪' : 'Snowboard';
 const SKI_TITLE = IS_CHINESE ? '双板滑雪' : 'Ski';
 const ROAD_TRIP_TITLE = IS_CHINESE ? '自驾' : 'RoadTrip';
 const FLIGHT_TITLE = IS_CHINESE ? '飞行' : 'Flight';
+
+const ACTIVITY_COUNT_TITLE = IS_CHINESE ? '活动次数' : 'Activity Count';
+const MAX_DISTANCE_TITLE = IS_CHINESE ? '最远距离' : 'Max Distance';
+const MAX_SPEED_TITLE = IS_CHINESE ? '最快速度' : 'Max Speed';
+const TOTAL_TIME_TITLE = IS_CHINESE ? '总时间' : 'Total Time';
+const AVERAGE_SPEED_TITLE = IS_CHINESE ? '平均速度' : 'Average Speed';
+const TOTAL_DISTANCE_TITLE = IS_CHINESE ? '总距离' : 'Total Distance';
+const YEARLY_TITLE = IS_CHINESE ? '按年' : 'Yearly';
+const MONTHLY_TITLE = IS_CHINESE ? '按月' : 'Monthly';
+const WEEKLY_TITLE = IS_CHINESE ? '按周' : 'Weekly';
+const DAILY_TITLE = IS_CHINESE ? '按天' : 'Daily';
+const LOCATION_TITLE = IS_CHINESE ? '位置' : 'Location';
 
 const RUN_TITLES = {
   FULL_MARATHON_RUN_TITLE,
@@ -96,6 +107,20 @@ const RUN_TITLES = {
   FLIGHT_TITLE,
   SNOWBOARD_TITLE,
   SKI_TITLE,
+};
+
+const ACTIVITY_TOTAL = {
+    ACTIVITY_COUNT_TITLE,
+    MAX_DISTANCE_TITLE,
+    MAX_SPEED_TITLE,
+    TOTAL_TIME_TITLE,
+    AVERAGE_SPEED_TITLE,
+    TOTAL_DISTANCE_TITLE,
+    YEARLY_TITLE,
+    MONTHLY_TITLE,
+    WEEKLY_TITLE,
+    DAILY_TITLE,
+    LOCATION_TITLE
 };
 
 export {
@@ -117,6 +142,8 @@ export {
   PRIVACY_MODE,
   LIGHTS_ON,
   RICH_TITLE,
+  ACTIVITY_TYPES,
+  ACTIVITY_TOTAL
 };
 
 const nike = 'rgb(224,237,94)';

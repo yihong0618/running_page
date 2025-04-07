@@ -9,7 +9,7 @@ import os
 import sys
 import time
 
-from config import FOLDER_DICT, STRAVA_GARMIN_TYPE_DICT
+from config import FOLDER_DICT
 from garmin_sync import download_new_activities, get_downloaded_ids
 from strava_sync import run_strava_sync
 from utils import make_strava_client, upload_file_to_strava

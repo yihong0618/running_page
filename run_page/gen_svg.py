@@ -3,7 +3,6 @@ import logging
 import os
 import sys
 
-import appdirs
 from config import SQL_FILE
 from gpxtrackposter import (
     circular_drawer,

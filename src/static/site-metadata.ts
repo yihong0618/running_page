@@ -18,6 +18,10 @@ const data: ISiteMetadataResult = {
   keywords: 'workouts, running, cycling, riding, roadtrip, hiking, swimming',
   navLinks: [
     {
+      name: 'Summary',
+      url: '/summary',
+    },
+    {
       name: 'Blog',
       url: 'https://ben29.xyz',
     },

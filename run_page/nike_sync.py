@@ -1,5 +1,4 @@
 import argparse
-from base64 import b64decode
 import json
 import logging
 import os.path
@@ -116,7 +115,7 @@ def run(refresh_token, is_continue_sync=False):
             save_activity(full_activity)
 
         if is_sync_done or before_id is None or not activities:
-            logger.info(f"Found no new activities, finishing")
+            logger.info("Found no new activities, finishing")
             return
 
 
@@ -224,7 +223,7 @@ def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rat
 
     for lat, lon in zip(latitude_data, longitude_data):
         if lat["start_epoch_ms"] != lon["start_epoch_ms"]:
-            raise Exception(f"\tThe latitude and longitude data is out of order")
+            raise Exception("\tThe latitude and longitude data is out of order")
 
         points_dict_list.append(
             {
