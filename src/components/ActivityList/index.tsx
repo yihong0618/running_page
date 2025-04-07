@@ -168,16 +168,12 @@ const ActivityList: React.FC = () => {
                     index = date.getDate() - 1; // Return current day (0-30)
                     break;
                 case 'week':
-                    const target = new Date(date.valueOf());
-                    const dayNr = (date.getDay() + 6) % 7;
-                    target.setDate(target.getDate() - dayNr + 3);
-                    const firstThursday = target.valueOf();
-                    target.setMonth(0, 1);
-                    if (target.getDay() !== 4) target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
-                    const week1 = new Date(target.getFullYear(), 0, 4);
-                    const weekNumber = 1 + Math.ceil((firstThursday - week1) / 604800000)
-                    key = `${target.getFullYear()}-W${weekNumber.toString().padStart(2, '0')}`; // Zero padding
-                    index = (date.getDay() + 6 ) % 7;
+                    const currentDate = new Date(date.valueOf());
+                    currentDate.setDate(currentDate.getDate() + 4 - (currentDate.getDay() || 7)); // Set to nearest Thursday (ISO weeks defined by Thursday)
+                    const yearStart = new Date(currentDate.getFullYear(), 0, 1);
+                    const weekNum = Math.ceil((((currentDate.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+                    key = `${currentDate.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
+                    index = (date.getDay() + 6) % 7; // Return current day (0-6, Monday-Sunday)
                     break;
                 case 'day':
                     key = date.toLocaleDateString("zh").replaceAll('/', '-'); // Format date as YYYY-MM-DD
