@@ -2,7 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <script>
+      (function() {
+        // Check if we have a redirect path stored
+        const redirect = sessionStorage.getItem('redirect');
+        if (redirect) {
+          // Remove it from storage
+          sessionStorage.removeItem('redirect');
+          // Push the path to history if it's not the homepage
+          if (redirect !== '/running_page/' && redirect !== '/running_page/index.html') {
+            window.history.pushState(null, '', redirect);
+          }
+        }
+      })();
+    </script>
+    <link rel="icon" type="image/png" href="/running_page/images/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Running Page</title>
   </head>
