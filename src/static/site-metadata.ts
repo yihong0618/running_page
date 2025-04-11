@@ -10,6 +10,11 @@ interface ISiteMetadataResult {
   }[];
 }
 
+const getBasePath = () => {
+  const baseUrl = import.meta.env.BASE_URL;
+  return baseUrl === '/' ? '' : baseUrl;
+};
+
 const data: ISiteMetadataResult = {
   siteTitle: 'Workouts Map',
   siteUrl: 'https://ben29.xyz',
@@ -19,7 +24,7 @@ const data: ISiteMetadataResult = {
   navLinks: [
     {
       name: 'Summary',
-      url: '/summary',
+      url: `${getBasePath()}/summary`,
     },
     {
       name: 'Blog',
