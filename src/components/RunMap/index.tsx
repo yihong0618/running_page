@@ -62,7 +62,7 @@ const RunMap = ({
       if (ref !== null) {
         const map = ref.getMap();
         if (map && IS_CHINESE) {
-            map.addControl(new MapboxLanguage({defaultLanguage: 'zh-Hans'}));
+            map.addControl(new MapboxLanguage({defaultLanguage: 'EN'}));
         }
         // all style resources have been downloaded
         // and the first visually complete rendering of the base style has occurred.
@@ -145,7 +145,7 @@ const RunMap = ({
       {...viewState}
       onMove={onMove}
       style={style}
-      mapStyle="mapbox://styles/mapbox/dark-v10"
+      mapStyle="mapbox://styles/mapbox/dark-v11"
       ref={mapRefCallback}
       mapboxAccessToken={MAPBOX_TOKEN}
     >
