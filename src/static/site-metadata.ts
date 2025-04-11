@@ -16,6 +16,10 @@ const data: ISiteMetadataResult = {
   description: 'Personal site and blog',
   navLinks: [
     {
+      name: 'Summary',
+      url: '/summary',
+    },
+    {
       name: 'Blog',
       url: 'https://yer1k.com/',
     },

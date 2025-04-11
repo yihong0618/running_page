@@ -1,7 +1,6 @@
 import datetime
 import random
 import string
-import time
 
 import geopy
 from geopy.geocoders import Nominatim
@@ -99,7 +98,7 @@ def update_or_create_activity(session, run_activity):
                         )
                     )
                 # limit (only for the first time)
-                except Exception as e:
+                except Exception:
                     try:
                         location_country = str(
                             g.reverse(
@@ -107,7 +106,7 @@ def update_or_create_activity(session, run_activity):
                                 language="zh-CN",
                             )
                         )
-                    except Exception as e:
+                    except Exception:
                         pass
 
             activity = Activity(

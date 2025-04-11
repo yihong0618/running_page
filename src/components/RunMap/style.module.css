@@ -4,6 +4,7 @@
   margin: 1rem 0 0;
   border: 0;
   padding: 0;
+  background-color: rgb(26, 26, 26);
 }
 
 .buttons {
@@ -22,7 +23,7 @@
   margin-top: 0.1rem;
   font-size: 1rem;
   text-align: center;
-  color: white;
+  color: rgb(204, 204, 204);
 }
 
 .selected {
@@ -36,6 +37,7 @@
   bottom: 0px;
   left: 120px;
   cursor: pointer;
+  color: rgb(224, 237, 94);
 }
 
 .lights {
@@ -46,7 +48,6 @@
   width: 29px;
   height: 38px;
 }
-
 
 .lightsOn {
   height: 38px !important;
