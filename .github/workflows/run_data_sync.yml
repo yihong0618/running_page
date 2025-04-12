@@ -221,7 +221,7 @@ jobs:
 
       - name: Run generate analysis data
         run: |
-          python3 run_page/gen_svg.py --from-db --type github --output assets/github.svg
+          python run_page/gen_svg.py --from-db --type github --output assets/github.svg
 
       - name: Save data to parqent
         if: env.SAVE_TO_PARQENT == 'true'
