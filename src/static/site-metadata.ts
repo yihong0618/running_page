@@ -15,10 +15,10 @@ const getBasePath = () => {
 };
 
 const data: ISiteMetadataResult = {
-  siteTitle: 'Running Page',
-  siteUrl: 'https://yihong.run',
+  siteTitle: 'Harus Running Page',
+  siteUrl: 'https://azusachino.github.io',
   logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
-  description: 'Personal site and blog',
+  description: 'running page',
   navLinks: [
     {
       name: 'Summary',
@@ -26,11 +26,11 @@ const data: ISiteMetadataResult = {
     },
     {
       name: 'Blog',
-      url: 'https://github.com/yihong0618/gitblog',
+      url: 'https://azusachino.icu',
     },
     {
-      name: 'About',
-      url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
+      name: 'Notion',
+      url: 'https://harus-note.notion.site/harusDocs-1737242dc8218043a2e0e2fca24a5cd5',
     },
   ],
 };
