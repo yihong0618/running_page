@@ -100,6 +100,9 @@ class Track:
             stream = Stream.from_file(file_name)
             decoder = Decoder(stream)
             messages, errors = decoder.read(convert_datetimes_to_dates=False)
+            # Handle empty fit files that have no distance data
+            if messages.get("total_distance") is None:
+                return
             if errors:
                 print(f"FIT file read fail: {errors}")
             self._load_fit_data(messages)
