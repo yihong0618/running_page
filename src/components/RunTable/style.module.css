@@ -1,8 +1,20 @@
+@media only screen and (max-width: 800px) {
+
+  /* 当屏幕宽度小于 800px 时 */
+  .runTable th:nth-child(3),
+  .runTable td:nth-child(3)  {
+    display: none;
+    /* 隐藏第3列 */
+  }
+}
+
 @media only screen and (max-width: 700px) {
 
-  .runTable th:nth-child(4),
-  .runTable td:nth-child(4) {
+  /* 当屏幕宽度小于 700px 时 */
+  .runTable th:nth-child(5),
+  .runTable td:nth-child(5)  {
     display: none;
+    /* 隐藏第5列 */
   }
 }
 

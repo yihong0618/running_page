@@ -44,6 +44,8 @@ const PRIVACY_MODE = false;
 // update for now 2024/11/17 the lights on default is false
 //set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
 const LIGHTS_ON = true;
+//set to `true` if you want to show the 'Elevation Gain' column
+const SHOW_ELEVATION_GAIN = true;
 // richer title for the activity types (like garmin style)
 const RICH_TITLE = true;
 
@@ -141,6 +143,7 @@ export {
   MAP_HEIGHT,
   PRIVACY_MODE,
   LIGHTS_ON,
+  SHOW_ELEVATION_GAIN,
   RICH_TITLE,
   ACTIVITY_TYPES,
   ACTIVITY_TOTAL
@@ -155,3 +158,10 @@ export const NEED_FIX_MAP = false;
 export const MAIN_COLOR = nike;
 export const PROVINCE_FILL_COLOR = '#47b8e0';
 export const COUNTRY_FILL_COLOR = dark_vanilla;
+
+export const RUN_COLOR = MAIN_COLOR;
+export const RUN_TRAIL_COLOR = 'rgb(255,153,51)';
+export const CYCLING_COLOR = 'rgb(51,255,87)';
+export const HIKING_COLOR = 'rgb(151,51,255)';
+export const WALKING_COLOR = HIKING_COLOR;
+export const SWIMMING_COLOR = 'rgb(255,51,51)';
