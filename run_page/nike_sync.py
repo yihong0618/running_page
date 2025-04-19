@@ -1,5 +1,4 @@
 import argparse
-from base64 import b64decode
 import json
 import logging
 import os.path
@@ -38,22 +37,6 @@ NIKE_HEADERS = {
 class Nike:
     def __init__(self, access_token):
         self.client = httpx.Client()
-
-        # HINT: if you have old nrc refresh_token un comments this lines it still works
-
-        # response = self.client.post(
-        #     TOKEN_REFRESH_URL,
-        #     headers=NIKE_HEADERS,
-        #     json={
-        #         "refresh_token": access_token,  # its refresh_token for tesy here
-        #         "client_id": b64decode(NIKE_CLIENT_ID).decode(),
-        #         "grant_type": "refresh_token",
-        #         "ux_id": b64decode(NIKE_UX_ID).decode(),
-        #     },
-        #     timeout=60,
-        # )
-        # response.raise_for_status()
-        # access_token = response.json()["access_token"]
 
         self.client.headers.update({"Authorization": f"Bearer {access_token}"})
 
@@ -131,7 +114,7 @@ def run(refresh_token, is_continue_sync=False):
             save_activity(full_activity)
 
         if is_sync_done or before_id is None or not activities:
-            logger.info(f"Found no new activities, finishing")
+            logger.info("Found no new activities, finishing")
             return
 
 
@@ -239,7 +222,7 @@ def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rat
 
     for lat, lon in zip(latitude_data, longitude_data):
         if lat["start_epoch_ms"] != lon["start_epoch_ms"]:
-            raise Exception(f"\tThe latitude and longitude data is out of order")
+            raise Exception("\tThe latitude and longitude data is out of order")
 
         points_dict_list.append(
             {
@@ -361,6 +344,7 @@ def parse_no_gpx_data(activity):
         "id": int(nike_id),
         "name": "run from nike",
         "type": "Run",
+        "subtype": "Run",
         "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
         "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
         "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),

@@ -1,7 +1,6 @@
 import argparse
 import os
 import time
-from datetime import datetime, timedelta
 
 from config import OUTPUT_DIR
 from nike_sync import make_new_gpxs, run

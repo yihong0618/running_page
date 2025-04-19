@@ -1,5 +1,5 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React, {useRef, useCallback, useState} from 'react';
+import React, {useRef, useCallback, useState, useEffect} from 'react';
 import Map, {Layer, Source, FullscreenControl, NavigationControl, MapRef} from 'react-map-gl';
 import {MapInstance} from "react-map-gl/src/types/lib";
 import useActivities from '@/hooks/useActivities';
@@ -127,6 +127,18 @@ const RunMap = ({
     right: '0px',
     opacity: 0.3,
   };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (mapRef.current) {
+        mapRef.current.getMap().resize();
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   return (
     <Map

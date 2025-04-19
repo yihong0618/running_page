@@ -132,6 +132,11 @@ def parse_raw_data_to_nametuple(
                 p["longitude"] = run_points_data[i][1]
 
         for p in run_points_data_gpx:
+            if "timestamp" not in p:
+                if "unixTimestamp" in p:
+                    p["timestamp"] = p["unixTimestamp"]
+                else:
+                    p["timestamp"] = 0
             p_hr = find_nearest_hr(decoded_hr_data, int(p["timestamp"]), start_time)
             if p_hr:
                 p["hr"] = p_hr
@@ -159,6 +164,7 @@ def parse_raw_data_to_nametuple(
         "name": f"{KEEP2STRAVA[run_data['dataType']]} from keep",
         # future to support others workout now only for run
         "type": f"{KEEP2STRAVA[(run_data['dataType'])]}",
+        "subtype": f"{KEEP2STRAVA[(run_data['dataType'])]}",
         "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
         "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
         "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
