@@ -324,7 +324,7 @@ class Joyrun:
             )
         )
 
-        return gpx.to_xml()
+        return gpx
 
     def get_single_run_record(self, fid):
         payload = {
@@ -363,13 +363,33 @@ class Joyrun:
                 eval(run_data["heartrate"]) if run_data["heartrate"] else None
             )
         except:
-            print(f"Heart Rate: can not eval for {str(heart_rate_list)}")
+            print(f"Heart Rate: can not eval for {str(run_data['heartrate'''])}")
+        try:
+            altitude_list = eval(altitude_list) if altitude_list else None
+        except:
+            print(f"Altitude: can not eval for {str(altitude_list)}")
         heart_rate = None
         if heart_rate_list:
             heart_rate = int(sum(heart_rate_list) / len(heart_rate_list))
             # fix #66
             if heart_rate < 0:
                 heart_rate = None
+        elevation_gain = None
+        # pass the track no points
+        if run_points_data:
+            gpx_data = self.parse_points_to_gpx(
+                run_points_data,
+                start_time,
+                end_time,
+                heart_rate_list,
+                altitude_list,
+                pause_list,
+            )
+            elevation_gain = gpx_data.get_uphill_downhill().uphill
+            if with_gpx:
+                # pass the track no points
+                if str(joyrun_id) not in old_gpx_ids:
+                    download_joyrun_gpx(gpx_data.to_xml(), str(joyrun_id))
 
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
         start_latlng = start_point(*run_points_data[0]) if run_points_data else None
@@ -404,6 +424,7 @@ class Joyrun:
                 seconds=int((run_data["endtime"] - run_data["starttime"]))
             ),
             "average_speed": run_data["meter"] / run_data["second"],
+            "elevation_gain": elevation_gain,
             "location_country": location_country,
         }
         return namedtuple("x", d.keys())(*d.values())

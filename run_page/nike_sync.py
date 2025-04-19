@@ -357,6 +357,7 @@ def parse_no_gpx_data(activity):
         "moving_time": moving_time,
         "elapsed_time": elapsed_time,
         "average_speed": distance / int(activity["active_duration_ms"] / 1000),
+        "elevation_gain": 0,
         "location_country": "",
     }
     return namedtuple("x", d.keys())(*d.values())
