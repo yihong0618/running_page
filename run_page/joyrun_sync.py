@@ -230,11 +230,12 @@ class Joyrun:
 
     @staticmethod
     def new_track_point(
-        latitude, longitude, time, heart_rate
+        latitude, longitude, elevation, time, heart_rate
     ) -> gpxpy.gpx.GPXTrackPoint:
         track_point = gpxpy.gpx.GPXTrackPoint(
             latitude=latitude,
             longitude=longitude,
+            elevation=elevation,
             time=datetime.fromtimestamp(time, tz=timezone.utc),
         )
 
@@ -267,6 +268,7 @@ class Joyrun:
         :param run_points_data:        [[latitude, longitude],...]
         :param pause_list:             [[interval_index, pause_seconds],...]
         :param heart_rate_data_string: heart rate list in string format
+        :param altitude_data_string:   altitude list in string format
         :param interval:               time interval between each point, in seconds
         """
 
