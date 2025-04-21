@@ -1,0 +1,42 @@
+[project]
+name = "running_page"
+version = "2.5.1"
+description = "Default template for PDM package"
+authors = [
+    {name = "yihong0618", email = "zouzou0208@gmail.com"},
+]
+dependencies = [
+    "httpx<=0.15.5,>=0.15.0",
+    "gpxpy==1.4.2",
+    "stravalib==0.10.4",
+    "appdirs>=1.4.0",
+    "svgwrite>=1.1.9",
+    "colour>=0.1.5",
+    "s2sphere",
+    "arrow",
+    "geopy",
+    "polyline",
+    "sqlalchemy",
+    "tzfpy; platform_system != \"Windows\"",
+    "timezonefinder; platform_system == \"Windows\"",
+    "pyyaml",
+    "aiofiles",
+    "cloudscraper==1.2.58",
+    "tcxreader",
+    "rich",
+    "lxml==4.9.4",
+    "eviltransform",
+    "stravaweblib",
+    "tenacity",
+    "numpy",
+    "tzlocal",
+    "fit-tool",
+    "garmin-fit-sdk",
+    "haversine==2.8.0",
+    "garth",
+    "pycryptodome",
+    "duckdb",
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = {text = "MIT"}
