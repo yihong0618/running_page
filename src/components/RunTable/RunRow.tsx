@@ -1,4 +1,5 @@
 import { formatPace, colorFromType, formatRunTime, Activity, RunIds, titleForRun } from '@/utils/utils';
+import { SHOW_ELEVATION_GAIN } from '@/utils/const';
 import styles from './style.module.css';
 
 interface IRunRowProperties {
@@ -36,8 +37,8 @@ const RunRow = ({ elementIndex, locateActivity, run, runIndex, setRunIndex }: IR
       <td>{titleForRun(run)}</td>
       <td>{type}</td>
       <td>{distance}</td>
-      <td>{elevation_gain}</td>
-      <td>{paceParts}</td>
+      {SHOW_ELEVATION_GAIN && <td>{elevation_gain}</td>}
+      {paceParts && <td>{paceParts}</td>}
       <td>{heartRate && heartRate.toFixed(0)}</td>
       <td>{runTime}</td>
       <td className={styles.runDate}>{run.start_date_local}</td>

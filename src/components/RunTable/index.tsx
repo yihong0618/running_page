@@ -6,6 +6,8 @@ import {
   Activity,
   RunIds,
 } from '@/utils/utils';
+import { SHOW_ELEVATION_GAIN } from "@/utils/const";
+
 import RunRow from './RunRow';
 import styles from './style.module.css';
 
@@ -63,6 +65,9 @@ const RunTable = ({
     ['Time', sortRunTimeFunc],
     ['Date', sortDateFuncClick],
   ]);
+  if (!SHOW_ELEVATION_GAIN){
+    sortFuncMap.delete('Elevation Gain')
+  }
 
   const handleClick: React.MouseEventHandler<HTMLElement> = (e) => {
     const funcName = (e.target as HTMLElement).innerHTML;

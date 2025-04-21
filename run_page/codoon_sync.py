@@ -242,7 +242,7 @@ def tcx_output(fit_array, run_data):
         f.write(str(xml_str))
 
 
-# TODO time complexity is too heigh, need to be reduced
+# TODO time complexity is too high, need to be reduced
 def tcx_job(run_data):
     # fit struct array
     fit_array = None

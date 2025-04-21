@@ -6,6 +6,7 @@ import { formatPace, colorFromType } from '@/utils/utils';
 import useHover from '@/hooks/useHover';
 import { yearStats } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
+import { SHOW_ELEVATION_GAIN } from "@/utils/const";
 
 const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick: (_year: string) => void ,
     onClickTypeInYear: (_year: string, _type: string) => void }) => {
@@ -84,7 +85,7 @@ const YearStat = ({ year, onClick, onClickTypeInYear }: { year: string, onClick:
             }}
           />
         ))}
-        { sumElevationGain > 0 &&
+        { SHOW_ELEVATION_GAIN && sumElevationGain > 0 &&
           <Stat
             value={`${(sumElevationGain).toFixed(0)} `}
             description="M Elevation Gain"
