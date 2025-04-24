@@ -1048,6 +1048,12 @@ python3(python) run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --
 python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 ```
 
+生成如果一生只有 1000 个月的 Runner Month of Life
+
+```bash
+python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --special-distance 10 --special-distance2 20 --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol.svg --use-localtime --athlete yihong0618 --title 'Runner Month of Life'
+```
+
 更多展示效果参见：
 <https://github.com/flopp/GpxTrackPoster>
 

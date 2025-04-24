@@ -822,6 +822,11 @@ Generate year circular svg show
 ```
 python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 ```
+Generate a "Runner Month of Life" visualization as if your entire life consisted of only 1000 months.
+
+```bash
+python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --special-distance 10 --special-distance2 20 --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol.svg --use-localtime --athlete yihong0618 --title 'Runner Month of Life'
+```
 
 For more display effects, see:
 <https://github.com/flopp/GpxTrackPoster>
