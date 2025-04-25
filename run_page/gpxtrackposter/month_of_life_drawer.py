@@ -30,18 +30,19 @@ class MonthOfLifeDrawer(TracksDrawer):
 
     def fetch_args(self, args):
         # Parse birth date
-        if not args.birth:
-            raise PosterError(
-                "Birth date parameter --birth is required in format YYYY-MM"
-            )
-        try:
-            parts = args.birth.split("-")
-            self.birth_year = int(parts[0])
-            self.birth_month = int(parts[1])
-            if not (1 <= self.birth_month <= 12):
-                raise ValueError
-        except Exception:
-            raise PosterError("Invalid birth date format, must be YYYY-MM")
+        if args.type == "monthoflife":
+            if not args.birth:
+                raise PosterError(
+                    "Birth date parameter --birth is required in format YYYY-MM"
+                )
+            try:
+                parts = args.birth.split("-")
+                self.birth_year = int(parts[0])
+                self.birth_month = int(parts[1])
+                if not (1 <= self.birth_month <= 12):
+                    raise ValueError
+            except Exception:
+                raise PosterError("Invalid birth date format, must be YYYY-MM")
 
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
         if self.poster.tracks is None:
