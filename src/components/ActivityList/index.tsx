@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { lazy, useState, Suspense } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import activities from '@/static/activities.json';
 import styles from './style.module.css';
 import {ACTIVITY_TOTAL, ACTIVITY_TYPES} from "@/utils/const";
+import { totalStat } from '@assets/index';
+import { loadSvgComponent } from '@/utils/svgUtils';
+
+const MonthofLifeSvg = lazy(() => loadSvgComponent(totalStat, './mol.svg'));
 
 // Define interfaces for our data structures
 interface Activity {
@@ -51,7 +55,7 @@ interface ActivityGroups {
   [key: string]: ActivitySummary;
 }
 
-type IntervalType = 'year' | 'month' | 'week' | 'day';
+type IntervalType = 'year' | 'month' | 'week' | 'day' | 'life';
 
 const ActivityCard: React.FC<ActivityCardProps> = ({ period, summary, dailyDistances, interval, activityType }) => {
     const generateLabels = (): number[] => {
@@ -237,42 +241,54 @@ const ActivityList: React.FC = () => {
                     <option value="month">{ACTIVITY_TOTAL.MONTHLY_TITLE}</option>
                     <option value="week">{ACTIVITY_TOTAL.WEEKLY_TITLE}</option>
                     <option value="day">{ACTIVITY_TOTAL.DAILY_TITLE}</option>
+                    <option value="life">Life</option>
                 </select>
             </div>
-            <div className={styles.summaryContainer}>
-                {Object.entries(activitiesByInterval)
-                    .sort(([a], [b]) => {
-                        if (interval === 'day') {
-                            return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
-                        } else if (interval === 'week') {
-                            const [yearA, weekA] = a.split('-W').map(Number);
-                            const [yearB, weekB] = b.split('-W').map(Number);
-                            return yearB - yearA || weekB - weekA; // Sort by year and week number
-                        } else {
-                            const [yearA, monthA = 0] = a.split('-').map(Number);
-                            const [yearB, monthB = 0] = b.split('-').map(Number);
-                            return yearB - yearA || monthB - monthA; // Sort by year and month
-                        }
-                    })
-                    .map(([period, summary]) => (
-                        <ActivityCard
-                            key={period}
-                            period={period}
-                            summary={{
-                                totalDistance: summary.totalDistance,
-                                averageSpeed: summary.totalTime ? (summary.totalDistance / (summary.totalTime / 3600)) : 0,
-                                totalTime: summary.totalTime,
-                                count: summary.count,
-                                maxDistance: summary.maxDistance,
-                                maxSpeed: summary.maxSpeed,
-                                location: summary.location,
-                            }}
-                            dailyDistances={summary.dailyDistances}
-                            interval={interval}
-                            activityType={activityType}
-                        />
-                    ))}
-            </div>
+
+            {interval === 'life' && (
+                <div className={styles.lifeContainer}>
+                    <Suspense fallback={<div>Loading SVG...</div>}>
+                        <MonthofLifeSvg />
+                    </Suspense>
+                </div>
+            )}
+
+            {interval !== 'life' && (
+                <div className={styles.summaryContainer}>
+                    {Object.entries(activitiesByInterval)
+                        .sort(([a], [b]) => {
+                            if (interval === 'day') {
+                                return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
+                            } else if (interval === 'week') {
+                                const [yearA, weekA] = a.split('-W').map(Number);
+                                const [yearB, weekB] = b.split('-W').map(Number);
+                                return yearB - yearA || weekB - weekA; // Sort by year and week number
+                            } else {
+                                const [yearA, monthA = 0] = a.split('-').map(Number);
+                                const [yearB, monthB = 0] = b.split('-').map(Number);
+                                return yearB - yearA || monthB - monthA; // Sort by year and month
+                            }
+                        })
+                        .map(([period, summary]) => (
+                            <ActivityCard
+                                key={period}
+                                period={period}
+                                summary={{
+                                    totalDistance: summary.totalDistance,
+                                    averageSpeed: summary.totalTime ? (summary.totalDistance / (summary.totalTime / 3600)) : 0,
+                                    totalTime: summary.totalTime,
+                                    count: summary.count,
+                                    maxDistance: summary.maxDistance,
+                                    maxSpeed: summary.maxSpeed,
+                                    location: summary.location,
+                                }}
+                                dailyDistances={summary.dailyDistances}
+                                interval={interval}
+                                activityType={activityType}
+                            />
+                        ))}
+                </div>
+            )}
         </div>
     );
 };
