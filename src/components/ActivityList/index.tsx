@@ -3,7 +3,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { useNavigate } from 'react-router-dom';
 import activities from '@/static/activities.json';
 import styles from './style.module.css';
-import {ACTIVITY_TOTAL, ACTIVITY_TYPES} from "@/utils/const";
+import { ACTIVITY_TOTAL } from "@/utils/const";
+import { formatPace } from '@/utils/utils';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 
@@ -48,7 +49,6 @@ interface ActivityCardProps {
   summary: DisplaySummary;
   dailyDistances: number[];
   interval: string;
-  activityType: string;
 }
 
 interface ActivityGroups {
@@ -57,7 +57,7 @@ interface ActivityGroups {
 
 type IntervalType = 'year' | 'month' | 'week' | 'day' | 'life';
 
-const ActivityCard: React.FC<ActivityCardProps> = ({ period, summary, dailyDistances, interval, activityType }) => {
+const ActivityCard: React.FC<ActivityCardProps> = ({ period, summary, dailyDistances, interval }) => {
     const generateLabels = (): number[] => {
         if (interval === 'month') {
             const [year, month] = period.split('-').map(Number);
@@ -84,10 +84,11 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ period, summary, dailyDista
     };
 
     const formatPace = (speed: number): string => {
-        if (speed === 0) return '0:00';
+        if (speed === 0) return '0:00 min/km';
         const pace = 60 / speed; // min/km
-        const minutes = Math.floor(pace);
-        const seconds = Math.round((pace - minutes) * 60);
+        const totalSeconds = Math.round(pace * 60); // Total seconds per km
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds} min/km`;
     };
 
@@ -100,13 +101,13 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ period, summary, dailyDista
             <h2 className={styles.activityName}>{period}</h2>
             <div className={styles.activityDetails}>
                 <p><strong>{ACTIVITY_TOTAL.TOTAL_DISTANCE_TITLE}:</strong> {summary.totalDistance.toFixed(2)} km</p>
-                <p><strong>{ACTIVITY_TOTAL.AVERAGE_SPEED_TITLE}:</strong> {activityType === 'ride' ? `${summary.averageSpeed.toFixed(2)} km/h` : formatPace(summary.averageSpeed)}</p>
+                <p><strong>{ACTIVITY_TOTAL.AVERAGE_SPEED_TITLE}:</strong> {formatPace(summary.averageSpeed)}</p>
                 <p><strong>{ACTIVITY_TOTAL.TOTAL_TIME_TITLE}:</strong> {formatTime(summary.totalTime)}</p>
                 {interval !== 'day' && (
                     <>
                         <p><strong>{ACTIVITY_TOTAL.ACTIVITY_COUNT_TITLE}:</strong> {summary.count}</p>
                         <p><strong>{ACTIVITY_TOTAL.MAX_DISTANCE_TITLE}:</strong> {summary.maxDistance.toFixed(2)} km</p>
-                        <p><strong>{ACTIVITY_TOTAL.MAX_SPEED_TITLE}:</strong> {activityType === 'ride' ? `${summary.maxSpeed.toFixed(2)} km/h` : formatPace(summary.maxSpeed)}</p>
+                        <p><strong>{ACTIVITY_TOTAL.MAX_SPEED_TITLE}:</strong> {formatPace(summary.maxSpeed)}</p>
                     </>
                 )}
                 {interval === 'day' && (
@@ -141,7 +142,6 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ period, summary, dailyDista
 
 const ActivityList: React.FC = () => {
     const [interval, setInterval] = useState<IntervalType>('month');
-    const [activityType, setActivityType] = useState<string>('run');
     const navigate = useNavigate();
 
     const toggleInterval = (newInterval: IntervalType): void => {
@@ -149,7 +149,7 @@ const ActivityList: React.FC = () => {
     };
 
     const filterActivities = (activity: Activity): boolean => {
-        return activity.type.toLowerCase() === activityType;
+        return activity.type.toLowerCase() === 'run';
     };
 
     const convertTimeToSeconds = (time: string): number => {
@@ -229,10 +229,6 @@ const ActivityList: React.FC = () => {
                 >
                     Home
                 </button>
-                <select onChange={(e) => setActivityType(e.target.value)} value={activityType}>
-                    <option value="run">{ACTIVITY_TYPES.RUN_GENERIC_TITLE}</option>
-                    <option value="ride">{ACTIVITY_TYPES.CYCLING_TITLE}</option>
-                </select>
                 <select
                     onChange={(e) => toggleInterval(e.target.value as IntervalType)}
                     value={interval}
@@ -284,7 +280,6 @@ const ActivityList: React.FC = () => {
                                 }}
                                 dailyDistances={summary.dailyDistances}
                                 interval={interval}
-                                activityType={activityType}
                             />
                         ))}
                 </div>
