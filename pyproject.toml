@@ -24,7 +24,7 @@ dependencies = [
     "cloudscraper==1.2.58",
     "tcxreader",
     "rich",
-    "lxml==4.9.4",
+    "lxml",
     "eviltransform",
     "stravaweblib",
     "tenacity",
