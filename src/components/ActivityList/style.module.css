@@ -82,3 +82,8 @@
 .smallHomeButton:hover {
     background-color: rgb(0, 237, 94);
 }
+
+.lifeContainer {
+  display: flex;
+  justify-content: center;
+}
