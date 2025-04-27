@@ -41,7 +41,7 @@ env:
   BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
   SAVE_TO_PARQENT: false # If you want to save the data to the repo, set it to `true`
   GENERATE_MONTH_OF_LIFE: true # If you want to generate the month of life, set it to `true`
-  BIRTHDAY_MONTH: 1989-03 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
+  BIRTHDAY_MONTH: 1994-12 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
 
 jobs:
   sync:
