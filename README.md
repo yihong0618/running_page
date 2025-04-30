@@ -810,23 +810,30 @@ python run_page/coros_sync.py 'your coros account' 'your coros password'
 - Generate SVG data display
 - Display of results:[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
-```
+```cli
 python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
 
-```
+```cli
 python run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
 ```
 
 Generate year circular svg show
 
-```
+```cli
 python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 ```
+
 Generate a "Runner Month of Life" visualization as if your entire life consisted of only 1000 months.
 
 ```bash
 python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --special-distance 10 --special-distance2 20 --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol.svg --use-localtime --athlete yihong0618 --title 'Runner Month of Life'
+```
+
+Generage you share png using GPT gpt-image-1([last one](./PNG_OUT/share_image_2025-04-29.png))
+
+```cli
+pdm run run_page/auto_share_sync.py --api_key xxxxxxxxx  --base_url xxxxxxxx
 ```
 
 For more display effects, see:

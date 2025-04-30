@@ -1061,6 +1061,12 @@ python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
 python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --special-distance 10 --special-distance2 20 --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol.svg --use-localtime --athlete yihong0618 --title 'Runner Month of Life'
 ```
 
+自动生成分享图 GPT gpt-image-1([last one](./PNG_OUT/share_image_2025-04-29.png))
+
+```cli
+python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx
+```
+
 更多展示效果参见：
 <https://github.com/flopp/GpxTrackPoster>
 
