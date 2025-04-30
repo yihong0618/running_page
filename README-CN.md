@@ -1063,8 +1063,16 @@ python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --speci
 
 自动生成分享图 GPT gpt-image-1([last one](./PNG_OUT/share_image_2025-04-29.png))
 
+
+默认最后一次
 ```cli
 python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx
+```
+
+如果是特定的日子
+
+```cli
+python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --date 2023-11-11
 ```
 
 更多展示效果参见：
