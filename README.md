@@ -836,6 +836,12 @@ Generage you share png using GPT gpt-image-1([last one](./PNG_OUT/share_image_20
 pdm run run_page/auto_share_sync.py --api_key xxxxxxxxx  --base_url xxxxxxxx
 ```
 
+If you want ot a date.
+
+```cli
+python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --date 2023-11-11
+```
+
 For more display effects, see:
 <https://github.com/flopp/GpxTrackPoster>
 
