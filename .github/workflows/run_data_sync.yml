@@ -9,7 +9,7 @@ on:
       - master
     paths:
       - run_page/nike_sync.py
-      - run_page/nike_to_strava_sync.py
+      - run_page/nike_到_strava_sync.py
       - run_page/strava_sync.py
       - run_page/gen_svg.py
       - run_page/garmin_sync.py
@@ -17,31 +17,31 @@ on:
       - run_page/keep_sync.py
       - run_page/gpx_sync.py
       - run_page/tcx_sync.py
-      - run_page/tcx_to_garmin_sync.py
-      - run_page/garmin_to_strava_sync.py
-      - run_page/keep_to_strava_sync.py
+      - run_page/tcx_到_garmin_sync.py
+      - run_page/garmin_到_strava_sync.py
+      - run_page/keep_到_strava_sync.py
       - run_page/oppo_sync.py
       - requirements.txt
 
 env:
-  # please change to your own config.
-  RUN_TYPE: pass # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon/oppo/db_updater, Please change the 'pass' it to your own
+  # please change 到 your own config.
+  RUN_TYPE: garmin # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_到_strava/strava_到_garmin/tcx_到_garmin/strava_到_garmin_cn/garmin_到_strava/garmin_到_strava_cn/codoon/oppo/db_updater, Please change the 'pass' it 到 your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Runs # also here
 
-  # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
+  # IGNORE_BEFORE_SAVING: True # if you want 到 ignore some data before saving, set this 到 True
   IGNORE_START_END_RANGE: 10 # Unit meter
-  # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
+  # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this 到ol 到 making your polyline
   IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
   IGNORE_RANGE: 10 # Unit meter
   SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercel, check the README
   DATA_CACHE_PREFIX: 'track_data'
-  BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
-  SAVE_TO_PARQENT: false # If you want to save the data to the repo, set it to `true`
-  GENERATE_MONTH_OF_LIFE: true # If you want to generate the month of life, set it to `true`
-  BIRTHDAY_MONTH: 1989-03 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
+  BUILD_GH_PAGES: true # If you do not need GitHub Page please set it 到 `false`
+  SAVE_TO_PARQENT: false # If you want 到 save the data 到 the repo, set it 到 `true`
+  GENERATE_MONTH_OF_LIFE: true # If you want 到 generate the month of life, set it 到 `true`
+  BIRTHDAY_MONTH: 1989-03 # If you want 到 generate the month of life, set it 到 your birthday month, format is YYYY-MM
 
 jobs:
   sync:
@@ -86,7 +86,7 @@ jobs:
             src/static/activities.json
             imported.json
           key: ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-${{ github.run_id }}
-          restore-keys: |
+          res到re-keys: |
             ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-
             ${{ env.DATA_CACHE_PREFIX }}-
 
@@ -95,10 +95,10 @@ jobs:
         run: |
           python run_page/nike_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }}
 
-      - name: Run sync Nike to Strava(Run with nike data backup and show with strava)
-        if: env.RUN_TYPE == 'nike_to_strava'
+      - name: Run sync Nike 到 Strava(Run with nike data backup and show with strava)
+        if: env.RUN_TYPE == 'nike_到_strava'
         run: |
-          python run_page/nike_to_strava_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
+          python run_page/nike_到_strava_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
 
       - name: Run sync Keep script
         if: env.RUN_TYPE == 'keep'
