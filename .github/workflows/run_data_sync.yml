@@ -25,7 +25,7 @@ on:
 
 env:
   # please change 到 your own config.
-  RUN_TYPE: garmin # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_到_strava/strava_到_garmin/tcx_到_garmin/strava_到_garmin_cn/garmin_到_strava/garmin_到_strava_cn/codoon/oppo/db_updater, Please change the 'pass' it 到 your own
+  RUN_TYPE: garmin_cn # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_到_strava/strava_到_garmin/tcx_到_garmin/strava_到_garmin_cn/garmin_到_strava/garmin_到_strava_cn/codoon/oppo/db_updater, Please change the 'pass' it 到 your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   MIN_GRID_DISTANCE: 10 # change min distance here
