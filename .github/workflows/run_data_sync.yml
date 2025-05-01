@@ -35,13 +35,13 @@ env:
   IGNORE_START_END_RANGE: 10 # Unit meter
   # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this 到ol 到 making your polyline
   IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
-  IGNORE_RANGE: 10 # Unit meter
+  IGNORE_RANGE: 100 # Unit meter
   SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercel, check the README
   DATA_CACHE_PREFIX: 'track_data'
   BUILD_GH_PAGES: true # If you do not need GitHub Page please set it 到 `false`
   SAVE_TO_PARQENT: false # If you want 到 save the data 到 the repo, set it 到 `true`
-  GENERATE_MONTH_OF_LIFE: true # If you want 到 generate the month of life, set it 到 `true`
-  BIRTHDAY_MONTH: 1989-03 # If you want 到 generate the month of life, set it 到 your birthday month, format is YYYY-MM
+  GENERATE_MONTH_OF_LIFE: false # If you want 到 generate the month of life, set it 到 `true`
+  BIRTHDAY_MONTH: 1990-10 # If you want 到 generate the month of life, set it 到 your birthday month, format is YYYY-MM
 
 jobs:
   sync:
@@ -259,12 +259,12 @@ jobs:
           echo "DATA_CACHE_PREFIX=$DATA_CACHE_PREFIX" >> "$GITHUB_OUTPUT"
           echo "BUILD_GH_PAGES=$BUILD_GH_PAGES" >> "$GITHUB_OUTPUT"
 
-  publish_github_pages:
-    if: needs.sync.result == 'success' && needs.sync.outputs.BUILD_GH_PAGES == 'true'
-    name: Build and publish Github Pages
-    uses: ./.github/workflows/gh-pages.yml
-    with:
-      save_data_in_github_cache: ${{needs.sync.outputs.SAVE_DATA_IN_GITHUB_CACHE == 'true'}}
-      data_cache_prefix: ${{needs.sync.outputs.DATA_CACHE_PREFIX}}
-    needs:
-      - sync
+  # publish_github_pages:
+  #   if: needs.sync.result == 'success' && needs.sync.outputs.BUILD_GH_PAGES == 'true'
+  #   name: Build and publish Github Pages
+  #   uses: ./.github/workflows/gh-pages.yml
+  #   with:
+  #     save_data_in_github_cache: ${{needs.sync.outputs.SAVE_DATA_IN_GITHUB_CACHE == 'true'}}
+  #     data_cache_prefix: ${{needs.sync.outputs.DATA_CACHE_PREFIX}}
+  #   needs:
+  #     - sync
