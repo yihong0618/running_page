@@ -1,7 +1,7 @@
 ## Note
 
 1. clone or Fork before vercel 404 need to pull the latest code
-2. python3(python) in README means python3 python
+2. python in README means python3 python
 3. use v2.0 need change vercel setting from gatsby to vite
 4. 2023.09.26 garmin need secret_string(and in Actions) get    
     ```bash
@@ -298,7 +298,7 @@ You can using `Google map` [Interactive Polyline Encoder Utility
 Copy all your gpx files to GPX_OUT or new gpx files
 
 ```bash
-python3(python) run_page/gpx_sync.py
+python run_page/gpx_sync.py
 ```
 
 </details>
@@ -313,7 +313,7 @@ python3(python) run_page/gpx_sync.py
 Copy all your tcx files to TCX_OUT or new tcx files
 
 ```bash
-python3(python) run_page/tcx_sync.py
+python run_page/tcx_sync.py
 ```
 
 </details>
@@ -328,7 +328,7 @@ python3(python) run_page/tcx_sync.py
 Copy all your tcx files to FIT_OUT or new fit files
 
 ```bash
-python3(python) run_page/fit_sync.py
+python run_page/fit_sync.py
 ```
 
 </details>
@@ -352,7 +352,7 @@ Enter the following command in the terminal
 
 ```bash
 # to get secret_string
-python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
+python run_page/get_garmin_secret.py ${your email} ${your password}
 ```
 
 #### Execute Garmin Sync Script
@@ -361,19 +361,19 @@ Copy the Secret output in the terminal,If you are using Github, please configure
 
 ```bash
 # use this secret_string
-python3(python) run_page/garmin_sync.py ${secret_string}
+python run_page/garmin_sync.py ${secret_string}
 ```
 
 example：
 
 ```bash
-python3(python) run_page/get_garmin_secret.py xxxxxxxxxxx
+python run_page/get_garmin_secret.py xxxxxxxxxxx
 ```
 
 only-run：
 
 ```bash
-python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
+python run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 ```
 
 </details>
@@ -397,7 +397,7 @@ Enter the following command in the terminal
 
 ```bash
 # to get secret_string
-python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
+python run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 ```
 
 ![get_garmin_cn_secret](docs/get_garmin_cn_secret.jpg)
@@ -410,13 +410,13 @@ Copy the Secret output in the terminal,If you are using Github, please configure
 example：
 
 ```bash
-python3(python) run_page/garmin_sync.py xxxxxxxxx(secret_string) --is-cn
+python run_page/garmin_sync.py xxxxxxxxx(secret_string) --is-cn
 ```
 
 only-run：
 
 ```bash
-python3(python) run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn --only-run
+python run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn --only-run
 ```
 
 </details>
@@ -437,7 +437,7 @@ Enter the following command in the terminal
 
 ```bash
 # to get secret_string
-python3(python) run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
+python run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 ```
 
 #### Get Garmin Secret
@@ -446,7 +446,7 @@ Enter the following command in the terminal
 
 ```bash
 # to get secret_string
-python3(python) run_page/get_garmin_secret.py ${your email} ${your password}
+python run_page/get_garmin_secret.py ${your email} ${your password}
 ```
 
 #### Sync Garmin CN to Garmin
@@ -455,7 +455,7 @@ Enter the following command in the terminal
 
 ```bash
 # to sync garmin-cn to garmin-global
-python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${garmin_secret_string}
+python run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${garmin_secret_string}
 ```
 
 </details>
@@ -478,7 +478,7 @@ python3(python) run_page/garmin_sync_cn_global.py ${garmin_cn_secret_string} ${g
 3. Execute in the root directory , you should be able to see the image below, and then you can log into your account on the mobile as usual:
 
 ```bash
-python3(python) run_page/nike_sync.py ${access_token}
+python run_page/nike_sync.py ${access_token}
 ```
 ![tg_image_166091873](https://github.com/user-attachments/assets/9d4851d6-849a-4bb7-8ffe-5358fa7328b2)
 
@@ -487,7 +487,7 @@ if you want to automate the submission of NRC data, you can refer to [issue692](
 If you've previously synced activities and want to continue syncing new ones, with `--continue-sync` args
 
 ```bash
-python3(python) run_page/nike_sync.py ${access_token} --continue-sync
+python run_page/nike_sync.py ${access_token} --continue-sync
 ```
 
 </details>
@@ -514,13 +514,13 @@ Get Nike's `refresh_token`
 3. Execute in the root directory:
 
 ```bash
-python3(python) run_page/nike_sync.py ${nike refresh_token}
+python run_page/nike_sync.py ${nike refresh_token}
 ```
 
 example：
 
 ```bash
-python3(python) run_page/nike_sync.py eyJhbGciThiMTItNGIw******
+python run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 ```
 
 ![example img](https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/nike_sync_%20example.png)
@@ -608,7 +608,7 @@ curl -X POST https://www.strava.com/oauth/token \
 > If you only want to sync `type running` add args --only-run
 
 ```bash
-python3(python) run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
+python run_page/strava_sync.py ${client_id} ${client_secret} ${refresh_token}
 ```
 
 References：
@@ -631,15 +631,15 @@ References：
 3. Execute in the root directory:
 
 ```bash
-python3(python) run_page/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
+python run_page/tcx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
 ```bash
-python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx
+python run_page/tcx_to_strava_sync.py xxx xxx xxx
 or
-python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
+python run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -685,15 +685,15 @@ python run_page/tcx_to_garmin_sync.py xxx
 3. Execute in the root directory:
 
 ```bash
-python3(python) run_page/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
+python run_page/gpx_to_strava_sync.py ${client_id} ${client_secret}  ${strava_refresh_token}
 ```
 
 example：
 
 ```bash
-python3(python) run_page/gpx_to_strava_sync.py xxx xxx xxx
+python run_page/gpx_to_strava_sync.py xxx xxx xxx
 or
-python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
+python run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 ```
 
 4. if you want to all files add args `--all`
@@ -711,13 +711,13 @@ python3(python) run_page/tcx_to_strava_sync.py xxx xxx xxx --all
 2. Execute in the root directory:
 
 ```bash
-python3(python) run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
+python run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${strava_refresh_token}
 ```
 
 example：
 
 ```bash
-python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
+python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 ```
 
 </details>
@@ -733,13 +733,13 @@ python3(python) run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx x
 2. Execute in the root directory:
 
 ```bash
-python3(python) run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_secret_string} --is-cn
+python run_page/garmin_to_strava_sync.py  ${client_id} ${client_secret} ${strava_refresh_token} ${garmin_secret_string} --is-cn
 ```
 
 e.g.
 
 ```bash
-python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
+python run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 ```
 
 </details>
@@ -755,13 +755,13 @@ python3(python) run_page/garmin_to_strava_sync.py  xxx xxx xxx xx
 2. Execute in the root directory:
 
 ```bash
-python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
+python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 ```
 
 if your garmin account region is **China**, you need to execute the command:
 
 ```bash
-python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
 ```
 
 If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc.
@@ -771,7 +771,7 @@ If you want to add Garmin Device during sync, you should add `--use_fake_garmin_
 the final command will be:
 
 ```bash
-python3(python) run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
+python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
 ```
 
 ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
@@ -821,7 +821,7 @@ python run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid
 Generate year circular svg show
 
 ```cli
-python3(python) run_page/gen_svg.py --from-db --type circular --use-localtime
+python run_page/gen_svg.py --from-db --type circular --use-localtime
 ```
 
 Generate a "Runner Month of Life" visualization as if your entire life consisted of only 1000 months.
@@ -833,13 +833,13 @@ python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --speci
 Generage you share png using GPT gpt-image-1([last one](./PNG_OUT/share_image_2025-04-29.png))
 
 ```cli
-pdm run run_page/auto_share_sync.py --api_key xxxxxxxxx  --base_url xxxxxxxx
+python run_page/auto_share_sync.py --api_key xxxxxxxxx  --base_url xxxxxxxx
 ```
 
-If you want ot a date.
+If you want to generate a share png for a date
 
 ```cli
-python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --date 2023-11-11
+python run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --date 2023-11-11
 ```
 
 For more display effects, see:
