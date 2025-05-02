@@ -842,6 +842,8 @@ If you want to generate a share png for a date
 python run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --date 2023-11-11
 ```
 
+If you want to auto gen in ci you can refer this [link](https://github.com/yihong0618/run/blob/master/.github/workflows/run_data_sync.yml#L235-242)
+
 For more display effects, see:
 <https://github.com/flopp/GpxTrackPoster>
 

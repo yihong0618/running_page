@@ -266,7 +266,7 @@ const LINE_OPACITY = 0.4;
 // styling: 开启隐私模式 (不显示地图仅显示轨迹): 设置为 `true`
 // 注意：此配置仅影响页面显示，数据保护请参考下方的 "隐私保护"
 const PRIVACY_MODE = false;
-// styling: 默认关灯: 设置为 `false`, 仅在隐私模式关闭时生效(`PRIVACY_MODE` = false)
+// styling: 默认关灯：设置为 `false`, 仅在隐私模式关闭时生效 (`PRIVACY_MODE` = false)
 const LIGHTS_ON = true;
 // styling: 是否显示列 ELEVATION_GAIN
 const SHOW_ELEVATION_GAIN = false;
@@ -1074,6 +1074,8 @@ python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx
 ```cli
 python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --date 2023-11-11
 ```
+
+如果你想自动化 auto share 可以参考这个[链接](https://github.com/yihong0618/run/blob/master/.github/workflows/run_data_sync.yml#L235-242)
 
 更多展示效果参见：
 <https://github.com/flopp/GpxTrackPoster>
