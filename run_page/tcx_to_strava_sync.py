@@ -12,7 +12,7 @@ from utils import make_strava_client, get_strava_last_time, upload_file_to_strav
 
 def get_to_generate_files(last_time):
     """
-    reuturn to values one dict for upload
+    return to values one dict for upload
     and one sorted list for next time upload
     """
     file_names = os.listdir(TCX_FOLDER)

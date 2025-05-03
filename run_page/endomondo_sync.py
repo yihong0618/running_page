@@ -1,6 +1,6 @@
 """
 need to download the files from endomondo
-and store it in Workous dir in running_page
+and store it in Workouts dir in running_page
 """
 
 import json

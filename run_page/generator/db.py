@@ -27,7 +27,7 @@ def randomword():
 
 
 geopy.geocoders.options.default_user_agent = "my-application"
-# reverse the location (lan, lon) -> location detail
+# reverse the location (lat, lon) -> location detail
 g = Nominatim(user_agent=randomword())
 
 

@@ -400,7 +400,7 @@ python run_page/keep_sync.py 13333xxxx example --with-gpx --sync-types running c
 - 修改 `run_page/keep_sync.py` 文件中的参数：
 
 ```python
-# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
 ```
 
@@ -524,7 +524,7 @@ python run_page/codoon_sync.py 54bxxxxxxx fefxxxxx-xxxx-xxxx --from-auth-token
 > TRANS_END_DATE 需要根据您的实际情况设定，程序会修正这一天之前的运动记录
 
 ```python
-# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
 # trans the coordinate data until the TRANS_END_DATE, work with TRANS_GCJ02_TO_WGS84 = True
 TRANS_END_DATE = "2014-03-24"
