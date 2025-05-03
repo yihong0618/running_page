@@ -227,7 +227,7 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
     """
     points_dict_list = []
     # early timestamp fields in keep's data stands for delta time, but in newly data timestamp field stands for exactly time,
-    # so it does'nt need to plus extra start_time
+    # so it doesn't need to plus extra start_time
     if run_points_data[0]["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND:
         start_time = 0
 
@@ -283,7 +283,7 @@ def find_nearest_hr(
         heart_rate_data (list of dict): A list of heart rate data points, where each point is a dictionary
             containing at least "timestamp" and "beatsPerMinute" keys.
         target_time (float): The target timestamp for which to find the nearest heart rate data point. Please Note that the unit of target_time is decisecond(分秒),
-            means 1/10 of a second ,this is very unusual!! so when we convert a target_time to second we need to divide by 10, and when we convert a target time to millsecond
+            means 1/10 of a second ,this is very unusual!! so when we convert a target_time to second we need to divide by 10, and when we convert a target time to millisecond
             we need to times 100.
         start_time (float): The reference start time. the unit of start_time is normal millisecond timestamp
         threshold (float, optional): The maximum allowed time difference to consider a data point as the nearest.

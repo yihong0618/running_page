@@ -182,7 +182,7 @@ def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rat
     """
     Parses the latitude, longitude and elevation data to generate a GPX document
     Args:
-        title: the title of the GXP document
+        title: the title of the GPX document
         latitude_data: A list of dictionaries containing latitude data
         longitude_data: A list of dictionaries containing longitude data
         elevation_data: A list of dictionaries containing elevation data
@@ -389,7 +389,7 @@ def make_new_gpxs(files):
                 track = parse_no_gpx_data(json_data)
                 if track:
                     tracks_list.append(track)
-            # just ignore some unexcept run
+            # just ignore some unexcepted run
             except Exception as e:
                 print(str(e))
                 continue
