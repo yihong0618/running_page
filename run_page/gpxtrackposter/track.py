@@ -205,6 +205,8 @@ class Track:
         for t in gpx.tracks:
             if self.track_name is None:
                 self.track_name = t.name
+            if hasattr(t, "type") and t.type:
+                self.type = t.type
             for s in t.segments:
                 try:
                     extensions = [
