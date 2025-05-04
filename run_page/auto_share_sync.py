@@ -17,8 +17,7 @@ POLYLINE_WIDTH = 3
 START_MARKER_COLOR = "#00FF00"  # Green
 END_MARKER_COLOR = "#FF0000"  # Red
 DEFAULT_OUTPUT_FILENAME = "route"
-PROMPT = """
-Create a running share image with a running path, add some other contents like running man and landscaping or something else to make it beautiful, the roadmap as shown you can do some color optimization.
+PLUS_PROMPT = """roadmap as shown you can do some color optimization.
 Write, distance: {distance} km pace: {pace} time: {time} date: {date} and typeset it yourself!
 """
 
@@ -35,7 +34,33 @@ def generate_share_image(distance, pace, time, date, client):
         time: Time taken for the run.
         date: Date of the run.
     """
-    prompt = PROMPT.format(distance=distance, pace=pace, time=time, date=date)
+    base_prompt = "Create a running share image with a running path, add some other contents like running"
+    try:
+        chat_response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a creative assistant for generating image prompts.",
+                },
+                {
+                    "role": "user",
+                    "content": f"Enhance this prompt for a beautiful running share image: {base_prompt}",
+                },
+            ],
+            max_tokens=100,
+            temperature=0.8,
+        )
+        enhanced_prompt = chat_response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"Error enhancing prompt: {e}")
+        enhanced_prompt = base_prompt
+    prompt = enhanced_prompt + PLUS_PROMPT.format(
+        distance=distance,
+        pace=pace,
+        time=time,
+        date=date,
+    )
 
     try:
         result = client.images.edit(
@@ -127,7 +152,6 @@ def generate_route_svg(
 
         if format.lower() == "png":
             try:
-                # 使用 cairosvg 进行转换
                 cairosvg.svg2png(url=svg_filename, write_to=png_filename)
                 os.remove(svg_filename)
                 print(f"Route map generated: {png_filename}")
