@@ -110,9 +110,6 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ period, summary, dailyDista
                         <p><strong>{ACTIVITY_TOTAL.MAX_SPEED_TITLE}:</strong> {formatPace(summary.maxSpeed)}</p>
                     </>
                 )}
-                {interval === 'day' && (
-                    <p><strong>{ACTIVITY_TOTAL.LOCATION_TITLE}:</strong> {summary.location || ''}</p>
-                )}
                 {['month', 'week', 'year'].includes(interval) && (
                     <div className={styles.chart} style={{ height: '250px', width: '100%' }}>
                         <ResponsiveContainer>
