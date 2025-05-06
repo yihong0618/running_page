@@ -16,13 +16,13 @@ const getBasePath = () => {
 
 const data: ISiteMetadataResult = {
   siteTitle: 'Running Records',
-  siteUrl: 'https://running.danilelxp.com',
+  siteUrl: 'https://running.jiugoe.com',
   logo: 'https://www.jiugoe.com/wp-content/uploads/2023/12/images.png',
   description: 'Just running',
   navLinks: [
     {
       name: 'Home',
-      url: 'https://running.danilelxp.com/',
+      url: 'https://running.jiugoe.com/',
     },
     {
       name: 'Blog',
