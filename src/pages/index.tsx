@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import React, { useEffect, useState } from 'react';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
 import RunMap from '@/components/RunMap';
@@ -47,11 +47,10 @@ const Index = () => {
     name: string,
     func: (_run: Activity, _value: string) => boolean
   ) => {
-
-     if(name != 'Year'){
-       setYear(thisYear)
-     }
     scrollToMap();
+    if (name != 'Year') {
+      setYear(thisYear);
+    }
     setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
     setRunIndex(-1);
     setTitle(`${item} ${name} Running Heatmap`);
@@ -133,21 +132,28 @@ const Index = () => {
     if (!svgStat) {
       return;
     }
-    svgStat.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target) {
-        const tagName = target.tagName.toLowerCase();
 
-        // click the github-stat style svg
-        if (
-          tagName === 'rect' &&
-          parseFloat(target.getAttribute('width') || '0.0') === 2.6 &&
-          parseFloat(target.getAttribute('height') || '0.0') === 2.6 &&
-          target.getAttribute('fill') !== '#444444'
-        ) {
-          const [runDate] = target.innerHTML.match(/\d{4}-\d{1,2}-\d{1,2}/) || [
-            `${+thisYear + 1}`,
-          ];
+    const handleClick = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName.toLowerCase() === 'path') {
+        // Use querySelector to get the <desc> element and the <title> element.
+        const descEl = target.querySelector('desc');
+        if (descEl) {
+          // If the runId exists in the <desc> element, it means that a running route has been clicked.
+          const runId = Number(descEl.innerHTML);
+          if (!runId) {
+            return;
+          }
+          locateActivity([runId]);
+          return;
+        }
+
+        const titleEl = target.querySelector('title');
+        if (titleEl) {
+          // If the runDate exists in the <title> element, it means that a date square has been clicked.
+          const [runDate] = titleEl.innerHTML.match(
+            /\d{4}-\d{1,2}-\d{1,2}/
+          ) || [`${+thisYear + 1}`];
           const runIDsOnDate = runs
             .filter((r) => r.start_date_local.slice(0, 10) === runDate)
             .map((r) => r.run_id);
@@ -155,26 +161,19 @@ const Index = () => {
             return;
           }
           locateActivity(runIDsOnDate);
-        } else if (tagName === 'polyline') {
-          // click the route grid svg
-          const desc = target.getElementsByTagName('desc')[0];
-          if (!desc) {
-            return;
-          }
-          const run_id = Number(desc.innerHTML);
-          if (!run_id) {
-            return;
-          }
-          locateActivity([run_id]);
         }
       }
-    });
+    };
+    svgStat.addEventListener('click', handleClick);
+    return () => {
+      svgStat && svgStat.removeEventListener('click', handleClick);
+    };
   }, [year]);
 
   return (
     <Layout>
-      <div className="fl w-30-l">
-        <h1 className="f1 fw9 i">
+      <div className="w-full lg:w-1/3">
+        <h1 className="my-12 text-5xl font-extrabold italic">
           <a href="/">{siteTitle}</a>
         </h1>
         {(viewState.zoom ?? 0) <= 3 && IS_CHINESE ? (
@@ -187,7 +186,7 @@ const Index = () => {
           <YearsStat year={year} onClick={changeYear} />
         )}
       </div>
-      <div className="fl w-100 w-70-l">
+      <div className="w-full lg:w-2/3">
         <RunMap
           title={title}
           viewState={viewState}
@@ -209,7 +208,7 @@ const Index = () => {
         )}
       </div>
       {/* Enable Audiences in Vercel Analytics: https://vercel.com/docs/concepts/analytics/audiences/quickstart */}
-      <Analytics />
+      {import.meta.env.VERCEL && <Analytics /> }
     </Layout>
   );
 };

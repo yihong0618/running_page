@@ -98,7 +98,9 @@ async def upload_to_activities(
             files_list.append(data)
         except Exception as ex:
             print("get strava data error: ", ex)
-    await garmin_client.upload_activities_original(files_list, use_fake_garmin_device)
+    await garmin_client.upload_activities_original_from_strava(
+        files_list, use_fake_garmin_device
+    )
     return files_list
 
 
@@ -116,7 +118,7 @@ if __name__ == "__main__":
         "--is-cn",
         dest="is_cn",
         action="store_true",
-        help="if garmin accout is cn",
+        help="if garmin account is cn",
     )
     parser.add_argument(
         "--use_fake_garmin_device",

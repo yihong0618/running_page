@@ -10,6 +10,7 @@ OUTPUT_DIR = os.path.join(parent, "activities")
 GPX_FOLDER = os.path.join(parent, "GPX_OUT")
 TCX_FOLDER = os.path.join(parent, "TCX_OUT")
 FIT_FOLDER = os.path.join(parent, "FIT_OUT")
+PNG_FOLDER = os.path.join(parent, "PNG_OUT")
 ENDOMONDO_FILE_DIR = os.path.join(parent, "Workouts")
 FOLDER_DICT = {
     "gpx": GPX_FOLDER,
@@ -19,12 +20,13 @@ FOLDER_DICT = {
 SQL_FILE = os.path.join(parent, "run_page", "data.db")
 JSON_FILE = os.path.join(parent, "src", "static", "activities.json")
 SYNCED_FILE = os.path.join(parent, "imported.json")
+SYNCED_ACTIVITY_FILE = os.path.join(parent, "synced_activity.json")
 
 # TODO: Move into nike_sync NRC THINGS
 
 
 BASE_TIMEZONE = "Asia/Shanghai"
-
+UTC_TIMEZONE = "UTC"
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")

@@ -2,13 +2,14 @@
 new garmin ids to strava;
 not the same logic as nike_to_strava_sync
 """
+
 import argparse
 import asyncio
 import os
 import sys
 import time
 
-from config import FOLDER_DICT, STRAVA_GARMIN_TYPE_DICT
+from config import FOLDER_DICT
 from garmin_sync import download_new_activities, get_downloaded_ids
 from strava_sync import run_strava_sync
 from utils import make_strava_client, upload_file_to_strava
@@ -25,7 +26,7 @@ if __name__ == "__main__":
         "--is-cn",
         dest="is_cn",
         action="store_true",
-        help="if garmin accout is cn",
+        help="if garmin account is cn",
     )
     parser.add_argument(
         "--tcx",
@@ -64,7 +65,7 @@ if __name__ == "__main__":
         )
     )
     loop.run_until_complete(future)
-    new_ids = future.result()
+    new_ids, id2title = future.result()
     print(f"To upload to strava {len(new_ids)} files")
     index = 1
     for i in new_ids:

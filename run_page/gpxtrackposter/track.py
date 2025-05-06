@@ -1,10 +1,12 @@
 """Create and maintain info about a given activity track (corresponding to one GPX file)."""
+
 # Copyright 2016-2019 Florian Pigorsch & Contributors. All rights reserved.
 # 2019-now yihong0618 Florian Pigorsch & Contributors. All rights reserved.
 # Use of this source code is governed by a MIT-style
 # license that can be found in the LICENSE file.
 
 import datetime
+from datetime import timezone
 import os
 from collections import namedtuple
 
@@ -12,14 +14,8 @@ import gpxpy as mod_gpxpy
 import lxml
 import polyline
 import s2sphere as s2
-from fit_tool.fit_file import FitFile
-from fit_tool.profile.messages.activity_message import ActivityMessage
-from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
-from fit_tool.profile.messages.file_id_message import FileIdMessage
-from fit_tool.profile.messages.record_message import RecordMessage
-from fit_tool.profile.messages.session_message import SessionMessage
-from fit_tool.profile.messages.software_message import SoftwareMessage
-from fit_tool.profile.profile_type import Sport
+from garmin_fit_sdk import Decoder, Stream
+from garmin_fit_sdk.util import FIT_EPOCH_S
 from polyline_processor import filter_out
 from rich import print
 from tcxreader.tcxreader import TCXReader
@@ -32,12 +28,20 @@ run_map = namedtuple("polyline", "summary_polyline")
 
 IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
 
+# Garmin stores all latitude and longitude values as 32-bit integer values.
+# This unit is called semicircle.
+# So that gives 2^32 possible values.
+# And to represent values up to 360° (or -180° to 180°), each 'degree' represents 2^32 / 360 = 11930465.
+# So dividing latitude and longitude (int32) value by 11930465 will give the decimal value.
+SEMICIRCLE = 11930465
+
 
 class Track:
     def __init__(self):
         self.file_names = []
         self.polylines = []
         self.polyline_str = ""
+        self.track_name = None
         self.start_time = None
         self.end_time = None
         self.start_time_local = None
@@ -45,10 +49,13 @@ class Track:
         self.length = 0
         self.special = False
         self.average_heartrate = None
+        self.elevation_gain = None
         self.moving_dict = {}
         self.run_id = 0
         self.start_latlng = []
         self.type = "Run"
+        self.subtype = None  # for fit file
+        self.device = ""
 
     def load_gpx(self, file_name):
         """
@@ -91,9 +98,21 @@ class Track:
             # (for example, treadmill runs pulled via garmin-connect-export)
             if os.path.getsize(file_name) == 0:
                 raise TrackLoadError("Empty FIT file")
-
-            fit = FitFile.from_file(file_name)
-            self._load_fit_data(fit)
+            stream = Stream.from_file(file_name)
+            decoder = Decoder(stream)
+            messages, errors = decoder.read(convert_datetimes_to_dates=False)
+            if errors:
+                print(f"FIT file read fail: {errors}")
+                return
+            if (
+                messages.get("session_mesgs") is None
+                or messages.get("session_mesgs")[0].get("total_distance") is None
+            ):
+                print(
+                    f"Session message or total distance is missing when loading FIT. for file {self.file_names[0]}, we just ignore this file and continue"
+                )
+                return
+            self._load_fit_data(messages)
         except Exception as e:
             print(
                 f"Something went wrong when loading FIT. for file {self.file_names[0]}, we just ignore this file and continue"
@@ -109,8 +128,10 @@ class Track:
         self.start_time_local = start_time
         self.end_time = start_time + activity.elapsed_time
         self.length = float(activity.distance)
-        if not IGNORE_BEFORE_SAVING:
+        if IGNORE_BEFORE_SAVING:
             summary_polyline = filter_out(activity.summary_polyline)
+        else:
+            summary_polyline = activity.summary_polyline
         polyline_data = polyline.decode(summary_polyline) if summary_polyline else []
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
         self.run_id = activity.run_id
@@ -157,6 +178,7 @@ class Track:
             except:
                 pass
             self.polyline_str = polyline.encode(polyline_container)
+        self.elevation_gain = tcx.ascent
         self.moving_dict = {
             "distance": self.length,
             "moving_time": datetime.timedelta(seconds=moving_time),
@@ -181,6 +203,10 @@ class Track:
         polyline_container = []
         heart_rate_list = []
         for t in gpx.tracks:
+            if self.track_name is None:
+                self.track_name = t.name
+            if hasattr(t, "type") and t.type:
+                self.type = t.type
             for s in t.segments:
                 try:
                     extensions = [
@@ -220,60 +246,72 @@ class Track:
             sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
         )
         self.moving_dict = self._get_moving_data(gpx)
+        self.elevation_gain = gpx.get_uphill_downhill().uphill
 
-    def _load_fit_data(self, fit: FitFile):
+    def _load_fit_data(self, fit: dict):
         _polylines = []
         self.polyline_container = []
-
-        for record in fit.records:
-            message = record.message
-
-            if isinstance(message, RecordMessage):
-                if message.position_lat and message.position_long:
-                    _polylines.append(
-                        s2.LatLng.from_degrees(
-                            message.position_lat, message.position_long
-                        )
-                    )
-                    self.polyline_container.append(
-                        [message.position_lat, message.position_long]
-                    )
-            elif isinstance(message, SessionMessage):
-                self.start_time = datetime.datetime.utcfromtimestamp(
-                    message.start_time / 1000
-                )
-                self.run_id = message.start_time
-                self.end_time = datetime.datetime.utcfromtimestamp(
-                    (message.start_time + message.total_elapsed_time * 1000) / 1000
-                )
-                self.length = message.total_distance
-                self.average_heartrate = (
-                    message.avg_heart_rate if message.avg_heart_rate != 0 else None
-                )
-                self.type = Sport(message.sport).name.lower()
-
-                # moving_dict
-                self.moving_dict["distance"] = message.total_distance
-                self.moving_dict["moving_time"] = datetime.timedelta(
-                    seconds=message.total_moving_time
-                    if message.total_moving_time
-                    else message.total_timer_time
-                )
-                self.moving_dict["elapsed_time"] = datetime.timedelta(
-                    seconds=message.total_elapsed_time
-                )
-                self.moving_dict["average_speed"] = (
-                    message.enhanced_avg_speed
-                    if message.enhanced_avg_speed
-                    else message.avg_speed
-                )
-
-        self.start_time_local, self.end_time_local = parse_datetime_to_local(
-            self.start_time, self.end_time, self.polyline_container[0]
+        message = fit["session_mesgs"][0]
+        self.start_time = datetime.datetime.fromtimestamp(
+            (message["start_time"] + FIT_EPOCH_S), tz=timezone.utc
         )
-        self.start_latlng = start_point(*self.polyline_container[0])
-        self.polylines.append(_polylines)
-        self.polyline_str = polyline.encode(self.polyline_container)
+        self.run_id = self.__make_run_id(self.start_time)
+        self.end_time = datetime.datetime.fromtimestamp(
+            (message["start_time"] + FIT_EPOCH_S + message["total_elapsed_time"]),
+            tz=timezone.utc,
+        )
+        self.length = message["total_distance"]
+        self.average_heartrate = (
+            message["avg_heart_rate"] if "avg_heart_rate" in message else None
+        )
+        if message["sport"].lower() == "running":
+            self.type = "Run"
+        else:
+            self.type = message["sport"].lower()
+        self.subtype = message["sub_sport"] if "sub_sport" in message else None
+
+        # moving_dict
+        self.moving_dict["distance"] = message["total_distance"]
+        self.moving_dict["moving_time"] = datetime.timedelta(
+            seconds=(
+                message["total_moving_time"]
+                if "total_moving_time" in message
+                else message["total_timer_time"]
+            )
+        )
+        self.moving_dict["elapsed_time"] = datetime.timedelta(
+            seconds=message["total_elapsed_time"]
+        )
+        self.moving_dict["average_speed"] = (
+            message["enhanced_avg_speed"]
+            if message["enhanced_avg_speed"]
+            else message["avg_speed"]
+        )
+        for record in fit["record_mesgs"]:
+            if "position_lat" in record and "position_long" in record:
+                lat = record["position_lat"] / SEMICIRCLE
+                lng = record["position_long"] / SEMICIRCLE
+                _polylines.append(s2.LatLng.from_degrees(lat, lng))
+                self.polyline_container.append([lat, lng])
+        if self.polyline_container:
+            self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                self.start_time, self.end_time, self.polyline_container[0]
+            )
+            self.start_latlng = start_point(*self.polyline_container[0])
+            self.polylines.append(_polylines)
+            self.polyline_str = polyline.encode(self.polyline_container)
+        else:
+            self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                self.start_time, self.end_time, None
+            )
+
+        # The FIT file created by Garmin
+        if "file_id_mesgs" in fit:
+            device_message = fit["file_id_mesgs"][0]
+            if "manufacturer" in device_message:
+                self.device = device_message["manufacturer"]
+            if "garmin_product" in device_message:
+                self.device += " " + device_message["garmin_product"]
 
     def append(self, other):
         """Append other track to self."""
@@ -292,6 +330,10 @@ class Track:
             )
             self.file_names.extend(other.file_names)
             self.special = self.special or other.special
+            self.average_heartrate = self.average_heartrate or other.average_heartrate
+            self.elevation_gain = (
+                self.elevation_gain if self.elevation_gain else 0
+            ) + (other.elevation_gain if other.elevation_gain else 0)
         except:
             print(
                 f"something wrong append this {self.end_time},in files {str(self.file_names)}"
@@ -307,24 +349,28 @@ class Track:
             "elapsed_time": datetime.timedelta(
                 seconds=(moving_data.moving_time + moving_data.stopped_time)
             ),
-            "average_speed": moving_data.moving_distance / moving_data.moving_time
-            if moving_data.moving_time
-            else 0,
+            "average_speed": (
+                moving_data.moving_distance / moving_data.moving_time
+                if moving_data.moving_time
+                else 0
+            ),
         }
 
-    def to_namedtuple(self):
+    def to_namedtuple(self, run_from="gpx"):
         d = {
             "id": self.run_id,
-            "name": "run from gpx",  # maybe change later
-            "type": "Run",  # Run for now only support run for now maybe change later
+            "name": (self.track_name if self.track_name else ""),  # maybe change later
+            "type": self.type,
+            "subtype": (self.subtype if self.subtype else ""),
             "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
             "start_date_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
             "end_local": self.end_time_local.strftime("%Y-%m-%d %H:%M:%S"),
             "length": self.length,
-            "average_heartrate": int(self.average_heartrate)
-            if self.average_heartrate
-            else None,
+            "average_heartrate": (
+                int(self.average_heartrate) if self.average_heartrate else None
+            ),
+            "elevation_gain": (int(self.elevation_gain) if self.elevation_gain else 0),
             "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,
         }
