@@ -292,7 +292,7 @@ def get_all_oppo_tracks(
             )
             tracks.append(track)
         except Exception as e:
-            print(f"Something wrong paring keep id {str(start)}-{str(end)}" + str(e))
+            print(f"Something wrong paring keep id {str(start)}-{str(end)}, " + str(e))
     return tracks
 
 
@@ -412,6 +412,10 @@ def prepare_track_points(sport_data, with_gpx):
 
         for i in range(value_size):
             temp_timestamp = other_data.get("gpsPoint")[i]["timestamp"]
+
+            if temp_timestamp not in timestamp_list:
+                continue
+
             j = timestamp_list.index(temp_timestamp)
 
             points_dict = {
