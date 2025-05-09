@@ -54,8 +54,8 @@ class Nike:
             return self.request(
                 f"activities/before_id/v3/{activity_id}?limit=30&types=run%2Cjogging&include_deleted=false"
             )
-        except:
-            print("retry")
+        except Exception as e:
+            print(f"Error getting activities before id {activity_id}: {e}")
             time.sleep(3)
             return self.request(
                 f"activities/before_id/v3/{activity_id}?limit=30&types=run%2Cjogging&include_deleted=false"
@@ -64,7 +64,7 @@ class Nike:
     def get_activity(self, activity_id):
         try:
             return self.request(f"activity/{activity_id}?metrics=ALL")
-        except:
+        except Exception:
             print("retry")
             time.sleep(3)
             return self.request(f"activity/{activity_id}?metrics=ALL")
@@ -143,7 +143,8 @@ def get_last_before_id():
         logger.info(f"Last update from {data['id']}")
         return data["id"]
     # easy solution when error happens no last id
-    except:
+    except Exception as e:
+        print(f"Error getting last before id: {e}")
         return None
 
 
@@ -169,7 +170,8 @@ def get_to_generate_files():
             last_time = max(timestamps)
         else:
             last_time = 0
-    except:
+    except Exception as e:
+        print(f"Error getting last time: {e}")
         last_time = 0
     return [
         OUTPUT_DIR + "/" + i
@@ -376,7 +378,8 @@ def make_new_gpxs(files):
         with open(file, "r") as f:
             try:
                 json_data = json.loads(f.read())
-            except:
+            except Exception as e:
+                print(f"Error reading JSON file {file}: {e}")
                 return
         # ALL save name using utc if you want local please offset
         activity_name = str(json_data["end_epoch_ms"])

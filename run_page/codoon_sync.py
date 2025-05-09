@@ -104,8 +104,8 @@ def download_codoon_gpx(gpx_data, log_id):
         file_path = os.path.join(GPX_FOLDER, str(log_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
-    except:
-        print(f"wrong id {log_id}")
+    except Exception as e:
+        print(f"wrong id {log_id} error {str(e)}")
         pass
 
 

@@ -22,7 +22,9 @@ from generator import Generator
 
 from utils import adjust_time
 
-get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
+
+def get_md5_data(data):
+    return md5(str(data).encode("utf-8")).hexdigest().upper()
 
 
 def download_joyrun_gpx(gpx_data, joyrun_id):
@@ -31,8 +33,8 @@ def download_joyrun_gpx(gpx_data, joyrun_id):
         file_path = os.path.join(GPX_FOLDER, str(joyrun_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
-    except:
-        print(f"wrong id {joyrun_id}")
+    except Exception as e:
+        print(f"wrong id {joyrun_id}: {e}")
         pass
 
 
@@ -372,8 +374,8 @@ class Joyrun:
             heart_rate_list = (
                 eval(run_data["heartrate"]) if run_data["heartrate"] else None
             )
-        except:
-            print(f"Heart Rate: can not eval for {run_data['heartrate']}")
+        except Exception as e:
+            print(f"Heart Rate: can not eval for {run_data['heartrate']}: {e}")
 
         heart_rate = None
         if heart_rate_list:

@@ -171,7 +171,6 @@ def parse_raw_data_to_nametuple(
         "end_local": datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
         "length": run_data["distance"],
         "average_heartrate": int(avg_heart_rate) if avg_heart_rate else None,
-        "elevation_gain": run_data["accumulativeUpliftedHeight"],
         "map": run_map(polyline_str),
         "start_latlng": start_latlng,
         "distance": run_data["distance"],
@@ -323,7 +322,8 @@ def download_keep_gpx(gpx_data, keep_id):
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
         return file_path
-    except:
+    except Exception as e:
+        print(f"Something wrong to download keep gpx {str(e)}")
         print(f"wrong id {keep_id}")
         pass
 
