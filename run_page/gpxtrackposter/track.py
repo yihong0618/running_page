@@ -175,7 +175,8 @@ class Track:
             # get start point
             try:
                 self.start_latlng = start_point(*polyline_container[0])
-            except:
+            except Exception as e:
+                print(f"Error getting start point: {e}")
                 pass
             self.polyline_str = polyline.encode(polyline_container)
         self.elevation_gain = tcx.ascent
@@ -225,7 +226,9 @@ class Track:
                         ]
                     )
                     heart_rate_list = list(filter(None, heart_rate_list))
-                except:
+                except lxml.etree.XMLSyntaxError:
+                    # Ignore XML syntax errors in extensions
+                    # This can happen if the GPX file is malformed
                     pass
                 line = [
                     s2.LatLng.from_degrees(p.latitude, p.longitude) for p in s.points
@@ -236,7 +239,8 @@ class Track:
         # get start point
         try:
             self.start_latlng = start_point(*polyline_container[0])
-        except:
+        except Exception as e:
+            print(f"Error getting start point: {e}")
             pass
         self.start_time_local, self.end_time_local = parse_datetime_to_local(
             self.start_time, self.end_time, polyline_container[0]
@@ -334,9 +338,9 @@ class Track:
             self.elevation_gain = (
                 self.elevation_gain if self.elevation_gain else 0
             ) + (other.elevation_gain if other.elevation_gain else 0)
-        except:
+        except Exception as e:
             print(
-                f"something wrong append this {self.end_time},in files {str(self.file_names)}"
+                f"something wrong append this {self.end_time},in files {str(self.file_names)}: {e}"
             )
             pass
 

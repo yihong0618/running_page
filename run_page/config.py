@@ -34,7 +34,8 @@ run_map = namedtuple("polyline", "summary_polyline")
 try:
     with open("config.yaml") as f:
         _config = yaml.safe_load(f)
-except:
+except Exception as e:
+    print(f"Error reading config.yaml: {e}")
     _config = {}
 
 

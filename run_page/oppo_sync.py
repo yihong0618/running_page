@@ -385,8 +385,8 @@ def download_keep_gpx(gpx_data, keep_id):
         file_path = os.path.join(GPX_FOLDER, str(keep_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
-    except:
-        print(f"wrong id {keep_id}")
+    except Exception as e:
+        print(f"wrong id {keep_id}: {str(e)}")
         pass
 
 
