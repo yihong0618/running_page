@@ -72,7 +72,7 @@ TCX_TYPE_DICT = {
 # only for running sports, if you want others, please change the True to False
 IS_ONLY_RUN = True
 
-# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = False
 # trans the coordinate data until the TRANS_END_DATE, work with TRANS_GCJ02_TO_WGS84 = True
 TRANS_END_DATE = "2014-03-24"
@@ -104,8 +104,8 @@ def download_codoon_gpx(gpx_data, log_id):
         file_path = os.path.join(GPX_FOLDER, str(log_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
-    except:
-        print(f"wrong id {log_id}")
+    except Exception as e:
+        print(f"wrong id {log_id} error {str(e)}")
         pass
 
 
@@ -242,7 +242,7 @@ def tcx_output(fit_array, run_data):
         f.write(str(xml_str))
 
 
-# TODO time complexity is too heigh, need to be reduced
+# TODO time complexity is too high, need to be reduced
 def tcx_job(run_data):
     # fit struct array
     fit_array = None

@@ -12,7 +12,7 @@ from .xy import XY
 
 
 class GithubDrawer(TracksDrawer):
-    """Draw a gtihub profile-like poster"""
+    """Draw a github profile-like poster"""
 
     def __init__(self, the_poster: Poster):
         super().__init__(the_poster)

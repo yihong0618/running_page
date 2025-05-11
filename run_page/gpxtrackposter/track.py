@@ -101,11 +101,17 @@ class Track:
             stream = Stream.from_file(file_name)
             decoder = Decoder(stream)
             messages, errors = decoder.read(convert_datetimes_to_dates=False)
-            # Handle empty fit files that have no distance data
-            if messages.get("total_distance") is None:
-                return
             if errors:
                 print(f"FIT file read fail: {errors}")
+                return
+            if (
+                messages.get("session_mesgs") is None
+                or messages.get("session_mesgs")[0].get("total_distance") is None
+            ):
+                print(
+                    f"Session message or total distance is missing when loading FIT. for file {self.file_names[0]}, we just ignore this file and continue"
+                )
+                return
             self._load_fit_data(messages)
         except Exception as e:
             print(
@@ -169,7 +175,8 @@ class Track:
             # get start point
             try:
                 self.start_latlng = start_point(*polyline_container[0])
-            except:
+            except Exception as e:
+                print(f"Error getting start point: {e}")
                 pass
             self.polyline_str = polyline.encode(polyline_container)
         self.elevation_gain = tcx.ascent
@@ -199,6 +206,8 @@ class Track:
         for t in gpx.tracks:
             if self.track_name is None:
                 self.track_name = t.name
+            if hasattr(t, "type") and t.type:
+                self.type = t.type
             for s in t.segments:
                 try:
                     extensions = [
@@ -217,7 +226,9 @@ class Track:
                         ]
                     )
                     heart_rate_list = list(filter(None, heart_rate_list))
-                except:
+                except lxml.etree.XMLSyntaxError:
+                    # Ignore XML syntax errors in extensions
+                    # This can happen if the GPX file is malformed
                     pass
                 line = [
                     s2.LatLng.from_degrees(p.latitude, p.longitude) for p in s.points
@@ -228,7 +239,8 @@ class Track:
         # get start point
         try:
             self.start_latlng = start_point(*polyline_container[0])
-        except:
+        except Exception as e:
+            print(f"Error getting start point: {e}")
             pass
         self.start_time_local, self.end_time_local = parse_datetime_to_local(
             self.start_time, self.end_time, polyline_container[0]
@@ -326,9 +338,9 @@ class Track:
             self.elevation_gain = (
                 self.elevation_gain if self.elevation_gain else 0
             ) + (other.elevation_gain if other.elevation_gain else 0)
-        except:
+        except Exception as e:
             print(
-                f"something wrong append this {self.end_time},in files {str(self.file_names)}"
+                f"something wrong append this {self.end_time},in files {str(self.file_names)}: {e}"
             )
             pass
 

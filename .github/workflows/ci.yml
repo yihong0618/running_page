@@ -8,7 +8,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ['3.11', '3.12']
+        python-version: ['3.11', '3.12', '3.13']  # Added Python 3.13 to the matrix
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,5 +27,15 @@ jobs:
         run: |
           pip install -r requirements-dev.txt
 
+      - name: Run GPX sync test
+        run: |
+           # make sure the gpx_sync.py script is executable 
+           python run_page/gpx_sync.py
+
       - name: Check formatting (black)
         run: black . --diff --color && black . --check
+
+      - name: Lint with Ruff
+        run: |
+          pip install ruff
+          ruff check .

@@ -169,7 +169,7 @@ class Poster:
 
         d.add(
             d.text(
-                self.trans("ATHLETE"),
+                self.trans("Runner"),
                 insert=(10, self.height - 20),
                 fill=text_color,
                 style=header_style,
@@ -183,37 +183,41 @@ class Poster:
                 style=value_style,
             )
         )
-
-        d.add(
-            d.text(
-                self.trans("SPECIAL TRACKS"),
-                insert=(65, self.height - 20),
-                fill=text_color,
-                style=header_style,
+        if self.drawer_type != "monthoflife":
+            d.add(
+                d.text(
+                    self.trans("SPECIAL TRACKS"),
+                    insert=(65, self.height - 20),
+                    fill=text_color,
+                    style=header_style,
+                )
             )
-        )
 
-        d.add(d.rect((65, self.height - 17), (2.6, 2.6), fill=self.colors["special"]))
-
-        d.add(
-            d.text(
-                f"Over {special_distance1:.1f} km",
-                insert=(70, self.height - 14.5),
-                fill=text_color,
-                style=small_value_style,
+            d.add(
+                d.rect((65, self.height - 17), (2.6, 2.6), fill=self.colors["special"])
             )
-        )
 
-        d.add(d.rect((65, self.height - 13), (2.6, 2.6), fill=self.colors["special2"]))
-
-        d.add(
-            d.text(
-                f"Over {special_distance2:.1f} km",
-                insert=(70, self.height - 10.5),
-                fill=text_color,
-                style=small_value_style,
+            d.add(
+                d.text(
+                    f"Over {special_distance1:.1f} km",
+                    insert=(70, self.height - 14.5),
+                    fill=text_color,
+                    style=small_value_style,
+                )
             )
-        )
+
+            d.add(
+                d.rect((65, self.height - 13), (2.6, 2.6), fill=self.colors["special2"])
+            )
+
+            d.add(
+                d.text(
+                    f"Over {special_distance2:.1f} km",
+                    insert=(70, self.height - 10.5),
+                    fill=text_color,
+                    style=small_value_style,
+                )
+            )
 
         d.add(
             d.text(

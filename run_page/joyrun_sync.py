@@ -22,7 +22,9 @@ from generator import Generator
 
 from utils import adjust_time
 
-get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
+
+def get_md5_data(data):
+    return md5(str(data).encode("utf-8")).hexdigest().upper()
 
 
 def download_joyrun_gpx(gpx_data, joyrun_id):
@@ -31,8 +33,8 @@ def download_joyrun_gpx(gpx_data, joyrun_id):
         file_path = os.path.join(GPX_FOLDER, str(joyrun_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
-    except:
-        print(f"wrong id {joyrun_id}")
+    except Exception as e:
+        print(f"wrong id {joyrun_id}: {e}")
         pass
 
 
@@ -208,38 +210,34 @@ class Joyrun:
         def next(self) -> "Joyrun.Pause":
             return self._list.pop(0) if self._list else None
 
-    class HeartRateList:
-        def __init__(self, hear_rate_data_string: str):
-            self._list = Joyrun.HeartRateList._parse_heartrate(hear_rate_data_string)
+    class DataSeries:
+        def __init__(self, data_string: str):
+            self._list = Joyrun.DataSeries._parse(data_string)
 
-        def next(self) -> int:
+        def next(self):
             return self._list.pop(0) if self._list else None
 
         @staticmethod
-        def _parse_heartrate(heart_rate_str) -> List[int]:
-            if not heart_rate_str:
+        def _parse(data_str):
+            if not data_str:
                 return []
-
             try:
-                parsed_data = ast.literal_eval(heart_rate_str)
-                if isinstance(parsed_data, list):
-                    return parsed_data
-                else:
-                    warnings.warn(
-                        f'"heartrate" evaluated to {type(parsed_data)}, want List[int]'
-                    )
-                    return []
+                parsed = ast.literal_eval(data_str)
+                if isinstance(parsed, list):
+                    return parsed
+                warnings.warn(f'"data" evaluated to {type(parsed)}, want List')
             except (ValueError, SyntaxError) as e:
-                warnings.warn(f'Failed to evaluate "heartrate": {e}')
-                return []
+                warnings.warn(f'Failed to evaluate "data": {e}')
+            return []
 
     @staticmethod
     def new_track_point(
-        latitude, longitude, time, heart_rate
+        latitude, longitude, elevation, time, heart_rate
     ) -> gpxpy.gpx.GPXTrackPoint:
         track_point = gpxpy.gpx.GPXTrackPoint(
             latitude=latitude,
             longitude=longitude,
+            elevation=elevation,
             time=datetime.fromtimestamp(time, tz=timezone.utc),
         )
 
@@ -262,6 +260,7 @@ class Joyrun:
         end_time,
         pause_list,
         heart_rate_data_string,
+        altitude_data_string,
         interval=5,
     ):
         """
@@ -271,6 +270,7 @@ class Joyrun:
         :param run_points_data:        [[latitude, longitude],...]
         :param pause_list:             [[interval_index, pause_seconds],...]
         :param heart_rate_data_string: heart rate list in string format
+        :param altitude_data_string:   altitude list in string format
         :param interval:               time interval between each point, in seconds
         """
 
@@ -292,14 +292,19 @@ class Joyrun:
         pause = pause_list.next()
 
         # Extension data instances
-        heart_rate_list = Joyrun.HeartRateList(heart_rate_data_string)
+        heart_rate_list = Joyrun.DataSeries(heart_rate_data_string)
+        altitude_list = Joyrun.DataSeries(altitude_data_string)
 
         current_time = start_time
         for index, point in enumerate(run_points_data[:-1]):
             # New Track Point
             track_segment.points.append(
                 Joyrun.new_track_point(
-                    point[0], point[1], current_time, heart_rate_list.next()
+                    point[0],
+                    point[1],
+                    altitude_list.next(),
+                    current_time,
+                    heart_rate_list.next(),
                 )
             )
 
@@ -320,7 +325,11 @@ class Joyrun:
         last_point = run_points_data[-1]
         track_segment.points.append(
             Joyrun.new_track_point(
-                last_point[0], last_point[1], end_time, heart_rate_list.next()
+                last_point[0],
+                last_point[1],
+                altitude_list.next(),
+                end_time,
+                heart_rate_list.next(),
             )
         )
 
@@ -347,33 +356,6 @@ class Joyrun:
         end_time = run_data["endtime"]
         pause_list = run_data["pause"]
         run_points_data = self.parse_content_to_ponits(run_data["content"])
-        if with_gpx:
-            # pass the track no points
-            if run_points_data:
-                gpx_data = self.parse_points_to_gpx(
-                    run_points_data,
-                    start_time,
-                    end_time,
-                    pause_list,
-                    run_data["heartrate"],
-                )
-                download_joyrun_gpx(gpx_data, str(joyrun_id))
-        try:
-            heart_rate_list = (
-                eval(run_data["heartrate"]) if run_data["heartrate"] else None
-            )
-        except:
-            print(f"Heart Rate: can not eval for {str(run_data['heartrate'''])}")
-        try:
-            altitude_list = eval(altitude_list) if altitude_list else None
-        except:
-            print(f"Altitude: can not eval for {str(altitude_list)}")
-        heart_rate = None
-        if heart_rate_list:
-            heart_rate = int(sum(heart_rate_list) / len(heart_rate_list))
-            # fix #66
-            if heart_rate < 0:
-                heart_rate = None
         elevation_gain = None
         # pass the track no points
         if run_points_data:
@@ -381,15 +363,26 @@ class Joyrun:
                 run_points_data,
                 start_time,
                 end_time,
-                heart_rate_list,
-                altitude_list,
                 pause_list,
+                run_data["heartrate"],
+                run_data["altitude"],
             )
             elevation_gain = gpx_data.get_uphill_downhill().uphill
-            if with_gpx:
-                # pass the track no points
-                if str(joyrun_id) not in old_gpx_ids:
-                    download_joyrun_gpx(gpx_data.to_xml(), str(joyrun_id))
+            if with_gpx and str(joyrun_id) not in old_gpx_ids:
+                download_joyrun_gpx(gpx_data.to_xml(), str(joyrun_id))
+        try:
+            heart_rate_list = (
+                eval(run_data["heartrate"]) if run_data["heartrate"] else None
+            )
+        except Exception as e:
+            print(f"Heart Rate: can not eval for {run_data['heartrate']}: {e}")
+
+        heart_rate = None
+        if heart_rate_list:
+            heart_rate = int(sum(heart_rate_list) / len(heart_rate_list))
+            # fix #66
+            if heart_rate < 0:
+                heart_rate = None
 
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
         start_latlng = start_point(*run_points_data[0]) if run_points_data else None
