@@ -123,6 +123,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [shugoal](https://github.com/shugoal)                | <https://shugoal.github.io/wk-shu/>            | Garmin      |
 | [Daniel](https://danielyu316.github.io/running_page) | <https://danielyu316.github.io/running_page/>  | Codoon      |
 | [arthurfsy2](https://github.com/arthurfsy2)          | <https://fsy.4a1801.life>                      | Garmin      |
+| [JMGutiH](https://github.com/JMGutiH)                | <https://jmgutih.github.io/workouts_page/>     | Strava      |
 
 </details>
 
