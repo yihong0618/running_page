@@ -17,7 +17,7 @@ const getBasePath = () => {
 const data: ISiteMetadataResult = {
   siteTitle: 'Running Page',
   siteUrl: 'https://maslke.space',
-  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
+  logo: 'https://avatars.githubusercontent.com/u/6869592?v=4',
   description: 'Personal site and blog',
   navLinks: [
     {
