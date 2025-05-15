@@ -190,6 +190,14 @@ class Track:
         }
 
     def _load_gpx_data(self, gpx):
+        gpx_extensions = (
+            {}
+            if gpx.extensions is None
+            else {
+                lxml.etree.QName(extension).localname: extension.text
+                for extension in gpx.extensions
+            }
+        )
         self.start_time, self.end_time = gpx.get_time_bounds()
         # use timestamp as id
         self.run_id = self.__make_run_id(self.start_time)
@@ -197,7 +205,11 @@ class Track:
             raise TrackLoadError("Track has no start time.")
         if self.end_time is None:
             raise TrackLoadError("Track has no end time.")
-        self.length = gpx.length_2d()
+        self.length = (
+            gpx.length_2d()
+            if gpx_extensions.get("distance") is None
+            else float(gpx_extensions.get("distance"))
+        )
         if self.length == 0:
             raise TrackLoadError("Track is empty.")
         gpx.simplify()
@@ -247,9 +259,21 @@ class Track:
         )
         self.polyline_str = polyline.encode(polyline_container)
         self.average_heartrate = (
-            sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
+            (sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None)
+            if gpx_extensions.get("average_hr") is None
+            else float(gpx_extensions.get("average_hr"))
         )
         self.moving_dict = self._get_moving_data(gpx)
+        self.moving_dict["average_speed"] = (
+            (self.moving_dict["average_speed"])
+            if gpx_extensions.get("average_speed") is None
+            else float(gpx_extensions.get("average_speed"))
+        )
+        self.moving_dict["distance"] = (
+            (self.moving_dict["distance"])
+            if gpx_extensions.get("distance") is None
+            else float(gpx_extensions.get("distance"))
+        )
         self.elevation_gain = gpx.get_uphill_downhill().uphill
 
     def _load_fit_data(self, fit: dict):

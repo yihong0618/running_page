@@ -12,6 +12,7 @@ import time
 import traceback
 import zipfile
 from io import BytesIO
+from lxml import etree
 
 import aiofiles
 import cloudscraper
@@ -227,10 +228,50 @@ class GarminConnectAuthenticationError(Exception):
         self.status = status
 
 
-async def download_garmin_data(client, activity_id, file_type="gpx"):
+def get_info_text_value(summary_infos, key_name):
+    if summary_infos.get(key_name) is None:
+        return ""
+    return str(summary_infos.get(key_name))
+
+
+def create_element(parent, tag, text):
+    elem = etree.SubElement(parent, tag)
+    elem.text = text
+    elem.tail = "\n"
+    return elem
+
+
+def add_summary_info(file_data, summary_infos, fields=None):
+    if summary_infos is None:
+        return file_data
+    try:
+        root = etree.fromstring(file_data)
+        extensions_node = etree.Element("extensions")
+        extensions_node.text = "\n"
+        extensions_node.tail = "\n"
+        if fields is None:
+            fields = ["distance", "average_hr", "average_speed"]
+        for field in fields:
+            create_element(
+                extensions_node, field, get_info_text_value(summary_infos, field)
+            )
+        root.insert(0, extensions_node)
+        return etree.tostring(root, encoding="utf-8", pretty_print=True)
+    except etree.XMLSyntaxError as e:
+        print(f"Failed to parse file data: {str(e)}")
+    except Exception as e:
+        print(f"Failed to append summary info to file data: {str(e)}")
+    return file_data
+
+
+async def download_garmin_data(
+    client, activity_id, file_type="gpx", summary_infos=None
+):
     folder = FOLDER_DICT.get(file_type, "gpx")
     try:
         file_data = await client.download_activity(activity_id, file_type=file_type)
+        if summary_infos is not None:
+            file_data = add_summary_info(file_data, summary_infos.get(activity_id))
         file_path = os.path.join(folder, f"{activity_id}.{file_type}")
         need_unzip = False
         if file_type == "fit":
@@ -284,6 +325,18 @@ def get_downloaded_ids(folder):
     return [i.split(".")[0] for i in os.listdir(folder) if not i.startswith(".")]
 
 
+def get_garmin_summary_infos(activity_summary, activity_id):
+    garmin_summary_infos = {}
+    try:
+        summary_dto = activity_summary.get("summaryDTO")
+        garmin_summary_infos["distance"] = summary_dto.get("distance")
+        garmin_summary_infos["average_hr"] = summary_dto.get("averageHR")
+        garmin_summary_infos["average_speed"] = summary_dto.get("averageSpeed")
+    except Exception as e:
+        print(f"Failed to get activity summary {activity_id}: {str(e)}")
+    return garmin_summary_infos
+
+
 async def download_new_activities(
     secret_string, auth_domain, downloaded_ids, is_only_running, folder, file_type
 ):
@@ -295,11 +348,15 @@ async def download_new_activities(
     print(f"{len(to_generate_garmin_ids)} new activities to be downloaded")
 
     to_generate_garmin_id2title = {}
+    garmin_summary_infos_dict = {}
     for id in to_generate_garmin_ids:
         try:
             activity_summary = await client.get_activity_summary(id)
             activity_title = activity_summary.get("activityName", "")
             to_generate_garmin_id2title[id] = activity_title
+            garmin_summary_infos_dict[id] = get_garmin_summary_infos(
+                activity_summary, id
+            )
         except Exception as e:
             print(f"Failed to get activity summary {id}: {str(e)}")
             continue
@@ -308,7 +365,9 @@ async def download_new_activities(
     await gather_with_concurrency(
         10,
         [
-            download_garmin_data(client, id, file_type=file_type)
+            download_garmin_data(
+                client, id, file_type=file_type, summary_infos=garmin_summary_infos_dict
+            )
             for id in to_generate_garmin_ids
         ],
     )
