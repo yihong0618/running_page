@@ -12,7 +12,7 @@ from .xy import XY
 
 
 class GithubDrawer(TracksDrawer):
-    """Draw a gtihub profile-like poster"""
+    """Draw a github profile-like poster"""
 
     def __init__(self, the_poster: Poster):
         super().__init__(the_poster)
@@ -23,18 +23,28 @@ class GithubDrawer(TracksDrawer):
         year_size = 200 * 4.0 / 80.0
         year_style = f"font-size:{year_size}px; font-family:Arial;"
         year_length_style = f"font-size:{110 * 3.0 / 80.0}px; font-family:Arial;"
-        month_names_style = f"font-size:2.5px; font-family:Arial"
+        month_names_style = "font-size:2.5px; font-family:Arial"
         total_length_year_dict = self.poster.total_length_year_dict
+
+        is_align_monday = self.poster.github_style == "align-monday"
         for year in range(self.poster.years.from_year, self.poster.years.to_year + 1)[
             ::-1
         ]:
             start_date_weekday, _ = calendar.monthrange(year, 1)
             github_rect_first_day = datetime.date(year, 1, 1)
-            # Github profile the first day start from the last Monday of the last year or the first Monday of this year
-            # It depands on if the first day of this year is Monday or not.
-            github_rect_day = github_rect_first_day + datetime.timedelta(
-                -start_date_weekday
-            )
+
+            # default GitHub svg style:  the start day of each year always aligns with first day.
+            github_rect_day = github_rect_first_day
+            first_day_weekday = github_rect_first_day.weekday()
+
+            if is_align_monday:
+                # This is an earlier GitHub style: the start day of each year always aligns with Monday.
+                # If you want to use this, please add the command-line argument "--github-style align-monday" .
+                github_rect_day = github_rect_first_day + datetime.timedelta(
+                    -start_date_weekday
+                )
+                first_day_weekday = 0
+
             year_length = total_length_year_dict.get(year, 0)
             year_length = format_float(self.poster.m2u(year_length))
 
@@ -110,10 +120,19 @@ class GithubDrawer(TracksDrawer):
 
             rect_x = 10.0
             dom = (2.6, 2.6)
+
             # add every day of this year for 53 weeks and per week has 7 days
             for i in range(54):
-                rect_y = offset.y + year_size + 2
-                for j in range(7):
+                # the first day of the first week of the year may not Monday
+                # so we need to skip some empty spaces
+                if i == 0:
+                    rect_y = offset.y + year_size + 2 + 3.5 * first_day_weekday
+                else:
+                    # the first day of the n week (n >1) must be  Monday
+                    # so set first_day_weekday = 0
+                    first_day_weekday = 0
+                    rect_y = offset.y + year_size + 2
+                for j in range(7 - first_day_weekday):
                     if int(github_rect_day.year) > year:
                         break
                     rect_y += 3.5

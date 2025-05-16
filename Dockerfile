@@ -2,10 +2,9 @@
 FROM python:3.10.5-slim AS develop-py
 WORKDIR /root/running_page
 COPY ./requirements.txt /root/running_page/requirements.txt
-# Add proxy for apt.
-# ENV http_proxy http://ip_address:port
-# ENV https_proxy http://ip_address:port
-RUN apt-get update \
+RUN sed -i 's@http://archive.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g' /etc/apt/sources.list \
+  && sed -i 's@http://security.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g' /etc/apt/sources.list \
+  && apt-get update \
   && apt-get install -y --no-install-recommends git \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* \
@@ -17,10 +16,9 @@ FROM node:18  AS develop-node
 WORKDIR /root/running_page
 COPY ./package.json /root/running_page/package.json
 COPY ./pnpm-lock.yaml /root/running_page/pnpm-lock.yaml
-RUN npm config rm proxy&&npm config set registry https://registry.npmjs.org/ \
-  &&npm install -g corepack \
-  &&corepack enable \
-  &&yarn install
+RUN npm config set registry https://registry.npmmirror.com \
+  && corepack enable \
+  && COREPACK_NPM_REGISTRY=https://registry.npmmirror.com pnpm install
 
 FROM develop-py AS data
 ARG app
@@ -61,7 +59,7 @@ RUN python3 run_page/gen_svg.py --from-db --title "my running page" --type grid 
 FROM develop-node AS frontend-build
 WORKDIR /root/running_page
 COPY --from=data /root/running_page /root/running_page
-RUN yarn run build
+RUN pnpm run build
 
 FROM nginx:alpine AS web
 COPY --from=frontend-build /root/running_page/dist /usr/share/nginx/html/

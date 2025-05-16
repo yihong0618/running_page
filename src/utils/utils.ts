@@ -4,7 +4,7 @@ import { WebMercatorViewport } from 'viewport-mercator-project';
 import { chinaGeojson, RPGeometry } from '@/static/run_countries';
 import worldGeoJson from '@surbowl/world-geo-json-zh/world.zh.json';
 import { chinaCities } from '@/static/city';
-import { MAIN_COLOR, MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES, ACTIVITY_TYPES, RICH_TITLE } from './const';
+import { MAIN_COLOR, MUNICIPALITY_CITIES_ARR, NEED_FIX_MAP, RUN_TITLES, ACTIVITY_TYPES, RICH_TITLE, CYCLING_COLOR, HIKING_COLOR, WALKING_COLOR, SWIMMING_COLOR, RUN_COLOR, RUN_TRAIL_COLOR } from './const';
 import { FeatureCollection, LineString } from 'geojson';
 
 export type Coordinate = [number, number];
@@ -23,6 +23,7 @@ export interface Activity {
   location_country?: string | null;
   summary_polyline?: string | null;
   average_heartrate?: number | null;
+  elevation_gain: number | null;
   average_speed: number;
   streak: number;
 }
@@ -210,15 +211,38 @@ const pathForRun = (run: Activity): Coordinate[] => {
   }
 };
 
+const colorForRun = (run: Activity): string => {
+  switch (run.type) {
+    case 'Run':{
+      if (run.subtype === 'trail') {
+        return RUN_TRAIL_COLOR;
+      } else if (run.subtype === 'generic') {
+        return RUN_COLOR;
+      }
+      return RUN_COLOR;
+    }
+    case 'cycling':
+      return CYCLING_COLOR;
+    case 'hiking':
+      return HIKING_COLOR;
+    case 'walking':
+      return WALKING_COLOR;
+    case 'swimming':
+      return SWIMMING_COLOR;
+    default:
+      return MAIN_COLOR;
+  }
+}
+
 const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
   type: 'FeatureCollection',
   features: runs.map((run) => {
     const points = pathForRun(run);
-
+    const color = colorForRun(run);
     return {
       type: 'Feature',
       properties: {
-        color: MAIN_COLOR,
+        color: color,
       },
       geometry: {
         type: 'LineString',

@@ -3,7 +3,6 @@ import logging
 import os
 import sys
 
-import appdirs
 from config import SQL_FILE
 from gpxtrackposter import (
     circular_drawer,
@@ -11,6 +10,7 @@ from gpxtrackposter import (
     grid_drawer,
     poster,
     track_loader,
+    month_of_life_drawer,
 )
 from gpxtrackposter.exceptions import ParameterError, PosterError
 
@@ -27,6 +27,7 @@ def main():
         "grid": grid_drawer.GridDrawer(p),
         "circular": circular_drawer.CircularDrawer(p),
         "github": github_drawer.GithubDrawer(p),
+        "monthoflife": month_of_life_drawer.MonthOfLifeDrawer(p),
     }
 
     args_parser = argparse.ArgumentParser()
@@ -180,6 +181,15 @@ def main():
         help="activities db file",
     )
 
+    args_parser.add_argument(
+        "--github-style",
+        dest="github_style",
+        metavar="GITHUB_STYLE",
+        type=str,
+        default="align-firstday",
+        help='github svg style; "align-firstday", "align-monday" (default: "align-firstday").',
+    )
+
     for _, drawer in drawers.items():
         drawer.create_args(args_parser)
 
@@ -213,8 +223,9 @@ def main():
         return
 
     is_circular = args.type == "circular"
+    is_mol = args.type == "monthoflife"
 
-    if not is_circular:
+    if not is_circular and not is_mol:
         print(
             f"Creating poster of type {args.type} with {len(tracks)} tracks and storing it in file {args.output}..."
         )
@@ -242,8 +253,11 @@ def main():
     p.set_tracks(tracks)
     # circular not add footer and header
     p.drawer_type = "plain" if is_circular else "title"
+    if is_mol:
+        p.drawer_type = "monthoflife"
     if args.type == "github":
         p.height = 55 + p.years.real_year * 43
+    p.github_style = args.github_style
     # for special circular
     if is_circular:
         years = p.years.all()[:]

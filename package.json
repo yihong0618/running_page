@@ -21,6 +21,7 @@
     "react-helmet-async": "^1.3.0",
     "react-map-gl": "^7.1.6",
     "react-router-dom": "^6.15.0",
+    "recharts": "^2.13.3",
     "viewport-mercator-project": "^7.0.4",
     "vite": "^4.3.9",
     "vite-plugin-svgr": "^3.2.0",
@@ -31,10 +32,12 @@
   "type": "module",
   "scripts": {
     "data:clean": "rm -f run_page/data.db {GPX,TCX,FIT}_OUT/* activities/* src/static/activities.json",
+    "clean": "rm -f run_page/data.db {GPX,TCX,FIT}_OUT/* activities/* src/static/activities.json",
     "data:download:garmin": "python3 run_page/garmin_sync.py",
     "data:analysis": "python3 run_page/gen_svg.py --from-db --type github --output assets/github.svg",
     "build": "vite build",
     "develop": "vite dev",
+    "dev": "vite dev",
     "serve": "vite serve",
     "lint": "eslint --ext .ts,.tsx src --fix",
     "check": "prettier --write src/main.tsx src/**/*.{css,json,ts,tsx} *.{md,yaml,json,ts,js}",
@@ -43,7 +46,7 @@
   "engineStrict": true,
   "browserslist": "defaults, not ie 11",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "repository": {
     "type": "git",

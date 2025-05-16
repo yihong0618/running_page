@@ -11,7 +11,7 @@ from utils import get_strava_last_time, make_strava_client, upload_file_to_strav
 
 def get_to_generate_files(last_time):
     """
-    reuturn to values one dict for upload
+    return to values one dict for upload
     and one sorted list for next time upload
     """
     file_names = os.listdir(GPX_FOLDER)

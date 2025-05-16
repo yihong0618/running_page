@@ -72,7 +72,7 @@ TCX_TYPE_DICT = {
 # only for running sports, if you want others, please change the True to False
 IS_ONLY_RUN = True
 
-# If your points need trans from gcj02 to wgs84 coordinate which use by Mappbox
+# If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = False
 # trans the coordinate data until the TRANS_END_DATE, work with TRANS_GCJ02_TO_WGS84 = True
 TRANS_END_DATE = "2014-03-24"
@@ -104,8 +104,8 @@ def download_codoon_gpx(gpx_data, log_id):
         file_path = os.path.join(GPX_FOLDER, str(log_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
-    except:
-        print(f"wrong id {log_id}")
+    except Exception as e:
+        print(f"wrong id {log_id} error {str(e)}")
         pass
 
 
@@ -242,7 +242,7 @@ def tcx_output(fit_array, run_data):
         f.write(str(xml_str))
 
 
-# TODO time complexity is too heigh, need to be reduced
+# TODO time complexity is too high, need to be reduced
 def tcx_job(run_data):
     # fit struct array
     fit_array = None
@@ -477,7 +477,7 @@ class Codoon:
         for p in points_dict_list:
             point = gpxpy.gpx.GPXTrackPoint(**p)
             gpx_segment.points.append(point)
-        return gpx.to_xml()
+        return gpx
 
     def get_single_run_record(self, route_id):
         print(f"Get single run for codoon id {route_id}")
@@ -528,11 +528,14 @@ class Codoon:
                     p["latitude"] = latlng_data[i][0]
                     p["longitude"] = latlng_data[i][1]
 
-        if with_gpx:
-            # pass the track no points
-            if str(log_id) not in old_gpx_ids and run_points_data:
-                gpx_data = self.parse_points_to_gpx(run_points_data)
-                download_codoon_gpx(gpx_data, str(log_id))
+        elevation_gain = None
+        if run_points_data:
+            gpx_data = self.parse_points_to_gpx(run_points_data)
+            elevation_gain = gpx_data.get_uphill_downhill().uphill
+            if with_gpx:
+                # pass the track no points
+                if str(log_id) not in old_gpx_ids:
+                    download_codoon_gpx(gpx_data.to_xml(), str(log_id))
         heart_rate_dict = run_data.get("heart_rate")
         heart_rate = None
         if heart_rate_dict:
@@ -570,6 +573,7 @@ class Codoon:
                 seconds=int((end_date.timestamp() - start_date.timestamp()))
             ),
             "average_speed": run_data["total_length"] / run_data["total_time"],
+            "elevation_gain": elevation_gain,
             "location_country": location_country,
             "source": "Codoon",
         }
