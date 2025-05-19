@@ -219,7 +219,7 @@ class Track:
             if self.track_name is None:
                 self.track_name = t.name
             if hasattr(t, "type") and t.type:
-                self.type = t.type
+                self.type = "Run" if t.type == "running" else t.type
             for s in t.segments:
                 try:
                     extensions = [
