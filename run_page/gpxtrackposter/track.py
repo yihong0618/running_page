@@ -251,6 +251,37 @@ class Track:
         )
         self.moving_dict = self._get_moving_data(gpx)
         self.elevation_gain = gpx.get_uphill_downhill().uphill
+        self._load_gpx_extensions_data(gpx)
+
+    def _load_gpx_extensions_data(self, gpx):
+        gpx_extensions = (
+            {}
+            if gpx.extensions is None
+            else {
+                lxml.etree.QName(extension).localname: extension.text
+                for extension in gpx.extensions
+            }
+        )
+        self.length = (
+            self.length
+            if gpx_extensions.get("distance") is None
+            else float(gpx_extensions.get("distance"))
+        )
+        self.average_heartrate = (
+            self.average_heartrate
+            if gpx_extensions.get("average_hr") is None
+            else float(gpx_extensions.get("average_hr"))
+        )
+        self.moving_dict["average_speed"] = (
+            self.moving_dict["average_speed"]
+            if gpx_extensions.get("average_speed") is None
+            else float(gpx_extensions.get("average_speed"))
+        )
+        self.moving_dict["distance"] = (
+            self.moving_dict["distance"]
+            if gpx_extensions.get("distance") is None
+            else float(gpx_extensions.get("distance"))
+        )
 
     def _load_fit_data(self, fit: dict):
         _polylines = []
