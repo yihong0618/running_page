@@ -305,7 +305,9 @@ class Track:
             self.type = message["sport"].lower()
         self.subtype = message["sub_sport"] if "sub_sport" in message else None
 
-        self.elevation_gain = message["total_ascent"] if "total_ascent" in message else None
+        self.elevation_gain = (
+            message["total_ascent"] if "total_ascent" in message else None
+        )
         # moving_dict
         self.moving_dict["distance"] = message["total_distance"]
         self.moving_dict["moving_time"] = datetime.timedelta(
