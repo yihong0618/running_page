@@ -254,7 +254,6 @@ def tcx_job(run_data):
     # get single track point
     if own_points is not None:
         for point in own_points:
-            # repeat_flag = False
             time_stamp = point.get("time_stamp")
             latitude = point.get("latitude")
             longitude = point.get("longitude")
