@@ -109,15 +109,15 @@ def download_codoon_gpx(gpx_data, log_id):
         pass
 
 
-def set_array(fit_array, array_time, array_bpm, array_lati, array_longi, ele):
-    fit_data = np.array(
-        (array_time, array_bpm, array_lati, array_longi, ele), dtype=FitType
-    )
-    if fit_array is None:
-        fit_array = np.array([fit_data], dtype=FitType)
-    else:
-        fit_array = np.append(fit_array, fit_data)
-    return fit_array
+# def set_array(fit_array, array_time, array_bpm, array_lati, array_longi, ele):
+#     fit_data = np.array(
+#         (array_time, array_bpm, array_lati, array_longi, ele), dtype=FitType
+#     )
+#     if fit_array is None:
+#         fit_array = np.array([fit_data], dtype=FitType)
+#     else:
+#         fit_array = np.append(fit_array, fit_data)
+#     return fit_array
 
 
 def formated_input(
