@@ -109,17 +109,6 @@ def download_codoon_gpx(gpx_data, log_id):
         pass
 
 
-# def set_array(fit_array, array_time, array_bpm, array_lati, array_longi, ele):
-#     fit_data = np.array(
-#         (array_time, array_bpm, array_lati, array_longi, ele), dtype=FitType
-#     )
-#     if fit_array is None:
-#         fit_array = np.array([fit_data], dtype=FitType)
-#     else:
-#         fit_array = np.append(fit_array, fit_data)
-#     return fit_array
-
-
 def formated_input(
     run_data, run_data_label, tcx_label
 ):  # load run_data from run_data_label, parse to tcx_label, return xml node
@@ -262,9 +251,6 @@ def tcx_job(run_data):
             single_time = adjust_timestamp_to_utc(single_time, str(get_localzone()))
             fit_hrs[single_time] = single_bpm
 
-            # set bpm data
-            # fit_array = set_array(fit_array, single_time, single_bpm, None, None, None)
-
     # get single track point
     if own_points is not None:
         for point in own_points:
@@ -284,26 +270,8 @@ def tcx_job(run_data):
 
             # get heart rate at unix_time
             hr = fit_hrs.get(unix_time, None)
-            fit_list.append((unix_time, hr, latitude, longitude, elevation))
 
-            # set GPS data
-            # if the track point which has the same time has been added
-            # if fit_array is None:
-            #     fit_array = set_array(
-            #         fit_array, unix_time, None, latitude, longitude, elevation
-            #     )
-            # else:
-            #     for i in fit_array:
-            #         if i["time"] == unix_time:
-            #             i["lati"] = latitude
-            #             i["longi"] = longitude
-            #             i["elevation"] = elevation
-            #             repeat_flag = True  # unix_time repeated
-            #             break
-            #     if not repeat_flag:
-            #         fit_array = set_array(
-            #             fit_array, unix_time, None, latitude, longitude, elevation
-            #         )
+            fit_list.append((unix_time, hr, latitude, longitude, elevation))
 
     fit_array = np.array(fit_list, dtype=FitType)
 
