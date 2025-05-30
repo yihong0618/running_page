@@ -9,7 +9,7 @@ env:
   CONTAINER_PORT: 80
 
 jobs:
-  test:
+  dockerfile_test:
     runs-on: ubuntu-latest
 
     steps:
