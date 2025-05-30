@@ -26,12 +26,13 @@ jobs:
         file: ./Dockerfile
         tags: ${{ env.IMAGE_NAME }}:latest
         push: false
+        load: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
     - name: Run the Docker container
       run: |
-        docker run -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} ${{ env.IMAGE_NAME }}:latest # 假设你的应用监听 80 端口
+        docker run -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} ${{ env.IMAGE_NAME }}:latest
 
     - name: Wait for the application to start
       run: sleep 10
