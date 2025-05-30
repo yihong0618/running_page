@@ -1,0 +1,54 @@
+name: Docker Test and Deploy
+
+on: [push, pull_request]
+
+env:
+  IMAGE_NAME: running-page
+  CONTAINER_NAME: running-page-container
+  HOST_PORT: 8080
+  CONTAINER_PORT: 80
+
+jobs:
+  dockerfile_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build the Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        tags: ${{ env.IMAGE_NAME }}:latest
+        push: false
+        load: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Run the Docker container
+      run: |
+        docker run -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} ${{ env.IMAGE_NAME }}:latest
+
+    - name: Wait for the application to start
+      run: sleep 10
+
+    - name: Run tests against the deployed container
+      run: |
+        curl -I -s http://localhost:${{ env.HOST_PORT }}/
+
+    - name: Stop the Docker container
+      if: always()
+      run: docker stop ${{ env.CONTAINER_NAME }}
+
+    - name: Remove the Docker container
+      if: always()
+      run: docker rm ${{ env.CONTAINER_NAME }}
+
+    - name: Clean up Docker resources
+      if: always()
+      run: docker system prune -af
