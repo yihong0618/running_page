@@ -5,6 +5,7 @@ Copy most code from https://github.com/cyberjunky/python-garminconnect
 
 import argparse
 import asyncio
+import datetime as dt
 import logging
 import os
 import sys
@@ -250,7 +251,15 @@ def add_summary_info(file_data, summary_infos, fields=None):
         extensions_node.text = "\n"
         extensions_node.tail = "\n"
         if fields is None:
-            fields = ["distance", "average_hr", "average_speed"]
+            fields = [
+                "distance",
+                "average_hr",
+                "average_speed",
+                "start_time",
+                "end_time",
+                "moving_time",
+                "elapsed_time",
+            ]
         for field in fields:
             create_element(
                 extensions_node, field, get_info_text_value(summary_infos, field)
@@ -332,6 +341,15 @@ def get_garmin_summary_infos(activity_summary, activity_id):
         garmin_summary_infos["distance"] = summary_dto.get("distance")
         garmin_summary_infos["average_hr"] = summary_dto.get("averageHR")
         garmin_summary_infos["average_speed"] = summary_dto.get("averageSpeed")
+        start_time = dt.datetime.fromisoformat(
+            summary_dto.get("startTimeGMT")[:-1] + "+00:00"
+        )
+        duration_second = summary_dto.get("duration")
+        end_time = start_time + dt.timedelta(seconds=duration_second)
+        garmin_summary_infos["start_time"] = start_time.isoformat()
+        garmin_summary_infos["end_time"] = end_time.isoformat()
+        garmin_summary_infos["moving_time"] = summary_dto.get("movingDuration")
+        garmin_summary_infos["elapsed_time"] = summary_dto.get("elapsedDuration")
     except Exception as e:
         print(f"Failed to get activity summary {activity_id}: {str(e)}")
     return garmin_summary_infos
