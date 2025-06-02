@@ -33,7 +33,7 @@
 </h3>
 
 <p align="center">
-  <a href="https://github.com/yihong0618/running_page/actions"><img src="https://github.com/yihong0618/running_page/actions/workflows/run_data_sync.yml/badge.svg" alt="Github Action"></a>
+  <a href="https://github.com/yihong0618/running_page/actions"><img src="https://github.com/yihong0618/running_page/actions/workflows/run_data_sync.yml/badge.svg" alt="GitHub Action"></a>
   <a href="https://t.me/running_page"><img src="https://badgen.net/badge/icon/join?icon=telegram&amp;label=usergroup" alt="Chat on telegram"></a>
 </p>
 
@@ -113,6 +113,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Vensent](https://github.com/Vensent)                | <https://vensent.github.io/workouts_page/>     | Garmin      |
 | [Zeonsing](https://github.com/NoonieBao)             | <https://run.jogzeal.com/>                     | Coros       |
 | [yaoper](https://github.com/yaoper)                  | <https://running.yaoper.cn>                    | codoon      |
+| [NoZTurn](https://github.com/NoZTurn)                | <https://run.jiangkai.org>                     | Strava      |
 | [laqieer](https://github.com/laqieer)                | <https://laqieer.github.io/running_page/>      | Strava      |
 | [Guoxin](https://github.com/guoxinl)                 | <https://running.guoxin.space/>                | Strava      |
 | [laihj](https://github.com/laihj)                    | <https://run.laihjx.com/>                      | 苹果健身    |
@@ -361,7 +362,7 @@ python run_page/get_garmin_secret.py ${your email} ${your password}
 
 #### Execute Garmin Sync Script
 
-Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING** in `Github Action`.
+Copy the Secret output in the terminal,If you are using GitHub, please configure **GARMIN_SECRET_STRING** in `GitHub Action`.
 
 ```bash
 # use this secret_string
@@ -408,7 +409,7 @@ python run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 
 #### Execute Garmin CN Sync Script
 
-Copy the Secret output in the terminal,If you are using Github, please configure **GARMIN_SECRET_STRING_CN** in Github Action.
+Copy the Secret output in the terminal,If you are using GitHub, please configure **GARMIN_SECRET_STRING_CN** in GitHub Action.
 ![get_garmin_secret](docs/add_garmin_secret_cn_string.jpg)
 
 example：
@@ -756,7 +757,7 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 
 <br>
 
-1. finish garmin and strava setup, at the same time, you need to add additional strava config in Github Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
+1. finish garmin and strava setup, at the same time, you need to add additional strava config in GitHub Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
 2. Execute in the root directory:
 
    ```bash
@@ -1058,7 +1059,7 @@ Just enjoy it~
 
 # FAQ
 
-- Strava Api limit
+- Strava API limit
 
   <https://www.strava.com/settings/api>
   <https://developers.strava.com/docs/#rate-limiting>

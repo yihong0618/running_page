@@ -109,17 +109,6 @@ def download_codoon_gpx(gpx_data, log_id):
         pass
 
 
-def set_array(fit_array, array_time, array_bpm, array_lati, array_longi, ele):
-    fit_data = np.array(
-        (array_time, array_bpm, array_lati, array_longi, ele), dtype=FitType
-    )
-    if fit_array is None:
-        fit_array = np.array([fit_data], dtype=FitType)
-    else:
-        fit_array = np.append(fit_array, fit_data)
-    return fit_array
-
-
 def formated_input(
     run_data, run_data_label, tcx_label
 ):  # load run_data from run_data_label, parse to tcx_label, return xml node
@@ -242,10 +231,11 @@ def tcx_output(fit_array, run_data):
         f.write(str(xml_str))
 
 
-# TODO time complexity is too high, need to be reduced
 def tcx_job(run_data):
     # fit struct array
     fit_array = None
+    fit_list = []
+    fit_hrs = {}
 
     # raw data
     own_heart_rate = None
@@ -254,17 +244,16 @@ def tcx_job(run_data):
         own_heart_rate = run_data["heart_rate"]  # bpm key-value
     if "points" in run_data:
         own_points = run_data["points"]  # track points
+
     # get single bpm
     if own_heart_rate is not None:
         for single_time, single_bpm in own_heart_rate.items():
             single_time = adjust_timestamp_to_utc(single_time, str(get_localzone()))
-            # set bpm data
-            fit_array = set_array(fit_array, single_time, single_bpm, None, None, None)
+            fit_hrs[single_time] = single_bpm
+
     # get single track point
     if own_points is not None:
         for point in own_points:
-            repeat_flag = False
-            # TODO add elevation information
             time_stamp = point.get("time_stamp")
             latitude = point.get("latitude")
             longitude = point.get("longitude")
@@ -277,24 +266,13 @@ def tcx_job(run_data):
             time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%SZ")
             # to unix timestamp
             unix_time = int(time.mktime(time_array))
-            # set GPS data
-            # if the track point which has the same time has been added
-            if fit_array is None:
-                fit_array = set_array(
-                    fit_array, unix_time, None, latitude, longitude, elevation
-                )
-            else:
-                for i in fit_array:
-                    if i["time"] == unix_time:
-                        i["lati"] = latitude
-                        i["longi"] = longitude
-                        i["elevation"] = elevation
-                        repeat_flag = True  # unix_time repeated
-                        break
-                if not repeat_flag:
-                    fit_array = set_array(
-                        fit_array, unix_time, None, latitude, longitude, elevation
-                    )
+
+            # get heart rate at unix_time
+            hr = fit_hrs.get(unix_time, None)
+
+            fit_list.append((unix_time, hr, latitude, longitude, elevation))
+
+    fit_array = np.array(fit_list, dtype=FitType)
 
     if fit_array is not None:
         # order array

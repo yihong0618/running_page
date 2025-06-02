@@ -578,7 +578,7 @@ python run_page/get_garmin_secret.py ${your email} ${your password}
 
 #### 执行佳明国际区同步脚本
 
-复制上述终端中输出的密钥，如果您是使用 Github 请在 Github Action 中配置**GARMIN_SECRET_STRING**参数
+复制上述终端中输出的密钥，如果您是使用 GitHub 请在 GitHub Action 中配置**GARMIN_SECRET_STRING**参数
 
 示例：
 
@@ -613,7 +613,7 @@ python run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 
 #### 执行佳明国区同步脚本
 
-复制上述终端中输出的密钥，如果您是使用 Github 请在 Github Action 中配置**GARMIN_SECRET_STRING_CN** 参数
+复制上述终端中输出的密钥，如果您是使用 GitHub 请在 GitHub Action 中配置**GARMIN_SECRET_STRING_CN** 参数
 ![get_garmin_secret](docs/add_garmin_secret_cn_string.jpg)
 示例：
 
@@ -950,7 +950,7 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 
 <br>
 
-1. 完成 garmin 和 strava 的步骤，同时，还需要在 Github Actions secret 那新增 Strava 配置：`secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
+1. 完成 garmin 和 strava 的步骤，同时，还需要在 GitHub Actions secret 那新增 Strava 配置：`secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
 2. 在项目根目录下执行：
 
    ```bash
@@ -1212,7 +1212,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
 
 </details>
 
-## Github Cache
+## GitHub Cache
 
 <details>
 <summary>把数据文件放在 GitHub Cache 中</summary>

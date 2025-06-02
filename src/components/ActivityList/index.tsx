@@ -145,17 +145,13 @@ const ActivityList: React.FC = () => {
         setInterval(newInterval);
     };
 
-    const filterActivities = (activity: Activity): boolean => {
-        return activity.type.toLowerCase() === 'run';
-    };
-
     const convertTimeToSeconds = (time: string): number => {
         const [hours, minutes, seconds] = time.split(':').map(Number);
         return hours * 3600 + minutes * 60 + seconds;
     };
 
     const groupActivities = (interval: IntervalType): ActivityGroups => {
-        return (activities as Activity[]).filter(filterActivities).reduce((acc: ActivityGroups, activity) => {
+        return (activities as Activity[]).reduce((acc: ActivityGroups, activity) => {
             const date = new Date(activity.start_date_local);
             let key: string;
             let index: number;
