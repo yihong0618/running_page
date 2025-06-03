@@ -50,7 +50,6 @@ TYPE_DICT = {
     "indoor_cycling": "Indoor Ride",
     "Indoor Bike ": "Indoor Ride",
     "walking": "Hike",
-    "Walk": "Hike",
     "hiking": "Hike",
     "Walk": "Hike",
     "Hike": "Hike",
@@ -65,7 +64,6 @@ TYPE_DICT = {
     "Snowboard": "Snowboard",
     "resort_skiing_snowboarding_ws": "Ski",  # garmin
     "AlpineSki": "Ski",  # strava
-    "Ski": "Ski",
     "Ski": "Ski",
 }
 

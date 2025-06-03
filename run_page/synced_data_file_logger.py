@@ -12,11 +12,6 @@ def save_synced_data_file_list(file_list: list):
         json.dump(file_list, f)
 
 
-def save_synced_activity_list(activity_list: list):
-    with open(SYNCED_ACTIVITY_FILE, "w") as f:
-        json.dump(activity_list, f)
-
-
 def load_synced_file_list():
     if os.path.exists(SYNCED_FILE):
         with open(SYNCED_FILE, "r") as f:
