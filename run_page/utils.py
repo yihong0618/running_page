@@ -6,7 +6,7 @@ import pytz
 
 try:
     from rich import print
-except:
+except Exception:
     pass
 from generator import Generator
 from stravalib.client import Client

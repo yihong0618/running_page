@@ -34,3 +34,8 @@ jobs:
 
       - name: Check formatting (black)
         run: black . --diff --color && black . --check
+
+      - name: Lint with Ruff
+        run: |
+          pip install ruff
+          ruff check .

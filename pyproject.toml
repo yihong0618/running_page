@@ -6,7 +6,7 @@ authors = [
     {name = "yihong0618", email = "zouzou0208@gmail.com"},
 ]
 dependencies = [
-    "httpx<=0.15.5,>=0.15.0",
+    "httpx",
     "gpxpy==1.4.2",
     "stravalib==0.10.4",
     "appdirs>=1.4.0",
@@ -21,7 +21,7 @@ dependencies = [
     "timezonefinder; platform_system == \"Windows\"",
     "pyyaml",
     "aiofiles",
-    "cloudscraper==1.2.58",
+    "cloudscraper",
     "tcxreader",
     "rich",
     "lxml",
@@ -36,7 +36,19 @@ dependencies = [
     "garth",
     "pycryptodome",
     "duckdb",
+    "openai",
+    "svglib>=1.5.1",
+    "pycairo>=1.28.0",
+    "cairosvg>=2.7.1",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
