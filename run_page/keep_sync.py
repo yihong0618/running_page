@@ -23,6 +23,7 @@ KEEP2STRAVA = {
     "outdoorRunning": "Run",
     "outdoorCycling": "Ride",
     "indoorRunning": "VirtualRun",
+    "mountaineering": "Hiking",
 }
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
@@ -140,7 +141,11 @@ def parse_raw_data_to_nametuple(
             p_hr = find_nearest_hr(decoded_hr_data, int(p["timestamp"]), start_time)
             if p_hr:
                 p["hr"] = p_hr
-        if run_data["dataType"].startswith("outdoor"):
+
+        if (
+            run_data["dataType"].startswith("outdoor")
+            or run_data["dataType"] == "mountaineering"
+        ):
             gpx_data = parse_points_to_gpx(
                 run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
             )
