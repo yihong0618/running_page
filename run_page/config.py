@@ -1,6 +1,5 @@
 import os
 from collections import namedtuple
-import yaml
 
 # getting content root directory
 current = os.path.dirname(os.path.realpath(__file__))
@@ -30,26 +29,6 @@ UTC_TIMEZONE = "UTC"
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
-
-try:
-    with open("config.yaml") as f:
-        _config = yaml.safe_load(f)
-except Exception as e:
-    print(f"Error reading config.yaml: {e}")
-    _config = {}
-
-
-def config(*keys):
-    def safeget(dct, *keys):
-        for key in keys:
-            try:
-                dct = dct[key]
-            except KeyError:
-                return None
-        return dct
-
-    return safeget(_config, *keys)
-
 
 # add more type here
 STRAVA_GARMIN_TYPE_DICT = {
