@@ -143,9 +143,9 @@ def parse_raw_data_to_nametuple(
                 p["hr"] = p_hr
 
         if (
-+            run_data["dataType"].startswith("outdoor")
-+            or run_data["dataType"] == "mountaineering"
-+        ):
+            run_data["dataType"].startswith("outdoor")
+            or run_data["dataType"] == "mountaineering"
+        ):
             gpx_data = parse_points_to_gpx(
                 run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
             )
