@@ -160,6 +160,7 @@ class Track:
             self.end_time.timestamp() - self.start_time.timestamp()
         )
         moving_time = self._calc_moving_time(tcx.trackpoints, 10)
+        moving_time = moving_time or elapsed_time
         self.run_id = self.__make_run_id(self.start_time)
         self.average_heartrate = tcx.hr_avg
         polyline_container = []
@@ -193,14 +194,20 @@ class Track:
 
     def _calc_moving_time(self, trackpoints, seconds_threshold=10):
         moving_time = 0
-        start_time = self.start_time
-        for i in range(1, len(trackpoints)):
-            if trackpoints[i].time - trackpoints[i - 1].time <= datetime.timedelta(
-                seconds=seconds_threshold
-            ):
-                moving_time += trackpoints[i].time.timestamp() - start_time.timestamp()
-            start_time = trackpoints[i].time
-        return int(moving_time)
+        try:
+            start_time = self.start_time
+            for i in range(1, len(trackpoints)):
+                if trackpoints[i].time - trackpoints[i - 1].time <= datetime.timedelta(
+                    seconds=seconds_threshold
+                ):
+                    moving_time += (
+                        trackpoints[i].time.timestamp() - start_time.timestamp()
+                    )
+                start_time = trackpoints[i].time
+            return int(moving_time)
+        except Exception as e:
+            print(f"Error calculating moving time: {e}")
+            return 0
 
     def _load_gpx_data(self, gpx):
         self.start_time, self.end_time = gpx.get_time_bounds()
@@ -441,10 +448,12 @@ class Track:
     @staticmethod
     def _get_moving_data(gpx, moving_time):
         moving_data = gpx.get_moving_data()
+        elapsed_time = moving_data.moving_time
+        moving_time = moving_time or elapsed_time
         return {
             "distance": moving_data.moving_distance,
             "moving_time": datetime.timedelta(seconds=moving_time),
-            "elapsed_time": datetime.timedelta(seconds=moving_data.moving_time),
+            "elapsed_time": datetime.timedelta(seconds=elapsed_time),
             "average_speed": (
                 moving_data.moving_distance / moving_time if moving_time else 0
             ),
