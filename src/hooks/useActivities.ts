@@ -10,8 +10,8 @@ const standardizeCountryName = (country: string): string => {
       return '美国';
     default:
       return country;
-    }
-}
+  }
+};
 
 const useActivities = () => {
   const cities: Record<string, number> = {};

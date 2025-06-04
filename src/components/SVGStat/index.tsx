@@ -18,5 +18,4 @@ const SVGStat = () => (
   </div>
 );
 
-
 export default SVGStat;
