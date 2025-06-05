@@ -7,8 +7,6 @@ const GithubSvg = lazy(() => loadSvgComponent(totalStat, './github.svg'));
 
 const GridSvg = lazy(() => loadSvgComponent(totalStat, './grid.svg'));
 
-const MonthofLifeSvg = lazy(() => loadSvgComponent(totalStat, './mol.svg'));
-
 const SVGStat = () => (
   <div id="svgStat">
     <Suspense fallback={<div className="text-center">Loading...</div>}>
@@ -17,6 +15,5 @@ const SVGStat = () => (
     </Suspense>
   </div>
 );
-
 
 export default SVGStat;
