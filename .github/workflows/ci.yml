@@ -3,7 +3,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  lint_and_test:
+  python_lint_and_test:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -39,3 +39,27 @@ jobs:
         run: |
           pip install ruff
           ruff check .
+
+  node_lint_and_test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Enable corepack
+        run: npm install -g corepack@latest && corepack enable pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run lint and build
+        run: pnpm run ci
