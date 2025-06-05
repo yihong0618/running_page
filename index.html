@@ -3,12 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <script>
-      (function() {
-        const basePath = "%BASE_URL%";
+      (function () {
+        const basePath = '%BASE_URL%';
         const redirect = sessionStorage.getItem('redirect');
         if (redirect) {
           sessionStorage.removeItem('redirect');
-          if (redirect !== basePath + '/' && redirect !== basePath + '/index.html') {
+          if (
+            redirect !== basePath + '/' &&
+            redirect !== basePath + '/index.html'
+          ) {
             window.history.pushState(null, '', redirect);
           }
         }

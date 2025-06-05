@@ -7,7 +7,7 @@ type SvgComponent = {
 const FailedLoadSvg = () => {
   console.log('Failed to load SVG component');
   return <div></div>;
-}
+};
 
 export const loadSvgComponent = async (
   stats: Record<string, () => Promise<unknown>>,
