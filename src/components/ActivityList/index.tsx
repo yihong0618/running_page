@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 import activities from '@/static/activities.json';
 import styles from './style.module.css';
 import { ACTIVITY_TOTAL } from '@/utils/const';
-import { formatPace } from '@/utils/utils';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 
@@ -216,7 +215,7 @@ const ActivityList: React.FC = () => {
             key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`; // Zero padding
             index = date.getDate() - 1; // Return current day (0-30)
             break;
-          case 'week':
+          case 'week': {
             const currentDate = new Date(date.valueOf());
             currentDate.setDate(
               currentDate.getDate() + 4 - (currentDate.getDay() || 7)
@@ -228,6 +227,7 @@ const ActivityList: React.FC = () => {
             key = `${currentDate.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
             index = (date.getDay() + 6) % 7; // Return current day (0-6, Monday-Sunday)
             break;
+          }
           case 'day':
             key = date.toLocaleDateString('zh').replaceAll('/', '-'); // Format date as YYYY-MM-DD
             index = 0; // Return 0
