@@ -47,7 +47,7 @@ interface DisplaySummary {
   maxDistance: number;
   maxSpeed: number;
   location: string;
-  totalElevationGain?: number; // 添加海拔增益属性
+  totalElevationGain?: number;
 }
 
 interface ChartData {
