@@ -25,9 +25,9 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: garmin_cn # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon/oppo/db_updater, Please change the 'pass' it to your own
-  ATHLETE: Feng
-  TITLE: Feng Running
+  RUN_TYPE: pass # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon/oppo/db_updater, Please change the 'pass' it to your own
+  ATHLETE: yihong0618
+  TITLE: Yihong0618 Running
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Runs # also here
 
@@ -36,12 +36,12 @@ env:
   # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
   IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
   IGNORE_RANGE: 10 # Unit meter
-  SAVE_DATA_IN_GITHUB_CACHE: true # if you deploy in the vercel, check the README
+  SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercel, check the README
   DATA_CACHE_PREFIX: 'track_data'
   BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
   SAVE_TO_PARQENT: false # If you want to save the data to the repo, set it to `true`
   GENERATE_MONTH_OF_LIFE: true # If you want to generate the month of life, set it to `true`
-  BIRTHDAY_MONTH: 1989-01 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
+  BIRTHDAY_MONTH: 1989-03 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
 
 jobs:
   sync:
@@ -130,14 +130,14 @@ jobs:
       - name: Run sync tcx to Garmin script
         if: env.RUN_TYPE == 'tcx_to_garmin'
         run: |
-            # python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
-            python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
+          # python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
+          python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
 
       # for garmin if you want generate `tcx` you can add --tcx command in the args.
       - name: Run sync Garmin script
         if: env.RUN_TYPE == 'garmin'
         run: |
-          # make garimin secret string `python run_page/get_garmin_secret.py ${email} ${password}
+          # make garmin secret string `python run_page/get_garmin_secret.py ${email} ${password}
           python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }} --only-run
@@ -145,19 +145,18 @@ jobs:
       - name: Run sync Garmin CN script
         if: env.RUN_TYPE == 'garmin_cn'
         run: |
-          # make garimin secret string `python run_page/get_garmin_secret.py ${email} ${password} --is-cn
-          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --only-run --is-cn
+          # make garmin secret string `python run_page/get_garmin_secret.py ${email} ${password} --is-cn
+          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }}  --only-run --is-cn
 
       - name: Run sync Garmin CN to Garmin script
         if: env.RUN_TYPE == 'garmin_sync_cn_global'
         run: |
-          # make garimin secret string `python run_page/garmin_sync_cn_global.py ${email} ${password} --is-cn
+          # make garmin secret string `python run_page/garmin_sync_cn_global.py ${email} ${password} --is-cn
           python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}  --only-run
-
 
       - name: Run sync Only GPX script
         if: env.RUN_TYPE == 'only_gpx'
@@ -202,14 +201,14 @@ jobs:
       - name: Run sync Oppo heytap script, note currently this script is not worked
         if: env.RUN_TYPE == 'oppo'
         run: |
-            python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-tcx
+          python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-tcx
         # If you want to sync fit activity in gpx format, please consider the following script:
         # python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-gpx
 
       - name: Run db updater script to add "Elevation Gain" field to db
         if: env.RUN_TYPE == 'db_updater'
         run: |
-            python run_page/db_updater.py
+          python run_page/db_updater.py
 
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'

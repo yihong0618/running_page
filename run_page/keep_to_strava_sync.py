@@ -100,7 +100,7 @@ if __name__ == "__main__":
                 upload_file_to_strava(client, track.gpx_file_path, "gpx", False)
                 uploaded_file_paths.append(track)
             except ActivityUploadFailed as e:
-                print(f"Upload faild error {str(e)}")
+                print(f"Upload failed error {str(e)}")
             # spider rule
             time.sleep(1)
         else:

@@ -68,19 +68,19 @@
 }
 
 .smallHomeButton {
-    padding: 4px 12px;
-    background-color: rgb(224, 237, 94);
-    color: #000;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    margin-right: 20px;
+  padding: 4px 12px;
+  background-color: rgb(224, 237, 94);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 20px;
 }
 
 .smallHomeButton:hover {
-    background-color: rgb(204, 217, 74);
+  background-color: rgb(204, 217, 74);
 }
 
 .lifeContainer {

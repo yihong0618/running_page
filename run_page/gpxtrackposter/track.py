@@ -154,8 +154,13 @@ class Track:
         if not time_values:
             raise TrackLoadError("Track is empty.")
 
-        self.start_time, self.end_time = time_values[0], time_values[-1]
-        moving_time = int(self.end_time.timestamp() - self.start_time.timestamp())
+        self.start_time = tcx.start_time or time_values[0]
+        self.end_time = tcx.end_time or time_values[-1]
+        elapsed_time = tcx.duration or int(
+            self.end_time.timestamp() - self.start_time.timestamp()
+        )
+        moving_time = self._calc_moving_time(tcx.trackpoints, 10)
+        moving_time = moving_time or elapsed_time
         self.run_id = self.__make_run_id(self.start_time)
         self.average_heartrate = tcx.hr_avg
         polyline_container = []
@@ -183,11 +188,26 @@ class Track:
         self.moving_dict = {
             "distance": self.length,
             "moving_time": datetime.timedelta(seconds=moving_time),
-            "elapsed_time": datetime.timedelta(
-                seconds=moving_time
-            ),  # FIXME for now make it same as moving time
+            "elapsed_time": datetime.timedelta(seconds=elapsed_time),
             "average_speed": self.length / moving_time if moving_time else 0,
         }
+
+    def _calc_moving_time(self, trackpoints, seconds_threshold=10):
+        moving_time = 0
+        try:
+            start_time = self.start_time
+            for i in range(1, len(trackpoints)):
+                if trackpoints[i].time - trackpoints[i - 1].time <= datetime.timedelta(
+                    seconds=seconds_threshold
+                ):
+                    moving_time += (
+                        trackpoints[i].time.timestamp() - start_time.timestamp()
+                    )
+                start_time = trackpoints[i].time
+            return int(moving_time)
+        except Exception as e:
+            print(f"Error calculating moving time: {e}")
+            return 0
 
     def _load_gpx_data(self, gpx):
         self.start_time, self.end_time = gpx.get_time_bounds()
@@ -209,6 +229,10 @@ class Track:
         if self.end_time is None:
             raise TrackLoadError("Track has no end time.")
         self.length = gpx.length_2d()
+        moving_time = 0
+        for t in gpx.tracks:
+            for s in t.segments:
+                moving_time += self._calc_moving_time(s.points, 10)
         gpx.simplify()
         if self.length == 0:
             self._load_gpx_extensions_data(gpx)
@@ -261,7 +285,7 @@ class Track:
         self.average_heartrate = (
             sum(heart_rate_list) / len(heart_rate_list) if heart_rate_list else None
         )
-        self.moving_dict = self._get_moving_data(gpx)
+        self.moving_dict = self._get_moving_data(gpx, moving_time)
         self.elevation_gain = gpx.get_uphill_downhill().uphill
         self._load_gpx_extensions_data(gpx)
 
@@ -422,18 +446,16 @@ class Track:
             pass
 
     @staticmethod
-    def _get_moving_data(gpx):
+    def _get_moving_data(gpx, moving_time):
         moving_data = gpx.get_moving_data()
+        elapsed_time = moving_data.moving_time
+        moving_time = moving_time or elapsed_time
         return {
             "distance": moving_data.moving_distance,
-            "moving_time": datetime.timedelta(seconds=moving_data.moving_time),
-            "elapsed_time": datetime.timedelta(
-                seconds=(moving_data.moving_time + moving_data.stopped_time)
-            ),
+            "moving_time": datetime.timedelta(seconds=moving_time),
+            "elapsed_time": datetime.timedelta(seconds=elapsed_time),
             "average_speed": (
-                moving_data.moving_distance / moving_data.moving_time
-                if moving_data.moving_time
-                else 0
+                moving_data.moving_distance / moving_time if moving_time else 0
             ),
         }
 

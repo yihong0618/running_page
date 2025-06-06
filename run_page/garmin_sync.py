@@ -360,7 +360,7 @@ async def download_new_activities(
 ):
     client = Garmin(secret_string, auth_domain, is_only_running)
     # because I don't find a para for after time, so I use garmin-id as filename
-    # to find new run to generage
+    # to find new run to generate
     activity_ids = await get_activity_id_list(client)
     to_generate_garmin_ids = list(set(activity_ids) - set(downloaded_ids))
     print(f"{len(to_generate_garmin_ids)} new activities to be downloaded")
@@ -404,7 +404,7 @@ if __name__ == "__main__":
         "--is-cn",
         dest="is_cn",
         action="store_true",
-        help="if garmin accout is cn",
+        help="if garmin account is cn",
     )
     parser.add_argument(
         "--only-run",

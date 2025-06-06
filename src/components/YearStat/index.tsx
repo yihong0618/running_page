@@ -5,9 +5,15 @@ import { formatPace } from '@/utils/utils';
 import useHover from '@/hooks/useHover';
 import { yearStats } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
-import { SHOW_ELEVATION_GAIN } from "@/utils/const";
+import { SHOW_ELEVATION_GAIN } from '@/utils/const';
 
-const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) => void }) => {
+const YearStat = ({
+  year,
+  onClick,
+}: {
+  year: string;
+  onClick: (_year: string) => void;
+}) => {
   let { activities: runs, years } = useActivities();
   // for hover
   const [hovered, eventHandlers] = useHover();
@@ -46,7 +52,7 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
     }
   });
   sumDistance = parseFloat((sumDistance / 1000.0).toFixed(1));
-  sumElevationGain = (sumElevationGain).toFixed(0);
+  sumElevationGain = sumElevationGain.toFixed(0);
   const avgPace = formatPace(totalMetersAvail / totalSecondsAvail);
   const hasHeartRate = !(heartRate === 0);
   const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
@@ -62,7 +68,9 @@ const YearStat = ({ year, onClick }: { year: string, onClick: (_year: string) =>
         <Stat value={year} description=" Journey" />
         <Stat value={runs.length} description=" Runs" />
         <Stat value={sumDistance} description=" KM" />
-        {SHOW_ELEVATION_GAIN && <Stat value={sumElevationGain} description=" Elevation Gain" />}
+        {SHOW_ELEVATION_GAIN && (
+          <Stat value={sumElevationGain} description=" Elevation Gain" />
+        )}
         <Stat value={avgPace} description=" Avg Pace" />
         <Stat value={`${streak} day`} description=" Streak" />
         {hasHeartRate && (
