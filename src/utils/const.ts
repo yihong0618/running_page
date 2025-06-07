@@ -86,6 +86,7 @@ const MAX_SPEED_TITLE = IS_CHINESE ? '最快速度' : 'Max Speed';
 const TOTAL_TIME_TITLE = IS_CHINESE ? '总时间' : 'Total Time';
 const AVERAGE_SPEED_TITLE = IS_CHINESE ? '平均速度' : 'Average Speed';
 const TOTAL_DISTANCE_TITLE = IS_CHINESE ? '总距离' : 'Total Distance';
+const TOTAL_ELEVATION_GAIN_TITLE = IS_CHINESE ? '总海拔爬升' : 'Total Elevation Gain';
 const YEARLY_TITLE = IS_CHINESE ? 'Year' : 'Yearly';
 const MONTHLY_TITLE = IS_CHINESE ? 'Month' : 'Monthly';
 const WEEKLY_TITLE = IS_CHINESE ? 'Week' : 'Weekly';
@@ -118,6 +119,7 @@ const ACTIVITY_TOTAL = {
   TOTAL_TIME_TITLE,
   AVERAGE_SPEED_TITLE,
   TOTAL_DISTANCE_TITLE,
+  TOTAL_ELEVATION_GAIN_TITLE,
   YEARLY_TITLE,
   MONTHLY_TITLE,
   WEEKLY_TITLE,

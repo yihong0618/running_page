@@ -14,6 +14,7 @@ import styles from './style.module.css';
 import { ACTIVITY_TOTAL } from '@/utils/const';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
+import { SHOW_ELEVATION_GAIN } from '@/utils/const';
 
 const MonthofLifeSvg = lazy(() => loadSvgComponent(totalStat, './mol.svg'));
 
@@ -24,11 +25,13 @@ interface Activity {
   moving_time: string;
   type: string;
   location_country?: string;
+  elevation_gain?: number; // Optional if elevation gain is not used
 }
 
 interface ActivitySummary {
   totalDistance: number;
   totalTime: number;
+  totalElevationGain: number;
   count: number;
   dailyDistances: number[];
   maxDistance: number;
@@ -44,6 +47,7 @@ interface DisplaySummary {
   maxDistance: number;
   maxSpeed: number;
   location: string;
+  totalElevationGain?: number;
 }
 
 interface ChartData {
@@ -121,6 +125,12 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
           <strong>{ACTIVITY_TOTAL.TOTAL_DISTANCE_TITLE}:</strong>{' '}
           {summary.totalDistance.toFixed(2)} km
         </p>
+        {SHOW_ELEVATION_GAIN && summary.totalElevationGain !== undefined && (
+          <p>
+            <strong>{ACTIVITY_TOTAL.TOTAL_ELEVATION_GAIN_TITLE}:</strong>{' '}
+            {summary.totalElevationGain.toFixed(0)} m
+          </p>
+        )}
         <p>
           <strong>{ACTIVITY_TOTAL.AVERAGE_SPEED_TITLE}:</strong>{' '}
           {formatPace(summary.averageSpeed)}
@@ -241,6 +251,7 @@ const ActivityList: React.FC = () => {
           acc[key] = {
             totalDistance: 0,
             totalTime: 0,
+            totalElevationGain: 0,
             count: 0,
             dailyDistances: [],
             maxDistance: 0,
@@ -255,6 +266,11 @@ const ActivityList: React.FC = () => {
 
         acc[key].totalDistance += distanceKm;
         acc[key].totalTime += timeInSeconds;
+
+        if (SHOW_ELEVATION_GAIN && activity.elevation_gain) {
+          acc[key].totalElevationGain += activity.elevation_gain;
+        }
+
         acc[key].count += 1;
 
         // Accumulate daily distances
@@ -335,6 +351,7 @@ const ActivityList: React.FC = () => {
                   maxDistance: summary.maxDistance,
                   maxSpeed: summary.maxSpeed,
                   location: summary.location,
+                  totalElevationGain: SHOW_ELEVATION_GAIN ? summary.totalElevationGain : undefined,
                 }}
                 dailyDistances={summary.dailyDistances}
                 interval={interval}
