@@ -166,3 +166,38 @@ export const CYCLING_COLOR = 'rgb(51,255,87)';
 export const HIKING_COLOR = 'rgb(151,51,255)';
 export const WALKING_COLOR = HIKING_COLOR;
 export const SWIMMING_COLOR = 'rgb(255,51,51)';
+
+// map tiles vendor, maptiler or mapbox or stadiamaps
+// if you want to use maptiler, set the access token in MAP_TILE_ACCESS_TOKEN
+export const MAP_TILE_VENDOR = "mapbox";
+
+// map tiles style name, see MAP_TILE_STYLES for more details
+export const MAP_TILE_STYLE = "dark-v10";
+
+// access token. you can apply a new one, it's free.
+// maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
+// stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 |sign up at https://client.stadiamaps.com/signup/
+export const MAP_TILE_ACCESS_TOKEN = "Gt5R0jT8tuIYxW6sNrAg";
+
+export const MAP_TILE_STYLES = {
+  maptiler: {
+    "dataviz-dark": "https://api.maptiler.com/maps/dataviz-dark/style.json?key=",
+    "basic-dark": "https://api.maptiler.com/maps/basic-v2-dark/style.json?key=",
+    "streets-dark": "https://api.maptiler.com/maps/streets-v2-dark/style.json?key=",
+    "outdoor-dark": "https://api.maptiler.com/maps/outdoor-v2-dark/style.json?key=",
+    "bright-dark": "https://api.maptiler.com/maps/bright-v2-dark/style.json?key=",
+    "topo-dark": "https://api.maptiler.com/maps/topo-v2-dark/style.json?key=",
+    "winter-dark": "https://api.maptiler.com/maps/winter-v2-dark/style.json?key=",
+    "hybrid": "https://api.maptiler.com/maps/hybrid/style.json?key="
+  },
+  stadiamaps: {
+    "alidade_smooth_dark": "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=",
+    "alidade_satellite": "https://tiles.stadiamaps.com/styles/alidade_satellite.json?api_key=",
+  },
+  mapbox: {
+    "dark-v10": "mapbox://styles/mapbox/dark-v10",
+    "dark-v11": "mapbox://styles/mapbox/dark-v11",
+    "navigation-night": "mapbox://styles/mapbox/navigation-night-v1"
+  },
+  default: "mapbox://styles/mapbox/dark-v10"
+}
