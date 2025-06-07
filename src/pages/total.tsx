@@ -1,4 +1,3 @@
-import React from 'react';
 import ActivityList from '@/components/ActivityList';
 
 const HomePage = () => {

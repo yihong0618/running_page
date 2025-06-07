@@ -392,7 +392,7 @@ def make_new_gpxs(files):
                 track = parse_no_gpx_data(json_data)
                 if track:
                     tracks_list.append(track)
-            # just ignore some unexcepted run
+            # just ignore some unexpected run
             except Exception as e:
                 print(str(e))
                 continue
