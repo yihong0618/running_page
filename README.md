@@ -232,15 +232,15 @@ Here's a polished English translation while maintaining the original Markdown fo
 > In addition to using the default map tile style, you can customize the map display by modifying the following configurations in `src/utils/const.ts`:
 
 ```typescript
-const MAP_TILE_VENDOR = "maptiler";
-const MAP_TILE_STYLE = "winter-dark";
-const MAP_TILE_ACCESS_TOKEN = "your_access_token";
+const MAP_TILE_VENDOR = 'maptiler';
+const MAP_TILE_STYLE = 'winter-dark';
+const MAP_TILE_ACCESS_TOKEN = 'your_access_token';
 ```
 
 Currently supported `MAP_TILE_VENDOR` options include:
 
 - **"mapbox"** - Mapbox map services
-- **"maptiler"** - MapTiler map services  
+- **"maptiler"** - MapTiler map services
 - **"stadiamaps"** - Stadia Maps services
 
 Each `MAP_TILE_VENDOR` provides multiple `MAP_TILE_STYLE` options. Ensure the style matches your selected vendor. For available `MAP_TILE_STYLE` names, refer to the definitions in `src/utils/const.ts`.

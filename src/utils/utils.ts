@@ -17,7 +17,7 @@ import {
   SWIMMING_COLOR,
   RUN_COLOR,
   RUN_TRAIL_COLOR,
-  MAP_TILE_STYLES
+  MAP_TILE_STYLES,
 } from './const';
 import {
   FeatureCollection,
@@ -426,14 +426,14 @@ const sortDateFuncReverse = (a: Activity, b: Activity) => sortDateFunc(b, a);
 
 const getMapStyle = (vendor: string, styleName: string, token: string) => {
   const style = (MAP_TILE_STYLES as any)[vendor][styleName];
-  if (!style)  {
+  if (!style) {
     return MAP_TILE_STYLES.default;
   }
-  if (vendor === "maptiler" || vendor === "stadiamaps") {
+  if (vendor === 'maptiler' || vendor === 'stadiamaps') {
     return style + token;
   }
   return style;
-}
+};
 
 export {
   titleForShow,
