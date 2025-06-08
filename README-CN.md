@@ -234,6 +234,32 @@ const MAPBOX_TOKEN =
   'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
 
+## 更改默认地图服务样式
+
+> 在使用默认的地图服务样式之外，你可以通过修改 src/utils/const.ts 文件中的以下配置项来自定义地图显示。
+
+```typescript
+const MAP_TILE_VENDOR = "maptiler"
+const MAP_TILE_STYLE = "winter-dark"
+const MAP_TILE_ACCESS_TOKEN = "你的access token"
+```
+
+目前，支持的MAP_TILE_VENDOR选项包括：
+
+- **"mapbox"** - Mapbox 地图服务
+
+- **"maptiler"** - MapTiler地图服务
+
+- **"stadiamaps"** - Stadia Maps地图服务
+
+每个`MAP_TILE_VERNDOR`都提供了多种`MAP_TILE_STYLE`选择，配置时需保证匹配。具体的`MAP_TILE_STYLE`名称，可参考`src/utils/const.ts`文件中的定义。
+
+当使用 **"maptiler"** 或是 **"stadiamaps"** 时，需配置`MAP_TILE_ACCESS_TOKEN`。默认的token在不更改的情况下，使用时会发生配额超限的问题。
+
+- **MapTiler**: 在 https://cloud.maptiler.com/auth/widget 注册获取（免费）
+
+- **Stadia Maps**: 在 https://client.stadiamaps.com/signup/ 注册获取（免费）
+
 ## 个性化设置
 
 > 在仓库目录下找到 `src/static/site-metadata.ts`，找到以下内容并修改成你自己想要的。
