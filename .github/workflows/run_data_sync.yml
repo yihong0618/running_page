@@ -181,7 +181,7 @@ jobs:
       - name: Run sync Strava to Garmin-cn(Run with strava(or others upload to strava) data backup in Garmin-cn)
         if: env.RUN_TYPE == 'strava_to_garmin_cn'
         run: |
-          python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+          python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} ${{ secrets.STRAVA_JWT }} --is-cn
 
       - name: Run sync Garmin-cn to Strava(Run with Garmin data backup in Strava)
         if: env.RUN_TYPE == 'garmin_to_strava_cn'
