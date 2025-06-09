@@ -144,7 +144,7 @@ if __name__ == "__main__":
             email=options.strava_email,
             password=options.strava_password,
         )
-    
+
     garmin_auth_domain = "CN" if options.is_cn else ""
 
     try:
