@@ -239,9 +239,9 @@ const MAPBOX_TOKEN =
 > 在使用默认的地图服务样式之外，你可以通过修改 src/utils/const.ts 文件中的以下配置项来自定义地图显示。
 
 ```typescript
-const MAP_TILE_VENDOR = "maptiler"
-const MAP_TILE_STYLE = "winter-dark"
-const MAP_TILE_ACCESS_TOKEN = "你的access token"
+const MAP_TILE_VENDOR = 'maptiler';
+const MAP_TILE_STYLE = 'winter-dark';
+const MAP_TILE_ACCESS_TOKEN = '你的access token';
 ```
 
 目前，支持的MAP_TILE_VENDOR选项包括：

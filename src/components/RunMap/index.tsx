@@ -24,7 +24,12 @@ import {
   MAP_TILE_VENDOR,
   MAP_TILE_ACCESS_TOKEN,
 } from '@/utils/const';
-import { Coordinate, IViewState, geoJsonForMap, getMapStyle } from '@/utils/utils';
+import {
+  Coordinate,
+  IViewState,
+  geoJsonForMap,
+  getMapStyle,
+} from '@/utils/utils';
 import RunMarker from './RunMarker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.css';
@@ -54,7 +59,11 @@ const RunMap = ({
   const mapRef = useRef<MapRef>();
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
   const keepWhenLightsOff = ['runs2'];
-  const mapStyle = getMapStyle(MAP_TILE_VENDOR, MAP_TILE_STYLE, MAP_TILE_ACCESS_TOKEN);
+  const mapStyle = getMapStyle(
+    MAP_TILE_VENDOR,
+    MAP_TILE_STYLE,
+    MAP_TILE_ACCESS_TOKEN
+  );
 
   function switchLayerVisibility(map: MapInstance, lights: boolean) {
     const styleJson = map.getStyle();
@@ -76,13 +85,19 @@ const RunMap = ({
         // and the first visually complete rendering of the base style has occurred.
         // it's odd. when use style other than mapbox, the style.load event is not triggered.Add commentMore actions
         // so I use data event instead of style.load event and make sure we handle it only once.
-        map.on('data', event => {
+        map.on('data', (event) => {
           if (event.dataType !== 'style' || mapRef.current) {
             return;
           }
           if (!ROAD_LABEL_DISPLAY) {
             const layers = map.getStyle().layers;
-            const labelLayerNames = layers.filter((layer: any) => (layer.type === 'symbol' || layer.type === 'composite') && layer.layout.text_field !== null).map((layer: any) => layer.id);
+            const labelLayerNames = layers
+              .filter(
+                (layer: any) =>
+                  (layer.type === 'symbol' || layer.type === 'composite') &&
+                  layer.layout.text_field !== null
+              )
+              .map((layer: any) => layer.id);
             labelLayerNames.forEach((layerId) => {
               map.removeLayer(layerId);
             });

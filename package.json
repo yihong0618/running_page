@@ -40,8 +40,9 @@
     "dev": "vite dev",
     "serve": "vite serve",
     "lint": "eslint --ext .ts,.tsx src --fix",
-    "check": "prettier --write src/main.tsx src/**/*.{css,json,ts,tsx} *.{md,yaml,json,ts,js}",
-    "ci": "pnpm run check && pnpm run lint && pnpm run build"
+    "check": "prettier --check src/main.tsx src/**/*.{css,json,ts,tsx} *.{md,yaml,json,ts,js}",
+    "format": "prettier --write src/main.tsx src/**/*.{css,json,ts,tsx} *.{md,yaml,json,ts,js}",
+    "ci": "pnpm run format && pnpm run lint && pnpm run build"
   },
   "engineStrict": true,
   "browserslist": "defaults, not ie 11",
