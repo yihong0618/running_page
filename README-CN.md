@@ -976,7 +976,8 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 
 <br>
 
-1. 完成 garmin 和 strava 的步骤，同时，还需要在 GitHub Actions secret 那新增 Strava 配置：`secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`
+1. 完成 garmin 和 strava 的步骤，同时，还需要在 GitHub Actions secret 那新增 Strava 配置：`secrets.STRAVA_EMAIL`、`secrets.STRAVA_PASSWORD`, `secrets.STRAVA_JWT`, 注意: `STRAVA_JWT` 优先级比 `STRAVA_EMAIL` 和 `STRAVA_PASSWORD` 高， `STRAVA_JWT` 为Strava 网页端登录后 Cookie 的`strava_remember_token`字段
+
 2. 在项目根目录下执行：
 
    ```bash

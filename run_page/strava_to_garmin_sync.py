@@ -114,6 +114,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("strava_email", nargs="?", help="email of strava")
     parser.add_argument("strava_password", nargs="?", help="password of strava")
+    parser.add_argument("strava_jwt", nargs="?", help="jwt token of strava")
     parser.add_argument(
         "--is-cn",
         dest="is_cn",
@@ -132,11 +133,18 @@ if __name__ == "__main__":
         options.strava_client_secret,
         options.strava_refresh_token,
     )
-    strava_web_client = WebClient(
-        access_token=strava_client.access_token,
-        email=options.strava_email,
-        password=options.strava_password,
-    )
+    if options.strava_jwt:
+        strava_web_client = WebClient(
+            access_token=strava_client.access_token,
+            jwt=options.strava_jwt,
+        )
+    elif options.strava_email and options.strava_password:
+        strava_web_client = WebClient(
+            access_token=strava_client.access_token,
+            email=options.strava_email,
+            password=options.strava_password,
+        )
+
     garmin_auth_domain = "CN" if options.is_cn else ""
 
     try:
