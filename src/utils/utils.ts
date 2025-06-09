@@ -376,15 +376,10 @@ const getBoundsForGeoData = (
     [Math.min(...pointsLong), Math.min(...pointsLat)],
     [Math.max(...pointsLong), Math.max(...pointsLat)],
   ];
-  const viewState = new WebMercatorViewport({
+  return new WebMercatorViewport({
     width: 800,
     height: 600,
   }).fitBounds(cornersLongLat, { padding: 200 });
-  let { longitude, latitude, zoom } = viewState;
-  if (features.length > 1) {
-    zoom = 11.5;
-  }
-  return { longitude, latitude, zoom };
 };
 
 const filterYearRuns = (run: Activity, year: string) => {
