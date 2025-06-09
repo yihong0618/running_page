@@ -24,7 +24,13 @@ import {
   MAP_TILE_VENDOR,
   MAP_TILE_ACCESS_TOKEN,
 } from '@/utils/const';
-import { Coordinate, IViewState, geoJsonForMap, getMapStyle } from '@/utils/utils';
+import {
+  Coordinate,
+  IViewState,
+  geoJsonForMap,
+  getMapStyle,
+  isTouchDevice,
+} from '@/utils/utils';
 import RunMarker from './RunMarker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.css';
@@ -164,6 +170,7 @@ const RunMap = ({
       style={style}
       mapStyle={mapStyle}
       ref={mapRefCallback}
+      cooperativeGestures={isTouchDevice()}
       mapboxAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
