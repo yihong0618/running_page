@@ -26,11 +26,6 @@ from generator import Generator
 from utils import adjust_time
 
 TOKEN_REFRESH_URL = "https://sport.health.heytapmobi.com/open/v1/oauth/token"
-OPPO_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-}
 
 # Query brief version of sports records
 # The query range cannot exceed one month!
@@ -75,8 +70,6 @@ BRIEF_SPORT_DATA_API = "https://sport.health.heytapmobi.com/open/v1/data/sport/r
 # Query detailed sports records
 # The query range cannot exceed one day!
 DETAILED_SPORT_DATA_API = "https://sport.health.heytapmobi.com/open/v2/data/sport/record?startTimeMillis={start_time}&endTimeMillis={end_time}"
-
-TIMESTAMP_THRESHOLD_IN_MILLISECOND = 5000
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
