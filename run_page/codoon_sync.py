@@ -475,7 +475,7 @@ class Codoon:
 
     @staticmethod
     def _gt(dt_str):
-        dt, _, us = dt_str.partition(".")
+        dt, _, _ = dt_str.partition(".")
         return datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S")
 
     def parse_raw_data_to_namedtuple(
