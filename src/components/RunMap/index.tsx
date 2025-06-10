@@ -29,6 +29,7 @@ import {
   IViewState,
   geoJsonForMap,
   getMapStyle,
+  isTouchDevice,
 } from '@/utils/utils';
 import RunMarker from './RunMarker';
 import RunMapButtons from './RunMapButtons';
@@ -180,6 +181,7 @@ const RunMap = ({
       style={style}
       mapStyle={mapStyle}
       ref={mapRefCallback}
+      cooperativeGestures={isTouchDevice()}
       mapboxAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
