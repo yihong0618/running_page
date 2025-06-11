@@ -13,14 +13,14 @@ from utils import make_activities_file
 COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
     "DOWNLOAD_URL": "https://teamcnapi.coros.com/activity/detail/download",
-    "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query?&modeList=",
+    "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query",
 }
 
 TIME_OUT = httpx.Timeout(240.0, connect=360.0)
 
 
 class Coros:
-    def __init__(self, account, password):
+    def __init__(self, account, password, is_only_running=False):
         self.account = account
         self.password = password
         self.headers = None
@@ -57,18 +57,20 @@ class Coros:
                 "accesstoken": access_token,
                 "cookie": f"CPL-coros-region=2; CPL-coros-token={access_token}",
             }
+            self.is_only_running = is_only_running
             self.req = httpx.AsyncClient(timeout=TIME_OUT, headers=self.headers)
         await client.aclose()
 
     async def init(self):
         await self.login()
 
-    async def fetch_activity_ids(self):
+    async def fetch_activity_ids(self, only_run):
         page_number = 1
         all_activities_ids = []
 
+        mode_list_str = "100,101,102,103" if only_run else ""
         while True:
-            url = f"{COROS_URL_DICT.get('ACTIVITY_LIST')}&pageNumber={page_number}&size=20"
+            url = f"{COROS_URL_DICT.get('ACTIVITY_LIST')}?&modeList={mode_list_str}&pageNumber={page_number}&size=20"
             response = await self.req.get(url)
             data = response.json()
             activities = data.get("data", {}).get("dataList", None)
@@ -120,13 +122,13 @@ def get_downloaded_ids(folder):
     return [i.split(".")[0] for i in os.listdir(folder) if not i.startswith(".")]
 
 
-async def download_and_generate(account, password):
+async def download_and_generate(account, password, only_run):
     folder = FIT_FOLDER
     downloaded_ids = get_downloaded_ids(folder)
     coros = Coros(account, password)
     await coros.init()
 
-    activity_ids = await coros.fetch_activity_ids()
+    activity_ids = await coros.fetch_activity_ids(only_run=only_run)
     print("activity_ids: ", len(activity_ids))
     print("downloaded_ids: ", len(downloaded_ids))
     to_generate_coros_ids = list(set(activity_ids) - set(downloaded_ids))
@@ -157,10 +159,18 @@ if __name__ == "__main__":
     parser.add_argument("account", nargs="?", help="input coros account")
 
     parser.add_argument("password", nargs="?", help="input coros password")
+
+    parser.add_argument(
+        "--only-run",
+        dest="only_run",
+        action="store_true",
+        help="if is only for running",
+    )
     options = parser.parse_args()
 
     account = options.account
     password = options.password
+    is_only_running = options.only_run
     encrypted_pwd = hashlib.md5(password.encode()).hexdigest()
 
-    asyncio.run(download_and_generate(account, encrypted_pwd))
+    asyncio.run(download_and_generate(account, encrypted_pwd, is_only_running))
