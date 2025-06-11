@@ -13,7 +13,7 @@ from utils import make_activities_file
 COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
     "DOWNLOAD_URL": "https://teamcnapi.coros.com/activity/detail/download",
-    "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query?&modeList=",
+    "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query",
 }
 
 TIME_OUT = httpx.Timeout(240.0, connect=360.0)
@@ -68,7 +68,7 @@ class Coros:
         all_activities_ids = []
 
         while True:
-            url = f"{COROS_URL_DICT.get('ACTIVITY_LIST')}&pageNumber={page_number}&size=20"
+            url = f"{COROS_URL_DICT.get('ACTIVITY_LIST')}?&modeList=100,101,102,103&pageNumber={page_number}&size=20"
             response = await self.req.get(url)
             data = response.json()
             activities = data.get("data", {}).get("dataList", None)
