@@ -54,6 +54,7 @@
     "url": "https://github.com/yihong0618/running_page"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.8",
     "@types/geojson": "^7946.0.14",
     "@types/mapbox__polyline": "^1.0.2",
     "@types/node": "^20.5.7",
@@ -69,7 +70,7 @@
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.13",
-    "tailwindcss": "^3.4.3",
+    "tailwindcss": "^4.1.8",
     "typescript": "^5.2.2"
   }
 }
