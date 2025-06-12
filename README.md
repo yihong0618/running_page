@@ -816,6 +816,10 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 <details>
 <summary>Get your Coros data</summary>
 
+<br>
+
+- If you only want to sync `type running` add args --only-run
+
 #### Enter the following command in the terminal
 
 ```bash

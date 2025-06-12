@@ -1009,6 +1009,10 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 <details>
 <summary>获取您的 Coros 高驰 数据</summary>
 
+<br>
+
+- 如果你只想同步跑步数据增加命令 --only-run
+
 #### 在终端中输入以下命令
 
 ```bash
