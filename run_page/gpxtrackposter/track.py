@@ -350,6 +350,12 @@ class Track:
             else datetime.timedelta(seconds=float(gpx_extensions.get("elapsed_time")))
         )
 
+        self.elevation_gain = (
+            self.elevation_gain
+            if gpx_extensions.get("elevation_gain") is None
+            else float(gpx_extensions.get("elevation_gain"))
+        )
+
     def _load_fit_data(self, fit: dict):
         _polylines = []
         self.polyline_container = []

@@ -259,6 +259,7 @@ def add_summary_info(file_data, summary_infos, fields=None):
                 "end_time",
                 "moving_time",
                 "elapsed_time",
+                "elevation_gain",
             ]
         for field in fields:
             create_element(
@@ -350,6 +351,7 @@ def get_garmin_summary_infos(activity_summary, activity_id):
         garmin_summary_infos["end_time"] = end_time.isoformat()
         garmin_summary_infos["moving_time"] = summary_dto.get("movingDuration")
         garmin_summary_infos["elapsed_time"] = summary_dto.get("elapsedDuration")
+        garmin_summary_infos["elevation_gain"] = summary_dto.get("elevationGain")
     except Exception as e:
         print(f"Failed to get activity summary {activity_id}: {str(e)}")
     return garmin_summary_infos
