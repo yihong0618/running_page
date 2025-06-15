@@ -25,7 +25,6 @@ except ImportError:
     tf = TimezoneFinder()
 
 
-from .value_range import ValueRange
 from .xy import XY
 
 
