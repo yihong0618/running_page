@@ -14,7 +14,6 @@
   <img src="https://user-images.githubusercontent.com/15976103/98808834-c02f1d80-2457-11eb-9a7c-70e91faa5e30.gif" alt="demo" width="800">
 </p>
 
-
 ## How it works
 
 ![image](https://github.com/yihong0618/running_page/assets/15976103/85d8d59d-2639-431e-8406-9d818afbd4ab)
@@ -28,6 +27,6 @@
 5. Supports most sports apps such as nike strava...
 6. Support for iOS shortcuts to automate data synchronization
 
-
 ### Acknowledgement
-Running page is based on @[yihong0618](https://github.com/yihong0618)'s [running_page](https://github.com/yihong0618/running_page). 
+
+Running page is based on @[yihong0618](https://github.com/yihong0618)'s [running_page](https://github.com/yihong0618/running_page).
