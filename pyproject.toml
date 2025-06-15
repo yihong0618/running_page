@@ -36,7 +36,6 @@ dependencies = [
   "duckdb",
   "openai",
   "svglib>=1.5.1",
-  "pycairo>=1.28.0",
   "cairosvg>=2.7.1",
 ]
 requires-python = ">=3.12"
