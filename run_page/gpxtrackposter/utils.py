@@ -78,16 +78,6 @@ def project(
     return lines
 
 
-def compute_bounds_xy(lines: List[List[XY]]) -> Tuple[ValueRange, ValueRange]:
-    range_x = ValueRange()
-    range_y = ValueRange()
-    for line in lines:
-        for xy in line:
-            range_x.extend(xy.x)
-            range_y.extend(xy.y)
-    return range_x, range_y
-
-
 def compute_grid(
     count: int, dimensions: XY
 ) -> Tuple[Optional[float], Optional[Tuple[int, int]]]:
