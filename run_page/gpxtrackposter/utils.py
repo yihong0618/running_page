@@ -25,7 +25,6 @@ except ImportError:
     tf = TimezoneFinder()
 
 
-from .value_range import ValueRange
 from .xy import XY
 
 
@@ -76,16 +75,6 @@ def project(
         if len(line) > 0:
             lines.append(line)
     return lines
-
-
-def compute_bounds_xy(lines: List[List[XY]]) -> Tuple[ValueRange, ValueRange]:
-    range_x = ValueRange()
-    range_y = ValueRange()
-    for line in lines:
-        for xy in line:
-            range_x.extend(xy.x)
-            range_y.extend(xy.y)
-    return range_x, range_y
 
 
 def compute_grid(

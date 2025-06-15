@@ -351,7 +351,9 @@ const ActivityList: React.FC = () => {
                   maxDistance: summary.maxDistance,
                   maxSpeed: summary.maxSpeed,
                   location: summary.location,
-                  totalElevationGain: SHOW_ELEVATION_GAIN ? summary.totalElevationGain : undefined,
+                  totalElevationGain: SHOW_ELEVATION_GAIN
+                    ? summary.totalElevationGain
+                    : undefined,
                 }}
                 dailyDistances={summary.dailyDistances}
                 interval={interval}

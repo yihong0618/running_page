@@ -92,9 +92,6 @@ class TrackLoader:
         log.info(f"Conventionally loaded tracks: {len(loaded_tracks)}")
 
         tracks = self._filter_tracks(tracks)
-
-        # merge tracks that took place within one hour
-        tracks = self._merge_tracks(tracks)
         # filter out tracks with length < min_length
         return [t for t in tracks if t.length >= self.min_length]
 
@@ -116,8 +113,6 @@ class TrackLoader:
         print(f"All tracks: {len(tracks)}")
         tracks = self._filter_tracks(tracks)
         print(f"After filter tracks: {len(tracks)}")
-        # merge tracks that took place within one hour
-        tracks = self._merge_tracks(tracks)
         return [t for t in tracks if t.length >= self.min_length]
 
     def _filter_tracks(self, tracks):
@@ -136,25 +131,6 @@ class TrackLoader:
                 t.special = file_name in self.special_file_names
                 filtered_tracks.append(t)
         return filtered_tracks
-
-    @staticmethod
-    def _merge_tracks(tracks):
-        log.info("Merging tracks...")
-        tracks = sorted(tracks, key=lambda t1: t1.start_time_local)
-        merged_tracks = []
-        last_end_time = None
-        for t in tracks:
-            if last_end_time is None:
-                merged_tracks.append(t)
-            else:
-                dt = (t.start_time_local - last_end_time).total_seconds()
-                if 0 < dt < 3600 and merged_tracks[-1].type == t.type:
-                    merged_tracks[-1].append(t)
-                else:
-                    merged_tracks.append(t)
-            last_end_time = t.end_time_local
-        log.info(f"Merged {len(tracks) - len(merged_tracks)} track(s)")
-        return merged_tracks
 
     @staticmethod
     def _load_data_tracks(file_names, load_func=load_gpx_file, activity_title_dict={}):

@@ -10,7 +10,6 @@ import Map, {
 import { MapInstance } from 'react-map-gl/src/types/lib';
 import useActivities from '@/hooks/useActivities';
 import {
-  MAP_LAYER_LIST,
   IS_CHINESE,
   ROAD_LABEL_DISPLAY,
   MAPBOX_TOKEN,
@@ -21,8 +20,17 @@ import {
   MAP_HEIGHT,
   PRIVACY_MODE,
   LIGHTS_ON,
+  MAP_TILE_STYLE,
+  MAP_TILE_VENDOR,
+  MAP_TILE_ACCESS_TOKEN,
 } from '@/utils/const';
-import { Coordinate, IViewState, geoJsonForMap } from '@/utils/utils';
+import {
+  Coordinate,
+  IViewState,
+  geoJsonForMap,
+  getMapStyle,
+  isTouchDevice,
+} from '@/utils/utils';
 import RunMarker from './RunMarker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.css';
@@ -52,6 +60,12 @@ const RunMap = ({
   const mapRef = useRef<MapRef>();
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
   const keepWhenLightsOff = ['runs2'];
+  const mapStyle = getMapStyle(
+    MAP_TILE_VENDOR,
+    MAP_TILE_STYLE,
+    MAP_TILE_ACCESS_TOKEN
+  );
+
   function switchLayerVisibility(map: MapInstance, lights: boolean) {
     const styleJson = map.getStyle();
     styleJson.layers.forEach((it: { id: string }) => {
@@ -70,9 +84,22 @@ const RunMap = ({
         }
         // all style resources have been downloaded
         // and the first visually complete rendering of the base style has occurred.
-        map.on('style.load', () => {
+        // it's odd. when use style other than mapbox, the style.load event is not triggered.Add commentMore actions
+        // so I use data event instead of style.load event and make sure we handle it only once.
+        map.on('data', (event) => {
+          if (event.dataType !== 'style' || mapRef.current) {
+            return;
+          }
           if (!ROAD_LABEL_DISPLAY) {
-            MAP_LAYER_LIST.forEach((layerId) => {
+            const layers = map.getStyle().layers;
+            const labelLayerNames = layers
+              .filter(
+                (layer: any) =>
+                  (layer.type === 'symbol' || layer.type === 'composite') &&
+                  layer.layout.text_field !== null
+              )
+              .map((layer: any) => layer.id);
+            labelLayerNames.forEach((layerId) => {
               map.removeLayer(layerId);
             });
           }
@@ -152,8 +179,9 @@ const RunMap = ({
       {...viewState}
       onMove={onMove}
       style={style}
-      mapStyle="mapbox://styles/mapbox/dark-v10"
+      mapStyle={mapStyle}
       ref={mapRefCallback}
+      cooperativeGestures={isTouchDevice()}
       mapboxAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
