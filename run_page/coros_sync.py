@@ -14,7 +14,6 @@ COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
     "DOWNLOAD_URL": "https://teamcnapi.coros.com/activity/detail/download",
     "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query",
-    "ACTIVITY_URL": "",
 }
 
 COROS_FOLDER_DICT = {
