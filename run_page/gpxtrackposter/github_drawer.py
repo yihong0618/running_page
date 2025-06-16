@@ -1,6 +1,7 @@
 import calendar
 import datetime
 import locale
+import argparse
 
 import svgwrite
 
@@ -16,6 +17,19 @@ class GithubDrawer(TracksDrawer):
 
     def __init__(self, the_poster: Poster):
         super().__init__(the_poster)
+        self.empty_color = "#444444"
+
+    def create_args(self, args_parser: argparse.ArgumentParser):
+        """Add arguments specific to github drawer"""
+        group = args_parser.add_argument_group("Github Type Options")
+        group.add_argument(
+            "--empty-data-color",
+            dest="github_empty_data_color",
+            metavar="COLOR",
+            type=str,
+            default=self.empty_color,
+            help="Color for empty dates in github style poster (default: #444444)",
+        )
 
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
         if self.poster.tracks is None:
@@ -136,7 +150,7 @@ class GithubDrawer(TracksDrawer):
                     if int(github_rect_day.year) > year:
                         break
                     rect_y += 3.5
-                    color = "#444444"
+                    color = self.empty_color
                     date_title = str(github_rect_day)
                     if date_title in self.poster.tracks_by_date:
                         tracks = self.poster.tracks_by_date[date_title]
