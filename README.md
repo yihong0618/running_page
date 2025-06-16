@@ -846,14 +846,76 @@ python run_page/coros_sync.py 'your coros account' 'your coros password'
 - Display of results:[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
 ```bash
+
+python run_page/gen_svg.py -h
+
+usage: gen_svg.py [-h] [--gpx-dir DIR] [--output FILE] [--language LANGUAGE] [--year YEAR] [--title TITLE] [--athlete NAME] [--special FILE] [--type TYPE]
+                  [--background-color COLOR] [--track-color COLOR] [--track-color2 COLOR] [--text-color COLOR] [--special-color COLOR] [--special-color2 COLOR] [--units UNITS]
+                  [--verbose] [--logfile FILE] [--special-distance DISTANCE] [--special-distance2 DISTANCE] [--min-distance DISTANCE] [--use-localtime] [--from-db]
+                  [--github-style GITHUB_STYLE] [--circular-rings] [--circular-ring-color COLOR] [--empty-data-color COLOR] [--birth YYYY-MM]
+
+options:
+  -h, --help            show this help message and exit
+  --gpx-dir DIR         Directory containing GPX files (default: current directory).
+  --output FILE         Name of generated SVG image file (default: "poster.svg").
+  --language LANGUAGE   Language (default: english).
+  --year YEAR           Filter tracks by year; "NUM", "NUM-NUM", "all" (default: all years)
+  --title TITLE         Title to display.
+  --athlete NAME        Athlete name to display (default: "John Doe").
+  --special FILE        Mark track file from the GPX directory as special; use multiple times to mark multiple tracks.
+  --type TYPE           Type of poster to create (default: "grid", available: "grid", "circular", "github", "monthoflife").
+  --background-color COLOR
+                        Background color of poster (default: "#222222").
+  --track-color COLOR   Color of tracks (default: "#4DD2FF").
+  --track-color2 COLOR  Secondary color of tracks (default: none).
+  --text-color COLOR    Color of text (default: "#FFFFFF").
+  --special-color COLOR
+                        Special track color (default: "#FFFF00").
+  --special-color2 COLOR
+                        Secondary color of special tracks (default: none).
+  --units UNITS         Distance units; "metric", "imperial" (default: "metric").
+  --verbose             Verbose logging.
+  --logfile FILE
+  --special-distance DISTANCE
+                        Special Distance1 by km and color with the special_color
+  --special-distance2 DISTANCE
+                        Special Distance2 by km and corlor with the special_color2
+  --min-distance DISTANCE
+                        min distance by km for track filter
+  --use-localtime       Use utc time or local time
+  --from-db             activities db file
+  --github-style GITHUB_STYLE
+                        github svg style; "align-firstday", "align-monday" (default: "align-firstday").
+  --birth YYYY-MM       Birth date in format YYYY-MM
+
+Circular Type Options:
+  --circular-rings      Draw distance rings.
+  --circular-ring-color COLOR
+                        Color of distance rings.
+
+Github Type Options:
+  --empty-data-color COLOR
+                        Color for empty dates in github style poster (default: #444444)
+
+```
+
+Generate github style svg show
+
+```bash
 python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
+
+If you want to change the display color of empty data(only github style), please use `--empty-data-color`:
+
+```bash
+python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5 ----empty-data-color grey
+```
+
+Generate grid style svg show
 
 ```bash
 python run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
 ```
-
-Generate year circular svg show
 
 ```bash
 python run_page/gen_svg.py --from-db --type circular --use-localtime
