@@ -7,19 +7,13 @@ import time
 import aiofiles
 import httpx
 
-from config import JSON_FILE, SQL_FILE, FIT_FOLDER, GPX_FOLDER, TCX_FOLDER
+from config import JSON_FILE, SQL_FILE, FOLDER_DICT
 from utils import make_activities_file
 
 COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
     "DOWNLOAD_URL": "https://teamcnapi.coros.com/activity/detail/download",
     "ACTIVITY_LIST": "https://teamcnapi.coros.com/activity/query",
-}
-
-COROS_FOLDER_DICT = {
-    "gpx": GPX_FOLDER,
-    "fit": FIT_FOLDER,
-    "tcx": TCX_FOLDER,
 }
 
 COROS_TYPE_DICT = {
@@ -106,7 +100,7 @@ class Coros:
                 f"Sport type {sport_type} is not supported in {file_type} file. The activity will be ignored"
             )
             return
-        download_folder = COROS_FOLDER_DICT[file_type]
+        download_folder = FOLDER_DICT[file_type]
         download_url = (
             f"{COROS_URL_DICT.get('DOWNLOAD_URL')}?labelId={label_id}&sportType={sport_type}"
             f"&fileType={COROS_TYPE_DICT[file_type]}"
@@ -145,7 +139,7 @@ def get_downloaded_ids(folder):
 
 
 async def download_and_generate(account, password, only_run, file_type):
-    folder = COROS_FOLDER_DICT[file_type]
+    folder = FOLDER_DICT[file_type]
     downloaded_ids = get_downloaded_ids(folder)
     coros = Coros(account, password)
     await coros.init()
