@@ -109,7 +109,7 @@ class Coros:
         download_folder = COROS_FOLDER_DICT[file_type]
         download_url = (
             f"{COROS_URL_DICT.get('DOWNLOAD_URL')}?labelId={label_id}&sportType={sport_type}"
-            "&fileType={COROS_TYPE_DICT[file_type]}"
+            f"&fileType={COROS_TYPE_DICT[file_type]}"
         )
         file_url = None
         try:
