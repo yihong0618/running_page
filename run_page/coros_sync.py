@@ -106,6 +106,9 @@ class Coros:
             f"&fileType={COROS_TYPE_DICT[file_type]}"
         )
         file_url = None
+        fname = ""
+        file_path = ""
+        success = False
         try:
             response = await self.req.post(download_url)
             resp_json = response.json()
@@ -116,12 +119,12 @@ class Coros:
 
             fname = os.path.basename(file_url)
             file_path = os.path.join(download_folder, fname)
-
             async with self.req.stream("GET", file_url) as response:
                 response.raise_for_status()
                 async with aiofiles.open(file_path, "wb") as f:
                     async for chunk in response.aiter_bytes():
                         await f.write(chunk)
+                        success = True
         except httpx.HTTPStatusError as exc:
             print(
                 f"Failed to download {file_url} with status code {response.status_code}: {exc}"
@@ -130,6 +133,10 @@ class Coros:
         except Exception as exc:
             print(f"Error occurred while downloading {file_url}: {exc}")
             return None, None
+        finally:
+            if not success and file_path and os.path.exists(file_path):
+                print(f"Delete the broken fit file: {fname}")
+                os.remove(file_path)
 
         return label_id, fname
 
