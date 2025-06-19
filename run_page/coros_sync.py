@@ -135,7 +135,7 @@ class Coros:
             return None, None
         finally:
             if not success and file_path and os.path.exists(file_path):
-                print(f"Delete the broken fit file: {fname}")
+                print(f"Delete the corrupted fit file: {fname}")
                 os.remove(file_path)
 
         return label_id, fname
