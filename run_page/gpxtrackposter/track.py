@@ -102,7 +102,10 @@ class Track:
             decoder = Decoder(stream)
             messages, errors = decoder.read(convert_datetimes_to_dates=False)
             if errors:
-                print(f"FIT file read fail: {errors}")
+                print(
+                    f"FIT file read fail: {errors}. The file appears to be corrupted and will be removed."
+                )
+                os.remove(file_name)
                 return
             if (
                 messages.get("session_mesgs") is None
