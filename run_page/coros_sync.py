@@ -99,13 +99,15 @@ class Coros:
             print(
                 f"Sport type {sport_type} is not supported in {file_type} file. The activity will be ignored"
             )
-            return
+            return None, None
         download_folder = FOLDER_DICT[file_type]
         download_url = (
             f"{COROS_URL_DICT.get('DOWNLOAD_URL')}?labelId={label_id}&sportType={sport_type}"
             f"&fileType={COROS_TYPE_DICT[file_type]}"
         )
         file_url = None
+        fname = ""
+        file_path = ""
         try:
             response = await self.req.post(download_url)
             resp_json = response.json()
@@ -122,16 +124,18 @@ class Coros:
                 async with aiofiles.open(file_path, "wb") as f:
                     async for chunk in response.aiter_bytes():
                         await f.write(chunk)
+            return label_id, fname
         except httpx.HTTPStatusError as exc:
             print(
                 f"Failed to download {file_url} with status code {response.status_code}: {exc}"
             )
-            return None, None
         except Exception as exc:
             print(f"Error occurred while downloading {file_url}: {exc}")
-            return None, None
+        if file_path and os.path.exists(file_path):
+            print(f"Delete the corrupted fit file: {fname}")
+            os.remove(file_path)
 
-        return label_id, fname
+        return None, None
 
 
 def get_downloaded_ids(folder):
