@@ -6,7 +6,7 @@
   "packageManager": "pnpm@8.9.0+sha256.8f5264ad1d100da11a6add6bb8a94c6f1e913f9e9261b2a551fabefad2ec0fec",
   "dependencies": {
     "@mapbox/mapbox-gl-language": "^1.0.1",
-    "@mapbox/polyline": "^1.2.0",
+    "@mapbox/polyline": "^1.2.1",
     "@math.gl/web-mercator": "^4.1.0",
     "@surbowl/world-geo-json-zh": "^2.1.5",
     "@svgr/plugin-svgo": "^8.1.0",
@@ -56,7 +56,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.10",
     "@types/geojson": "^7946.0.16",
-    "@types/mapbox__polyline": "^1.0.2",
+    "@types/mapbox__polyline": "^1.0.5",
     "@types/node": "^24.0.3",
     "@types/prop-types": "^15.7.15",
     "@types/react": "^18.2.21",
