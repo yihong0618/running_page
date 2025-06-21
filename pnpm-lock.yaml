@@ -119,8 +119,8 @@ devDependencies:
     specifier: ^0.6.13
     version: 0.6.13(prettier@3.5.3)
   tailwindcss:
-    specifier: ^4.1.8
-    version: 4.1.8
+    specifier: ^4.1.10
+    version: 4.1.10
   typescript:
     specifier: ^5.8.3
     version: 5.8.3
@@ -4255,10 +4255,6 @@ packages:
 
   /tailwindcss@4.1.10:
     resolution: {integrity: sha512-P3nr6WkvKV/ONsTzj6Gb57sWPMX29EPNPopo7+FcpkQaNsrNpZ1pv8QmrYI2RqEKD7mlGqLnGovlcYnBK0IqUA==}
-    dev: true
-
-  /tailwindcss@4.1.8:
-    resolution: {integrity: sha512-kjeW8gjdxasbmFKpVGrGd5T4i40mV5J2Rasw48QARfYeQ8YS9x02ON9SFWax3Qf616rt4Cp3nVNIj6Hd1mP3og==}
     dev: true
 
   /tapable@2.2.2:
