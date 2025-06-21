@@ -11,9 +11,12 @@ dependencies:
   '@mapbox/polyline':
     specifier: ^1.2.0
     version: 1.2.0
+  '@math.gl/web-mercator':
+    specifier: ^4.1.0
+    version: 4.1.0
   '@surbowl/world-geo-json-zh':
-    specifier: ^2.1.3
-    version: 2.1.3
+    specifier: ^2.1.5
+    version: 2.1.5
   '@svgr/plugin-svgo':
     specifier: ^8.1.0
     version: 8.1.0(@svgr/core@8.1.0)
@@ -56,9 +59,6 @@ dependencies:
   recharts:
     specifier: ^2.15.2
     version: 2.15.2(react-dom@18.2.0)(react@18.2.0)
-  viewport-mercator-project:
-    specifier: ^7.0.4
-    version: 7.0.4
   vite:
     specifier: ^4.4.9
     version: 4.4.9(@types/node@20.5.7)
@@ -112,6 +112,9 @@ devDependencies:
   postcss:
     specifier: ^8.4.38
     version: 8.4.38
+  prettier:
+    specifier: ^3.2.5
+    version: 3.2.5
   prettier-plugin-tailwindcss:
     specifier: ^0.5.13
     version: 0.5.13(prettier@3.2.5)
@@ -1422,14 +1425,29 @@ packages:
       sort-object: 3.0.3
     dev: false
 
-  /@math.gl/web-mercator@3.6.3:
+  /@math.gl/core@4.1.0:
     resolution:
       {
-        integrity: sha512-UVrkSOs02YLehKaehrxhAejYMurehIHPfFQvPFZmdJHglHOU4V2cCUApTVEwOksvCp161ypEqVp+9H6mGhTTcw==,
+        integrity: sha512-FrdHBCVG3QdrworwrUSzXIaK+/9OCRLscxI2OUy6sLOHyHgBMyfnEGs99/m3KNvs+95BsnQLWklVfpKfQzfwKA==,
       }
     dependencies:
-      '@babel/runtime': 7.22.11
-      gl-matrix: 3.4.3
+      '@math.gl/types': 4.1.0
+    dev: false
+
+  /@math.gl/types@4.1.0:
+    resolution:
+      {
+        integrity: sha512-clYZdHcmRvMzVK5fjeDkQlHUzXQSNdZ7s4xOqC3nJPgz4C/TZkUecTo9YS4PruZqtDda/ag4erndP0MIn40dGA==,
+      }
+    dev: false
+
+  /@math.gl/web-mercator@4.1.0:
+    resolution:
+      {
+        integrity: sha512-HZo3vO5GCMkXJThxRJ5/QYUYRr3XumfT8CzNNCwoJfinxy5NtKUd7dusNTXn7yJ40UoB8FMIwkVwNlqaiRZZAw==,
+      }
+    dependencies:
+      '@math.gl/core': 4.1.0
     dev: false
 
   /@nodelib/fs.scandir@2.1.5:
@@ -1487,10 +1505,10 @@ packages:
       picomatch: 2.3.1
     dev: false
 
-  /@surbowl/world-geo-json-zh@2.1.3:
+  /@surbowl/world-geo-json-zh@2.1.5:
     resolution:
       {
-        integrity: sha512-6m/eVcSsWvFXYkaEQLHCxJqFSkTMVaDgfTg9weQr2lozyrxxH+SsRTq24DFfCqFX7L9zKtDQcP6+5VKemY1Rcg==,
+        integrity: sha512-w9Cf4uE+1RkD9gaFzHrlxL4zlTXnFaGJ9fZYsee8jr0lp2++yIBc1PMRJEvrALKFxk2LARNDssoYQdso2aEFIA==,
       }
     dev: false
 
@@ -6511,15 +6529,6 @@ packages:
       d3-shape: 3.2.0
       d3-time: 3.1.0
       d3-timer: 3.0.1
-    dev: false
-
-  /viewport-mercator-project@7.0.4:
-    resolution:
-      {
-        integrity: sha512-0jzpL6pIMocCKWg1C3mqi/N4UPgZC3FzwghEm1H+XsUo8hNZAyJc3QR7YqC816ibOR8aWT5pCsV+gCu8/BMJgg==,
-      }
-    dependencies:
-      '@math.gl/web-mercator': 3.6.3
     dev: false
 
   /vite-plugin-svgr@3.2.0(vite@4.4.9):
