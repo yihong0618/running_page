@@ -83,8 +83,8 @@ devDependencies:
     specifier: ^20.5.7
     version: 20.5.7
   '@types/prop-types':
-    specifier: ^15.7.11
-    version: 15.7.11
+    specifier: ^15.7.15
+    version: 15.7.15
   '@types/react':
     specifier: ^18.2.21
     version: 18.2.21
@@ -1588,8 +1588,8 @@ packages:
     resolution: {integrity: sha512-j3pOPiEcWZ34R6a6mN07mUkM4o4Lwf6hPNt8eilOeZhTFbxFXmKhvXl9Y28jotFPaI1bpPDJsbCprUoNke6OrA==}
     dev: false
 
-  /@types/prop-types@15.7.11:
-    resolution: {integrity: sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==}
+  /@types/prop-types@15.7.15:
+    resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
     dev: true
 
   /@types/react-dom@18.2.7:
@@ -1601,7 +1601,7 @@ packages:
   /@types/react@18.2.21:
     resolution: {integrity: sha512-neFKG/sBAwGxHgXiIxnbm3/AAVQ/cMRS93hvBpg8xYRbeQSPVABp9U2bRnPf0iI4+Ucdv3plSxKK+3CW2ENJxA==}
     dependencies:
-      '@types/prop-types': 15.7.11
+      '@types/prop-types': 15.7.15
       '@types/scheduler': 0.16.3
       csstype: 3.1.2
     dev: true
