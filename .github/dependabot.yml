@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    open-pull-requests-limit: 1
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: github-actions
+
+  
+  - package-ecosystem: npm
+    directory: /
+    open-pull-requests-limit: 1
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: npm
+
+  - package-ecosystem: pip
+    directory: /
+    open-pull-requests-limit: 1
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: pip
+
+  - package-ecosystem: uv
+    directory: /
+    open-pull-requests-limit: 1
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: uv

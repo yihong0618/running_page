@@ -1,0 +1,89 @@
+.activityList {
+  padding: 20px;
+  background-color: rgb(26, 26, 26);
+  color: rgb(224, 237, 94);
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filterContainer select {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #444;
+  background-color: rgb(36, 36, 36);
+  color: rgb(204, 204, 204);
+  cursor: pointer;
+}
+
+.summaryContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.activityCard {
+  background-color: rgb(36, 36, 36);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 16px;
+  width: 280px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+
+.activityCard:hover {
+  transform: translateY(-5px);
+  background-color: lighten(rgb(26, 26, 26), 3%);
+}
+
+.activityName {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: rgb(224, 237, 94);
+}
+
+.activityDetails p {
+  margin: 8px 0;
+  color: rgb(204, 204, 204);
+}
+
+.activityDetails strong {
+  color: rgb(224, 237, 94);
+}
+
+.chart {
+  height: 100px;
+  background-color: rgb(46, 46, 46);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  color: rgb(204, 204, 204);
+}
+
+.smallHomeButton {
+  padding: 4px 12px;
+  background-color: rgb(224, 237, 94);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 20px;
+}
+
+.smallHomeButton:hover {
+  background-color: rgb(204, 217, 74);
+}
+
+.lifeContainer {
+  display: flex;
+  justify-content: center;
+}
