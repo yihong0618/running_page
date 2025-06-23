@@ -11,7 +11,7 @@ with duckdb.connect() as conn:
 """
 examples:
 
-duckdb.sql("select regexp_extract(location_country, '[\u4e00-\u9fa5]{2,}(市|自治州|特别行政区)') as run_location, concat(try_cast(sum(distance/1000) as integer)::varchar,' km') as run_distance from read_parquet('https://github.com/yihong0618/run/raw/refs/heads/master/run_page/data.parquet') where run_location is not NULL group by run_location order by sum(distance) desc;").show(max_rows=50)
+duckdb.sql("select regexp_extract(location_country, '[\u4e00-\u9fa5]{2,}(市 | 自治州 | 特别行政区)') as run_location, concat(try_cast(sum(distance/1000) as integer)::varchar,' km') as run_distance from read_parquet('https://github.com/yihong0618/run/raw/refs/heads/master/run_page/data.parquet') where run_location is not NULL group by run_location order by sum(distance) desc;").show(max_rows=50)
 
 ┌──────────────┬──────────────┐
 │ run_location │ run_distance │

@@ -26,11 +26,6 @@ from generator import Generator
 from utils import adjust_time
 
 TOKEN_REFRESH_URL = "https://sport.health.heytapmobi.com/open/v1/oauth/token"
-OPPO_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-}
 
 # Query brief version of sports records
 # The query range cannot exceed one month!
@@ -44,14 +39,14 @@ Return value is like:
        "sportMode": 10,//运动模式 室内跑 详情见文档附录
        "otherSportData": {
            "avgHeartRate": 153,//平均心率 单位：count/min
-           "avgPace": 585,//平均配速 单位s/km
-           "avgStepRate": 115,//平均步频 单位step/min
-           "bestStepRate": 135,//最佳步频 单位step/min
-           "bestPace": 572,//最佳配速 单位s/km
+           "avgPace": 585,//平均配速 单位 s/km
+           "avgStepRate": 115,//平均步频 单位 step/min
+           "bestStepRate": 135,//最佳步频 单位 step/min
+           "bestPace": 572,//最佳配速 单位 s/km
            "totalCalories": 2176000,//总消耗 单位卡
            "totalDistance": 23175,//总距离 单位米
            "totalSteps": 26062,//总步数
-           "totalTime": 13562000,//总时长，单位:毫秒
+           "totalTime": 13562000,//总时长，单位：毫秒
            "totalClimb": 100//累计爬升高度，单位:米
        },
     },
@@ -64,7 +59,7 @@ Return value is like:
            "avgHeartRate": 90,//平均心率 单位：count/min
            "courseName": "零基础减脂碎片练习",//课程名称
            "finishNumber": 1,//课程完成次数
-           "trainedCalorie": 13554,//训练消耗的卡路里，单位:卡
+           "trainedCalorie": 13554,//训练消耗的卡路里，单位：卡
            "trainedDuration": 176000//实际训练时间，单位:ms
        },
     }
@@ -75,8 +70,6 @@ BRIEF_SPORT_DATA_API = "https://sport.health.heytapmobi.com/open/v1/data/sport/r
 # Query detailed sports records
 # The query range cannot exceed one day!
 DETAILED_SPORT_DATA_API = "https://sport.health.heytapmobi.com/open/v2/data/sport/record?startTimeMillis={start_time}&endTimeMillis={end_time}"
-
-TIMESTAMP_THRESHOLD_IN_MILLISECOND = 5000
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = True
@@ -165,7 +158,7 @@ def parse_brief_sport_data(session, headers, temp_start, temp_end):
                 or i["sportMode"] in AVAILABLE_OUTDOOR_SPORT_MODE
             ):
                 result.append((i["startTime"], i["endTime"]))
-                print(f"sync record: start_time: " + str(i["startTime"]))
+                print("sync record: start_time: " + str(i["startTime"]))
         time.sleep(1)  # spider rule
     return result
 
@@ -189,6 +182,7 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
     start_time = sport_data["startTime"]
     other_data = sport_data["otherSportData"]
     avg_heart_rate = None
+    elevation_gain = None
     if other_data:
         avg_heart_rate = other_data.get("avgHeartRate", None)
         # fix #66
@@ -206,9 +200,10 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
 
         point_dict = prepare_track_points(sport_data, with_gpx)
 
+        gpx_data = parse_points_to_gpx(sport_data, point_dict)
+        elevation_gain = gpx_data.get_uphill_downhill().uphill
         if with_gpx is True:
-            gpx_data = parse_points_to_gpx(sport_data, point_dict)
-            download_keep_gpx(gpx_data, str(oppo_id))
+            download_keep_gpx(gpx_data.to_xml(), str(oppo_id))
         if with_tcx is True:
             parse_points_to_tcx(sport_data, point_dict)
 
@@ -248,6 +243,7 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
             seconds=int((sport_data["endTime"] - sport_data["startTime"]) / 1000)
         ),
         "average_speed": other_data["totalDistance"] / other_data["totalTime"] * 1000,
+        "elevation_gain": elevation_gain,
         "location_country": location_country,
         "source": sport_data["deviceName"],
     }
@@ -373,7 +369,7 @@ def parse_points_to_gpx(sport_data, points_dict_list):
             )
             point.extensions.append(gpx_extension)
         gpx_segment.points.append(point)
-    return gpx.to_xml()
+    return gpx
 
 
 def download_keep_gpx(gpx_data, keep_id):
@@ -382,8 +378,8 @@ def download_keep_gpx(gpx_data, keep_id):
         file_path = os.path.join(GPX_FOLDER, str(keep_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
-    except:
-        print(f"wrong id {keep_id}")
+    except Exception as e:
+        print(f"wrong id {keep_id}: {str(e)}")
         pass
 
 

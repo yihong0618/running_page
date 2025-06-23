@@ -1,10 +1,18 @@
-@media only screen and (max-width: 700px) {
-
-  /* 当屏幕宽度小于 700px 时 */
-  .runTable th:nth-child(4),
-  .runTable td:nth-child(4) {
+@media only screen and (max-width: 800px) {
+  /* 当屏幕宽度小于 800px 时 */
+  .runTable th:nth-child(3),
+  .runTable td:nth-child(3) {
     display: none;
-    /* 隐藏第四列 */
+    /* 隐藏第3列 */
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  /* 当屏幕宽度小于 700px 时 */
+  .runTable th:nth-child(5),
+  .runTable td:nth-child(5) {
+    display: none;
+    /* 隐藏第5列 */
   }
 }
 
@@ -12,6 +20,8 @@
   width: 100%;
   font-variant: tabular-nums;
   margin: 2rem 0 5rem 0;
+  color: rgb(204, 204, 204);
+  background-color: rgb(26, 26, 26);
 
   :is(thead) {
     color: rgb(204, 204, 204);
@@ -41,7 +51,7 @@
 }
 
 .selected {
-  color: red;
+  color: rgb(224, 237, 94);
 }
 
 .tableContainer {

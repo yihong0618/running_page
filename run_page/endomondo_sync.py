@@ -1,6 +1,6 @@
 """
 need to download the files from endomondo
-and store it in Workous dir in running_page
+and store it in Workouts dir in running_page
 """
 
 import json
@@ -69,6 +69,7 @@ def parse_run_endomondo_to_nametuple(en_dict):
         "average_speed": en_dict.get("distance_km", 0)
         / en_dict.get("duration_s", 1)
         * 1000,
+        "elevation_gain": None,
         "location_country": "",
     }
     return namedtuple("x", d.keys())(*d.values())

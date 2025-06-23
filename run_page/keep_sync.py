@@ -23,6 +23,7 @@ KEEP2STRAVA = {
     "outdoorRunning": "Run",
     "outdoorCycling": "Ride",
     "indoorRunning": "VirtualRun",
+    "mountaineering": "Hiking",
 }
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
@@ -108,6 +109,7 @@ def parse_raw_data_to_nametuple(
 
     start_time = run_data["startTime"]
     avg_heart_rate = None
+    elevation_gain = None
     decoded_hr_data = []
     if run_data["heartRate"]:
         avg_heart_rate = run_data["heartRate"].get("averageHeartRate", None)
@@ -131,17 +133,25 @@ def parse_raw_data_to_nametuple(
                 p["longitude"] = run_points_data[i][1]
 
         for p in run_points_data_gpx:
+            if "timestamp" not in p:
+                if "unixTimestamp" in p:
+                    p["timestamp"] = p["unixTimestamp"]
+                else:
+                    p["timestamp"] = 0
             p_hr = find_nearest_hr(decoded_hr_data, int(p["timestamp"]), start_time)
             if p_hr:
                 p["hr"] = p_hr
-        if with_download_gpx:
-            if str(keep_id) not in old_gpx_ids and run_data["dataType"].startswith(
-                "outdoor"
-            ):
-                gpx_data = parse_points_to_gpx(
-                    run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
-                )
-                download_keep_gpx(gpx_data, str(keep_id))
+
+        if (
+            run_data["dataType"].startswith("outdoor")
+            or run_data["dataType"] == "mountaineering"
+        ):
+            gpx_data = parse_points_to_gpx(
+                run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
+            )
+            elevation_gain = gpx_data.get_uphill_downhill().uphill
+            if with_download_gpx and str(keep_id) not in old_gpx_ids:
+                download_keep_gpx(gpx_data.to_xml(), str(keep_id))
     else:
         print(f"ID {keep_id} no gps data")
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
@@ -174,6 +184,7 @@ def parse_raw_data_to_nametuple(
             seconds=int((run_data["endTime"] - run_data["startTime"]) / 1000)
         ),
         "average_speed": run_data["distance"] / run_data["duration"],
+        "elevation_gain": elevation_gain,
         "location_country": str(run_data.get("region", "")),
     }
     return namedtuple("x", d.keys())(*d.values())
@@ -213,14 +224,14 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
     Args:
         run_id (str): The ID of the run.
         run_points_data (list of dict): A list of run data points.
-        start_time (int): The start time for adjusting timestamps. Note that the unit of the start_time is millsecond
+        start_time (int): The start time for adjusting timestamps. Note that the unit of the start_time is millisecond
 
     Returns:
         gpx_data (str): GPX data in string format.
     """
     points_dict_list = []
     # early timestamp fields in keep's data stands for delta time, but in newly data timestamp field stands for exactly time,
-    # so it does'nt need to plus extra start_time
+    # so it doesn't need to plus extra start_time
     if run_points_data[0]["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND:
         start_time = 0
 
@@ -233,7 +244,7 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
                 / 1000,  # note that the timestamp of a point is decisecond(分秒)
                 tz=timezone.utc,
             ),
-            "elevation": point.get("verticalAccuracy"),
+            "elevation": point.get("altitude"),
             "hr": point.get("hr"),
         }
         points_dict_list.append(points_dict)
@@ -263,7 +274,7 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
             )
             point.extensions.append(gpx_extension_hr)
         gpx_segment.points.append(point)
-    return gpx.to_xml()
+    return gpx
 
 
 def find_nearest_hr(
@@ -276,9 +287,9 @@ def find_nearest_hr(
         heart_rate_data (list of dict): A list of heart rate data points, where each point is a dictionary
             containing at least "timestamp" and "beatsPerMinute" keys.
         target_time (float): The target timestamp for which to find the nearest heart rate data point. Please Note that the unit of target_time is decisecond(分秒),
-            means 1/10 of a second ,this is very unsual!! so when we convert a target_time to second we need to divide by 10, and when we convert a target time to millsecond
+            means 1/10 of a second ,this is very unusual!! so when we convert a target_time to second we need to divide by 10, and when we convert a target time to millisecond
             we need to times 100.
-        start_time (float): The reference start time. the unit of start_time is normal millsecond timestamp
+        start_time (float): The reference start time. the unit of start_time is normal millisecond timestamp
         threshold (float, optional): The maximum allowed time difference to consider a data point as the nearest.
             Default is HR_THRESHOLD, the unit is decisecond(分秒)
 
@@ -291,7 +302,7 @@ def find_nearest_hr(
     if target_time > TIMESTAMP_THRESHOLD_IN_DECISECOND:
         target_time = (
             target_time * 100 - start_time
-        ) / 100  # note that the unit of target_time is decisecond(分秒) and the unit of start_time is normal millsecond
+        ) / 100  # note that the unit of target_time is decisecond and the unit of start_time is normal millisecond
 
     for item in hr_data_list:
         timestamp = item["timestamp"]
@@ -316,7 +327,8 @@ def download_keep_gpx(gpx_data, keep_id):
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
         return file_path
-    except:
+    except Exception as e:
+        print(f"Something wrong to download keep gpx {str(e)}")
         print(f"wrong id {keep_id}")
         pass
 

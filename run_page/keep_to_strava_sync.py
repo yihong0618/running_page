@@ -31,7 +31,8 @@ def run_keep_sync(email, password, keep_sports_data_api, with_download_gpx=False
         with open(KEEP2STRAVA_BK_PATH) as f:
             try:
                 content = json.loads(f.read())
-            except:
+            except json.JSONDecodeError as e:
+                print(f"Error reading JSON file {KEEP2STRAVA_BK_PATH}: {e}")
                 content = []
     old_tracks_ids = [str(a["run_id"]) for a in content]
     _new_tracks = get_all_keep_tracks(
@@ -99,7 +100,7 @@ if __name__ == "__main__":
                 upload_file_to_strava(client, track.gpx_file_path, "gpx", False)
                 uploaded_file_paths.append(track)
             except ActivityUploadFailed as e:
-                print(f"Upload faild error {str(e)}")
+                print(f"Upload failed error {str(e)}")
             # spider rule
             time.sleep(1)
         else:
@@ -112,7 +113,8 @@ if __name__ == "__main__":
     with open(KEEP2STRAVA_BK_PATH, "r") as f:
         try:
             content = json.loads(f.read())
-        except:
+        except Exception as e:
+            print(f"Error reading JSON file {KEEP2STRAVA_BK_PATH}: {e}")
             content = []
 
     # Extend and Save the successfully uploaded log to the backup file.

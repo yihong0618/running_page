@@ -1,4 +1,4 @@
-httpx>=0.15.0,<=0.15.5
+httpx
 gpxpy==1.4.2
 stravalib==0.10.4
 appdirs>=1.4.0
@@ -16,7 +16,7 @@ aiofiles
 cloudscraper==1.2.58
 tcxreader
 rich
-lxml==4.9.4
+lxml
 eviltransform
 stravaweblib
 tenacity
@@ -28,3 +28,5 @@ haversine==2.8.0
 garth
 pycryptodome
 duckdb
+openai==1.76.2
+cairosvg

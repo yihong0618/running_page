@@ -1,5 +1,5 @@
 import os
-from config import SYNCED_FILE, SYNCED_ACTIVITY_FILE
+from config import SYNCED_FILE
 import json
 
 
