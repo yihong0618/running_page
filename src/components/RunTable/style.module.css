@@ -20,7 +20,7 @@
   width: 100%;
   font-variant: tabular-nums;
   margin: 2rem 0 5rem 0;
-  color: rgb(204, 204, 204);
+  color: rgb(224, 237, 94);
   background-color: rgb(26, 26, 26);
 
   :is(thead) {
@@ -51,7 +51,7 @@
 }
 
 .selected {
-  color: rgb(224, 237, 94);
+  color: rgb(255, 0, 0);
 }
 
 .tableContainer {
