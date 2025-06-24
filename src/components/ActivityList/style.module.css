@@ -1,7 +1,7 @@
 .activityList {
   padding: 20px;
-  background-color: rgb(26, 26, 26);
-  color: rgb(224, 237, 94);
+  background-color: var(--color-background);
+  color: var(--color-primary);
 }
 
 .filterContainer {
@@ -15,7 +15,7 @@
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #444;
-  background-color: rgb(36, 36, 36);
+  background-color: var(--color-background);
   color: rgb(204, 204, 204);
   cursor: pointer;
 }
@@ -24,7 +24,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
 }
 
 .activityCard {
@@ -59,7 +58,7 @@
 
 .chart {
   height: 100px;
-  background-color: rgb(46, 46, 46);
+  background-color: var(--color-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,7 +68,7 @@
 
 .smallHomeButton {
   padding: 4px 12px;
-  background-color: rgb(224, 237, 94);
+  background-color: var(--color-primary);
   color: #000;
   border: none;
   border-radius: 4px;
@@ -80,7 +79,7 @@
 }
 
 .smallHomeButton:hover {
-  background-color: rgb(204, 217, 74);
+  background-color: var(--color-button-hover-background);
 }
 
 .lifeContainer {

@@ -1,4 +1,49 @@
+/* IBM Plex Sans and IBM Plex Mono fonts */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 @import 'tailwindcss';
+
+@theme inline {
+  --color-primary: var(--color-brand);
+  --color-background: var(--color-bg);
+  --color-text-primary: var(--color-tx);
+  --color-button-hover-background: var(--color-brand);
+  --color-hr-primary: var(--color-hr);
+  --color-selected: var(--color-selected);
+  --color-run-date: var(--color-run-date);
+  --color-run-table-thead: var(--color-run-table-thead);
+  --color-run-row-hover-background: var(--color-run-row-hover-background);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+[data-theme='dark'] {
+  /* const nike = 'rgb(224,237,94)'; */
+  --color-brand: #e0ed5e;
+  --color-bg: #1a1a1a;
+  --color-tx: #e0ed5e;
+  --color-hr: #fb2c36;
+  --color-button-hover-background: #ccd94a;
+  --color-selected: #e0ed5e;
+  --color-run-date: #dddddd;
+  --color-run-table-thead: #9f9f9f;
+  --color-run-row-hover-background: #262626;
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+@layer base {
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-brand);
+    transition:
+      background-color 0.1s ease,
+      color 0.1s ease;
+    font-family: var(--font-sans);
+  }
+}
 
 img::selection {
   background: transparent;
@@ -21,6 +66,6 @@ iframe {
 hr {
   border-top: none;
   border-bottom: 1px solid;
-  border-color: #0003;
+  border-color: var(--color-hr-primary);
   margin: 2rem 0;
 }
