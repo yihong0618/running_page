@@ -223,10 +223,6 @@ const MAPBOX_TOKEN =
   'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
 
-Here's a polished English translation while maintaining the original Markdown format and improving clarity:
-
----
-
 ## Change Default Map Tile Style
 
 > In addition to using the default map tile style, you can customize the map display by modifying the following configurations in `src/utils/const.ts`:
