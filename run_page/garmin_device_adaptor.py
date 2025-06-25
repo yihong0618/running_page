@@ -72,13 +72,11 @@ def do_process_garmin_data(file_content, use_fake_garmin_device):
 
 def find_valid_heart_rate(messages, current_index):
     """Find the nearest valid heart rate value."""
-    # 检查心率是否为None或255
-    # 向后查找第一个有效的心率值（不为None且不为255）
+
     for msg in messages[current_index + 1 :]:
         if msg.heart_rate is not None and msg.heart_rate != 255:
             return msg.heart_rate
 
-    # 如果向后没找到，向前查找
     for msg in reversed(messages[:current_index]):
         if msg.heart_rate is not None and msg.heart_rate != 255:
             return msg.heart_rate
