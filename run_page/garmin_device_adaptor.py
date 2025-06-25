@@ -26,7 +26,6 @@ def is_fit_file(file):
 def process_garmin_data(origin_file, use_fake_garmin_device):
     try:
         origin_file_content = origin_file.read()
-        
         # if origin file is not fit format, skip
         if not is_fit_file(origin_file):
             return BytesIO(origin_file_content)
