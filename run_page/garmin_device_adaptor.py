@@ -22,6 +22,7 @@ def is_fit_file(file):
     file.seek(0)  # recover file pointer
     return header == b".FIT"
 
+
 def process_garmin_data(origin_file, use_fake_garmin_device):
     try:
         # if origin file is not fit format, skip
@@ -34,6 +35,7 @@ def process_garmin_data(origin_file, use_fake_garmin_device):
         traceback.print_exc()
         return BytesIO(origin_file.read())
 
+
 def do_process_garmin_data(origin_file, use_fake_garmin_device):
     """
     Process garmin data, fix heart rate data and add fake garmin device info to fit file
@@ -44,7 +46,7 @@ def do_process_garmin_data(origin_file, use_fake_garmin_device):
 
     # 2. Collect and categorize messages
     record_messages = []
-    
+
     for record in fit_file.records:
         message = record.message
         if use_fake_garmin_device and message.global_id == DeviceInfoMessage.ID:
@@ -74,15 +76,15 @@ def find_valid_heart_rate(messages, current_index):
     """Find the nearest valid heart rate value."""
     # 检查心率是否为None或255
     # 向后查找第一个有效的心率值（不为None且不为255）
-    for msg in messages[current_index + 1:]:
+    for msg in messages[current_index + 1 :]:
         if msg.heart_rate is not None and msg.heart_rate != 255:
             return msg.heart_rate
-    
+
     # 如果向后没找到，向前查找
     for msg in reversed(messages[:current_index]):
         if msg.heart_rate is not None and msg.heart_rate != 255:
             return msg.heart_rate
-    
+
     return None
 
 
@@ -94,7 +96,7 @@ def create_new_record_message(old_message, heart_rate):
         field_name = field.name
         if hasattr(old_message, field_name):
             field_value = getattr(old_message, field_name)
-            if field_name == 'heart_rate':
+            if field_name == "heart_rate":
                 setattr(new_message, field_name, heart_rate)
             elif field_value is not None:
                 setattr(new_message, field_name, field_value)
@@ -105,12 +107,14 @@ def create_new_record_message(old_message, heart_rate):
 def get_processed_heart_rate_message(record_messages):
     """Process heart rate data, replacing None/255 values with nearby valid values."""
     processed_messages = []
-    
+
     for i, message in enumerate(record_messages):
         if message.heart_rate is None or message.heart_rate == 255:
             valid_heart_rate = find_valid_heart_rate(record_messages, i)
             if valid_heart_rate is not None:
-                processed_messages.append(create_new_record_message(message, valid_heart_rate))
+                processed_messages.append(
+                    create_new_record_message(message, valid_heart_rate)
+                )
             else:
                 processed_messages.append(message)
         else:
@@ -118,6 +122,7 @@ def get_processed_heart_rate_message(record_messages):
 
     print("process heart rate data success")
     return processed_messages
+
 
 def get_device_info_message():
     """
@@ -134,6 +139,6 @@ def get_device_info_message():
     message.device_index = 0
     message.source_type = 5
     message.product = GARMIN_DEVICE_PRODUCT_ID
-    
+
     print("add garmin device info success")
     return message
