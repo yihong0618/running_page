@@ -21,13 +21,14 @@
 }
 
 .summaryContainer {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(280px, auto));
   gap: 20px;
 }
 
 .activityCard {
-  background-color: rgb(36, 36, 36);
+  background-color: var(--color-run-row-hover-background);
   border: 1px solid #444;
   border-radius: 8px;
   padding: 16px;
@@ -44,7 +45,7 @@
 .activityName {
   font-size: 1.5em;
   margin-bottom: 10px;
-  color: rgb(224, 237, 94);
+  color: var(--color-primary);
 }
 
 .activityDetails p {
@@ -53,7 +54,7 @@
 }
 
 .activityDetails strong {
-  color: rgb(224, 237, 94);
+  color: var(--color-primary);
 }
 
 .chart {
@@ -63,13 +64,12 @@
   align-items: center;
   justify-content: center;
   margin-top: 10px;
-  color: rgb(204, 204, 204);
 }
 
 .smallHomeButton {
   padding: 4px 12px;
   background-color: var(--color-primary);
-  color: #000;
+  color: var(--color-background);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -79,7 +79,7 @@
 }
 
 .smallHomeButton:hover {
-  background-color: var(--color-button-hover-background);
+  background-color: var(--color-secondary);
 }
 
 .lifeContainer {

@@ -5,15 +5,18 @@
 @import 'tailwindcss';
 
 @theme inline {
+  /* global */
   --color-primary: var(--color-brand);
+  --color-secondary: var(--color-secondary);
   --color-background: var(--color-bg);
   --color-text-primary: var(--color-tx);
-  --color-button-hover-background: var(--color-brand);
   --color-hr-primary: var(--color-hr);
   --color-selected: var(--color-selected);
+  /* table */
   --color-run-date: var(--color-run-date);
   --color-run-table-thead: var(--color-run-table-thead);
   --color-run-row-hover-background: var(--color-run-row-hover-background);
+  /* fonts */
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
@@ -21,14 +24,14 @@
 [data-theme='dark'] {
   /* const nike = 'rgb(224,237,94)'; */
   --color-brand: #e0ed5e;
+  --color-secondary: #ccd94a;
   --color-bg: #1a1a1a;
   --color-tx: #e0ed5e;
   --color-hr: #fb2c36;
-  --color-button-hover-background: #ccd94a;
   --color-selected: #e0ed5e;
   --color-run-date: #dddddd;
-  --color-run-table-thead: #9f9f9f;
-  --color-run-row-hover-background: #262626;
+  --color-run-table-thead: #cccccc;
+  --color-run-row-hover-background: #242424;
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
