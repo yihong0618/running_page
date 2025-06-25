@@ -25,26 +25,26 @@ def is_fit_file(file):
 
 def process_garmin_data(origin_file, use_fake_garmin_device):
     try:
+        origin_file_content = origin_file.read()
+        
         # if origin file is not fit format, skip
         if not is_fit_file(origin_file):
-            return BytesIO(origin_file.read())
+            return BytesIO(origin_file_content)
 
-        return do_process_garmin_data(origin_file, use_fake_garmin_device)
+        return do_process_garmin_data(origin_file_content, use_fake_garmin_device)
     except Exception:
         print("process garmin data failed, will use origin file")
         traceback.print_exc()
         return BytesIO(origin_file.read())
 
 
-def do_process_garmin_data(origin_file, use_fake_garmin_device):
+def do_process_garmin_data(file_content, use_fake_garmin_device):
     """
     Process garmin data, fix heart rate data and add fake garmin device info to fit file
     """
-    # 1. Parse FIT file
-    fit_file = FitFile.from_bytes(origin_file.read())
+    fit_file = FitFile.from_bytes(file_content)
     builder = FitFileBuilder(auto_define=True)
 
-    # 2. Collect and categorize messages
     record_messages = []
 
     for record in fit_file.records:
@@ -57,16 +57,15 @@ def do_process_garmin_data(origin_file, use_fake_garmin_device):
         else:
             record_messages.append(message)
 
-    # 3. Add device info if needed
+    # Add device info if needed
     if use_fake_garmin_device:
         device_info_message = get_device_info_message()
         builder.add(device_info_message)
 
-    # 4. Process and add heart rate data
+    # Process and add heart rate data
     for message in get_processed_heart_rate_message(record_messages):
         builder.add(message)
 
-    # 5. Build and return the modified file
     modified_file = builder.build()
     print("process garmin data success")
     return modified_file.to_bytes()
