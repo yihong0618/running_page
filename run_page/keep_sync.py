@@ -213,7 +213,7 @@ def get_all_keep_tracks(
                 )
                 tracks.append(track)
             except Exception as e:
-                print(f"Something wrong paring keep id {run}" + str(e))
+                print(f"Something wrong paring keep id {run}: " + str(e))
     return tracks
 
 
@@ -232,7 +232,10 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
     points_dict_list = []
     # early timestamp fields in keep's data stands for delta time, but in newly data timestamp field stands for exactly time,
     # so it doesn't need to plus extra start_time
-    if run_points_data[0]["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND:
+    if (
+        run_points_data
+        and run_points_data[0]["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND
+    ):
         start_time = 0
 
     for point in run_points_data:
