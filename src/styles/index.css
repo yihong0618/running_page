@@ -16,6 +16,8 @@
   --color-run-date: var(--color-run-date);
   --color-run-table-thead: var(--color-run-table-thead);
   --color-run-row-hover-background: var(--color-run-row-hover-background);
+  /* activity-card */
+  --color-activity-card: var(--color-activity-card);
   /* fonts */
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
@@ -32,6 +34,7 @@
   --color-run-date: #dddddd;
   --color-run-table-thead: #cccccc;
   --color-run-row-hover-background: #242424;
+  --color-activity-card: #2e2e2e;
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }

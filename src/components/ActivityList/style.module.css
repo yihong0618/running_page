@@ -12,12 +12,14 @@
 }
 
 .filterContainer select {
+  appearance: none;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #444;
-  background-color: var(--color-background);
-  color: rgb(204, 204, 204);
+  border: 1px solid var(--color-run-table-thead);
+  background-color: var(--color-run-row-hover-background);
+  color: var(--color-run-table-thead);
   cursor: pointer;
+  text-align: center;
 }
 
 .summaryContainer {
@@ -29,17 +31,16 @@
 
 .activityCard {
   background-color: var(--color-run-row-hover-background);
-  border: 1px solid #444;
+  border: 1px solid var(--color-activity-card);
   border-radius: 8px;
   padding: 16px;
   width: 280px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px var(--color-run-row-hover-background);
   transition: transform 0.2s;
 }
 
 .activityCard:hover {
   transform: translateY(-5px);
-  background-color: lighten(rgb(26, 26, 26), 3%);
 }
 
 .activityName {
@@ -50,7 +51,7 @@
 
 .activityDetails p {
   margin: 8px 0;
-  color: rgb(204, 204, 204);
+  color: var(--color-run-table-thead);
 }
 
 .activityDetails strong {
@@ -59,7 +60,7 @@
 
 .chart {
   height: 100px;
-  background-color: var(--color-background);
+  background-color: var(--color-activity-card);
   display: flex;
   align-items: center;
   justify-content: center;
