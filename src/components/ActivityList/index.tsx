@@ -16,7 +16,17 @@ import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN } from '@/utils/const';
 
-const MonthofLifeSvg = lazy(() => loadSvgComponent(totalStat, './mol.svg'));
+const MonthOfLifeSvg = (sportType: string) => {
+  const path = `./mol_${sportType}.svg`;
+  console.log(path);
+  return lazy(() => loadSvgComponent(totalStat, path));
+};
+
+const RunningSvg = MonthOfLifeSvg('running');
+const WalkingSvg = MonthOfLifeSvg('walking');
+const HikingSvg = MonthOfLifeSvg('hiking');
+const CyclingSvg = MonthOfLifeSvg('cycling');
+const AllSvg = MonthOfLifeSvg('all');
 
 // Define interfaces for our data structures
 interface Activity {
@@ -203,7 +213,9 @@ const ActivityList: React.FC = () => {
   const [sportTypeOptions, setSportTypeOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    const uniqueSportTypes = [...new Set(activities.map((activity) => activity.type))];
+    const uniqueSportTypes = [
+      ...new Set(activities.map((activity) => activity.type)),
+    ];
     uniqueSportTypes.unshift('all');
     setSportTypeOptions(uniqueSportTypes);
   }, []);
@@ -219,9 +231,13 @@ const ActivityList: React.FC = () => {
     return hours * 3600 + minutes * 60 + seconds;
   };
 
-  const groupActivities = (interval: IntervalType, sportType: string): ActivityGroups => {
-    return (activities as Activity[]).filter(activity => sportType === 'all' || activity.type === sportType).reduce(
-      (acc: ActivityGroups, activity) => {
+  const groupActivities = (
+    interval: IntervalType,
+    sportType: string
+  ): ActivityGroups => {
+    return (activities as Activity[])
+      .filter((activity) => sportType === 'all' || activity.type === sportType)
+      .reduce((acc: ActivityGroups, activity) => {
         const date = new Date(activity.start_date_local);
         let key: string;
         let index: number;
@@ -294,9 +310,7 @@ const ActivityList: React.FC = () => {
           acc[key].location = activity.location_country || '';
 
         return acc;
-      },
-      {}
-    );
+      }, {});
   };
 
   const activitiesByInterval = groupActivities(interval, sportType);
@@ -316,7 +330,7 @@ const ActivityList: React.FC = () => {
         >
           {sportTypeOptions.map((type) => (
             <option key={type} value={type}>
-              {type}
+              {type === 'Run' ? 'running' : type}
             </option>
           ))}
         </select>
@@ -335,7 +349,11 @@ const ActivityList: React.FC = () => {
       {interval === 'life' && (
         <div className={styles.lifeContainer}>
           <Suspense fallback={<div>Loading SVG...</div>}>
-            <MonthofLifeSvg />
+            {sportType === 'running' && <RunningSvg />}
+            {sportType === 'walking' && <WalkingSvg />}
+            {sportType === 'hiking' && <HikingSvg />}
+            {sportType === 'cycling' && <CyclingSvg />}
+            {sportType === 'all' && <AllSvg />}
           </Suspense>
         </div>
       )}
@@ -370,7 +388,9 @@ const ActivityList: React.FC = () => {
                   maxDistance: summary.maxDistance,
                   maxSpeed: summary.maxSpeed,
                   location: summary.location,
-                  totalElevationGain: SHOW_ELEVATION_GAIN ? summary.totalElevationGain : undefined,
+                  totalElevationGain: SHOW_ELEVATION_GAIN
+                    ? summary.totalElevationGain
+                    : undefined,
                 }}
                 dailyDistances={summary.dailyDistances}
                 interval={interval}
