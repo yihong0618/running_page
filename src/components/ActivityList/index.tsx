@@ -18,7 +18,6 @@ import { SHOW_ELEVATION_GAIN } from '@/utils/const';
 
 const MonthOfLifeSvg = (sportType: string) => {
   const path = `./mol_${sportType}.svg`;
-  console.log(path);
   return lazy(() => loadSvgComponent(totalStat, path));
 };
 
@@ -26,6 +25,7 @@ const RunningSvg = MonthOfLifeSvg('running');
 const WalkingSvg = MonthOfLifeSvg('walking');
 const HikingSvg = MonthOfLifeSvg('hiking');
 const CyclingSvg = MonthOfLifeSvg('cycling');
+const SwimmingSvg = MonthOfLifeSvg('swimming');
 const AllSvg = MonthOfLifeSvg('all');
 
 // Define interfaces for our data structures
@@ -353,6 +353,7 @@ const ActivityList: React.FC = () => {
             {sportType === 'walking' && <WalkingSvg />}
             {sportType === 'hiking' && <HikingSvg />}
             {sportType === 'cycling' && <CyclingSvg />}
+            {sportType === 'swimming' && <SwimmingSvg />}
             {sportType === 'all' && <AllSvg />}
           </Suspense>
         </div>
