@@ -236,7 +236,7 @@ jobs:
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_hiking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Hiker Month of Life' --sport-type hiking
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_cycling.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Cylist Month of Life' --sport-type cycling
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_all.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Month of Life' --sport-type all
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_all.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Swimmer Month of Life' --sport-type swimming
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_swimming.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Swimmer Month of Life' --sport-type swimming
 
       - name: Save data to parqent
         if: env.SAVE_TO_PARQENT == 'true'
