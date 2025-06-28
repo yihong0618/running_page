@@ -349,7 +349,7 @@ const ActivityList: React.FC = () => {
       {interval === 'life' && (
         <div className={styles.lifeContainer}>
           <Suspense fallback={<div>Loading SVG...</div>}>
-            {sportType === 'running' && <RunningSvg />}
+            {(sportType === 'running' || sportType === 'Run') && <RunningSvg />}
             {sportType === 'walking' && <WalkingSvg />}
             {sportType === 'hiking' && <HikingSvg />}
             {sportType === 'cycling' && <CyclingSvg />}

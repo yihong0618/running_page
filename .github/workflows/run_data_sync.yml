@@ -231,7 +231,7 @@ jobs:
         env:
           BIRTHDAY_MONTH: ${{ env.BIRTHDAY_MONTH }}
         run: |
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_running.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Runner Month of Life' --sport-type running
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_running.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Runner Month of Life' --sport-type Run
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_walking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Walker Month of Life' --sport-type walking
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_hiking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Hiker Month of Life' --sport-type hiking
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_cycling.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Cylist Month of Life' --sport-type cycling
