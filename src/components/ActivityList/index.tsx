@@ -1,4 +1,4 @@
-import React, { lazy, useState, Suspense } from 'react';
+import React, { lazy, useState, Suspense, useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -199,6 +199,15 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
 
 const ActivityList: React.FC = () => {
   const [interval, setInterval] = useState<IntervalType>('month');
+  const [sportType, setSportType] = useState<string>('all');
+  const [sportTypeOptions, setSportTypeOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    const uniqueSportTypes = [...new Set(activities.map((activity) => activity.type))];
+    uniqueSportTypes.unshift('all');
+    setSportTypeOptions(uniqueSportTypes);
+  }, []);
+
   const navigate = useNavigate();
 
   const toggleInterval = (newInterval: IntervalType): void => {
@@ -210,8 +219,8 @@ const ActivityList: React.FC = () => {
     return hours * 3600 + minutes * 60 + seconds;
   };
 
-  const groupActivities = (interval: IntervalType): ActivityGroups => {
-    return (activities as Activity[]).reduce(
+  const groupActivities = (interval: IntervalType, sportType: string): ActivityGroups => {
+    return (activities as Activity[]).filter(activity => sportType === 'all' || activity.type === sportType).reduce(
       (acc: ActivityGroups, activity) => {
         const date = new Date(activity.start_date_local);
         let key: string;
@@ -290,7 +299,7 @@ const ActivityList: React.FC = () => {
     );
   };
 
-  const activitiesByInterval = groupActivities(interval);
+  const activitiesByInterval = groupActivities(interval, sportType);
 
   return (
     <div className={styles.activityList}>
@@ -301,6 +310,16 @@ const ActivityList: React.FC = () => {
         >
           Home
         </button>
+        <select
+          onChange={(e) => setSportType(e.target.value)}
+          value={sportType}
+        >
+          {sportTypeOptions.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
         <select
           onChange={(e) => toggleInterval(e.target.value as IntervalType)}
           value={interval}
