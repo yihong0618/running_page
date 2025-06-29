@@ -190,6 +190,15 @@ def main():
         help='github svg style; "align-firstday", "align-monday" (default: "align-firstday").',
     )
 
+    args_parser.add_argument(
+        "--sport-type",
+        dest="sport_type",
+        metavar="SPORT_TYPE",
+        type=str,
+        default="all",
+        help="Sport type",
+    )
+
     for _, drawer in drawers.items():
         drawer.create_args(args_parser)
 
@@ -219,6 +228,10 @@ def main():
         tracks = loader.load_tracks_from_db(SQL_FILE, args.type == "grid")
     else:
         tracks = loader.load_tracks(args.gpx_dir)
+
+    if args.sport_type != "all":
+        tracks = [track for track in tracks if track.type == args.sport_type]
+
     if not tracks:
         return
 
