@@ -79,18 +79,23 @@ const HIKING_TITLE = IS_CHINESE ? '徒步' : 'Hiking';
 const CYCLING_TITLE = IS_CHINESE ? '骑行' : 'Cycling';
 const SKIING_TITLE = IS_CHINESE ? '滑雪' : 'Skiing';
 const WALKING_TITLE = IS_CHINESE ? '步行' : 'Walking';
+const SWIMMING_TITLE = IS_CHINESE ? '游泳' : 'Swimming';
+const ALL_TITLE = IS_CHINESE ? '所有' : 'All';
 const ACTIVITY_COUNT_TITLE = IS_CHINESE ? '活动次数' : 'Activity Count';
 const MAX_DISTANCE_TITLE = IS_CHINESE ? '最远距离' : 'Max Distance';
 const MAX_SPEED_TITLE = IS_CHINESE ? '最快速度' : 'Max Speed';
 const TOTAL_TIME_TITLE = IS_CHINESE ? '总时间' : 'Total Time';
 const AVERAGE_SPEED_TITLE = IS_CHINESE ? '平均速度' : 'Average Speed';
 const TOTAL_DISTANCE_TITLE = IS_CHINESE ? '总距离' : 'Total Distance';
-const TOTAL_ELEVATION_GAIN_TITLE = IS_CHINESE ? '总海拔爬升' : 'Total Elevation Gain';
+const TOTAL_ELEVATION_GAIN_TITLE = IS_CHINESE
+  ? '总海拔爬升'
+  : 'Total Elevation Gain';
 const YEARLY_TITLE = IS_CHINESE ? 'Year' : 'Yearly';
 const MONTHLY_TITLE = IS_CHINESE ? 'Month' : 'Monthly';
 const WEEKLY_TITLE = IS_CHINESE ? 'Week' : 'Weekly';
 const DAILY_TITLE = IS_CHINESE ? 'Day' : 'Daily';
 const LOCATION_TITLE = IS_CHINESE ? 'Location' : 'Location';
+const HOME_PAGE_TITLE = IS_CHINESE ? '返回首页' : 'Home';
 
 const ACTIVITY_TYPES = {
   RUN_GENERIC_TITLE,
@@ -100,6 +105,8 @@ const ACTIVITY_TYPES = {
   CYCLING_TITLE,
   SKIING_TITLE,
   WALKING_TITLE,
+  SWIMMING_TITLE,
+  ALL_TITLE,
 };
 
 const RUN_TITLES = {
@@ -148,6 +155,7 @@ export {
   RICH_TITLE,
   ACTIVITY_TYPES,
   ACTIVITY_TOTAL,
+  HOME_PAGE_TITLE,
 };
 
 const nike = 'rgb(224,237,94)'; // if you want change the main color change here src/styles/variables.scss
@@ -167,39 +175,45 @@ export const HIKING_COLOR = 'rgb(151,51,255)';
 export const WALKING_COLOR = HIKING_COLOR;
 export const SWIMMING_COLOR = 'rgb(255,51,51)';
 
-
 // map tiles vendor, maptiler or mapbox or stadiamaps
 // if you want to use maptiler, set the access token in MAP_TILE_ACCESS_TOKEN
-export const MAP_TILE_VENDOR = "maptiler";
+export const MAP_TILE_VENDOR = 'maptiler';
 
 // map tiles style name, see MAP_TILE_STYLES for more details
-export const MAP_TILE_STYLE = "hybrid";
+export const MAP_TILE_STYLE = 'hybrid';
 
 // access token. you can apply a new one, it's free.
 // maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
 // stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 |sign up at https://client.stadiamaps.com/signup/
-export const MAP_TILE_ACCESS_TOKEN = "Gt5R0jT8tuIYxW6sNrAg";
+export const MAP_TILE_ACCESS_TOKEN = 'Gt5R0jT8tuIYxW6sNrAg';
 
 export const MAP_TILE_STYLES = {
   maptiler: {
-    "dataviz-dark": "https://api.maptiler.com/maps/dataviz-dark/style.json?key=",
-    "basic-dark": "https://api.maptiler.com/maps/basic-v2-dark/style.json?key=",
-    "streets-dark": "https://api.maptiler.com/maps/streets-v2-dark/style.json?key=",
-    "outdoor-dark": "https://api.maptiler.com/maps/outdoor-v2-dark/style.json?key=",
-    "bright-dark": "https://api.maptiler.com/maps/bright-v2-dark/style.json?key=",
-    "topo-dark": "https://api.maptiler.com/maps/topo-v2-dark/style.json?key=",
-    "winter-dark": "https://api.maptiler.com/maps/winter-v2-dark/style.json?key=",
-    "hybrid": "https://api.maptiler.com/maps/hybrid/style.json?key="
+    'dataviz-dark':
+      'https://api.maptiler.com/maps/dataviz-dark/style.json?key=',
+    'basic-dark': 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=',
+    'streets-dark':
+      'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=',
+    'outdoor-dark':
+      'https://api.maptiler.com/maps/outdoor-v2-dark/style.json?key=',
+    'bright-dark':
+      'https://api.maptiler.com/maps/bright-v2-dark/style.json?key=',
+    'topo-dark': 'https://api.maptiler.com/maps/topo-v2-dark/style.json?key=',
+    'winter-dark':
+      'https://api.maptiler.com/maps/winter-v2-dark/style.json?key=',
+    hybrid: 'https://api.maptiler.com/maps/hybrid/style.json?key=',
   },
   stadiamaps: {
-    "alidade_smooth_dark": "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=",
-    "alidade_satellite": "https://tiles.stadiamaps.com/styles/alidade_satellite.json?api_key=",
+    alidade_smooth_dark:
+      'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=',
+    alidade_satellite:
+      'https://tiles.stadiamaps.com/styles/alidade_satellite.json?api_key=',
   },
   mapbox: {
-    "dark-v10": "mapbox://styles/mapbox/dark-v10",
-    "dark-v11": "mapbox://styles/mapbox/dark-v11",
-    "navigation-night": "mapbox://styles/mapbox/navigation-night-v1",
-    "satellite-streets-v12": "mapbox://styles/mapbox/satellite-streets-v12"
+    'dark-v10': 'mapbox://styles/mapbox/dark-v10',
+    'dark-v11': 'mapbox://styles/mapbox/dark-v11',
+    'navigation-night': 'mapbox://styles/mapbox/navigation-night-v1',
+    'satellite-streets-v12': 'mapbox://styles/mapbox/satellite-streets-v12',
   },
-  default: "mapbox://styles/mapbox/dark-v10"
-}
+  default: 'mapbox://styles/mapbox/dark-v10',
+};
