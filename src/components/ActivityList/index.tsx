@@ -14,7 +14,8 @@ import styles from './style.module.css';
 import { ACTIVITY_TOTAL } from '@/utils/const';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
-import { SHOW_ELEVATION_GAIN } from '@/utils/const';
+import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
+import { getActivityTitle } from '@/utils/utils';
 
 const MonthOfLifeSvg = (sportType: string) => {
   const path = `./mol_${sportType}.svg`;
@@ -26,6 +27,7 @@ const WalkingSvg = MonthOfLifeSvg('walking');
 const HikingSvg = MonthOfLifeSvg('hiking');
 const CyclingSvg = MonthOfLifeSvg('cycling');
 const SwimmingSvg = MonthOfLifeSvg('swimming');
+const SkiingSvg = MonthOfLifeSvg('skiing');
 const AllSvg = MonthOfLifeSvg('all');
 
 // Define interfaces for our data structures
@@ -322,7 +324,7 @@ const ActivityList: React.FC = () => {
           className={styles.smallHomeButton}
           onClick={() => navigate('/')}
         >
-          Home
+          {HOME_PAGE_TITLE}
         </button>
         <select
           onChange={(e) => setSportType(e.target.value)}
@@ -330,7 +332,7 @@ const ActivityList: React.FC = () => {
         >
           {sportTypeOptions.map((type) => (
             <option key={type} value={type}>
-              {type === 'Run' ? 'running' : type}
+              {getActivityTitle(type)}
             </option>
           ))}
         </select>
@@ -354,6 +356,7 @@ const ActivityList: React.FC = () => {
             {sportType === 'hiking' && <HikingSvg />}
             {sportType === 'cycling' && <CyclingSvg />}
             {sportType === 'swimming' && <SwimmingSvg />}
+            {sportType === 'skiing' && <SkiingSvg />}
             {sportType === 'all' && <AllSvg />}
           </Suspense>
         </div>
