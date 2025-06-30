@@ -12,7 +12,6 @@
    ```
 
 5. 2024.09.29: Added `Elevation Gain` field, If you forked the project before this update, please run the following command:
-
    - To resolve errors: `sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: activities.elevation_gain`
    - If you don't have a local environment, set `RUN_TYPE` to `db_updater` in the `.github/workflows/run_data_sync.yml` file once then change back.
 
@@ -1222,19 +1221,16 @@ python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --da
 1. 进入仓库的 "Settings -> GitHub Pages -> Source"，选择 "GitHub Actions"
 
 2. 进入仓库的 "Actions -> Workflows -> All Workflows"，选择左侧面板的 "Run Data Sync"，然后点击 "Run workflow"
-
    - "Run Data Sync" 将更新数据，然后触发 "Publish GitHub Pages" 工作流
    - 确认工作流运行没有错误
 
 3. 打开网站检查结果
-
    - 如果网站没有反映最新数据，请使用“F5”刷新页面
    - 某些浏览器 (比如 Chrome) 可能缓存网页不刷新，您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac) 强制清除缓存并重新加载页面
 
 4. 为 GitHub Actions 添加代码提交权限，访问仓库的 `Settings > Actions > General`页面，找到 `Workflow permissions` 的设置项，将选项配置为 `Read and write permissions`，支持 CI 将运动数据更新后提交到仓库中。
 
 5. 如果想把你的 running_page 部署在 xxx.github.io 而不是 xxx.github.io/run_page 亦或是想要添加自定义域名于 GitHub Pages，需要做三点
-
    - 修改你的 fork 的 running_page 仓库改名为 xxx.github.io, xxx 是你 github 的 username
    - 修改 gh-pages.yml 中的 Build 模块，删除 `${{ github.event.repository.name }}` 改为`run: PATH_PREFIX=/ pnpm build` 即可
    - 修改 src/static/site-metadata.ts 中 `siteUrl: ''` 或是添加你的自定义域名，`siteUrl: '[your_own_domain]'`，即可
@@ -1286,7 +1282,6 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
    <center><img src="https://cdn.jujimeizuo.cn/blog/2023/10/get-action-id.jpg" alt="get-action-id"></center>
 
 2. 结合快捷指令
-
    1. 通过 iCloud 获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
    2. 修改下图字典参数
 

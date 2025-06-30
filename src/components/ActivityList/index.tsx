@@ -372,9 +372,10 @@ const ActivityList: React.FC = () => {
                   totalElevationGain: SHOW_ELEVATION_GAIN
                     ? summary.totalElevationGain
                     : undefined,
-                  averageHeartRate: summary.heartRateCount > 0 
-                    ? summary.totalHeartRate / summary.heartRateCount 
-                    : undefined,
+                  averageHeartRate:
+                    summary.heartRateCount > 0
+                      ? summary.totalHeartRate / summary.heartRateCount
+                      : undefined,
                 }}
                 dailyDistances={summary.dailyDistances}
                 interval={interval}
