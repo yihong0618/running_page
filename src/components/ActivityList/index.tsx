@@ -18,7 +18,7 @@ import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
 import { getActivityTitle } from '@/utils/utils';
 
 const MonthOfLifeSvg = (sportType: string) => {
-  const path = `./mol_${sportType}.svg`;
+  const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
   return lazy(() => loadSvgComponent(totalStat, path));
 };
 
