@@ -1007,7 +1007,6 @@ For more display effects, see:
 4. make sure you have write permissions in Workflow permissions settings.
 
 5. If you want to deploy your running_page to xxx.github.io instead of xxx.github.io/running_page or redirect your GitHub Pages to a custom domain, you need to do three things:
-
    - Rename your forked running_page repository to `xxx.github.io`, where xxx is your GitHub username
    - Modify the Build module in gh-pages.yml, remove `${{ github.event.repository.name }}` and change to `run: PATH_PREFIX=/ pnpm build`
    - In `src/static/site-metadata.ts`, set siteUrl: '' or your custom domain URL
