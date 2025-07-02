@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
+import tailwindcss from '@tailwindcss/vite';
 
 // The following are known larger packages or packages that can be loaded asynchronously.
 const individuallyPackages = [
@@ -16,6 +17,7 @@ const individuallyPackages = [
 export default defineConfig({
   plugins: [
     react(),
+    tailwindcss(),
     viteTsconfigPaths(),
     svgr({
       include: ['**/*.svg'],
