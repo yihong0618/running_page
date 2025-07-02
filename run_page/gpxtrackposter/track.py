@@ -216,15 +216,16 @@ class Track:
         self.start_time, self.end_time = gpx.get_time_bounds()
         if self.start_time is None or self.end_time is None:
             # may be it's treadmill run, so we just use the start and end time of the extensions
-            self.start_time = datetime.datetime.fromisoformat(
-                self._load_gpx_extensions_item(gpx, "start_time")
-            )
-            self.end_time = datetime.datetime.fromisoformat(
-                self._load_gpx_extensions_item(gpx, "end_time")
-            )
-            self.start_time_local, self.end_time_local = parse_datetime_to_local(
-                self.start_time, self.end_time, None
-            )
+            start_time_str = self._load_gpx_extensions_item(gpx, "start_time")
+            end_time_str = self._load_gpx_extensions_item(gpx, "end_time")
+            if start_time_str:
+                self.start_time = datetime.datetime.fromisoformat(start_time_str)
+            if end_time_str:
+                self.end_time = datetime.datetime.fromisoformat(end_time_str)
+            if self.start_time and self.end_time:
+                self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                    self.start_time, self.end_time, None
+                )
         # use timestamp as id
         self.run_id = self.__make_run_id(self.start_time)
         if self.start_time is None:
