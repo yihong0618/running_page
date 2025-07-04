@@ -57,8 +57,7 @@ const CHINESE_INFO_MESSAGE = (yearLength: number, year: string): string => {
   return `我用 App 记录自己跑步 ${yearLength} 年了，下面列表展示的是${yearStr}的数据`;
 };
 const ENGLISH_INFO_MESSAGE = (yearLength: number): string =>
-  `Running Journey spanning ${yearLength} Years. Please feel free to click each 
-  year to view more detailed data. \n One at a time. \n Time will tell.`;
+  `The first recorded run dates back ${yearLength - 1} years`;
 
 // not support English for now
 const CHINESE_LOCATION_INFO_MESSAGE_FIRST =
