@@ -435,26 +435,6 @@ const getMapStyle = (vendor: string, styleName: string, token: string) => {
   return style;
 };
 
-const getActivityTitle = (sportType: string) => {
-  switch (sportType) {
-    case 'Run':
-    case 'running':
-      return ACTIVITY_TYPES.RUN_GENERIC_TITLE;
-    case 'cycling':
-      return ACTIVITY_TYPES.CYCLING_TITLE;
-    case 'hiking':
-      return ACTIVITY_TYPES.HIKING_TITLE;
-    case 'walking':
-      return ACTIVITY_TYPES.WALKING_TITLE;
-    case 'skiing':
-      return ACTIVITY_TYPES.SKIING_TITLE;
-    case 'all':
-      return ACTIVITY_TYPES.ALL_TITLE;
-    default:
-      return sportType;
-  }
-};
-
 const isTouchDevice = () =>
   'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
@@ -479,5 +459,4 @@ export {
   convertMovingTime2Sec,
   getMapStyle,
   isTouchDevice,
-  getActivityTitle,
 };

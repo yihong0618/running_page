@@ -15,7 +15,6 @@ import { ACTIVITY_TOTAL } from '@/utils/const';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
-import { getActivityTitle } from '@/utils/utils';
 
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
@@ -215,8 +214,21 @@ const ActivityList: React.FC = () => {
   const [sportTypeOptions, setSportTypeOptions] = useState<string[]>([]);
 
   useEffect(() => {
+    const sportTypeSet = new Set(activities.map((activity) => activity.type));
+    if (sportTypeSet.has('Run')) {
+      sportTypeSet.delete('Run');
+      sportTypeSet.add('running');
+    }
+    if (sportTypeSet.has('Walk')) {
+      sportTypeSet.delete('Walk');
+      sportTypeSet.add('walking');
+    }
+    if (sportTypeSet.has('Ride')) {
+      sportTypeSet.delete('Ride');
+      sportTypeSet.add('cycling');
+    }
     const uniqueSportTypes = [
-      ...new Set(activities.map((activity) => activity.type)),
+      ...sportTypeSet,
     ];
     uniqueSportTypes.unshift('all');
     setSportTypeOptions(uniqueSportTypes);
@@ -238,7 +250,21 @@ const ActivityList: React.FC = () => {
     sportType: string
   ): ActivityGroups => {
     return (activities as Activity[])
-      .filter((activity) => sportType === 'all' || activity.type === sportType)
+      .filter((activity) => {
+        if (sportType === 'all') {
+          return true;
+        }
+        if (sportType === 'running') {
+          return activity.type === 'running' || activity.type === 'Run';
+        }
+        if (sportType === 'walking') {
+          return activity.type === 'walking' || activity.type === 'Walk';
+        }
+        if (sportType === 'cycling') {
+          return activity.type === 'cycling' || activity.type === 'Ride';
+        }
+        return activity.type === sportType;
+      })
       .reduce((acc: ActivityGroups, activity) => {
         const date = new Date(activity.start_date_local);
         let key: string;
@@ -332,7 +358,7 @@ const ActivityList: React.FC = () => {
         >
           {sportTypeOptions.map((type) => (
             <option key={type} value={type}>
-              {getActivityTitle(type)}
+              {type}
             </option>
           ))}
         </select>
