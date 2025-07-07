@@ -227,9 +227,7 @@ const ActivityList: React.FC = () => {
       sportTypeSet.delete('Ride');
       sportTypeSet.add('cycling');
     }
-    const uniqueSportTypes = [
-      ...sportTypeSet,
-    ];
+    const uniqueSportTypes = [...sportTypeSet];
     uniqueSportTypes.unshift('all');
     setSportTypeOptions(uniqueSportTypes);
   }, []);
