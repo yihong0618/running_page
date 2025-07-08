@@ -137,3 +137,14 @@ def parse_datetime_to_local(start_time, end_time, point):
             timezone = tf.timezone_at(lng=lng, lat=lat)
     tc_offset = datetime.now(pytz.timezone(timezone)).utcoffset()
     return start_time + tc_offset, end_time + tc_offset
+
+
+def get_normalized_sport_type(sport_type):
+    if sport_type == "Run":
+        return "running"
+    elif sport_type == "Walk":
+        return "walking"
+    elif sport_type == "Ride":
+        return "cycling"
+    else:
+        return sport_type
