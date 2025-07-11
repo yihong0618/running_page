@@ -7,7 +7,7 @@ const HomePage = () => {
       <Helmet>
         <html lang="en" data-theme="dark" />
       </Helmet>
-      <div className="w-screen">
+      <div className="w-full">
         <ActivityList />
       </div>
     </>
