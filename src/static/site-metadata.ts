@@ -30,7 +30,7 @@ const data: ISiteMetadataResult = {
     },
     {
       name: 'About',
-      url: 'https://about.yer1k.com/',
+      url: 'https://liveterm.yer1k.com/',
     },
   ],
 };
