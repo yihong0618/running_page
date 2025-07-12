@@ -25,8 +25,8 @@ const data: ISiteMetadataResult = {
       url: `${getBasePath()}/summary`,
     },
     {
-      name: 'Blog',
-      url: 'https://yer1k.com/',
+      name: 'Strava',
+      url: 'https://www.strava.com/athletes/yer1k',
     },
     {
       name: 'About',
