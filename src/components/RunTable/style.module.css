@@ -30,6 +30,26 @@
       padding: 0.5rem;
     }
   }
+  :is(th, td):nth-child(1) {
+    width: 137px;
+    text-align: left;
+  }
+
+  :is(th, td):nth-child(2) {
+    width: 91px;
+  }
+
+  :is(th, td):nth-child(3) {
+    width: 112px;
+  }
+
+  :is(th, td):nth-child(4) {
+    width: 60px;
+  }
+
+  :is(th, td):nth-child(5) {
+    width: 100px;
+  }
 }
 
 .runRow {
@@ -38,10 +58,6 @@
     padding: 0.5rem;
     border: 0;
     text-align: right;
-
-    &:first-child {
-      text-align: left;
-    }
   }
 
   &:hover {
