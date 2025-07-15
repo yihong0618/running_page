@@ -1,14 +1,18 @@
 # some code from https://github.com/fieryd/PKURunningHelper great thanks
 import argparse
+import ast
 import json
 import os
 import subprocess
 import sys
 import time
+import warnings
 from collections import namedtuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from hashlib import md5
+from typing import List
 from urllib.parse import quote
+from xml.etree import ElementTree as etree
 
 import gpxpy
 import polyline
@@ -18,7 +22,9 @@ from generator import Generator
 
 from utils import adjust_time
 
-get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
+
+def get_md5_data(data):
+    return md5(str(data).encode("utf-8")).hexdigest().upper()
 
 
 def download_joyrun_gpx(gpx_data, joyrun_id):
@@ -27,8 +33,8 @@ def download_joyrun_gpx(gpx_data, joyrun_id):
         file_path = os.path.join(GPX_FOLDER, str(joyrun_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
-    except:
-        print(f"wrong id {joyrun_id}")
+    except Exception as e:
+        print(f"wrong id {joyrun_id}: {e}")
         pass
 
 
@@ -156,7 +162,7 @@ class Joyrun:
 
     def get_runs_records_ids(self):
         payload = {
-            "year": 0,
+            "year": 0,  # as of the "year". when set to 2023, it means fetch records during currentYear ~ 2023. set to 0 means fetch all.
         }
         r = self.session.post(
             f"{self.base_url}/userRunList.aspx",
@@ -187,64 +193,147 @@ class Joyrun:
             points = []
         return points
 
+    class Pause:
+        def __init__(self, pause_data_point: List[str]):
+            self.index = int(pause_data_point[0])
+            self.duration = int(pause_data_point[1])
+
+        def __repr__(self):
+            return f"Pause(index=${self.index}, duration=${self.duration})"
+
+    class PauseList:
+        def __init__(self, pause_list: List[List[str]]):
+            self._list = []
+            for pause in pause_list:
+                self._list.append(Joyrun.Pause(pause))
+
+        def next(self) -> "Joyrun.Pause":
+            return self._list.pop(0) if self._list else None
+
+    class DataSeries:
+        def __init__(self, data_string: str):
+            self._list = Joyrun.DataSeries._parse(data_string)
+
+        def next(self):
+            return self._list.pop(0) if self._list else None
+
+        @staticmethod
+        def _parse(data_str):
+            if not data_str:
+                return []
+            try:
+                parsed = ast.literal_eval(data_str)
+                if isinstance(parsed, list):
+                    return parsed
+                warnings.warn(f'"data" evaluated to {type(parsed)}, want List')
+            except (ValueError, SyntaxError) as e:
+                warnings.warn(f'Failed to evaluate "data": {e}')
+            return []
+
+    @staticmethod
+    def new_track_point(
+        latitude, longitude, elevation, time, heart_rate
+    ) -> gpxpy.gpx.GPXTrackPoint:
+        track_point = gpxpy.gpx.GPXTrackPoint(
+            latitude=latitude,
+            longitude=longitude,
+            elevation=elevation,
+            time=datetime.fromtimestamp(time, tz=timezone.utc),
+        )
+
+        # Extension
+        extension_element = etree.Element("gpxtpx:TrackPointExtension")
+        track_point.extensions.append(extension_element)
+
+        ## Heart rate
+        if heart_rate:
+            heart_rate_element = etree.Element("gpxtpx:hr")
+            heart_rate_element.text = str(heart_rate)
+            extension_element.append(heart_rate_element)
+
+        return track_point
+
     @staticmethod
     def parse_points_to_gpx(
-        run_points_data, start_time, end_time, pause_list, interval=5
+        run_points_data,
+        start_time,
+        end_time,
+        pause_list,
+        heart_rate_data_string,
+        altitude_data_string,
+        interval=5,
     ):
         """
         parse run_data content to gpx object
         TODO for now kind of same as `keep` maybe refactor later
 
-        :param run_points_data: [[latitude, longitude],...]
-        :param pause_list:      [[interval_index, pause_seconds],...]
-        :param interval:        time interval between each point, in seconds
+        :param run_points_data:        [[latitude, longitude],...]
+        :param pause_list:             [[interval_index, pause_seconds],...]
+        :param heart_rate_data_string: heart rate list in string format
+        :param altitude_data_string:   altitude list in string format
+        :param interval:               time interval between each point, in seconds
         """
 
-        # format data
-        segment_list = []
-        points_dict_list = []
-        current_time = start_time
-
-        for index, point in enumerate(run_points_data[:-1]):
-            points_dict = {
-                "latitude": point[0],
-                "longitude": point[1],
-                "time": datetime.utcfromtimestamp(current_time),
-            }
-            points_dict_list.append(points_dict)
-
-            current_time += interval
-            if pause_list and int(pause_list[0][0]) - 1 == index:
-                segment_list.append(points_dict_list[:])
-                points_dict_list.clear()
-                current_time += int(pause_list[0][1])
-                pause_list.pop(0)
-
-        points_dict_list.append(
-            {
-                "latitude": run_points_data[-1][0],
-                "longitude": run_points_data[-1][1],
-                "time": datetime.utcfromtimestamp(end_time),
-            }
-        )
-        segment_list.append(points_dict_list)
-
-        # gpx part
+        # GPX instance
         gpx = gpxpy.gpx.GPX()
         gpx.nsmap["gpxtpx"] = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
-        gpx_track = gpxpy.gpx.GPXTrack()
-        gpx_track.name = "gpx from joyrun"
-        gpx.tracks.append(gpx_track)
 
-        # add segment list to our GPX track:
-        for point_list in segment_list:
-            gpx_segment = gpxpy.gpx.GPXTrackSegment()
-            gpx_track.segments.append(gpx_segment)
-            for p in point_list:
-                point = gpxpy.gpx.GPXTrackPoint(**p)
-                gpx_segment.points.append(point)
+        # GPX Track
+        track = gpxpy.gpx.GPXTrack()
+        track.name = f"gpx from joyrun {start_time}"
+        gpx.tracks.append(track)
 
-        return gpx.to_xml()
+        # GPX Track Segment
+        track_segment = gpxpy.gpx.GPXTrackSegment()
+        track.segments.append(track_segment)
+
+        # Initialize Pause
+        pause_list = Joyrun.PauseList(pause_list)
+        pause = pause_list.next()
+
+        # Extension data instances
+        heart_rate_list = Joyrun.DataSeries(heart_rate_data_string)
+        altitude_list = Joyrun.DataSeries(altitude_data_string)
+
+        current_time = start_time
+        for index, point in enumerate(run_points_data[:-1]):
+            # New Track Point
+            track_segment.points.append(
+                Joyrun.new_track_point(
+                    point[0],
+                    point[1],
+                    altitude_list.next(),
+                    current_time,
+                    heart_rate_list.next(),
+                )
+            )
+
+            # Increment time
+            current_time += interval
+
+            # Check pause
+            if pause and pause.index - 1 == index:
+                # New Segment
+                track_segment = gpxpy.gpx.GPXTrackSegment()
+                track.segments.append(track_segment)
+                # Add paused duration
+                current_time += pause.duration
+                # Next pause
+                pause = pause_list.next()
+
+        # Last Track Point uses end_time
+        last_point = run_points_data[-1]
+        track_segment.points.append(
+            Joyrun.new_track_point(
+                last_point[0],
+                last_point[1],
+                altitude_list.next(),
+                end_time,
+                heart_rate_list.next(),
+            )
+        )
+
+        return gpx
 
     def get_single_run_record(self, fid):
         payload = {
@@ -267,19 +356,27 @@ class Joyrun:
         end_time = run_data["endtime"]
         pause_list = run_data["pause"]
         run_points_data = self.parse_content_to_ponits(run_data["content"])
-        if with_gpx:
-            # pass the track no points
-            if run_points_data:
-                gpx_data = self.parse_points_to_gpx(
-                    run_points_data, start_time, end_time, pause_list
-                )
-                download_joyrun_gpx(gpx_data, str(joyrun_id))
+        elevation_gain = None
+        # pass the track no points
+        if run_points_data:
+            gpx_data = self.parse_points_to_gpx(
+                run_points_data,
+                start_time,
+                end_time,
+                pause_list,
+                run_data["heartrate"],
+                run_data["altitude"],
+            )
+            elevation_gain = gpx_data.get_uphill_downhill().uphill
+            if with_gpx and str(joyrun_id) not in old_gpx_ids:
+                download_joyrun_gpx(gpx_data.to_xml(), str(joyrun_id))
         try:
             heart_rate_list = (
                 eval(run_data["heartrate"]) if run_data["heartrate"] else None
             )
-        except:
-            print(f"Heart Rate: can not eval for {str(heart_rate_list)}")
+        except Exception as e:
+            print(f"Heart Rate: can not eval for {run_data['heartrate']}: {e}")
+
         heart_rate = None
         if heart_rate_list:
             heart_rate = int(sum(heart_rate_list) / len(heart_rate_list))
@@ -289,9 +386,9 @@ class Joyrun:
 
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
         start_latlng = start_point(*run_points_data[0]) if run_points_data else None
-        start_date = datetime.utcfromtimestamp(start_time)
+        start_date = datetime.fromtimestamp(start_time, tz=timezone.utc)
         start_date_local = adjust_time(start_date, BASE_TIMEZONE)
-        end = datetime.utcfromtimestamp(end_time)
+        end = datetime.fromtimestamp(end_time, tz=timezone.utc)
         # only for China now
         end_local = adjust_time(end, BASE_TIMEZONE)
         location_country = None
@@ -303,6 +400,7 @@ class Joyrun:
             "name": "run from joyrun",
             # future to support others workout now only for run
             "type": "Run",
+            "subtype": "Run",
             "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
             "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
             "start_date_local": datetime.strftime(
@@ -319,11 +417,12 @@ class Joyrun:
                 seconds=int((run_data["endtime"] - run_data["starttime"]))
             ),
             "average_speed": run_data["meter"] / run_data["second"],
+            "elevation_gain": elevation_gain,
             "location_country": location_country,
         }
         return namedtuple("x", d.keys())(*d.values())
 
-    def get_all_joyrun_tracks(self, old_tracks_ids, with_gpx=False):
+    def get_all_joyrun_tracks(self, old_tracks_ids, with_gpx=False, threshold=10):
         run_ids = self.get_runs_records_ids()
         old_tracks_ids = [int(i) for i in old_tracks_ids if i.isdigit()]
 
@@ -331,9 +430,28 @@ class Joyrun:
         old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
         new_run_ids = list(set(run_ids) - set(old_tracks_ids))
         tracks = []
+        seen_runs = {}  # Dictionary to keep track of unique runs with start time as key
         for i in new_run_ids:
             run_data = self.get_single_run_record(i)
-            track = self.parse_raw_data_to_nametuple(run_data, old_gpx_ids, with_gpx)
+            start_time = datetime.fromtimestamp(run_data["runrecord"]["starttime"])
+            distance = run_data["runrecord"]["meter"]
+
+            is_duplicate = False
+            for seen_start in list(seen_runs.keys()):
+                if abs((start_time - seen_start).total_seconds()) <= threshold:
+                    if distance > seen_runs[seen_start]["distance"]:
+                        seen_runs[seen_start] = {
+                            "run_data": run_data,
+                            "distance": distance,
+                        }
+                    is_duplicate = True
+                    break
+            if not is_duplicate:
+                seen_runs[start_time] = {"run_data": run_data, "distance": distance}
+        for run in seen_runs.values():
+            track = self.parse_raw_data_to_nametuple(
+                run["run_data"], old_gpx_ids, with_gpx
+            )
             tracks.append(track)
         return tracks
 
@@ -431,13 +549,20 @@ if __name__ == "__main__":
         "--with-gpx",
         dest="with_gpx",
         action="store_true",
-        help="get all joyrun data to gpx and download",
+        help="get all joyrun data to gpx and download, including heart rate data in best effort",
     )
     parser.add_argument(
         "--from-uid-sid",
         dest="from_uid_sid",
         action="store_true",
         help="from uid and sid for download datas",
+    )
+    parser.add_argument(
+        "--threshold",
+        dest="threshold",
+        help="threshold in seconds to consider runs as duplicates",
+        type=int,
+        default=10,
     )
     options = parser.parse_args()
     if options.from_uid_sid:
@@ -454,7 +579,9 @@ if __name__ == "__main__":
 
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
-    tracks = j.get_all_joyrun_tracks(old_tracks_ids, options.with_gpx)
+    tracks = j.get_all_joyrun_tracks(
+        old_tracks_ids, options.with_gpx, options.threshold
+    )
     generator.sync_from_app(tracks)
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:

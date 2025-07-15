@@ -3,6 +3,7 @@ import traceback
 from fit_tool.fit_file import FitFile
 from fit_tool.fit_file_builder import FitFileBuilder
 from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
+from fit_tool.profile.messages.record_message import RecordMessage
 from io import BytesIO
 
 # the device manufacturer and product info can be found in github,
@@ -22,32 +23,107 @@ def is_fit_file(file):
     return header == b".FIT"
 
 
-def wrap_device_info(origin_file):
+def process_garmin_data(origin_file, use_fake_garmin_device):
     try:
-        return do_wrap_device_info(origin_file)
+        origin_file_content = origin_file.read()
+        # if origin file is not fit format, skip
+        if not is_fit_file(origin_file):
+            return BytesIO(origin_file_content)
+
+        return do_process_garmin_data(origin_file_content, use_fake_garmin_device)
     except Exception:
-        print("wrap garmin device failed, will use origin file")
+        print("process garmin data failed, will use origin file")
         traceback.print_exc()
         return BytesIO(origin_file.read())
 
 
-def do_wrap_device_info(origin_file):
+def do_process_garmin_data(file_content, use_fake_garmin_device):
     """
-    add customized device info to fit file,
+    Process garmin data, fix heart rate data and add fake garmin device info to fit file
     """
-    # if origin file is gpx file, skip
-    if not is_fit_file(origin_file):
-        return BytesIO(origin_file.read())
-
-    fit_file = FitFile.from_bytes(origin_file.read())
+    fit_file = FitFile.from_bytes(file_content)
     builder = FitFileBuilder(auto_define=True)
+
+    record_messages = []
 
     for record in fit_file.records:
         message = record.message
-        if message.global_id == DeviceInfoMessage.ID:
+        if use_fake_garmin_device and message.global_id == DeviceInfoMessage.ID:
             # ignore file device info, like WorkoutDoors APP
             continue
+        elif not isinstance(message, RecordMessage):
+            builder.add(message)
+        else:
+            record_messages.append(message)
+
+    # Add device info if needed
+    if use_fake_garmin_device:
+        device_info_message = get_device_info_message()
+        builder.add(device_info_message)
+
+    # Process and add heart rate data
+    for message in get_processed_heart_rate_message(record_messages):
         builder.add(message)
+
+    modified_file = builder.build()
+    print("process garmin data success")
+    return modified_file.to_bytes()
+
+
+def find_valid_heart_rate(messages, current_index):
+    """Find the nearest valid heart rate value."""
+
+    for msg in messages[current_index + 1 :]:
+        if msg.heart_rate is not None and msg.heart_rate != 255:
+            return msg.heart_rate
+
+    for msg in reversed(messages[:current_index]):
+        if msg.heart_rate is not None and msg.heart_rate != 255:
+            return msg.heart_rate
+
+    return None
+
+
+def create_new_record_message(old_message, heart_rate):
+    """Create a new record message with updated heart rate."""
+    new_message = RecordMessage()
+
+    for field in old_message.fields:
+        field_name = field.name
+        if hasattr(old_message, field_name):
+            field_value = getattr(old_message, field_name)
+            if field_name == "heart_rate":
+                setattr(new_message, field_name, heart_rate)
+            elif field_value is not None:
+                setattr(new_message, field_name, field_value)
+
+    return new_message
+
+
+def get_processed_heart_rate_message(record_messages):
+    """Process heart rate data, replacing None/255 values with nearby valid values."""
+    processed_messages = []
+
+    for i, message in enumerate(record_messages):
+        if message.heart_rate is None or message.heart_rate == 255:
+            valid_heart_rate = find_valid_heart_rate(record_messages, i)
+            if valid_heart_rate is not None:
+                processed_messages.append(
+                    create_new_record_message(message, valid_heart_rate)
+                )
+            else:
+                processed_messages.append(message)
+        else:
+            processed_messages.append(message)
+
+    print("process heart rate data success")
+    return processed_messages
+
+
+def get_device_info_message():
+    """
+    add customized device info to fit file,
+    """
 
     # Add custom Device Info
     message = DeviceInfoMessage()
@@ -59,8 +135,6 @@ def do_wrap_device_info(origin_file):
     message.device_index = 0
     message.source_type = 5
     message.product = GARMIN_DEVICE_PRODUCT_ID
-    builder.add(message)
 
-    modified_file = builder.build()
-    print("wrap garmin device info sucess, product id:", GARMIN_DEVICE_PRODUCT_ID)
-    return modified_file.to_bytes()
+    print("add garmin device info success")
+    return message

@@ -3,5 +3,6 @@
     "deploymentEnabled": {
       "gh-pages": false
     }
-  }
+  },
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }

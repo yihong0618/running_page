@@ -38,10 +38,16 @@ const LINE_OPACITY = 0.4;
 const MAP_HEIGHT = 600;
 //set to `false` if you want to hide the road label characters
 const ROAD_LABEL_DISPLAY = true;
+// update for now 2024/11/17 the privacy mode is true
 //set to `true` if you want to display only the routes without showing the map.
 const PRIVACY_MODE = false;
+// update for now 2024/11/17 the lights on default is false
 //set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
-const LIGHTS_ON = true;
+const LIGHTS_ON = false;
+//set to `true` if you want to show the 'Elevation Gain' column
+const SHOW_ELEVATION_GAIN = false;
+// richer title for the activity types (like garmin style)
+const RICH_TITLE = false;
 
 // IF you outside China please make sure IS_CHINESE = false
 const IS_CHINESE = true;
@@ -66,6 +72,43 @@ const MIDDAY_RUN_TITLE = IS_CHINESE ? '午间跑步' : 'Midday Run';
 const AFTERNOON_RUN_TITLE = IS_CHINESE ? '午后跑步' : 'Afternoon Run';
 const EVENING_RUN_TITLE = IS_CHINESE ? '傍晚跑步' : 'Evening Run';
 const NIGHT_RUN_TITLE = IS_CHINESE ? '夜晚跑步' : 'Night Run';
+const RUN_GENERIC_TITLE = IS_CHINESE ? '跑步' : 'Run';
+const RUN_TRAIL_TITLE = IS_CHINESE ? '越野跑' : 'Trail Run';
+const RUN_TREADMILL_TITLE = IS_CHINESE ? '跑步机' : 'Treadmill Run';
+const HIKING_TITLE = IS_CHINESE ? '徒步' : 'Hiking';
+const CYCLING_TITLE = IS_CHINESE ? '骑行' : 'Cycling';
+const SKIING_TITLE = IS_CHINESE ? '滑雪' : 'Skiing';
+const WALKING_TITLE = IS_CHINESE ? '步行' : 'Walking';
+const SWIMMING_TITLE = IS_CHINESE ? '游泳' : 'Swimming';
+const ALL_TITLE = IS_CHINESE ? '所有' : 'All';
+const ACTIVITY_COUNT_TITLE = IS_CHINESE ? '活动次数' : 'Activity Count';
+const MAX_DISTANCE_TITLE = IS_CHINESE ? '最远距离' : 'Max Distance';
+const MAX_SPEED_TITLE = IS_CHINESE ? '最快速度' : 'Max Speed';
+const TOTAL_TIME_TITLE = IS_CHINESE ? '总时间' : 'Total Time';
+const AVERAGE_SPEED_TITLE = IS_CHINESE ? '平均速度' : 'Average Speed';
+const TOTAL_DISTANCE_TITLE = IS_CHINESE ? '总距离' : 'Total Distance';
+const TOTAL_ELEVATION_GAIN_TITLE = IS_CHINESE
+  ? '总海拔爬升'
+  : 'Total Elevation Gain';
+const AVERAGE_HEART_RATE_TITLE = IS_CHINESE ? '平均心率' : 'Average Heart Rate';
+const YEARLY_TITLE = IS_CHINESE ? 'Year' : 'Yearly';
+const MONTHLY_TITLE = IS_CHINESE ? 'Month' : 'Monthly';
+const WEEKLY_TITLE = IS_CHINESE ? 'Week' : 'Weekly';
+const DAILY_TITLE = IS_CHINESE ? 'Day' : 'Daily';
+const LOCATION_TITLE = IS_CHINESE ? 'Location' : 'Location';
+const HOME_PAGE_TITLE = IS_CHINESE ? '首页' : 'Home';
+
+const ACTIVITY_TYPES = {
+  RUN_GENERIC_TITLE,
+  RUN_TRAIL_TITLE,
+  RUN_TREADMILL_TITLE,
+  HIKING_TITLE,
+  CYCLING_TITLE,
+  SKIING_TITLE,
+  WALKING_TITLE,
+  SWIMMING_TITLE,
+  ALL_TITLE,
+};
 
 const RUN_TITLES = {
   FULL_MARATHON_RUN_TITLE,
@@ -75,6 +118,21 @@ const RUN_TITLES = {
   AFTERNOON_RUN_TITLE,
   EVENING_RUN_TITLE,
   NIGHT_RUN_TITLE,
+};
+const ACTIVITY_TOTAL = {
+  ACTIVITY_COUNT_TITLE,
+  MAX_DISTANCE_TITLE,
+  MAX_SPEED_TITLE,
+  TOTAL_TIME_TITLE,
+  AVERAGE_SPEED_TITLE,
+  TOTAL_DISTANCE_TITLE,
+  TOTAL_ELEVATION_GAIN_TITLE,
+  AVERAGE_HEART_RATE_TITLE,
+  YEARLY_TITLE,
+  MONTHLY_TITLE,
+  WEEKLY_TITLE,
+  DAILY_TITLE,
+  LOCATION_TITLE,
 };
 
 export {
@@ -95,6 +153,11 @@ export {
   MAP_HEIGHT,
   PRIVACY_MODE,
   LIGHTS_ON,
+  SHOW_ELEVATION_GAIN,
+  RICH_TITLE,
+  ACTIVITY_TYPES,
+  ACTIVITY_TOTAL,
+  HOME_PAGE_TITLE,
 };
 
 const nike = 'rgb(224,237,94)'; // if you want change the main color change here src/styles/variables.scss
@@ -106,3 +169,53 @@ export const NEED_FIX_MAP = false;
 export const MAIN_COLOR = nike;
 export const PROVINCE_FILL_COLOR = '#47b8e0';
 export const COUNTRY_FILL_COLOR = dark_vanilla;
+
+export const RUN_COLOR = MAIN_COLOR;
+export const RUN_TRAIL_COLOR = 'rgb(255,153,51)';
+export const CYCLING_COLOR = 'rgb(51,255,87)';
+export const HIKING_COLOR = 'rgb(151,51,255)';
+export const WALKING_COLOR = HIKING_COLOR;
+export const SWIMMING_COLOR = 'rgb(255,51,51)';
+
+// map tiles vendor, maptiler or mapbox or stadiamaps
+// if you want to use maptiler, set the access token in MAP_TILE_ACCESS_TOKEN
+export const MAP_TILE_VENDOR = 'mapbox';
+
+// map tiles style name, see MAP_TILE_STYLES for more details
+export const MAP_TILE_STYLE = 'dark-v10';
+
+// access token. you can apply a new one, it's free.
+// maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
+// stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 |sign up at https://client.stadiamaps.com/signup/
+export const MAP_TILE_ACCESS_TOKEN = 'Gt5R0jT8tuIYxW6sNrAg';
+
+export const MAP_TILE_STYLES = {
+  maptiler: {
+    'dataviz-dark':
+      'https://api.maptiler.com/maps/dataviz-dark/style.json?key=',
+    'basic-dark': 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=',
+    'streets-dark':
+      'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=',
+    'outdoor-dark':
+      'https://api.maptiler.com/maps/outdoor-v2-dark/style.json?key=',
+    'bright-dark':
+      'https://api.maptiler.com/maps/bright-v2-dark/style.json?key=',
+    'topo-dark': 'https://api.maptiler.com/maps/topo-v2-dark/style.json?key=',
+    'winter-dark':
+      'https://api.maptiler.com/maps/winter-v2-dark/style.json?key=',
+    hybrid: 'https://api.maptiler.com/maps/hybrid/style.json?key=',
+  },
+  stadiamaps: {
+    alidade_smooth_dark:
+      'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=',
+    alidade_satellite:
+      'https://tiles.stadiamaps.com/styles/alidade_satellite.json?api_key=',
+  },
+  mapbox: {
+    'dark-v10': 'mapbox://styles/mapbox/dark-v10',
+    'dark-v11': 'mapbox://styles/mapbox/dark-v11',
+    'navigation-night': 'mapbox://styles/mapbox/navigation-night-v1',
+    'satellite-streets-v12': 'mapbox://styles/mapbox/satellite-streets-v12',
+  },
+  default: 'mapbox://styles/mapbox/dark-v10',
+};

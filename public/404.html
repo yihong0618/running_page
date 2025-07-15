@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script>
+      // Get the current path excluding the domain
+      const path = window.location.pathname;
+      // Save it to session storage
+      sessionStorage.setItem('redirect', path);
+
+      // Get the base path from the current URL
+      const segments = window.location.pathname.split('/');
+	    const basePath = segments.length > 2 ? '/' + segments[1] : '/';
+      // Redirect to index.html
+      window.location.replace(window.location.origin + basePath);
+    </script>
+  </head>
+  <body>
+    Redirecting...
+  </body>
+</html>
