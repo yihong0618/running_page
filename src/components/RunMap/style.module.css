@@ -7,6 +7,7 @@
 }
 
 .buttons {
+  font-family: var(--font-mono);
   position: absolute;
   top: 10px;
   left: 10px;
@@ -22,11 +23,11 @@
   margin-top: 0.1rem;
   font-size: 1rem;
   text-align: center;
-  color: rgb(204, 204, 204);
+  color: var(--color-run-date);
 }
 
 .selected {
-  color: rgb(224, 237, 94);
+  color: var(--color-primary);
 }
 
 .runTitle {
@@ -36,7 +37,7 @@
   bottom: 0px;
   left: 120px;
   cursor: pointer;
-  color: rgb(224, 237, 94);
+  color: var(--color-primary);
 }
 
 .lights {

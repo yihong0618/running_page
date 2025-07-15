@@ -23,15 +23,9 @@ const YearsStat = ({
         <p className="leading-relaxed">
           {INFO_MESSAGE(years.length, year)}
           <br />
-          Click a year to view detailed info
-          <br />
-          One at a time
-          <br />
-          Time will tell
-          <br />
         </p>
       </section>
-      <hr color="red" />
+      <hr />
       {yearsArrayUpdate.map((year) => (
         <YearStat key={year} year={year} onClick={onClick} />
       ))}

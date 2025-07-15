@@ -27,7 +27,7 @@ import {
 const Index = () => {
   const { siteTitle } = useSiteMetadata();
   const { activities, thisYear } = useActivities();
-  const [year, setYear] = useState('Total');
+  const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [runs, setActivity] = useState(
     filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc)
@@ -173,7 +173,7 @@ const Index = () => {
   return (
     <Layout>
       <div className="w-full lg:w-1/3">
-        <h1 className="my-12 text-5xl font-extrabold italic">
+        <h1 className="my-12 mt-6 text-5xl font-extrabold italic">
           <a href="/">{siteTitle}</a>
         </h1>
         {(viewState.zoom ?? 0) <= 3 && IS_CHINESE ? (

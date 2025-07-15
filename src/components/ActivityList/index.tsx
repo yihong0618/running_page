@@ -177,38 +177,41 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
           </>
         )}
         {['month', 'week', 'year'].includes(interval) && (
-          <div
-            className={styles.chart}
-            style={{ height: '250px', width: '100%' }}
-          >
+          <div className={styles.chart}>
             <ResponsiveContainer>
               <BarChart
                 data={data}
                 margin={{ top: 20, right: 20, left: -20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                <XAxis dataKey="day" tick={{ fill: 'rgb(204, 204, 204)' }} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="var(--color-run-row-hover-background)"
+                />
+                <XAxis
+                  dataKey="day"
+                  tick={{ fill: 'var(--color-run-table-thead)' }}
+                />
                 <YAxis
                   label={{
                     value: 'km',
                     angle: -90,
                     position: 'insideLeft',
-                    fill: 'rgb(204, 204, 204)',
+                    fill: 'var(--color-run-table-thead)',
                   }}
                   domain={[0, yAxisMax]}
                   ticks={yAxisTicks}
-                  tick={{ fill: 'rgb(204, 204, 204)' }}
+                  tick={{ fill: 'var(--color-run-table-thead)' }}
                 />
                 <Tooltip
                   formatter={(value) => `${value} km`}
                   contentStyle={{
-                    backgroundColor: 'rgb(36, 36, 36)',
-                    border: '1px solid #444',
-                    color: 'rgb(204, 204, 204)',
+                    backgroundColor: 'var(--color-run-row-hover-background)',
+                    border: '1px solid var(--color-run-row-hover-background)',
+                    color: 'var(--color-run-table-thead)',
                   }}
-                  labelStyle={{ color: 'rgb(224, 237, 94)' }}
+                  labelStyle={{ color: 'var(--color-primary)' }}
                 />
-                <Bar dataKey="distance" fill="rgb(224, 237, 94)" />
+                <Bar dataKey="distance" fill="var(--color-primary)" />
               </BarChart>
             </ResponsiveContainer>
           </div>
