@@ -1,11 +1,10 @@
 import argparse
-from base64 import b64decode
 import json
 import logging
 import os.path
 import time
 from collections import namedtuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from xml.etree import ElementTree
 
 import gpxpy.gpx
@@ -24,79 +23,65 @@ from utils import adjust_time, make_activities_file
 # logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nike_sync")
 
-BASE_URL = "https://api.nike.com/sport/v3/me"
+BASE_URL = "https://api.nike.com/plus/v3"
 TOKEN_REFRESH_URL = "https://api.nike.com/idn/shim/oauth/2.0/token"
-NIKE_CLIENT_ID = "VmhBZWFmRUdKNkc4ZTlEeFJVejhpRTUwQ1o5TWlKTUc="
-NIKE_UX_ID = "Y29tLm5pa2Uuc3BvcnQucnVubmluZy5pb3MuNS4xNQ=="
-NIKE_HEADERS = {
-    "Host": "api.nike.com",
-    "Accept": "application/json",
-    "Content-Type": "application/json",
-}
 
 
 class Nike:
-    def __init__(self, refresh_token):
+    def __init__(self, access_token):
         self.client = httpx.Client()
 
-        #         response = self.client.post(
-        #             TOKEN_REFRESH_URL,
-        #             headers=NIKE_HEADERS,
-        #             json={
-        #                 "refresh_token": refresh_token,
-        #                 "client_id": b64decode(NIKE_CLIENT_ID).decode(),
-        #                 "grant_type": "refresh_token",
-        #                 "ux_id": b64decode(NIKE_UX_ID).decode(),
-        #             },
-        #             timeout=60,
-        #         )
-        #         response.raise_for_status()
-        #
-        #         access_token = response.json()["access_token"]
-        access_token = "The content of 'access_token' that you just copied."
         self.client.headers.update({"Authorization": f"Bearer {access_token}"})
 
-    def get_activities_since_timestamp(self, timestamp):
-        return self.request("activities/after_time", timestamp)
-
-    def get_activities_since_id(self, activity_id):
+    def get_activities_before_id(self, activity_id):
+        if not activity_id:
+            activity_id = "*"
         try:
-            return self.request("activities/after_id", activity_id)
-        except:
-            print("retry")
+            return self.request(
+                f"activities/before_id/v3/{activity_id}?limit=30&types=run%2Cjogging&include_deleted=false"
+            )
+        except Exception as e:
+            print(f"Error getting activities before id {activity_id}: {e}")
             time.sleep(3)
-            return self.request("activities/after_id", activity_id)
+            return self.request(
+                f"activities/before_id/v3/{activity_id}?limit=30&types=run%2Cjogging&include_deleted=false"
+            )
 
     def get_activity(self, activity_id):
         try:
-            return self.request("activity", f"{activity_id}?metrics=ALL")
-        except:
+            return self.request(f"activity/{activity_id}?metrics=ALL")
+        except Exception:
             print("retry")
             time.sleep(3)
-            return self.request("activity", f"{activity_id}?metrics=ALL")
+            return self.request(f"activity/{activity_id}?metrics=ALL")
 
-    def request(self, resource, selector):
-        url = f"{BASE_URL}/{resource}/{selector}"
+    def request(self, resource):
+        url = f"{BASE_URL}/{resource}"
         logger.info(f"GET: {url}")
         response = self.client.get(url)
         response.raise_for_status()
         return response.json()
 
 
-def run(refresh_token):
+def run(refresh_token, is_continue_sync=False):
     nike = Nike(refresh_token)
-    last_id = get_last_id()
-
-    logger.info(f"Running from ID {last_id}")
-
+    if is_continue_sync:
+        last_id_local = get_last_before_id()
+        print(f"Will continue sync before Running from ID {last_id_local}")
+    else:
+        last_id_local = None
+    before_id = None
     while True:
-        if last_id is not None:
-            data = nike.get_activities_since_id(last_id)
-        else:
-            data = nike.get_activities_since_timestamp(0)
-
-        last_id = data["paging"].get("after_id")
+        data = nike.get_activities_before_id(before_id)
         activities = data["activities"]
+        activities_ids = [i["id"] for i in activities]
+        is_sync_done = False
+        if last_id_local in activities_ids:
+            index = activities_ids.index(last_id_local)
+            activities = activities[:index]
+            is_sync_done = True
+
+        before_id = data["paging"].get("before_id")
 
         logger.info(f"Found {len(activities)} new activities")
 
@@ -114,8 +99,8 @@ def run(refresh_token):
             full_activity = nike.get_activity(activity_id)
             save_activity(full_activity)
 
-        if last_id is None or not activities:
-            logger.info(f"Found no new activities, finishing")
+        if is_sync_done or before_id is None or not activities:
+            logger.info("Found no new activities, finishing")
             return
 
 
@@ -127,13 +112,13 @@ def save_activity(activity):
     path = os.path.join(OUTPUT_DIR, f"{activity_time}.json")
     try:
         with open(path, "w") as f:
-            json.dump(sanitise_json(activity), f, indent=4)
+            json.dump(activity, f, indent=4)
     except Exception:
         os.unlink(path)
         raise
 
 
-def get_last_id():
+def get_last_before_id():
     try:
         file_names = os.listdir(OUTPUT_DIR)
         file_names = [i for i in file_names if not i.startswith(".")]
@@ -144,28 +129,9 @@ def get_last_id():
         logger.info(f"Last update from {data['id']}")
         return data["id"]
     # easy solution when error happens no last id
-    except:
+    except Exception as e:
+        print(f"Error getting last before id: {e}")
         return None
-
-
-def sanitise_json(d):
-    """
-    Gatsby's JSON loading for GraphQL queries doesn't support "." characters in
-    names, which Nike uses a lot for reverse-domain notation.
-
-    We recursively transform all dict keys to use underscores instead.
-    """
-
-    def _transform_key(key):
-        return key.replace(".", "_")
-
-    if isinstance(d, dict):
-        return {_transform_key(k): sanitise_json(v) for k, v in d.items()}
-
-    if isinstance(d, (tuple, list)):
-        return [sanitise_json(x) for x in d]
-
-    return d
 
 
 def get_to_generate_files():
@@ -190,7 +156,8 @@ def get_to_generate_files():
             last_time = max(timestamps)
         else:
             last_time = 0
-    except:
+    except Exception as e:
+        print(f"Error getting last time: {e}")
         last_time = 0
     return [
         OUTPUT_DIR + "/" + i
@@ -203,7 +170,7 @@ def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rat
     """
     Parses the latitude, longitude and elevation data to generate a GPX document
     Args:
-        title: the title of the GXP document
+        title: the title of the GPX document
         latitude_data: A list of dictionaries containing latitude data
         longitude_data: A list of dictionaries containing longitude data
         elevation_data: A list of dictionaries containing elevation data
@@ -243,14 +210,16 @@ def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rat
 
     for lat, lon in zip(latitude_data, longitude_data):
         if lat["start_epoch_ms"] != lon["start_epoch_ms"]:
-            raise Exception(f"\tThe latitude and longitude data is out of order")
+            raise Exception("\tThe latitude and longitude data is out of order")
 
         points_dict_list.append(
             {
                 "latitude": lat["value"],
                 "longitude": lon["value"],
                 "start_time": lat["start_epoch_ms"],
-                "time": datetime.utcfromtimestamp(lat["start_epoch_ms"] / 1000),
+                "time": datetime.fromtimestamp(
+                    lat["start_epoch_ms"] / 1000, tz=timezone.utc
+                ),
             }
         )
 
@@ -353,14 +322,17 @@ def parse_no_gpx_data(activity):
     elapsed_time = timedelta(seconds=int(activity["active_duration_ms"] / 1000))
 
     nike_id = activity["end_epoch_ms"]
-    start_date = datetime.utcfromtimestamp(activity["start_epoch_ms"] / 1000)
+    start_date = datetime.fromtimestamp(
+        activity["start_epoch_ms"] / 1000, tz=timezone.utc
+    )
     start_date_local = adjust_time(start_date, BASE_TIMEZONE)
-    end_date = datetime.utcfromtimestamp(activity["end_epoch_ms"] / 1000)
+    end_date = datetime.fromtimestamp(activity["end_epoch_ms"] / 1000, tz=timezone.utc)
     end_date_local = adjust_time(end_date, BASE_TIMEZONE)
     d = {
         "id": int(nike_id),
         "name": "run from nike",
         "type": "Run",
+        "subtype": "Run",
         "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
         "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
         "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
@@ -373,6 +345,7 @@ def parse_no_gpx_data(activity):
         "moving_time": moving_time,
         "elapsed_time": elapsed_time,
         "average_speed": distance / int(activity["active_duration_ms"] / 1000),
+        "elevation_gain": 0,
         "location_country": "",
     }
     return namedtuple("x", d.keys())(*d.values())
@@ -391,7 +364,8 @@ def make_new_gpxs(files):
         with open(file, "r") as f:
             try:
                 json_data = json.loads(f.read())
-            except:
+            except Exception as e:
+                print(f"Error reading JSON file {file}: {e}")
                 return
         # ALL save name using utc if you want local please offset
         activity_name = str(json_data["end_epoch_ms"])
@@ -404,7 +378,7 @@ def make_new_gpxs(files):
                 track = parse_no_gpx_data(json_data)
                 if track:
                     tracks_list.append(track)
-            # just ignore some unexcept run
+            # just ignore some unexpected run
             except Exception as e:
                 print(str(e))
                 continue
@@ -419,8 +393,14 @@ if __name__ == "__main__":
         os.mkdir(OUTPUT_DIR)
     parser = argparse.ArgumentParser()
     parser.add_argument("refresh_token", help="API refresh access token for nike.com")
+    parser.add_argument(
+        "--continue-sync",
+        dest="continue_sync",
+        action="store_true",
+        help="Continue syncing from the last activity",
+    )
     options = parser.parse_args()
-    run(options.refresh_token)
+    run(options.refresh_token, options.continue_sync)
 
     time.sleep(2)
     files = get_to_generate_files()

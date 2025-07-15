@@ -5,23 +5,13 @@ Copy most code from https://github.com/cyberjunky/python-garminconnect
 
 import argparse
 import asyncio
-import logging
 import os
 import sys
-import time
-import traceback
-import zipfile
-from io import BytesIO
 
-import aiofiles
-import cloudscraper
-import garth
-import httpx
-from config import FIT_FOLDER, GPX_FOLDER, JSON_FILE, SQL_FILE, config
-from garmin_device_adaptor import wrap_device_info
+
+from config import FIT_FOLDER, GPX_FOLDER, JSON_FILE, SQL_FILE
 from garmin_sync import Garmin, get_downloaded_ids
-from garmin_sync import download_new_activities, gather_with_concurrency
-from synced_data_file_logger import load_synced_activity_list, save_synced_activity_list
+from garmin_sync import download_new_activities
 from utils import make_activities_file
 
 if __name__ == "__main__":
@@ -53,7 +43,9 @@ if __name__ == "__main__":
     # If the activity is manually imported with a GPX, the GPX file will be synced
 
     # load synced activity list
-    synced_activity = load_synced_activity_list()
+    downloaded_fit = get_downloaded_ids(FIT_FOLDER)
+    downloaded_gpx = get_downloaded_ids(GPX_FOLDER)
+    downloaded_activity = list(set(downloaded_fit + downloaded_gpx))
 
     folder = FIT_FOLDER
     # make gpx or tcx dir
@@ -65,14 +57,14 @@ if __name__ == "__main__":
         download_new_activities(
             secret_string_cn,
             auth_domain,
-            synced_activity,
+            downloaded_activity,
             is_only_running,
             folder,
             "fit",
         )
     )
     loop.run_until_complete(future)
-    new_ids = future.result()
+    new_ids, id2title = future.result()
 
     to_upload_files = []
     for i in new_ids:
@@ -84,9 +76,10 @@ if __name__ == "__main__":
             to_upload_files.append(os.path.join(GPX_FOLDER, f"{i}.gpx"))
 
     print("Files to sync:" + " ".join(to_upload_files))
+    # FIXME is com ok here?
     garmin_global_client = Garmin(
         secret_string_global,
-        config("sync", "garmin", "authentication_domain"),
+        "COM",
         is_only_running,
     )
     loop = asyncio.get_event_loop()
@@ -95,11 +88,11 @@ if __name__ == "__main__":
     )
     loop.run_until_complete(future)
 
-    # Save synced activity list for speeding up
-    synced_activity.extend(new_ids)
-    save_synced_activity_list(synced_activity)
-
     # Step 2:
     # Generate track from fit/gpx file
-    make_activities_file(SQL_FILE, GPX_FOLDER, JSON_FILE, file_suffix="gpx")
-    make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, file_suffix="fit")
+    make_activities_file(
+        SQL_FILE, GPX_FOLDER, JSON_FILE, file_suffix="gpx", activity_title_dict=id2title
+    )
+    make_activities_file(
+        SQL_FILE, FIT_FOLDER, JSON_FILE, file_suffix="fit", activity_title_dict=id2title
+    )
