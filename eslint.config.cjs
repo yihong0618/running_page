@@ -41,7 +41,7 @@ module.exports = [
       // Custom rules
       'prettier/prettier': 'off',
       'react/prop-types': 'off',
-      'no-unused-vars': 'off', // 关闭原生规则，使用 TypeScript 版本
+      'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
