@@ -65,7 +65,7 @@ class Activity(Base):
     average_heartrate = Column(Float)
     average_speed = Column(Float)
     elevation_gain = Column(Float)
-    streak: Optional[int] = None
+    streak = None
 
     def to_dict(self):
         out = {}

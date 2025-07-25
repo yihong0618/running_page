@@ -153,7 +153,7 @@ class Generator:
             else:
                 assert date > last_date
                 streak = 1
-            activity.streak = streak
+            activity.streak = streak  # type: ignore
             last_date = date
             if not IGNORE_BEFORE_SAVING:
                 activity.summary_polyline = filter_out(activity.summary_polyline)  # type: ignore
