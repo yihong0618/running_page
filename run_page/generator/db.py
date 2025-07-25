@@ -1,7 +1,6 @@
 import datetime
 import random
 import string
-from typing import Optional
 
 from geopy.geocoders import options, Nominatim
 from sqlalchemy import (
