@@ -477,7 +477,7 @@ def parse_points_to_tcx(sport_data, points_dict_list):
     activities.append(activity)
     #   Id
     activity_id = ET.Element("Id")
-    activity_id.text = fit_start_time  # Codoon use start_time as ID
+    activity_id.text = fit_start_time
     activity.append(activity_id)
     #   Creator
     activity_creator = ET.Element("Creator", {"xsi:type": "Device_t"})
