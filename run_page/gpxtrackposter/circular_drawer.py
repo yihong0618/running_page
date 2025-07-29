@@ -71,7 +71,7 @@ class CircularDrawer(TracksDrawer):
             dr.rect(
                 insert=offset.tuple(),
                 size=size.tuple(),
-                fill=self.poster.colors["background"]
+                fill=self.poster.colors["background"],
             )
         )
         if self.poster.tracks is None:
