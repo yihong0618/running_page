@@ -1,0 +1,36 @@
+[tools]
+uv = "latest"
+bun = "latest"
+
+[env]
+'_'.file = ".env"
+
+[tasks.node]
+run = """
+sudo docker build -t node:local . -f node.Dockerfile
+"""
+
+[tasks.python]
+run = """
+sudo docker build -t python:local . -f py.Dockerfile
+"""
+
+[tasks.build]
+run = """
+sudo docker build -t running_page:latest . --build-arg app=Strava --build-arg client_id="$STRAVA_ID"  --build-arg client_secret="$STRAVA_SECRET"  --build-arg refresh_token="$STRAVA_FRESH" --build-arg YOUR_NAME=haru
+"""
+
+[tasks.docker]
+run = """
+sudo docker build --no-cache -f node.Dockerfile -t node:local .
+sudo docker build --no-cache -f py.Dockerfile -t python:local .
+sudo docker image prune -f
+"""
+
+[tasks.total]
+run = "uv run run_page/gen_svg.py --from-db --title harus-run --type github --athlete haru --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5"
+
+[tasks.load]
+run = """
+uv run run_page/strava_sync.py "$STRAVA_ID" "$STRAVA_SECRET" "$STRAVA_FRESH"
+"""
