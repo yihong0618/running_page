@@ -1,0 +1,44 @@
+name: Custom Job
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4,19 * * *'
+  push:
+    branches:
+      - master
+    paths:
+      - run_page/nike_sync.py
+      - run_page/nike_to_strava_sync.py
+      - run_page/strava_sync.py
+      - run_page/gen_svg.py
+      - run_page/garmin_sync.py
+      - run_page/coros_sync.py
+      - run_page/keep_sync.py
+      - run_page/gpx_sync.py
+      - run_page/tcx_sync.py
+      - run_page/tcx_to_garmin_sync.py
+      - run_page/garmin_to_strava_sync.py
+      - run_page/keep_to_strava_sync.py
+      - run_page/oppo_sync.py
+      - requirements.txt
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  sync:
+    name: Sync Garmin CN
+    uses: ./.github/workflows/run_data_sync.yml
+    with:
+      job_name: garmin_cn
+    secrets: inherit
+
+  sync_cn_to_global:
+    if: needs.sync.result == 'success'
+    name: Sync Garmin Global
+    uses: ./.github/workflows/run_data_sync.yml
+    with:
+      job_name: garmin_sync_cn_global
+    secrets: inherit
+    needs:
+      - sync

@@ -1,27 +1,12 @@
 name: Run Data Sync
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 4,19 * * *'
-  push:
-    branches:
-      - master
-    paths:
-      - run_page/nike_sync.py
-      - run_page/nike_to_strava_sync.py
-      - run_page/strava_sync.py
-      - run_page/gen_svg.py
-      - run_page/garmin_sync.py
-      - run_page/coros_sync.py
-      - run_page/keep_sync.py
-      - run_page/gpx_sync.py
-      - run_page/tcx_sync.py
-      - run_page/tcx_to_garmin_sync.py
-      - run_page/garmin_to_strava_sync.py
-      - run_page/keep_to_strava_sync.py
-      - run_page/oppo_sync.py
-      - requirements.txt
+  workflow_call:
+    inputs:
+      job_name:
+        required: true
+        type: string
+        default: pass
 
 env:
   # please change to your own config.
@@ -40,7 +25,7 @@ env:
   DATA_CACHE_PREFIX: 'track_data'
   BUILD_GH_PAGES: false # If you do not need GitHub Page please set it to `false`
   SAVE_TO_PARQENT: false # If you want to save the data to the repo, set it to `true`
-  GENERATE_MONTH_OF_LIFE: true # If you want to generate the month of life, set it to `true`
+  GENERATE_MONTH_OF_LIFE: false # If you want to generate the month of life, set it to `true`
   BIRTHDAY_MONTH: 1989-03 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
 
 jobs:
@@ -95,45 +80,46 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git checkout ./assets
           git pull
 
       - name: Run sync Nike script
-        if: env.RUN_TYPE == 'nike'
+        if: inputs.job_name == 'nike'
         run: |
           python run_page/nike_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }}
 
       - name: Run sync Nike to Strava(Run with nike data backup and show with strava)
-        if: env.RUN_TYPE == 'nike_to_strava'
+        if: inputs.job_name == 'nike_to_strava'
         run: |
           python run_page/nike_to_strava_sync.py ${{ secrets.NIKE_REFRESH_TOKEN }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
 
       - name: Run sync Keep script
-        if: env.RUN_TYPE == 'keep'
+        if: inputs.job_name == 'keep'
         run: |
           python run_page/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} --with-gpx
 
       - name: Run sync Coros script
-        if: env.RUN_TYPE == 'coros'
+        if: inputs.job_name == 'coros'
         run: |
           python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides , swims, strengths trains, hikes, runs, etc.).
         # python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }} --only-run
 
       - name: Run sync Keep_to_strava script
-        if: env.RUN_TYPE == 'keep_to_strava_sync'
+        if: inputs.job_name == 'keep_to_strava_sync'
         run: |
           python run_page/keep_to_strava_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }} --sync-types running cycling hiking
         # If you only want to sync `type running` modify args --sync-types running, default script is to sync all data (rides, hikes and runs).
 
       - name: Run sync Strava script
-        if: env.RUN_TYPE == 'strava'
+        if: inputs.job_name == 'strava'
         run: |
           python run_page/strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
 
       # for garmin if you want generate `tcx` you can add --tcx command in the args.
       - name: Run sync Garmin script
-        if: env.RUN_TYPE == 'garmin'
+        if: inputs.job_name == 'garmin'
         run: |
           # make garmin secret string `python run_page/get_garmin_secret.py ${email} ${password}
           python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
@@ -141,15 +127,15 @@ jobs:
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }} --only-run
 
       - name: Run sync Garmin CN script
-        if: env.RUN_TYPE == 'garmin_cn'
+        if: inputs.job_name == 'garmin_cn'
         run: |
           # make garmin secret string `python run_page/get_garmin_secret.py ${email} ${password} --is-cn
-          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn --only-run
+          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }}  --only-run --is-cn
 
       - name: Run sync Garmin CN to Garmin script
-        if: env.RUN_TYPE == 'garmin_sync_cn_global'
+        if: inputs.job_name == 'garmin_sync_cn_global'
         run: |
           # make garmin secret string `python run_page/garmin_sync_cn_global.py ${email} ${password} --is-cn
           python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}
@@ -157,59 +143,59 @@ jobs:
         # python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}  --only-run
 
       - name: Run sync Only GPX script
-        if: env.RUN_TYPE == 'only_gpx'
+        if: inputs.job_name == 'only_gpx'
         run: |
           python run_page/gpx_sync.py
 
       - name: Run sync Only FIT script
-        if: env.RUN_TYPE == 'only_fit'
+        if: inputs.job_name == 'only_fit'
         run: |
           python run_page/fit_sync.py
 
       - name: Run sync Only TCX script
-        if: env.RUN_TYPE == 'only_tcx'
+        if: inputs.job_name == 'only_tcx'
         run: |
           python run_page/tcx_sync.py
 
       - name: Run sync Strava to Garmin(Run with strava(or others upload to strava) data backup in Garmin)
-        if: env.RUN_TYPE == 'strava_to_garmin'
+        if: inputs.job_name == 'strava_to_garmin'
         run: |
           python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
 
       - name: Run sync Strava to Garmin-cn(Run with strava(or others upload to strava) data backup in Garmin-cn)
-        if: env.RUN_TYPE == 'strava_to_garmin_cn'
+        if: inputs.job_name == 'strava_to_garmin_cn'
         run: |
           python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} ${{ secrets.STRAVA_JWT }} --is-cn
 
       - name: Run sync Garmin-cn to Strava(Run with Garmin data backup in Strava)
-        if: env.RUN_TYPE == 'garmin_to_strava_cn'
+        if: inputs.job_name == 'garmin_to_strava_cn'
         run: |
           python run_page/garmin_to_strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }}  --is-cn
 
       - name: Run sync Garmin to Strava(Run with Garmin data backup in Strava)
-        if: env.RUN_TYPE == 'garmin_to_strava'
+        if: inputs.job_name == 'garmin_to_strava'
         run: |
           python run_page/garmin_to_strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
 
       - name: Run sync Tulipsport script
-        if: env.RUN_TYPE == 'tulipsport'
+        if: inputs.job_name == 'tulipsport'
         run: |
           python run_page/tulipsport_sync.py ${{ secrets.TULIPSPORT_TOKEN }} --with-gpx
 
       - name: Run sync Oppo heytap script, note currently this script is not worked
-        if: env.RUN_TYPE == 'oppo'
+        if: inputs.job_name == 'oppo'
         run: |
           python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-tcx
         # If you want to sync fit activity in gpx format, please consider the following script:
         # python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-gpx
 
       - name: Run db updater script to add "Elevation Gain" field to db
-        if: env.RUN_TYPE == 'db_updater'
+        if: inputs.job_name == 'db_updater'
         run: |
           python run_page/db_updater.py
 
       - name: Make svg GitHub profile
-        if: env.RUN_TYPE != 'pass'
+        if: inputs.job_name != 'pass'
         env:
           TITLE: ${{ env.TITLE }}
           TITLE_GRID: ${{ env.TITLE_GRID }}
