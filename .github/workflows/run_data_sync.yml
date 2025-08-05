@@ -240,6 +240,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git pull
           git add ./assets
           git commit -m 'update new runs' || echo "nothing to commit"
           git push || echo "nothing to push"
