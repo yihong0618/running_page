@@ -155,7 +155,7 @@ class GithubDrawer(TracksDrawer):
                     if date_title in self.poster.tracks_by_date:
                         tracks = self.poster.tracks_by_date[date_title]
                         length = sum([t.length for t in tracks])
-                        color = self.color(
+                        color = self.color2(
                             self.poster.length_range_by_date, length
                         )
                         str_length = format_float(self.poster.m2u(length))
