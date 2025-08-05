@@ -90,6 +90,13 @@ jobs:
             ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-
             ${{ env.DATA_CACHE_PREFIX }}-
 
+      - name: Pull
+        if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git pull
+
       - name: Run sync Nike script
         if: env.RUN_TYPE == 'nike'
         run: |
