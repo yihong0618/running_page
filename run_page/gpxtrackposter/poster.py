@@ -186,7 +186,7 @@ class Poster:
         if self.drawer_type != "monthoflife":
             d.add(
                 d.text(
-                    self.trans("SPECIAL TRACKS"),
+                    self.trans("Special Tracks"),
                     insert=(65, self.height - 20),
                     fill=text_color,
                     style=header_style,
@@ -221,7 +221,7 @@ class Poster:
 
         d.add(
             d.text(
-                self.trans("STATISTICS"),
+                self.trans("Statistics"),
                 insert=(120, self.height - 20),
                 fill=text_color,
                 style=header_style,

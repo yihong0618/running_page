@@ -17,7 +17,7 @@ class GithubDrawer(TracksDrawer):
 
     def __init__(self, the_poster: Poster):
         super().__init__(the_poster)
-        self.empty_color = "#444444"
+        self.empty_color = "#E0E0E0"
 
     def create_args(self, args_parser: argparse.ArgumentParser):
         """Add arguments specific to github drawer"""
@@ -28,7 +28,7 @@ class GithubDrawer(TracksDrawer):
             metavar="COLOR",
             type=str,
             default=self.empty_color,
-            help="Color for empty dates in github style poster (default: #444444)",
+            help="Color for empty dates in github style poster (default: #E0E0E0)",
         )
 
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
@@ -155,16 +155,9 @@ class GithubDrawer(TracksDrawer):
                     if date_title in self.poster.tracks_by_date:
                         tracks = self.poster.tracks_by_date[date_title]
                         length = sum([t.length for t in tracks])
-                        distance1 = self.poster.special_distance["special_distance"]
-                        distance2 = self.poster.special_distance["special_distance2"]
-                        has_special = distance1 < length / 1000 < distance2
                         color = self.color(
-                            self.poster.length_range_by_date, length, has_special
+                            self.poster.length_range_by_date, length
                         )
-                        if length / 1000 >= distance2:
-                            color = self.poster.colors.get(
-                                "special2"
-                            ) or self.poster.colors.get("special")
                         str_length = format_float(self.poster.m2u(length))
                         date_title = f"{date_title} {str_length} {km_or_mi}"
 

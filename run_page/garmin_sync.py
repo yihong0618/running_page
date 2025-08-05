@@ -8,6 +8,7 @@ import asyncio
 import datetime as dt
 import logging
 import os
+import re
 import sys
 import time
 import traceback
@@ -334,8 +335,9 @@ def get_garmin_summary_infos(activity_summary, activity_id):
         garmin_summary_infos["distance"] = summary_dto.get("distance")
         garmin_summary_infos["average_hr"] = summary_dto.get("averageHR")
         garmin_summary_infos["average_speed"] = summary_dto.get("averageSpeed")
+        timestring = re.sub(r'\.\d+$', '', summary_dto.get("startTimeGMT")[:-1])
         start_time = dt.datetime.fromisoformat(
-            summary_dto.get("startTimeGMT")[:-1] + "+00:00"
+            timestring + "+00:00"
         )
         duration_second = summary_dto.get("duration")
         end_time = start_time + dt.timedelta(seconds=duration_second)
@@ -368,6 +370,7 @@ async def download_new_activities(
             garmin_summary_infos_dict[id] = get_garmin_summary_infos(
                 activity_summary, id
             )
+            await asyncio.sleep(1)
         except Exception as e:
             print(f"Failed to get activity summary {id}: {str(e)}")
             continue

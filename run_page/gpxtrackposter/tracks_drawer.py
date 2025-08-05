@@ -31,26 +31,27 @@ class TracksDrawer:
         pass
 
     def color(
-        self, length_range: ValueRange, length: float, is_special: bool = False
+        self, length_range: ValueRange, length: float
     ) -> str:
         assert length_range.is_valid()
 
-        color1 = (
-            self.poster.colors["special"] if is_special else self.poster.colors["track"]
-        )
-        color2 = (
-            self.poster.colors["special2"]
-            if is_special
-            else self.poster.colors["track2"]
-        )
+        lower = length_range.lower()
+        topper = length_range.upper()
 
-        diff = length_range.diameter()
-        if diff == 0:
-            return color1
-        if (
-            self.poster.length_range.upper() / 1000
-            < self.poster.special_distance["special_distance2"]
-        ):
-            return color1
+        length -= lower
+        d1 = self.poster.special_distance["special_distance"] * 1000 - lower
+        d2 = self.poster.special_distance["special_distance2"] * 1000 - lower
 
-        return interpolate_color(color1, color2, (length - length_range.lower()) / diff)
+        special = 1 if length > self.poster.special_distance["special_distance"] * 1000 else 0
+        if length > self.poster.special_distance["special_distance2"] * 1000:
+            special = 2
+
+        if special == 1:
+            return interpolate_color(self.poster.colors["special"], self.poster.colors["special2"], \
+                              (length - d1) / (d2 - d1))
+        elif special == 2:
+            return interpolate_color(self.poster.colors["special2"], self.poster.colors["track2"], \
+                              (length - d2) / (topper - d2) )
+        else:
+            return interpolate_color(self.poster.colors["track"], self.poster.colors["special"], \
+                              length / d1)

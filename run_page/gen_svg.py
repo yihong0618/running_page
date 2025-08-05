@@ -99,14 +99,15 @@ def main():
         dest="track_color",
         metavar="COLOR",
         type=str,
-        default="#4DD2FF",
-        help='Color of tracks (default: "#4DD2FF").',
+        default="#95E7A6",
+        help='Color of tracks (default: "#95E7A6").',
     )
     args_parser.add_argument(
         "--track-color2",
         dest="track_color2",
         metavar="COLOR",
         type=str,
+        default="#FF9500",
         help="Secondary color of tracks (default: none).",
     )
     args_parser.add_argument(
@@ -114,21 +115,22 @@ def main():
         dest="text_color",
         metavar="COLOR",
         type=str,
-        default="#FFFFFF",
-        help='Color of text (default: "#FFFFFF").',
+        default="#203958",
+        help='Color of text (default: "#000000").',
     )
     args_parser.add_argument(
         "--special-color",
         dest="special_color",
         metavar="COLOR",
-        default="#FFFF00",
-        help='Special track color (default: "#FFFF00").',
+        default="#0E9A2C",
+        help='Special track color (default: "#67DB80").',
     )
     args_parser.add_argument(
         "--special-color2",
         dest="special_color2",
         metavar="COLOR",
-        help="Secondary color of special tracks (default: none).",
+        default="#F7CA12",
+        help="Secondary color of special tracks (default: 0E7524).",
     )
     args_parser.add_argument(
         "--units",
