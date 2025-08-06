@@ -4,7 +4,7 @@ name: Custom Job
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 4,19 * * *'
+    - cron: '30 1,13 * * *'
   push:
     branches:
       - master
