@@ -38,6 +38,13 @@ jobs:
       BUILD_GH_PAGES: ${{ steps.set_output.outputs.BUILD_GH_PAGES }}
 
     steps:
+      - name: Set Timezone
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: "Asia/Singapore"
+          timezoneMacos: "Asia/Singapore"
+          timezoneWindows: "Singapore Standard Time"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
