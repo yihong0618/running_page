@@ -272,9 +272,8 @@ def tcx_job(run_data):
 
             fit_list.append((unix_time, hr, latitude, longitude, elevation))
 
-    fit_array = np.array(fit_list, dtype=FitType)
-
-    if fit_array is not None:
+    if fit_list:
+        fit_array = np.array(fit_list, dtype=FitType)
         # order array
         fit_array = np.sort(fit_array, order="time")
         # write to TCX file
