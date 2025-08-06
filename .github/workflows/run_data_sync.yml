@@ -7,6 +7,11 @@ on:
         required: true
         type: string
         default: pass
+      make_svg:
+        required: false
+        type: boolean
+        default: true
+
 
 env:
   # please change to your own config.
@@ -202,7 +207,7 @@ jobs:
           python run_page/db_updater.py
 
       - name: Make svg GitHub profile
-        if: inputs.job_name != 'pass'
+        if: inputs.job_name != 'pass' && inputs.make_svg
         env:
           TITLE: ${{ env.TITLE }}
           TITLE_GRID: ${{ env.TITLE_GRID }}
@@ -217,7 +222,7 @@ jobs:
         # python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
         # python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
       - name: Make month of life
-        if: env.GENERATE_MONTH_OF_LIFE == 'true'
+        if: inputs.job_name != 'pass' && env.GENERATE_MONTH_OF_LIFE == 'true' && inputs.make_svg
         env:
           BIRTHDAY_MONTH: ${{ env.BIRTHDAY_MONTH }}
         run: |
@@ -237,6 +242,7 @@ jobs:
 
       - name: Push new runs
         # if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
+        if: inputs.job_name != 'pass' && inputs.make_svg
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
