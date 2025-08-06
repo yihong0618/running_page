@@ -439,7 +439,9 @@ class Codoon:
                 "latitude": point["latitude"],
                 "longitude": point["longitude"],
                 "elevation": point["elevation"],
-                "time": adjust_time_to_utc(to_date(point["time_stamp"]), BASE_TIMEZONE).replace(tzinfo=timezone.utc),
+                "time": adjust_time_to_utc(
+                    to_date(point["time_stamp"]), BASE_TIMEZONE
+                ).replace(tzinfo=timezone.utc),
             }
             points_dict_list.append(points_dict)
         gpx = gpxpy.gpx.GPX()
