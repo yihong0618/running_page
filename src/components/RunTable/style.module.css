@@ -41,46 +41,24 @@
     :is(th) {
       padding: 0.5rem;
       white-space: nowrap;
-    }
-    
-    :is(th):nth-child(1) {
-      text-align: left;
-    }
-    
-    :is(th):nth-child(2),
-    :is(th):nth-child(3),
-    :is(th):nth-child(4),
-    :is(th):nth-child(5) {
       text-align: center;
+    }
+    
+    :is(th):first-child {
+      text-align: left;
     }
     
     :is(th):last-child {
       text-align: right;
     }
   }
-  :is(th, td):nth-child(1) {
+  :is(th, td) {
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  :is(th, td):first-child {
     text-align: left;
-    white-space: nowrap;
-  }
-
-  :is(th, td):nth-child(2) {
-    white-space: nowrap;
-    text-align: center;
-  }
-
-  :is(th, td):nth-child(3) {
-    white-space: nowrap;
-    text-align: center;
-  }
-
-  :is(th, td):nth-child(4) {
-    white-space: nowrap;
-    text-align: center;
-  }
-
-  :is(th, td):nth-child(5) {
-    white-space: nowrap;
-    text-align: center;
   }
   
   :is(th, td):last-child {
@@ -93,17 +71,11 @@
   :is(td) {
     padding: 0.5rem;
     border: 0;
+    text-align: center; /* 默认居中 */
   }
   
-  :is(td):nth-child(1) {
+  :is(td):first-child {
     text-align: left;
-  }
-  
-  :is(td):nth-child(2),
-  :is(td):nth-child(3),
-  :is(td):nth-child(4),
-  :is(td):nth-child(5) {
-    text-align: center;
   }
   
   :is(td):last-child {
