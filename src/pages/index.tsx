@@ -188,7 +188,7 @@ const Index = () => {
       </div>
       <div className="w-full lg:w-2/3">
         <div
-          className={`z-10 bg-[var(--color-background)] ${
+          className={`mobile-map-container z-10 bg-[var(--color-background)] ${
             year === 'Total' ? '' : 'sticky top-0'
           }`}
         >
