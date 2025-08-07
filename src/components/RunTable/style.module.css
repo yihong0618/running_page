@@ -1,18 +1,30 @@
-@media only screen and (max-width: 800px) {
-  /* 当屏幕宽度小于 800px 时 */
-  .runTable th:nth-child(3),
-  .runTable td:nth-child(3) {
-    display: none;
-    /* 隐藏第3列 */
+@media only screen and (max-width: 768px) {
+  /* 移动端优化：保留所有列，使用水平滚动 */
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* iOS 滑动优化 */
   }
-}
-
-@media only screen and (max-width: 700px) {
-  /* 当屏幕宽度小于 700px 时 */
-  .runTable th:nth-child(5),
-  .runTable td:nth-child(5) {
-    display: none;
-    /* 隐藏第5列 */
+  
+  .runTable {
+    min-width: 800px;
+    font-size: 0.85rem;
+  }
+  
+  .runTable th,
+  .runTable td {
+    padding: 0.3rem !important;
+    white-space: nowrap;
+    min-width: 80px;
+  }
+  
+  .runTable th:first-child,
+  .runTable td:first-child {
+    min-width: 120px;
+  }
+  
+  .runTable th:last-child,
+  .runTable td:last-child {
+    min-width: 100px;
   }
 }
 
