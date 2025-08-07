@@ -58,7 +58,8 @@
   .runTitle {
     width: calc(100% - 40px);
     left: 20px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    bottom: 5px;
   }
 }
 

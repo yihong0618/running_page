@@ -1,30 +1,29 @@
 @media only screen and (max-width: 768px) {
-  /* 移动端优化：保留所有列，使用水平滚动 */
   .tableContainer {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* iOS 滑动优化 */
+    -webkit-overflow-scrolling: touch;
   }
 
   .runTable {
-    min-width: 800px;
-    font-size: 0.85rem;
+    min-width: 650px;
+    font-size: 0.8rem;
   }
 
   .runTable th,
   .runTable td {
-    padding: 0.3rem !important;
+    padding: 0.25rem !important;
     white-space: nowrap;
-    min-width: 80px;
+    min-width: 60px;
   }
 
   .runTable th:first-child,
   .runTable td:first-child {
-    min-width: 120px;
+    min-width: 100px;
   }
 
   .runTable th:last-child,
   .runTable td:last-child {
-    min-width: 100px;
+    min-width: 80px;
   }
 }
 

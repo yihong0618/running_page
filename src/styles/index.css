@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 @import 'tailwindcss';
+@import './mobile.css';
 
 @theme inline {
   /* global */
@@ -92,4 +93,16 @@ hr {
   border-bottom: 1px solid;
   border-color: var(--color-hr-primary);
   margin: 2rem 0;
+}
+
+/* Mobile-specific improvements */
+@media only screen and (max-width: 768px) {
+  .mobile-map-container {
+    margin-bottom: 1rem;
+  }
+
+  /* Ensure mobile layout doesn't require min-width */
+  body {
+    overflow-x: hidden;
+  }
 }
