@@ -15,6 +15,13 @@
   padding-right: 70px;
 }
 
+@media only screen and (max-width: 768px) {
+  .buttons {
+    padding-right: 10px;
+    flex-wrap: wrap;
+  }
+}
+
 .button {
   display: inline-block;
   position: relative;
@@ -24,6 +31,13 @@
   font-size: 1rem;
   text-align: center;
   color: var(--color-run-date);
+}
+
+@media only screen and (max-width: 768px) {
+  .button {
+    padding: 0.8rem 0.3rem;
+    font-size: 0.9rem;
+  }
 }
 
 .selected {
@@ -38,6 +52,15 @@
   left: 120px;
   cursor: pointer;
   color: var(--color-primary);
+}
+
+@media only screen and (max-width: 768px) {
+  .runTitle {
+    width: calc(100% - 40px);
+    left: 20px;
+    font-size: 0.8rem;
+    bottom: 5px;
+  }
 }
 
 .lights {

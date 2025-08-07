@@ -1,18 +1,29 @@
-@media only screen and (max-width: 800px) {
-  /* 当屏幕宽度小于 800px 时 */
-  .runTable th:nth-child(3),
-  .runTable td:nth-child(3) {
-    display: none;
-    /* 隐藏第3列 */
+@media only screen and (max-width: 768px) {
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
-}
 
-@media only screen and (max-width: 700px) {
-  /* 当屏幕宽度小于 700px 时 */
-  .runTable th:nth-child(5),
-  .runTable td:nth-child(5) {
-    display: none;
-    /* 隐藏第5列 */
+  .runTable {
+    min-width: 650px;
+    font-size: 0.8rem;
+  }
+
+  .runTable th,
+  .runTable td {
+    padding: 0.25rem !important;
+    white-space: nowrap;
+    min-width: 60px;
+  }
+
+  .runTable th:first-child,
+  .runTable td:first-child {
+    min-width: 100px;
+  }
+
+  .runTable th:last-child,
+  .runTable td:last-child {
+    min-width: 80px;
   }
 }
 
@@ -22,33 +33,35 @@
   color: var(--color-run-table-thead);
   background-color: var(--color-background);
   font-family: var(--font-mono);
+  table-layout: auto;
   :is(thead) {
     color: var(--color-run-table-thead);
-    text-align: right;
 
     :is(th) {
       padding: 0.5rem;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    :is(th):first-child {
+      text-align: left;
+    }
+
+    :is(th):last-child {
+      text-align: right;
     }
   }
-  :is(th, td):nth-child(1) {
-    width: 137px;
+  :is(th, td) {
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  :is(th, td):first-child {
     text-align: left;
   }
 
-  :is(th, td):nth-child(2) {
-    width: 91px;
-  }
-
-  :is(th, td):nth-child(3) {
-    width: 112px;
-  }
-
-  :is(th, td):nth-child(4) {
-    width: 60px;
-  }
-
-  :is(th, td):nth-child(5) {
-    width: 100px;
+  :is(th, td):last-child {
+    text-align: right;
   }
 }
 
@@ -57,6 +70,14 @@
   :is(td) {
     padding: 0.5rem;
     border: 0;
+    text-align: center; /* 默认居中 */
+  }
+
+  :is(td):first-child {
+    text-align: left;
+  }
+
+  :is(td):last-child {
     text-align: right;
   }
 

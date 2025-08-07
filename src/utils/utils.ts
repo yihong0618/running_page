@@ -435,8 +435,14 @@ const getMapStyle = (vendor: string, styleName: string, token: string) => {
   return style;
 };
 
-const isTouchDevice = () =>
-  'ontouchstart' in window || navigator.maxTouchPoints > 0;
+const isTouchDevice = () => {
+  if (typeof window === 'undefined') return false;
+  return (
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    window.innerWidth <= 768
+  ); // Consider small screens as touch devices
+};
 
 export {
   titleForShow,
