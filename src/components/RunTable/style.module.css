@@ -4,24 +4,24 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch; /* iOS 滑动优化 */
   }
-  
+
   .runTable {
     min-width: 800px;
     font-size: 0.85rem;
   }
-  
+
   .runTable th,
   .runTable td {
     padding: 0.3rem !important;
     white-space: nowrap;
     min-width: 80px;
   }
-  
+
   .runTable th:first-child,
   .runTable td:first-child {
     min-width: 120px;
   }
-  
+
   .runTable th:last-child,
   .runTable td:last-child {
     min-width: 100px;
@@ -43,11 +43,11 @@
       white-space: nowrap;
       text-align: center;
     }
-    
+
     :is(th):first-child {
       text-align: left;
     }
-    
+
     :is(th):last-child {
       text-align: right;
     }
@@ -60,7 +60,7 @@
   :is(th, td):first-child {
     text-align: left;
   }
-  
+
   :is(th, td):last-child {
     text-align: right;
   }
@@ -73,11 +73,11 @@
     border: 0;
     text-align: center; /* 默认居中 */
   }
-  
+
   :is(td):first-child {
     text-align: left;
   }
-  
+
   :is(td):last-child {
     text-align: right;
   }
