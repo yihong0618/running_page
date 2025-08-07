@@ -186,21 +186,15 @@ const Index = () => {
           <YearsStat year={year} onClick={changeYear} />
         )}
       </div>
-      <div className="w-full lg:w-2/3">
-        <div
-          className={`mobile-map-container z-10 bg-[var(--color-background)] ${
-            year === 'Total' ? '' : 'sticky top-0'
-          }`}
-        >
-          <RunMap
-            title={title}
-            viewState={viewState}
-            geoData={geoData}
-            setViewState={setViewState}
-            changeYear={changeYear}
-            thisYear={year}
-          />
-        </div>
+      <div className="w-full lg:w-2/3" id="map-container">
+        <RunMap
+          title={title}
+          viewState={viewState}
+          geoData={geoData}
+          setViewState={setViewState}
+          changeYear={changeYear}
+          thisYear={year}
+        />
         {year === 'Total' ? (
           <SVGStat />
         ) : (
