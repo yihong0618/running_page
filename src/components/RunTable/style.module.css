@@ -22,33 +22,57 @@
   color: var(--color-run-table-thead);
   background-color: var(--color-background);
   font-family: var(--font-mono);
+  table-layout: auto;
   :is(thead) {
     color: var(--color-run-table-thead);
-    text-align: right;
 
     :is(th) {
       padding: 0.5rem;
+      white-space: nowrap;
+    }
+    
+    :is(th):nth-child(1) {
+      text-align: left;
+    }
+    
+    :is(th):nth-child(2),
+    :is(th):nth-child(3),
+    :is(th):nth-child(4),
+    :is(th):nth-child(5) {
+      text-align: center;
+    }
+    
+    :is(th):last-child {
+      text-align: right;
     }
   }
   :is(th, td):nth-child(1) {
-    width: 137px;
     text-align: left;
+    white-space: nowrap;
   }
 
   :is(th, td):nth-child(2) {
-    width: 91px;
+    white-space: nowrap;
+    text-align: center;
   }
 
   :is(th, td):nth-child(3) {
-    width: 112px;
+    white-space: nowrap;
+    text-align: center;
   }
 
   :is(th, td):nth-child(4) {
-    width: 60px;
+    white-space: nowrap;
+    text-align: center;
   }
 
   :is(th, td):nth-child(5) {
-    width: 100px;
+    white-space: nowrap;
+    text-align: center;
+  }
+  
+  :is(th, td):last-child {
+    text-align: right;
   }
 }
 
@@ -57,6 +81,20 @@
   :is(td) {
     padding: 0.5rem;
     border: 0;
+  }
+  
+  :is(td):nth-child(1) {
+    text-align: left;
+  }
+  
+  :is(td):nth-child(2),
+  :is(td):nth-child(3),
+  :is(td):nth-child(4),
+  :is(td):nth-child(5) {
+    text-align: center;
+  }
+  
+  :is(td):last-child {
     text-align: right;
   }
 
