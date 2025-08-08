@@ -7,36 +7,46 @@ interface RoutePreviewProps {
   className?: string;
 }
 
-const RoutePreview: React.FC<RoutePreviewProps> = ({ activities, className }) => {
+const RoutePreview: React.FC<RoutePreviewProps> = ({
+  activities,
+  className,
+}) => {
   // Filter activities that have polyline data
-  const activitiesWithRoutes = activities.filter(activity => activity.summary_polyline);
-  
+  const activitiesWithRoutes = activities.filter(
+    (activity) => activity.summary_polyline
+  );
+
   if (activitiesWithRoutes.length === 0) {
-    return <div className={`${styles.routePreview} ${className || ''}`}>
-      <div className={styles.noRoute}>暂无路线数据</div>
-    </div>;
+    return (
+      <div className={`${styles.routePreview} ${className || ''}`}>
+        <div className={styles.noRoute}>暂无路线数据</div>
+      </div>
+    );
   }
 
   // Get all route coordinates
-  const allCoordinates: Array<{ path: [number, number][], color: string }> = activitiesWithRoutes.map((activity, index) => {
-    const path = pathForRun(activity);
-    // Use different colors for multiple routes
-    const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
-    const color = colors[index % colors.length];
-    return { path, color };
-  });
+  const allCoordinates: Array<{ path: [number, number][]; color: string }> =
+    activitiesWithRoutes.map((activity, index) => {
+      const path = pathForRun(activity);
+      // Use different colors for multiple routes
+      const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
+      const color = colors[index % colors.length];
+      return { path, color };
+    });
 
   // Calculate bounding box for all routes
-  const allPoints = allCoordinates.flatMap(route => route.path);
+  const allPoints = allCoordinates.flatMap((route) => route.path);
   if (allPoints.length === 0) {
-    return <div className={`${styles.routePreview} ${className || ''}`}>
-      <div className={styles.noRoute}>路线数据无效</div>
-    </div>;
+    return (
+      <div className={`${styles.routePreview} ${className || ''}`}>
+        <div className={styles.noRoute}>路线数据无效</div>
+      </div>
+    );
   }
 
-  const lats = allPoints.map(point => point[1]);
-  const lngs = allPoints.map(point => point[0]);
-  
+  const lats = allPoints.map((point) => point[1]);
+  const lngs = allPoints.map((point) => point[0]);
+
   const minLat = Math.min(...lats);
   const maxLat = Math.max(...lats);
   const minLng = Math.min(...lngs);
@@ -48,7 +58,7 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({ activities, className }) =>
     minLat: minLat - padding,
     maxLat: maxLat + padding,
     minLng: minLng - padding,
-    maxLng: maxLng + padding
+    maxLng: maxLng + padding,
   };
 
   const boundsWidth = bounds.maxLng - bounds.minLng;
@@ -72,12 +82,16 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({ activities, className }) =>
     <div className={`${styles.routePreview} ${className || ''}`}>
       <svg width={svgWidth} height={svgHeight} className={styles.routeSvg}>
         {/* Background */}
-        <rect width={svgWidth} height={svgHeight} fill="var(--color-background)" />
-        
+        <rect
+          width={svgWidth}
+          height={svgHeight}
+          fill="var(--color-background)"
+        />
+
         {/* Routes */}
         {allCoordinates.map((route, routeIndex) => {
           if (route.path.length < 2) return null;
-          
+
           const pathString = route.path
             .map((coord, index) => {
               const [x, y] = coordToSvg(coord[0], coord[1]);
@@ -97,7 +111,7 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({ activities, className }) =>
                 strokeLinejoin="round"
                 opacity="0.8"
               />
-              
+
               {/* Start point */}
               {route.path.length > 0 && (
                 <circle
@@ -109,12 +123,22 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({ activities, className }) =>
                   strokeWidth="1"
                 />
               )}
-              
+
               {/* End point */}
               {route.path.length > 1 && (
                 <circle
-                  cx={coordToSvg(route.path[route.path.length - 1][0], route.path[route.path.length - 1][1])[0]}
-                  cy={coordToSvg(route.path[route.path.length - 1][0], route.path[route.path.length - 1][1])[1]}
+                  cx={
+                    coordToSvg(
+                      route.path[route.path.length - 1][0],
+                      route.path[route.path.length - 1][1]
+                    )[0]
+                  }
+                  cy={
+                    coordToSvg(
+                      route.path[route.path.length - 1][0],
+                      route.path[route.path.length - 1][1]
+                    )[1]
+                  }
                   r="3"
                   fill="#e74c3c"
                   stroke="white"

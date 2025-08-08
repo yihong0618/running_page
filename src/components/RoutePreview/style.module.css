@@ -4,16 +4,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background: transparent;
   border-radius: 4px;
-  padding: 0;
+  padding-top: 12px;
+  padding-bottom: 0;
 }
 
 .routeSvg {
   display: block;
-  border-radius: 4px;
-  background: var(--color-run-row-hover-background);
+  border-radius: 8px;
+  background: #222;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .routeInfo {

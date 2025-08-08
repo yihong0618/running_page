@@ -134,10 +134,13 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   ); // Generate arithmetic sequence
 
   return (
-    <div 
+    <div
       className={`${styles.activityCard} ${interval === 'day' ? styles.activityCardFlippable : ''}`}
       onClick={handleCardClick}
-      style={{ cursor: interval === 'day' && activities.length > 0 ? 'pointer' : 'default' }}
+      style={{
+        cursor:
+          interval === 'day' && activities.length > 0 ? 'pointer' : 'default',
+      }}
     >
       <div className={`${styles.cardInner} ${isFlipped ? styles.flipped : ''}`}>
         {/* Front side - Activity details */}
@@ -148,12 +151,13 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
               <strong>{ACTIVITY_TOTAL.TOTAL_DISTANCE_TITLE}:</strong>{' '}
               {summary.totalDistance.toFixed(2)} km
             </p>
-            {SHOW_ELEVATION_GAIN && summary.totalElevationGain !== undefined && (
-              <p>
-                <strong>{ACTIVITY_TOTAL.TOTAL_ELEVATION_GAIN_TITLE}:</strong>{' '}
-                {summary.totalElevationGain.toFixed(0)} m
-              </p>
-            )}
+            {SHOW_ELEVATION_GAIN &&
+              summary.totalElevationGain !== undefined && (
+                <p>
+                  <strong>{ACTIVITY_TOTAL.TOTAL_ELEVATION_GAIN_TITLE}:</strong>{' '}
+                  {summary.totalElevationGain.toFixed(0)} m
+                </p>
+              )}
             <p>
               <strong>{ACTIVITY_TOTAL.AVERAGE_SPEED_TITLE}:</strong>{' '}
               {formatPace(summary.averageSpeed)}
@@ -213,8 +217,10 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
                     <Tooltip
                       formatter={(value) => `${value} km`}
                       contentStyle={{
-                        backgroundColor: 'var(--color-run-row-hover-background)',
-                        border: '1px solid var(--color-run-row-hover-background)',
+                        backgroundColor:
+                          'var(--color-run-row-hover-background)',
+                        border:
+                          '1px solid var(--color-run-row-hover-background)',
                         color: 'var(--color-run-table-thead)',
                       }}
                       labelStyle={{ color: 'var(--color-primary)' }}
@@ -226,7 +232,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
             )}
           </div>
         </div>
-        
+
         {/* Back side - Route preview */}
         {interval === 'day' && activities.length > 0 && (
           <div className={styles.cardBack}>
