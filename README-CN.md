@@ -12,7 +12,6 @@
    ```
 
 5. 2024.09.29: Added `Elevation Gain` field, If you forked the project before this update, please run the following command:
-
    - To resolve errors: `sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: activities.elevation_gain`
    - If you don't have a local environment, set `RUN_TYPE` to `db_updater` in the `.github/workflows/run_data_sync.yml` file once then change back.
 
@@ -1154,12 +1153,10 @@ python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --da
 1. 进入仓库的 "Settings -> GitHub Pages -> Source"，选择 "GitHub Actions"
 
 2. 进入仓库的 "Actions -> Workflows -> All Workflows"，选择左侧面板的 "Run Data Sync"，然后点击 "Run workflow"
-
    - "Run Data Sync" 将更新数据，然后触发 "Publish GitHub Pages" 工作流
    - 确认工作流运行没有错误
 
 3. 打开网站检查结果
-
    - 如果网站没有反映最新数据，请使用“F5”刷新页面
    - 某些浏览器 (比如 Chrome) 可能缓存网页不刷新，您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac) 强制清除缓存并重新加载页面
 
@@ -1217,7 +1214,6 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
    <center><img src="https://cdn.jujimeizuo.cn/blog/2023/10/get-action-id.jpg" alt="get-action-id"></center>
 
 2. 结合快捷指令
-
    1. 通过 iCloud 获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
    2. 修改下图字典参数
 
