@@ -12,7 +12,6 @@
    ```
 
 5. 2024.09.29: Added `Elevation Gain` field, If you forked the project before this update, please run the following command:
-
    - To resolve errors: `sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: activities.elevation_gain`
    - If you don't have a local environment, set `RUN_TYPE` to `db_updater` in the `.github/workflows/run_data_sync.yml` file once then change back.
 
@@ -641,7 +640,6 @@ python run_page/nike_sync.py eyJhbGciThiMTItNGIw******
    ```
 
    References：
-
    - <https://developers.strava.com/docs/getting-started>
    - <https://github.com/barrald/strava-uploader>
    - <https://github.com/strava/go.strava>
@@ -995,12 +993,10 @@ For more display effects, see:
 1. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
 2. Go to the repository's `Actions -> Workflows -> All Workflows`, choose `Run Data Sync` from the left panel, and click `Run workflow`.
-
    - The `Run Data Sync` will update data and then trigger the `Publish GitHub Pages` workflow
    - Make sure the workflow runs without errors.
 
 3. Open your website to check on the results
-
    - note if the website doesn't reflect the latest data, please refresh it by `F5`.
    - Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
 
@@ -1064,7 +1060,6 @@ Take the keep app as an example. Close the app after running, and then automatic
    <center><img src="https://cdn.jujimeizuo.cn/blog/2023/10/get-action-id.jpg" alt="get-action-id"></center>
 
 2. Binding shortcut instruction
-
    1. Get it via icloud [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
 
    2. Modify the dictionary parameters in the following figure
