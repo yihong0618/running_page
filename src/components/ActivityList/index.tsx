@@ -15,6 +15,8 @@ import { ACTIVITY_TOTAL } from '@/utils/const';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
+import RoutePreview from '@/components/RoutePreview';
+import { Activity } from '@/utils/utils';
 
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
@@ -29,17 +31,6 @@ const SwimmingSvg = MonthOfLifeSvg('swimming');
 const SkiingSvg = MonthOfLifeSvg('skiing');
 const AllSvg = MonthOfLifeSvg('all');
 
-// Define interfaces for our data structures
-interface Activity {
-  start_date_local: string;
-  distance: number;
-  moving_time: string;
-  type: string;
-  location_country?: string;
-  elevation_gain?: number; // Optional if elevation gain is not used
-  average_heartrate?: number; // Add heart rate support
-}
-
 interface ActivitySummary {
   totalDistance: number;
   totalTime: number;
@@ -51,6 +42,7 @@ interface ActivitySummary {
   location: string;
   totalHeartRate: number; // Add heart rate statistics
   heartRateCount: number;
+  activities: Activity[]; // Add activities array for day interval
 }
 
 interface DisplaySummary {
@@ -75,6 +67,7 @@ interface ActivityCardProps {
   summary: DisplaySummary;
   dailyDistances: number[];
   interval: string;
+  activities?: Activity[]; // Add activities for day interval
 }
 
 interface ActivityGroups {
@@ -88,7 +81,15 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   summary,
   dailyDistances,
   interval,
+  activities = [],
 }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const handleCardClick = () => {
+    if (interval === 'day' && activities.length > 0) {
+      setIsFlipped(!isFlipped);
+    }
+  };
   const generateLabels = (): number[] => {
     if (interval === 'month') {
       const [year, month] = period.split('-').map(Number);
@@ -133,87 +134,111 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   ); // Generate arithmetic sequence
 
   return (
-    <div className={styles.activityCard}>
-      <h2 className={styles.activityName}>{period}</h2>
-      <div className={styles.activityDetails}>
-        <p>
-          <strong>{ACTIVITY_TOTAL.TOTAL_DISTANCE_TITLE}:</strong>{' '}
-          {summary.totalDistance.toFixed(2)} km
-        </p>
-        {SHOW_ELEVATION_GAIN && summary.totalElevationGain !== undefined && (
-          <p>
-            <strong>{ACTIVITY_TOTAL.TOTAL_ELEVATION_GAIN_TITLE}:</strong>{' '}
-            {summary.totalElevationGain.toFixed(0)} m
-          </p>
-        )}
-        <p>
-          <strong>{ACTIVITY_TOTAL.AVERAGE_SPEED_TITLE}:</strong>{' '}
-          {formatPace(summary.averageSpeed)}
-        </p>
-        <p>
-          <strong>{ACTIVITY_TOTAL.TOTAL_TIME_TITLE}:</strong>{' '}
-          {formatTime(summary.totalTime)}
-        </p>
-        {summary.averageHeartRate !== undefined && (
-          <p>
-            <strong>{ACTIVITY_TOTAL.AVERAGE_HEART_RATE_TITLE}:</strong>{' '}
-            {summary.averageHeartRate.toFixed(0)} bpm
-          </p>
-        )}
-        {interval !== 'day' && (
-          <>
+    <div
+      className={`${styles.activityCard} ${interval === 'day' ? styles.activityCardFlippable : ''}`}
+      onClick={handleCardClick}
+      style={{
+        cursor:
+          interval === 'day' && activities.length > 0 ? 'pointer' : 'default',
+      }}
+    >
+      <div className={`${styles.cardInner} ${isFlipped ? styles.flipped : ''}`}>
+        {/* Front side - Activity details */}
+        <div className={styles.cardFront}>
+          <h2 className={styles.activityName}>{period}</h2>
+          <div className={styles.activityDetails}>
             <p>
-              <strong>{ACTIVITY_TOTAL.ACTIVITY_COUNT_TITLE}:</strong>{' '}
-              {summary.count}
+              <strong>{ACTIVITY_TOTAL.TOTAL_DISTANCE_TITLE}:</strong>{' '}
+              {summary.totalDistance.toFixed(2)} km
+            </p>
+            {SHOW_ELEVATION_GAIN &&
+              summary.totalElevationGain !== undefined && (
+                <p>
+                  <strong>{ACTIVITY_TOTAL.TOTAL_ELEVATION_GAIN_TITLE}:</strong>{' '}
+                  {summary.totalElevationGain.toFixed(0)} m
+                </p>
+              )}
+            <p>
+              <strong>{ACTIVITY_TOTAL.AVERAGE_SPEED_TITLE}:</strong>{' '}
+              {formatPace(summary.averageSpeed)}
             </p>
             <p>
-              <strong>{ACTIVITY_TOTAL.MAX_DISTANCE_TITLE}:</strong>{' '}
-              {summary.maxDistance.toFixed(2)} km
+              <strong>{ACTIVITY_TOTAL.TOTAL_TIME_TITLE}:</strong>{' '}
+              {formatTime(summary.totalTime)}
             </p>
-            <p>
-              <strong>{ACTIVITY_TOTAL.MAX_SPEED_TITLE}:</strong>{' '}
-              {formatPace(summary.maxSpeed)}
-            </p>
-          </>
-        )}
-        {['month', 'week', 'year'].includes(interval) && (
-          <div className={styles.chart}>
-            <ResponsiveContainer>
-              <BarChart
-                data={data}
-                margin={{ top: 20, right: 20, left: -20, bottom: 5 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="var(--color-run-row-hover-background)"
-                />
-                <XAxis
-                  dataKey="day"
-                  tick={{ fill: 'var(--color-run-table-thead)' }}
-                />
-                <YAxis
-                  label={{
-                    value: 'km',
-                    angle: -90,
-                    position: 'insideLeft',
-                    fill: 'var(--color-run-table-thead)',
-                  }}
-                  domain={[0, yAxisMax]}
-                  ticks={yAxisTicks}
-                  tick={{ fill: 'var(--color-run-table-thead)' }}
-                />
-                <Tooltip
-                  formatter={(value) => `${value} km`}
-                  contentStyle={{
-                    backgroundColor: 'var(--color-run-row-hover-background)',
-                    border: '1px solid var(--color-run-row-hover-background)',
-                    color: 'var(--color-run-table-thead)',
-                  }}
-                  labelStyle={{ color: 'var(--color-primary)' }}
-                />
-                <Bar dataKey="distance" fill="var(--color-primary)" />
-              </BarChart>
-            </ResponsiveContainer>
+            {summary.averageHeartRate !== undefined && (
+              <p>
+                <strong>{ACTIVITY_TOTAL.AVERAGE_HEART_RATE_TITLE}:</strong>{' '}
+                {summary.averageHeartRate.toFixed(0)} bpm
+              </p>
+            )}
+            {interval !== 'day' && (
+              <>
+                <p>
+                  <strong>{ACTIVITY_TOTAL.ACTIVITY_COUNT_TITLE}:</strong>{' '}
+                  {summary.count}
+                </p>
+                <p>
+                  <strong>{ACTIVITY_TOTAL.MAX_DISTANCE_TITLE}:</strong>{' '}
+                  {summary.maxDistance.toFixed(2)} km
+                </p>
+                <p>
+                  <strong>{ACTIVITY_TOTAL.MAX_SPEED_TITLE}:</strong>{' '}
+                  {formatPace(summary.maxSpeed)}
+                </p>
+              </>
+            )}
+            {['month', 'week', 'year'].includes(interval) && (
+              <div className={styles.chart}>
+                <ResponsiveContainer>
+                  <BarChart
+                    data={data}
+                    margin={{ top: 20, right: 20, left: -20, bottom: 5 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--color-run-row-hover-background)"
+                    />
+                    <XAxis
+                      dataKey="day"
+                      tick={{ fill: 'var(--color-run-table-thead)' }}
+                    />
+                    <YAxis
+                      label={{
+                        value: 'km',
+                        angle: -90,
+                        position: 'insideLeft',
+                        fill: 'var(--color-run-table-thead)',
+                      }}
+                      domain={[0, yAxisMax]}
+                      ticks={yAxisTicks}
+                      tick={{ fill: 'var(--color-run-table-thead)' }}
+                    />
+                    <Tooltip
+                      formatter={(value) => `${value} km`}
+                      contentStyle={{
+                        backgroundColor:
+                          'var(--color-run-row-hover-background)',
+                        border:
+                          '1px solid var(--color-run-row-hover-background)',
+                        color: 'var(--color-run-table-thead)',
+                      }}
+                      labelStyle={{ color: 'var(--color-primary)' }}
+                    />
+                    <Bar dataKey="distance" fill="var(--color-primary)" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Back side - Route preview */}
+        {interval === 'day' && activities.length > 0 && (
+          <div className={styles.cardBack}>
+            <div className={styles.routeContainer}>
+              <RoutePreview activities={activities} />
+            </div>
           </div>
         )}
       </div>
@@ -323,6 +348,7 @@ const ActivityList: React.FC = () => {
             location: '',
             totalHeartRate: 0,
             heartRateCount: 0,
+            activities: [],
           };
 
         const distanceKm = activity.distance / 1000; // Convert to kilometers
@@ -344,6 +370,11 @@ const ActivityList: React.FC = () => {
         }
 
         acc[key].count += 1;
+
+        // Store activity for day interval (for route display)
+        if (interval === 'day') {
+          acc[key].activities.push(activity);
+        }
 
         // Accumulate daily distances
         acc[key].dailyDistances[index] =
@@ -447,6 +478,7 @@ const ActivityList: React.FC = () => {
                 }}
                 dailyDistances={summary.dailyDistances}
                 interval={interval}
+                activities={interval === 'day' ? summary.activities : undefined}
               />
             ))}
         </div>

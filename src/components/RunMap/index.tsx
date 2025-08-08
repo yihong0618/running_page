@@ -62,6 +62,9 @@ const RunMap = ({
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
   // layers that should remain visible when lights are off
   const keepWhenLightsOff = ['runs2', 'animated-run'];
+  const [mapGeoData, setMapGeoData] =
+    useState<FeatureCollection<RPGeometry> | null>(null);
+  const [isLoadingMapData, setIsLoadingMapData] = useState(false);
   const mapStyle = getMapStyle(
     MAP_TILE_VENDOR,
     MAP_TILE_STYLE,
@@ -128,12 +131,28 @@ const RunMap = ({
 
   const initGeoDataLength = geoData.features.length;
   const isBigMap = (viewState.zoom ?? 0) <= 3;
-  if (isBigMap && IS_CHINESE) {
+
+  useEffect(() => {
+    if (isBigMap && IS_CHINESE && !mapGeoData && !isLoadingMapData) {
+      setIsLoadingMapData(true);
+      geoJsonForMap()
+        .then((data) => {
+          setMapGeoData(data);
+          setIsLoadingMapData(false);
+        })
+        .catch(() => {
+          setIsLoadingMapData(false);
+        });
+    }
+  }, [isBigMap, IS_CHINESE, mapGeoData, isLoadingMapData]);
+
+  let combinedGeoData = geoData;
+  if (isBigMap && IS_CHINESE && mapGeoData) {
     // Show boundary and line together, combine geoData(only when not combine yet)
     if (geoData.features.length === initGeoDataLength) {
-      geoData = {
+      combinedGeoData = {
         type: 'FeatureCollection',
-        features: geoData.features.concat(geoJsonForMap().features),
+        features: geoData.features.concat(mapGeoData.features),
       };
     }
   }
@@ -239,7 +258,7 @@ const RunMap = ({
       mapboxAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
-      <Source id="data" type="geojson" data={geoData}>
+      <Source id="data" type="geojson" data={combinedGeoData}>
         <Layer
           id="province"
           type="fill"
