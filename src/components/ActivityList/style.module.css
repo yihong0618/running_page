@@ -84,7 +84,8 @@
   transform: rotateY(180deg);
   display: flex;
   flex-direction: column;
-  min-height: 300px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .routeContainer {
@@ -92,7 +93,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 10px 0;
+  margin: 0;
+  padding: 16px;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .activityName {

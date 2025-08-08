@@ -85,7 +85,7 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({
         <rect
           width={svgWidth}
           height={svgHeight}
-          fill="var(--color-background)"
+          fill="var(--color-activity-card)"
         />
 
         {/* Routes */}
