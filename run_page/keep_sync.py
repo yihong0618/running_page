@@ -10,11 +10,9 @@ from xml.dom import minidom
 
 import eviltransform
 import gpxpy
-import numpy as np
 import polyline
 import requests
 from config import (
-    BASE_TIMEZONE,
     GPX_FOLDER,
     JSON_FILE,
     SQL_FILE,
