@@ -1,8 +1,7 @@
 import * as mapboxPolyline from '@mapbox/polyline';
 import gcoord from 'gcoord';
 import { WebMercatorViewport } from '@math.gl/web-mercator';
-import { chinaGeojson, RPGeometry } from '@/static/run_countries';
-import worldGeoJson from '@surbowl/world-geo-json-zh/world.zh.json';
+import { RPGeometry } from '@/static/run_countries';
 import { chinaCities } from '@/static/city';
 import {
   MAIN_COLOR,
@@ -271,13 +270,20 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
   }),
 });
 
-const geoJsonForMap = (): FeatureCollection<RPGeometry> => ({
-  type: 'FeatureCollection',
-  features: [...worldGeoJson.features, ...chinaGeojson.features] as Feature<
-    RPGeometry,
-    GeoJsonProperties
-  >[],
-});
+const geoJsonForMap = async (): Promise<FeatureCollection<RPGeometry>> => {
+  const [{ chinaGeojson }, worldGeoJson] = await Promise.all([
+    import('@/static/run_countries'),
+    import('@surbowl/world-geo-json-zh/world.zh.json'),
+  ]);
+
+  return {
+    type: 'FeatureCollection',
+    features: [
+      ...worldGeoJson.default.features,
+      ...chinaGeojson.features,
+    ] as Feature<RPGeometry, GeoJsonProperties>[],
+  };
+};
 
 const getActivitySport = (act: Activity): string => {
   if (act.type === 'Run') {
