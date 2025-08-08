@@ -168,10 +168,13 @@ jobs:
 
   trigger:
     runs-on: ubuntu-latest
+    name: Trigger 2dou.github.io's workflow
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GITHUB_ACCESS_TOKEN }}
-          repository: 2Dou/2dou.github.io
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+          repository: 2dou/2dou.github.io
           event-type: update-svg
+    needs:
+      - sync
