@@ -1,0 +1,167 @@
+name: Sync Garmin Data And Update svg
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '10 1,13 * * *'
+  push:
+    branches:
+      - master
+    paths:
+      - run_page/gen_svg.py
+      - run_page/garmin_sync.py
+      - run_page/gpx_sync.py
+      - run_page/tcx_sync.py
+      - run_page/tcx_to_garmin_sync.py
+      - requirements.txt
+
+env:
+  # please change to your own config.
+  RUN_TYPE: garmin_cn # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/db_updater, Please change the 'pass' it to your own
+  ATHLETE: Orztu
+  TITLE: Orztu The Way
+  MIN_GRID_DISTANCE: 10 # change min distance here
+  TITLE_GRID: Over 10km Runs # also here
+
+  # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
+  IGNORE_START_END_RANGE: 10 # Unit meter
+  # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
+  IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
+  IGNORE_RANGE: 10 # Unit meter
+  SAVE_DATA_IN_GITHUB_CACHE: true # if you deploy in the vercel, check the README
+  DATA_CACHE_PREFIX: 'track_data'
+  BUILD_GH_PAGES: false # If you do not need GitHub Page please set it to `false`
+  SAVE_TO_PARQENT: false # If you want to save the data to the repo, set it to `true`
+  GENERATE_MONTH_OF_LIFE: false # If you want to generate the month of life, set it to `true`
+  BIRTHDAY_MONTH: 1989-03 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
+
+jobs:
+  sync:
+    name: Sync
+    runs-on: ubuntu-latest
+    outputs:
+      SAVE_DATA_IN_GITHUB_CACHE: ${{ steps.set_output.outputs.SAVE_DATA_IN_GITHUB_CACHE }}
+      DATA_CACHE_PREFIX: ${{ steps.set_output.outputs.DATA_CACHE_PREFIX }}
+      BUILD_GH_PAGES: ${{ steps.set_output.outputs.BUILD_GH_PAGES }}
+
+    steps:
+      - name: Set Timezone
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: "Asia/Singapore"
+          timezoneMacos: "Asia/Singapore"
+          timezoneWindows: "Singapore Standard Time"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Python
+        id: setup_python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: 'requirements.txt'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Cache Data Files
+        if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            activities
+            assets
+            GPX_OUT
+            TCX_OUT
+            FIT_OUT
+            Workouts
+            run_page/data.db
+            src/static/activities.json
+            imported.json
+          key: ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-
+            ${{ env.DATA_CACHE_PREFIX }}-
+
+      - name: Pull
+        if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git checkout ./assets
+          git pull
+
+      - name: Run sync Garmin CN script
+        run: |
+          # make garmin secret string `python run_page/get_garmin_secret.py ${email} ${password} --is-cn
+          python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
+        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }}  --only-run --is-cn
+
+      - name: Run sync Garmin CN to Garmin script
+        run: |
+          # make garmin secret string `python run_page/garmin_sync_cn_global.py ${email} ${password} --is-cn
+          python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}
+        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}  --only-run
+
+      - name: Make svg GitHub profile
+        env:
+          TITLE: ${{ env.TITLE }}
+          TITLE_GRID: ${{ env.TITLE_GRID }}
+          ATHLETE: ${{ env.ATHLETE }}
+          MIN_GRID_DISTANCE: ${{ env.MIN_GRID_DISTANCE }}
+        run: |
+          python run_page/gen_svg.py --from-db --title "$TITLE" --type github --github-style "align-firstday" --athlete "$ATHLETE" --special-distance 10 --special-distance2 21.0975 --background-color "#ffffff" --output assets/running.svg --use-localtime --min-distance 0.5
+          # python run_page/gen_svg.py --from-db --title "$TITLE_GRID" --type grid --athlete "$ATHLETE" --output assets/grid.svg --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime --min-distance "$MIN_GRID_DISTANCE"
+          # python run_page/gen_svg.py --from-db --type circular --use-localtime
+          # python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --github-style "align-firstday" --athlete "$ATHLETE" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
+        # if you want use the style:the start day of each year always aligns with Monday. please use the following script:
+        # python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
+        # python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
+      - name: Make month of life
+        if: env.GENERATE_MONTH_OF_LIFE == 'true'
+        env:
+          BIRTHDAY_MONTH: ${{ env.BIRTHDAY_MONTH }}
+        run: |
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_running.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Runner Month of Life' --sport-type running
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_walking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Walker Month of Life' --sport-type walking
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_hiking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Hiker Month of Life' --sport-type hiking
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_cycling.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Cylist Month of Life' --sport-type cycling
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Month of Life' --sport-type all
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_swimming.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Swimmer Month of Life' --sport-type swimming
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_skiing.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Skier Month of Life' --sport-type skiing
+
+      - name: Save data to parqent
+        if: env.SAVE_TO_PARQENT == 'true'
+        run: |
+          pip install duckdb==1.1.0
+          python run_page/save_to_parqent.py
+
+      - name: Push new runs
+        # if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git pull
+          git add ./assets
+          git commit -m 'update new runs' || echo "nothing to commit"
+          git push || echo "nothing to push"
+
+      - name: Set Output
+        id: set_output
+        env:
+          SAVE_DATA_IN_GITHUB_CACHE: ${{ env.SAVE_DATA_IN_GITHUB_CACHE }}
+          DATA_CACHE_PREFIX: ${{ env.DATA_CACHE_PREFIX }}
+          BUILD_GH_PAGES: ${{ env.BUILD_GH_PAGES }}
+        run: |
+          echo "SAVE_DATA_IN_GITHUB_CACHE=$SAVE_DATA_IN_GITHUB_CACHE" >> "$GITHUB_OUTPUT"
+          echo "DATA_CACHE_PREFIX=$DATA_CACHE_PREFIX" >> "$GITHUB_OUTPUT"
+          echo "BUILD_GH_PAGES=$BUILD_GH_PAGES" >> "$GITHUB_OUTPUT"
