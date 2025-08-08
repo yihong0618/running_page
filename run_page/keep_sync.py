@@ -114,12 +114,7 @@ def decode_runmap_data(text, is_geo=False):
 
 
 def parse_raw_data_to_nametuple(
-    run_data,
-    old_gpx_ids,
-    old_tcx_ids,
-    session,
-    with_gpx=False,
-    with_tcx=False
+    run_data, old_gpx_ids, old_tcx_ids, with_gpx=False, with_tcx=False
 ):
     run_data = run_data["data"]
     run_points_data = []
@@ -219,7 +214,12 @@ def parse_raw_data_to_nametuple(
 
 
 def get_all_keep_tracks(
-    email, password, old_tracks_ids, keep_sports_data_api, with_gpx=False, with_tcx=False
+    email, 
+    password, 
+    old_tracks_ids, 
+    keep_sports_data_api, 
+    with_gpx=False, 
+    with_tcx=False
 ):
     if with_gpx and not os.path.exists(GPX_FOLDER):
         os.mkdir(GPX_FOLDER)
@@ -235,17 +235,21 @@ def get_all_keep_tracks(
         old_gpx_ids = []
         if with_gpx:
             old_gpx_ids = os.listdir(GPX_FOLDER)
-            old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
+            old_gpx_ids = [
+                i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")
+            ]
         old_tcx_ids = []
         if with_tcx:
             old_tcx_ids = os.listdir(TCX_FOLDER)
-            old_tcx_ids = [i.split(".")[0] for i in old_tcx_ids if not i.startswith(".")]   
+            old_tcx_ids = [
+                i.split(".")[0] for i in old_tcx_ids if not i.startswith(".")
+            ]
         for run in runs:
             print(f"parsing keep id {run}")
             try:
                 run_data = get_single_run_data(s, headers, run, api)
                 track = parse_raw_data_to_nametuple(
-                    run_data, old_gpx_ids, old_tcx_ids, s, with_gpx, with_tcx
+                    run_data, old_gpx_ids, old_tcx_ids, with_gpx, with_tcx
                 )
                 tracks.append(track)
             except Exception as e:
@@ -337,10 +341,10 @@ def parse_points_to_tcx(run_points_data, start_time, sport_type):
         start_time = 0
 
     fit_start_time = datetime.fromtimestamp(
-                (run_points_data[0]["timestamp"] * 100 + start_time)
-                / 1000,  # note that the timestamp of a point is decisecond(分秒)
-                tz=timezone.utc,
-            ).strftime("%Y-%m-%dT%H:%M:%SZ")
+        (run_points_data[0]["timestamp"] * 100 + start_time)
+        / 1000,  # note that the timestamp of a point is decisecond(分秒)
+        tz=timezone.utc,
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Root node
     training_center_database = ET.Element(
@@ -386,10 +390,10 @@ def parse_points_to_tcx(run_points_data, start_time, sport_type):
         track.append(tp)
         # Time
         time_stamp = datetime.fromtimestamp(
-                (point["timestamp"] * 100 + start_time)
-                / 1000,  # note that the timestamp of a point is decisecond(分秒)
-                tz=timezone.utc,
-            ).strftime("%Y-%m-%dT%H:%M:%SZ")
+            (point["timestamp"] * 100 + start_time)
+            / 1000,  # note that the timestamp of a point is decisecond(分秒)
+            tz=timezone.utc,
+        ).strftime("%Y-%m-%dT%H:%M:%SZ")
         time_label = ET.Element("Time")
         time_label.text = time_stamp
         tp.append(time_label)
@@ -494,7 +498,9 @@ def download_keep_tcx(tcx_data, keep_id):
         pass
 
 
-def run_keep_sync(email, password, keep_sports_data_api, with_gpx=False, with_tcx=False):
+def run_keep_sync(
+    email, password, keep_sports_data_api, with_gpx=False, with_tcx=False
+):
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
     new_tracks = get_all_keep_tracks(
@@ -536,5 +542,9 @@ if __name__ == "__main__":
             _tpye in KEEP_SPORT_TYPES
         ), f"{_tpye} are not supported type, please make sure that the type entered in the {KEEP_SPORT_TYPES}"
     run_keep_sync(
-        options.phone_number, options.password, options.sync_types, options.with_gpx, options.with_tcx
+        options.phone_number, 
+        options.password, 
+        options.sync_types, 
+        options.with_gpx, 
+        options.with_tcx
     )
