@@ -214,11 +214,11 @@ def parse_raw_data_to_nametuple(
 
 
 def get_all_keep_tracks(
-    email, 
-    password, 
-    old_tracks_ids, 
-    keep_sports_data_api, 
-    with_gpx=False, 
+    email,
+    password,
+    old_tracks_ids,
+    keep_sports_data_api,
+    with_gpx=False,
     with_tcx=False,
 ):
     if with_gpx and not os.path.exists(GPX_FOLDER):
@@ -542,9 +542,9 @@ if __name__ == "__main__":
             _tpye in KEEP_SPORT_TYPES
         ), f"{_tpye} are not supported type, please make sure that the type entered in the {KEEP_SPORT_TYPES}"
     run_keep_sync(
-        options.phone_number, 
-        options.password, 
-        options.sync_types, 
-        options.with_gpx, 
+        options.phone_number,
+        options.password,
+        options.sync_types,
+        options.with_gpx,
         options.with_tcx,
     )
