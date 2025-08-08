@@ -59,7 +59,8 @@ const RunMap = ({
   const { countries, provinces } = useActivities();
   const mapRef = useRef<MapRef>();
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
-  const [mapGeoData, setMapGeoData] = useState<FeatureCollection<RPGeometry> | null>(null);
+  const [mapGeoData, setMapGeoData] =
+    useState<FeatureCollection<RPGeometry> | null>(null);
   const [isLoadingMapData, setIsLoadingMapData] = useState(false);
   const keepWhenLightsOff = ['runs2'];
   const mapStyle = getMapStyle(
@@ -124,16 +125,18 @@ const RunMap = ({
 
   const initGeoDataLength = geoData.features.length;
   const isBigMap = (viewState.zoom ?? 0) <= 3;
-  
+
   useEffect(() => {
     if (isBigMap && IS_CHINESE && !mapGeoData && !isLoadingMapData) {
       setIsLoadingMapData(true);
-      geoJsonForMap().then((data) => {
-        setMapGeoData(data);
-        setIsLoadingMapData(false);
-      }).catch(() => {
-        setIsLoadingMapData(false);
-      });
+      geoJsonForMap()
+        .then((data) => {
+          setMapGeoData(data);
+          setIsLoadingMapData(false);
+        })
+        .catch(() => {
+          setIsLoadingMapData(false);
+        });
     }
   }, [isBigMap, IS_CHINESE, mapGeoData, isLoadingMapData]);
 
