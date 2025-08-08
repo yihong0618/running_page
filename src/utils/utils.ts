@@ -273,15 +273,15 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
 const geoJsonForMap = async (): Promise<FeatureCollection<RPGeometry>> => {
   const [{ chinaGeojson }, worldGeoJson] = await Promise.all([
     import('@/static/run_countries'),
-    import('@surbowl/world-geo-json-zh/world.zh.json')
+    import('@surbowl/world-geo-json-zh/world.zh.json'),
   ]);
-  
+
   return {
     type: 'FeatureCollection',
-    features: [...worldGeoJson.default.features, ...chinaGeojson.features] as Feature<
-      RPGeometry,
-      GeoJsonProperties
-    >[],
+    features: [
+      ...worldGeoJson.default.features,
+      ...chinaGeojson.features,
+    ] as Feature<RPGeometry, GeoJsonProperties>[],
   };
 };
 
