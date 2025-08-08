@@ -219,7 +219,7 @@ def get_all_keep_tracks(
     old_tracks_ids, 
     keep_sports_data_api, 
     with_gpx=False, 
-    with_tcx=False
+    with_tcx=False,
 ):
     if with_gpx and not os.path.exists(GPX_FOLDER):
         os.mkdir(GPX_FOLDER)
@@ -546,5 +546,5 @@ if __name__ == "__main__":
         options.password, 
         options.sync_types, 
         options.with_gpx, 
-        options.with_tcx
+        options.with_tcx,
     )
