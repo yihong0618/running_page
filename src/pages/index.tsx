@@ -108,8 +108,7 @@ const Index = () => {
 
   useEffect(() => {
     const runsNum = runs.length;
-    // maybe change 20 ?
-    const sliceNume = runsNum >= 20 ? runsNum / 20 : 1;
+    const sliceNume = runsNum >= 8 ? runsNum / 8 : 1;
     let i = sliceNume;
     const id = setInterval(() => {
       if (i >= runsNum) {
