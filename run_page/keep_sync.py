@@ -6,12 +6,20 @@ import time
 import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta, timezone
+from xml.dom import minidom
 
 import eviltransform
 import gpxpy
 import polyline
 import requests
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
+from config import (
+    GPX_FOLDER,
+    JSON_FILE,
+    SQL_FILE,
+    TCX_FOLDER,
+    run_map,
+    start_point,
+)
 from Crypto.Cipher import AES
 from generator import Generator
 from utils import adjust_time
@@ -25,6 +33,14 @@ KEEP2STRAVA = {
     "indoorRunning": "VirtualRun",
     "mountaineering": "Hiking",
 }
+KEEP2TCX = {
+    "outdoorWalking": "Walking",
+    "outdoorRunning": "Running",
+    "outdoorCycling": "Biking",
+    "indoorRunning": "Running",
+    "mountaineering": "Hiking",
+}
+
 # need to test
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type={sport_type}&lastDate={last_date}"
@@ -96,10 +112,7 @@ def decode_runmap_data(text, is_geo=False):
 
 
 def parse_raw_data_to_nametuple(
-    run_data,
-    old_gpx_ids,
-    session,
-    with_download_gpx=False,
+    run_data, old_gpx_ids, old_tcx_ids, with_gpx=False, with_tcx=False
 ):
     run_data = run_data["data"]
     run_points_data = []
@@ -146,12 +159,20 @@ def parse_raw_data_to_nametuple(
             run_data["dataType"].startswith("outdoor")
             or run_data["dataType"] == "mountaineering"
         ):
-            gpx_data = parse_points_to_gpx(
-                run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
-            )
-            elevation_gain = gpx_data.get_uphill_downhill().uphill
-            if with_download_gpx and str(keep_id) not in old_gpx_ids:
-                download_keep_gpx(gpx_data.to_xml(), str(keep_id))
+            if with_gpx:
+                gpx_data = parse_points_to_gpx(
+                    run_points_data_gpx, start_time, KEEP2STRAVA[run_data["dataType"]]
+                )
+                elevation_gain = gpx_data.get_uphill_downhill().uphill
+                if str(keep_id) not in old_gpx_ids:
+                    download_keep_gpx(gpx_data.to_xml(), str(keep_id))
+            if with_tcx:
+                tcx_data = parse_points_to_tcx(
+                    run_points_data_gpx, start_time, KEEP2TCX[run_data["dataType"]]
+                )
+                # elevation_gain = tcx_data.get_uphill_downhill().uphill
+                if str(keep_id) not in old_tcx_ids:
+                    download_keep_tcx(tcx_data.toprettyxml(), str(keep_id))
     else:
         print(f"ID {keep_id} no gps data")
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
@@ -191,10 +212,17 @@ def parse_raw_data_to_nametuple(
 
 
 def get_all_keep_tracks(
-    email, password, old_tracks_ids, keep_sports_data_api, with_download_gpx=False
+    email,
+    password,
+    old_tracks_ids,
+    keep_sports_data_api,
+    with_gpx=False,
+    with_tcx=False,
 ):
-    if with_download_gpx and not os.path.exists(GPX_FOLDER):
+    if with_gpx and not os.path.exists(GPX_FOLDER):
         os.mkdir(GPX_FOLDER)
+    if with_tcx and not os.path.exists(TCX_FOLDER):
+        os.mkdir(TCX_FOLDER)
     s = requests.Session()
     s, headers = login(s, email, password)
     tracks = []
@@ -202,14 +230,24 @@ def get_all_keep_tracks(
         runs = get_to_download_runs_ids(s, headers, api)
         runs = [run for run in runs if run.split("_")[1] not in old_tracks_ids]
         print(f"{len(runs)} new keep {api} data to generate")
-        old_gpx_ids = os.listdir(GPX_FOLDER)
-        old_gpx_ids = [i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")]
+        old_gpx_ids = []
+        if with_gpx:
+            old_gpx_ids = os.listdir(GPX_FOLDER)
+            old_gpx_ids = [
+                i.split(".")[0] for i in old_gpx_ids if not i.startswith(".")
+            ]
+        old_tcx_ids = []
+        if with_tcx:
+            old_tcx_ids = os.listdir(TCX_FOLDER)
+            old_tcx_ids = [
+                i.split(".")[0] for i in old_tcx_ids if not i.startswith(".")
+            ]
         for run in runs:
             print(f"parsing keep id {run}")
             try:
                 run_data = get_single_run_data(s, headers, run, api)
                 track = parse_raw_data_to_nametuple(
-                    run_data, old_gpx_ids, s, with_download_gpx
+                    run_data, old_gpx_ids, old_tcx_ids, with_gpx, with_tcx
                 )
                 tracks.append(track)
             except Exception as e:
@@ -280,6 +318,115 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
     return gpx
 
 
+def parse_points_to_tcx(run_points_data, start_time, sport_type):
+    """
+    Convert run points data to TCX format.
+
+    Args:
+        run_id (str): The ID of the run.
+        run_points_data (list of dict): A list of run data points.
+        start_time (int): The start time for adjusting timestamps. Note that the unit of the start_time is millisecond
+
+    Returns:
+        tcx_data (str): TCX data in string format.
+    """
+    # early timestamp fields in keep's data stands for delta time, but in newly data timestamp field stands for exactly time,
+    # so it doesn't need to plus extra start_time
+    if (
+        run_points_data
+        and run_points_data[0]["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND
+    ):
+        start_time = 0
+
+    fit_start_time = datetime.fromtimestamp(
+        (run_points_data[0]["timestamp"] * 100 + start_time)
+        / 1000,  # note that the timestamp of a point is decisecond(分秒)
+        tz=timezone.utc,
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # Root node
+    training_center_database = ET.Element(
+        "TrainingCenterDatabase",
+        {
+            "xmlns": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2",
+            "xmlns:ns5": "http://www.garmin.com/xmlschemas/ActivityGoals/v1",
+            "xmlns:ns3": "http://www.garmin.com/xmlschemas/ActivityExtension/v2",
+            "xmlns:ns2": "http://www.garmin.com/xmlschemas/UserProfile/v2",
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xmlns:ns4": "http://www.garmin.com/xmlschemas/ProfileExtension/v1",
+            "xsi:schemaLocation": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd",
+        },
+    )
+    # xml tree
+    ET.ElementTree(training_center_database)
+    # Activities
+    activities = ET.Element("Activities")
+    training_center_database.append(activities)
+    # activity
+    activity = ET.Element("Activity", {"Sport": sport_type})
+    activities.append(activity)
+    # Id
+    activity_id = ET.Element("Id")
+    activity_id.text = fit_start_time  # Keep use start_time as ID
+    activity.append(activity_id)
+    # Lap
+    activity_lap = ET.Element("Lap", {"StartTime": fit_start_time})
+    activity.append(activity_lap)
+    # TotalTimeSeconds
+    activity_total_time = ET.Element("TotalTimeSeconds")
+    activity_total_time.text = str(run_points_data[-1]["currentTotalDuration"])
+    activity_lap.append(activity_total_time)
+    # DistanceMeters
+    activity_distance = ET.Element("DistanceMeters")
+    activity_distance.text = str(run_points_data[-1]["currentTotalDistance"])
+    activity_lap.append(activity_distance)
+    # Track
+    track = ET.Element("Track")
+    activity_lap.append(track)
+    for point in run_points_data:
+        tp = ET.Element("Trackpoint")
+        track.append(tp)
+        # Time
+        time_stamp = datetime.fromtimestamp(
+            (point["timestamp"] * 100 + start_time)
+            / 1000,  # note that the timestamp of a point is decisecond(分秒)
+            tz=timezone.utc,
+        ).strftime("%Y-%m-%dT%H:%M:%SZ")
+        time_label = ET.Element("Time")
+        time_label.text = time_stamp
+        tp.append(time_label)
+        # Position
+        try:
+            position = ET.Element("Position")
+            tp.append(position)
+            #   LatitudeDegrees
+            lati = ET.Element("LatitudeDegrees")
+            lati.text = str(point["latitude"])
+            position.append(lati)
+            #   LongitudeDegrees
+            longi = ET.Element("LongitudeDegrees")
+            longi.text = str(point["longitude"])
+            position.append(longi)
+            #  AltitudeMeters
+            altitude_meters = ET.Element("AltitudeMeters")
+            altitude_meters.text = str(point.get("altitude"))
+            tp.append(altitude_meters)
+        except KeyError:
+            pass
+        # HeartRateBpm
+        try:
+            bpm = ET.Element("HeartRateBpm")
+            bpm_value = ET.Element("Value")
+            bpm.append(bpm_value)
+            bpm_value.text = str(point["hr"])
+            tp.append(bpm)
+        except KeyError:
+            pass
+    # write to TCX file
+    xml_str = minidom.parseString(ET.tostring(training_center_database))
+    return xml_str
+
+
 def find_nearest_hr(
     hr_data_list, target_time, start_time, threshold=HR_FRAME_THRESHOLD_IN_DECISECOND
 ):
@@ -336,11 +483,26 @@ def download_keep_gpx(gpx_data, keep_id):
         pass
 
 
-def run_keep_sync(email, password, keep_sports_data_api, with_download_gpx=False):
+def download_keep_tcx(tcx_data, keep_id):
+    try:
+        print(f"downloading keep_id {str(keep_id)} tcx")
+        file_path = os.path.join(TCX_FOLDER, str(keep_id) + ".tcx")
+        with open(file_path, "w") as fb:
+            fb.write(tcx_data)
+        return file_path
+    except Exception as e:
+        print(f"Something wrong to download keep tcx {str(e)}")
+        print(f"wrong id {keep_id}")
+        pass
+
+
+def run_keep_sync(
+    email, password, keep_sports_data_api, with_gpx=False, with_tcx=False
+):
     generator = Generator(SQL_FILE)
     old_tracks_ids = generator.get_old_tracks_ids()
     new_tracks = get_all_keep_tracks(
-        email, password, old_tracks_ids, keep_sports_data_api, with_download_gpx
+        email, password, old_tracks_ids, keep_sports_data_api, with_gpx, with_tcx
     )
     generator.sync_from_app(new_tracks)
 
@@ -357,7 +519,7 @@ if __name__ == "__main__":
         "--sync-types",
         dest="sync_types",
         nargs="+",
-        default=["running"],
+        default=KEEP_SPORT_TYPES,
         help="sync sport types from keep, default is running, you can choose from running, hiking, cycling",
     )
     parser.add_argument(
@@ -366,11 +528,21 @@ if __name__ == "__main__":
         action="store_true",
         help="get all keep data to gpx and download",
     )
+    parser.add_argument(
+        "--with-tcx",
+        dest="with_tcx",
+        action="store_true",
+        help="get all keep data to tcx and download",
+    )
     options = parser.parse_args()
     for _tpye in options.sync_types:
         assert (
             _tpye in KEEP_SPORT_TYPES
         ), f"{_tpye} are not supported type, please make sure that the type entered in the {KEEP_SPORT_TYPES}"
     run_keep_sync(
-        options.phone_number, options.password, options.sync_types, options.with_gpx
+        options.phone_number,
+        options.password,
+        options.sync_types,
+        options.with_gpx,
+        options.with_tcx,
     )

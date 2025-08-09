@@ -41,10 +41,62 @@
   width: 280px;
   box-shadow: 0 4px 8px var(--color-run-row-hover-background);
   transition: transform 0.2s;
+  position: relative;
 }
 
 .activityCard:hover {
   transform: translateY(-5px);
+}
+
+/* Flip card styles */
+.activityCardFlippable {
+  perspective: 1000px;
+  padding: 0; /* Remove padding for flippable cards */
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.cardInner.flipped {
+  transform: rotateY(180deg);
+}
+
+.cardFront,
+.cardBack {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+  background-color: var(--color-run-row-hover-background);
+}
+
+.cardBack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.routeContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 16px;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .activityName {

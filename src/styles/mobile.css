@@ -1,0 +1,63 @@
+/* Mobile-specific improvements for running page */
+
+@media only screen and (max-width: 768px) {
+  /* Prevent horizontal overflow on the main container */
+  .mobile-map-container {
+    margin-bottom: 1rem;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* Ensure body doesn't require horizontal scrolling */
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Make main content areas mobile-friendly */
+  .lg\:w-1\/3,
+  .lg\:w-2\/3 {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  /* Improve spacing on mobile */
+  .lg\:p-16 {
+    padding: 1rem !important;
+  }
+
+  /* Reduce title size on mobile */
+  .text-5xl {
+    font-size: 2.5rem !important;
+  }
+
+  /* Optimize margin for mobile */
+  .my-12 {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .mt-6 {
+    margin-top: 1rem !important;
+  }
+}
+
+/* Additional mobile table improvements */
+@media only screen and (max-width: 480px) {
+  /* For very small screens, make table even more compact */
+  .runTable {
+    min-width: 550px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .runTable th,
+  .runTable td {
+    padding: 0.2rem !important;
+    min-width: 50px !important;
+  }
+
+  .runTable th:first-child,
+  .runTable td:first-child {
+    min-width: 90px !important;
+  }
+}

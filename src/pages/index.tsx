@@ -108,8 +108,7 @@ const Index = () => {
 
   useEffect(() => {
     const runsNum = runs.length;
-    // maybe change 20 ?
-    const sliceNume = runsNum >= 20 ? runsNum / 20 : 1;
+    const sliceNume = runsNum >= 8 ? runsNum / 8 : 1;
     let i = sliceNume;
     const id = setInterval(() => {
       if (i >= runsNum) {
@@ -186,7 +185,7 @@ const Index = () => {
           <YearsStat year={year} onClick={changeYear} />
         )}
       </div>
-      <div className="w-full lg:w-2/3">
+      <div className="w-full lg:w-2/3" id="map-container">
         <RunMap
           title={title}
           viewState={viewState}

@@ -31,6 +31,7 @@ import {
   getMapStyle,
   isTouchDevice,
 } from '@/utils/utils';
+import { RouteAnimator } from '@/utils/routeAnimation';
 import RunMarker from './RunMarker';
 import RunMapButtons from './RunMapButtons';
 import styles from './style.module.css';
@@ -59,12 +60,20 @@ const RunMap = ({
   const { countries, provinces } = useActivities();
   const mapRef = useRef<MapRef>();
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
-  const keepWhenLightsOff = ['runs2'];
+  // layers that should remain visible when lights are off
+  const keepWhenLightsOff = ['runs2', 'animated-run'];
+  const [mapGeoData, setMapGeoData] =
+    useState<FeatureCollection<RPGeometry> | null>(null);
+  const [isLoadingMapData, setIsLoadingMapData] = useState(false);
   const mapStyle = getMapStyle(
     MAP_TILE_VENDOR,
     MAP_TILE_STYLE,
     MAP_TILE_ACCESS_TOKEN
   );
+  // animation state (single run only)
+  const [animatedPoints, setAnimatedPoints] = useState<Coordinate[]>([]);
+  const routeAnimatorRef = useRef<RouteAnimator | null>(null);
+  const lastRouteKeyRef = useRef<string | null>(null);
 
   function switchLayerVisibility(map: MapInstance, lights: boolean) {
     const styleJson = map.getStyle();
@@ -122,12 +131,28 @@ const RunMap = ({
 
   const initGeoDataLength = geoData.features.length;
   const isBigMap = (viewState.zoom ?? 0) <= 3;
-  if (isBigMap && IS_CHINESE) {
+
+  useEffect(() => {
+    if (isBigMap && IS_CHINESE && !mapGeoData && !isLoadingMapData) {
+      setIsLoadingMapData(true);
+      geoJsonForMap()
+        .then((data) => {
+          setMapGeoData(data);
+          setIsLoadingMapData(false);
+        })
+        .catch(() => {
+          setIsLoadingMapData(false);
+        });
+    }
+  }, [isBigMap, IS_CHINESE, mapGeoData, isLoadingMapData]);
+
+  let combinedGeoData = geoData;
+  if (isBigMap && IS_CHINESE && mapGeoData) {
     // Show boundary and line together, combine geoData(only when not combine yet)
     if (geoData.features.length === initGeoDataLength) {
-      geoData = {
+      combinedGeoData = {
         type: 'FeatureCollection',
-        features: geoData.features.concat(geoJsonForMap().features),
+        features: geoData.features.concat(mapGeoData.features),
       };
     }
   }
@@ -154,6 +179,7 @@ const RunMap = ({
   const style: React.CSSProperties = {
     width: '100%',
     height: MAP_HEIGHT,
+    maxWidth: '100%', // Prevent overflow on mobile
   };
   const fullscreenButton: React.CSSProperties = {
     position: 'absolute',
@@ -174,10 +200,57 @@ const RunMap = ({
     };
   }, []);
 
+  // start route animation using RouteAnimator
+  const startRouteAnimation = useCallback(() => {
+    if (!isSingleRun) return;
+    const points = geoData.features[0].geometry.coordinates as Coordinate[];
+    if (!points || points.length < 2) return;
+
+    // Stop any existing animation
+    if (routeAnimatorRef.current) {
+      routeAnimatorRef.current.stop();
+    }
+
+    // Create new animator
+    routeAnimatorRef.current = new RouteAnimator(
+      points,
+      setAnimatedPoints,
+      () => {
+        routeAnimatorRef.current = null;
+      }
+    );
+
+    // Start animation
+    routeAnimatorRef.current.start();
+  }, [geoData, isSingleRun]);
+
+  // autoplay once when single run changes
+  useEffect(() => {
+    if (!isSingleRun) return;
+    const pts = geoData.features[0].geometry.coordinates as Coordinate[];
+    const key = `${pts.length}-${pts[0]?.join(',')}-${pts[pts.length - 1]?.join(',')}`;
+    if (key && key !== lastRouteKeyRef.current) {
+      lastRouteKeyRef.current = key;
+      startRouteAnimation();
+    }
+    // cleanup on unmount
+    return () => {
+      if (routeAnimatorRef.current) {
+        routeAnimatorRef.current.stop();
+      }
+    };
+  }, [geoData, isSingleRun, startRouteAnimation]);
+
+  const handleMapClick = useCallback(() => {
+    if (!isSingleRun) return;
+    startRouteAnimation();
+  }, [isSingleRun, startRouteAnimation]);
+
   return (
     <Map
       {...viewState}
       onMove={onMove}
+      onClick={handleMapClick}
       style={style}
       mapStyle={mapStyle}
       ref={mapRefCallback}
@@ -185,7 +258,7 @@ const RunMap = ({
       mapboxAccessToken={MAPBOX_TOKEN}
     >
       <RunMapButtons changeYear={changeYear} thisYear={thisYear} />
-      <Source id="data" type="geojson" data={geoData}>
+      <Source id="data" type="geojson" data={combinedGeoData}>
         <Layer
           id="province"
           type="fill"
@@ -221,6 +294,39 @@ const RunMap = ({
           }}
         />
       </Source>
+      {isSingleRun && animatedPoints.length > 0 && (
+        <Source
+          id="animated-run"
+          type="geojson"
+          data={{
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: 'Feature',
+                properties: { color: '#ff4d4f' },
+                geometry: {
+                  type: 'LineString',
+                  coordinates: animatedPoints,
+                },
+              },
+            ],
+          }}
+        >
+          <Layer
+            id="animated-run"
+            type="line"
+            paint={{
+              'line-color': ['get', 'color'],
+              'line-width': 3,
+              'line-opacity': 1,
+            }}
+            layout={{
+              'line-join': 'round',
+              'line-cap': 'round',
+            }}
+          />
+        </Source>
+      )}
       {isSingleRun && (
         <RunMarker
           startLat={startLat}
