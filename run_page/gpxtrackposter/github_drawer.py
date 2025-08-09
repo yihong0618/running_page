@@ -31,6 +31,9 @@ class GithubDrawer(TracksDrawer):
             help="Color for empty dates in github style poster (default: #444444)",
         )
 
+    def fetch_args(self, args):
+        self.empty_color = args.github_empty_data_color
+
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
         if self.poster.tracks is None:
             raise PosterError("No tracks to draw")
