@@ -11,7 +11,7 @@ const YearsStat = ({
   onClick: (_year: string) => void;
 }) => {
   const { years } = useActivities();
-  
+
   // Memoize the years array calculation
   const yearsArrayUpdate = useMemo(() => {
     // make sure the year click on front

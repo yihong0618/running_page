@@ -1,5 +1,11 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React, { useRef, useCallback, useState, useEffect, useMemo } from 'react';
+import React, {
+  useRef,
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+} from 'react';
 import Map, {
   Layer,
   Source,
@@ -65,14 +71,13 @@ const RunMap = ({
   const [mapGeoData, setMapGeoData] =
     useState<FeatureCollection<RPGeometry> | null>(null);
   const [isLoadingMapData, setIsLoadingMapData] = useState(false);
-  
+
   // Memoize map style to prevent recreating it on every render
-  const mapStyle = useMemo(() => getMapStyle(
-    MAP_TILE_VENDOR,
-    MAP_TILE_STYLE,
-    MAP_TILE_ACCESS_TOKEN
-  ), []);
-  
+  const mapStyle = useMemo(
+    () => getMapStyle(MAP_TILE_VENDOR, MAP_TILE_STYLE, MAP_TILE_ACCESS_TOKEN),
+    []
+  );
+
   // animation state (single run only)
   const [animatedPoints, setAnimatedPoints] = useState<Coordinate[]>([]);
   const routeAnimatorRef = useRef<RouteAnimator | null>(null);
@@ -84,7 +89,7 @@ const RunMap = ({
     filtered.unshift('in', 'name');
     return filtered;
   }, [provinces]);
-  
+
   const filterCountries = useMemo(() => {
     const filtered = countries.slice();
     filtered.unshift('in', 'name');
@@ -139,7 +144,7 @@ const RunMap = ({
     },
     [mapRef, lights]
   );
-  
+
   const initGeoDataLength = geoData.features.length;
   const isBigMap = (viewState.zoom ?? 0) <= 3;
 
@@ -170,46 +175,53 @@ const RunMap = ({
 
   // Memoize expensive calculations
   const { isSingleRun, startLon, startLat, endLon, endLat } = useMemo(() => {
-    const isSingle = geoData.features.length === 1 &&
+    const isSingle =
+      geoData.features.length === 1 &&
       geoData.features[0].geometry.coordinates.length;
-    
+
     let startLon = 0;
     let startLat = 0;
     let endLon = 0;
     let endLat = 0;
-    
+
     if (isSingle) {
       const points = geoData.features[0].geometry.coordinates as Coordinate[];
       [startLon, startLat] = points[0];
       [endLon, endLat] = points[points.length - 1];
     }
-    
+
     return { isSingleRun: isSingle, startLon, startLat, endLon, endLat };
   }, [geoData]);
 
   const dash = useMemo(() => {
     return USE_DASH_LINE && !isSingleRun && !isBigMap ? [2, 2] : [2, 0];
   }, [isSingleRun, isBigMap]);
-  
+
   const onMove = useCallback(
     ({ viewState }: { viewState: IViewState }) => {
       setViewState(viewState);
     },
     [setViewState]
   );
-  
-  const style: React.CSSProperties = useMemo(() => ({
-    width: '100%',
-    height: MAP_HEIGHT,
-    maxWidth: '100%', // Prevent overflow on mobile
-  }), []);
-  
-  const fullscreenButton: React.CSSProperties = useMemo(() => ({
-    position: 'absolute',
-    marginTop: '29.2px',
-    right: '0px',
-    opacity: 0.3,
-  }), []);
+
+  const style: React.CSSProperties = useMemo(
+    () => ({
+      width: '100%',
+      height: MAP_HEIGHT,
+      maxWidth: '100%', // Prevent overflow on mobile
+    }),
+    []
+  );
+
+  const fullscreenButton: React.CSSProperties = useMemo(
+    () => ({
+      position: 'absolute',
+      marginTop: '29.2px',
+      right: '0px',
+      opacity: 0.3,
+    }),
+    []
+  );
 
   useEffect(() => {
     const handleFullscreenChange = () => {

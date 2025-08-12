@@ -29,7 +29,7 @@ const RunTable = ({
   setRunIndex,
 }: IRunTableProperties) => {
   const [sortFuncInfo, setSortFuncInfo] = useState('');
-  
+
   // Memoize sort functions to prevent recreating them on every render
   const sortFunctions = useMemo(() => {
     const sortKMFunc: SortFunc = (a, b) =>
@@ -56,7 +56,7 @@ const RunTable = ({
     };
     const sortDateFuncClick =
       sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
-    
+
     const sortFuncMap = new Map([
       ['KM', sortKMFunc],
       ['Elev', sortElevationGainFunc],
@@ -65,22 +65,25 @@ const RunTable = ({
       ['Time', sortRunTimeFunc],
       ['Date', sortDateFuncClick],
     ]);
-    
+
     if (!SHOW_ELEVATION_GAIN) {
       sortFuncMap.delete('Elev');
     }
-    
+
     return sortFuncMap;
   }, [sortFuncInfo]);
 
-  const handleClick = useCallback<React.MouseEventHandler<HTMLElement>>((e) => {
-    const funcName = (e.target as HTMLElement).innerHTML;
-    const f = sortFunctions.get(funcName);
+  const handleClick = useCallback<React.MouseEventHandler<HTMLElement>>(
+    (e) => {
+      const funcName = (e.target as HTMLElement).innerHTML;
+      const f = sortFunctions.get(funcName);
 
-    setRunIndex(-1);
-    setSortFuncInfo(sortFuncInfo === funcName ? '' : funcName);
-    setActivity(runs.sort(f));
-  }, [sortFunctions, sortFuncInfo, runs, setRunIndex, setActivity]);
+      setRunIndex(-1);
+      setSortFuncInfo(sortFuncInfo === funcName ? '' : funcName);
+      setActivity(runs.sort(f));
+    },
+    [sortFunctions, sortFuncInfo, runs, setRunIndex, setActivity]
+  );
 
   return (
     <div className={styles.tableContainer}>
