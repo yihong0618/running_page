@@ -5,7 +5,7 @@ const HomePage = () => {
   return (
     <>
       <Helmet>
-        <html lang="en" data-theme="dark" />
+        <html lang="en" />
       </Helmet>
       <div className="w-full">
         <ActivityList />

@@ -5,7 +5,7 @@
 @import 'tailwindcss';
 @import './mobile.css';
 
-@theme inline {
+:root {
   /* global */
   --color-primary: var(--color-brand);
   --color-secondary: var(--color-secondary);
@@ -24,22 +24,21 @@
   --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    /* const nike = 'rgb(224,237,94)'; */
-    --color-brand: #e0ed5e;
-    --color-secondary: #ccd94a;
-    --color-bg: var(--color-neutral-900);
-    --color-tx: var(--color-brand);
-    --color-hr: var(--color-red-500);
-    --color-selected: var(--color-brand);
-    --color-run-date: var(--color-neutral-300);
-    --color-run-table-thead: var(--color-zinc-300);
-    --color-run-row-hover-background: var(--color-neutral-800);
-    --color-activity-card: var(--color-neutral-700);
-    --font-sans: 'IBM Plex Sans', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
-  }
+[data-theme='light'] {
+  --color-brand: var(--color-sky-900);
+  --color-secondary: var(--color-sky-800);
+  --color-bg: var(--color-neutral-100);
+  --color-tx: var(--color-sky-900);
+  --color-hr: var(--color-neutral-300);
+  --color-selected: var(--color-sky-900);
+  --color-run-date: var(--color-neutral-800);
+  --color-run-table-thead: var(--color-neutral-800);
+  --color-run-row-hover-background: var(--color-neutral-200);
+  --color-activity-card: var(--color-neutral-300);
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
 }
 
 [data-theme='dark'] {
@@ -56,6 +55,41 @@
   --color-activity-card: var(--color-neutral-700);
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-brand: var(--color-sky-900);
+    --color-secondary: var(--color-sky-800);
+    --color-bg: var(--color-neutral-100);
+    --color-tx: var(--color-sky-900);
+    --color-hr: var(--color-neutral-300);
+    --color-selected: var(--color-sky-900);
+    --color-run-date: var(--color-neutral-800);
+    --color-run-table-thead: var(--color-neutral-800);
+    --color-run-row-hover-background: var(--color-neutral-200);
+    --color-activity-card: var(--color-neutral-300);
+    --font-sans: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* const nike = 'rgb(224,237,94)'; */
+    --color-brand: #e0ed5e;
+    --color-secondary: #ccd94a;
+    --color-bg: var(--color-neutral-900);
+    --color-tx: var(--color-brand);
+    --color-hr: var(--color-red-500);
+    --color-selected: var(--color-brand);
+    --color-run-date: var(--color-neutral-300);
+    --color-run-table-thead: var(--color-zinc-300);
+    --color-run-row-hover-background: var(--color-neutral-800);
+    --color-activity-card: var(--color-neutral-700);
+    --font-sans: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
 }
 
 @layer base {
