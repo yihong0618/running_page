@@ -14,6 +14,7 @@ ACTIVITY_URL = BASE_URL + "web-gateway/web-analyze/activity/"
 QUERY_URL = ACTIVITY_URL + "queryMyActivity"
 DOWNLOAD_URL = ACTIVITY_URL + "getDownloadUrl/"
 
+
 class IGPSPORT:
     def __init__(self, username, password, token):
         self.username = username
@@ -103,6 +104,7 @@ class IGPSPORT:
             page += 1
             if page > total_page:
                 break
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
