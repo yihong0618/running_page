@@ -29,14 +29,14 @@
     /* const nike = 'rgb(224,237,94)'; */
     --color-brand: #e0ed5e;
     --color-secondary: #ccd94a;
-    --color-bg: #1a1a1a;
-    --color-tx: #e0ed5e;
-    --color-hr: #fb2c36;
-    --color-selected: #e0ed5e;
-    --color-run-date: #dddddd;
-    --color-run-table-thead: #cccccc;
-    --color-run-row-hover-background: #242424;
-    --color-activity-card: #2e2e2e;
+    --color-bg: var(--color-neutral-900);
+    --color-tx: var(--color-brand);
+    --color-hr: var(--color-red-500);
+    --color-selected: var(--color-brand);
+    --color-run-date: var(--color-neutral-300);
+    --color-run-table-thead: var(--color-zinc-300);
+    --color-run-row-hover-background: var(--color-neutral-800);
+    --color-activity-card: var(--color-neutral-700);
     --font-sans: 'IBM Plex Sans', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
@@ -46,14 +46,14 @@
   /* const nike = 'rgb(224,237,94)'; */
   --color-brand: #e0ed5e;
   --color-secondary: #ccd94a;
-  --color-bg: #1a1a1a;
-  --color-tx: #e0ed5e;
-  --color-hr: #fb2c36;
-  --color-selected: #e0ed5e;
-  --color-run-date: #dddddd;
-  --color-run-table-thead: #cccccc;
-  --color-run-row-hover-background: #242424;
-  --color-activity-card: #2e2e2e;
+  --color-bg: var(--color-neutral-900);
+  --color-tx: var(--color-brand);
+  --color-hr: var(--color-red-500);
+  --color-selected: var(--color-brand);
+  --color-run-date: var(--color-neutral-300);
+  --color-run-table-thead: var(--color-zinc-300);
+  --color-run-row-hover-background: var(--color-neutral-800);
+  --color-activity-card: var(--color-neutral-700);
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
