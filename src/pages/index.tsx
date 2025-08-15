@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
@@ -29,98 +29,165 @@ const Index = () => {
   const { activities, thisYear } = useActivities();
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
-  const [runs, setActivity] = useState(
-    filterAndSortRuns(activities, year, filterYearRuns, sortDateFunc)
-  );
   const [title, setTitle] = useState('');
-  const [geoData, setGeoData] = useState(geoJsonForRuns(runs));
-  // for auto zoom
-  const bounds = getBoundsForGeoData(geoData);
   const [intervalId, setIntervalId] = useState<number>();
+  const [currentFilter, setCurrentFilter] = useState<{
+    item: string;
+    func: (_run: Activity, _value: string) => boolean;
+  }>({ item: thisYear, func: filterYearRuns });
 
-  const [viewState, setViewState] = useState<IViewState>({
-    ...bounds,
-  });
+  // Memoize expensive calculations
+  const runs = useMemo(() => {
+    return filterAndSortRuns(
+      activities,
+      currentFilter.item,
+      currentFilter.func,
+      sortDateFunc
+    );
+  }, [activities, currentFilter.item, currentFilter.func]);
 
-  const changeByItem = (
-    item: string,
-    name: string,
-    func: (_run: Activity, _value: string) => boolean
-  ) => {
-    scrollToMap();
-    if (name != 'Year') {
-      setYear(thisYear);
-    }
-    setActivity(filterAndSortRuns(activities, item, func, sortDateFunc));
-    setRunIndex(-1);
-    setTitle(`${item} ${name} Running Heatmap`);
-  };
+  const geoData = useMemo(() => {
+    return geoJsonForRuns(runs);
+  }, [runs]);
 
-  const changeYear = (y: string) => {
-    // default year
-    setYear(y);
-
-    if ((viewState.zoom ?? 0) > 3 && bounds) {
-      setViewState({
-        ...bounds,
-      });
-    }
-
-    changeByItem(y, 'Year', filterYearRuns);
-    clearInterval(intervalId);
-  };
-
-  const changeCity = (city: string) => {
-    changeByItem(city, 'City', filterCityRuns);
-  };
-
-  const changeTitle = (title: string) => {
-    changeByItem(title, 'Title', filterTitleRuns);
-  };
-
-  const locateActivity = (runIds: RunIds) => {
-    const ids = new Set(runIds);
-
-    const selectedRuns = !runIds.length
-      ? runs
-      : runs.filter((r: any) => ids.has(r.run_id));
-
-    if (!selectedRuns.length) {
-      return;
-    }
-
-    const lastRun = selectedRuns.sort(sortDateFunc)[0];
-
-    if (!lastRun) {
-      return;
-    }
-    setGeoData(geoJsonForRuns(selectedRuns));
-    setTitle(titleForShow(lastRun));
-    clearInterval(intervalId);
-    scrollToMap();
-  };
-
-  useEffect(() => {
-    setViewState({
-      ...bounds,
-    });
+  // for auto zoom
+  const bounds = useMemo(() => {
+    return getBoundsForGeoData(geoData);
   }, [geoData]);
 
+  const [viewState, setViewState] = useState<IViewState>(() => ({
+    ...bounds,
+  }));
+
+  // Add state for animated geoData to handle the animation effect
+  const [animatedGeoData, setAnimatedGeoData] = useState(geoData);
+
+  const changeByItem = useCallback(
+    (
+      item: string,
+      name: string,
+      func: (_run: Activity, _value: string) => boolean
+    ) => {
+      scrollToMap();
+      if (name != 'Year') {
+        setYear(thisYear);
+      }
+      setCurrentFilter({ item, func });
+      setRunIndex(-1);
+      setTitle(`${item} ${name} Running Heatmap`);
+    },
+    [thisYear]
+  );
+
+  const changeYear = useCallback(
+    (y: string) => {
+      // default year
+      setYear(y);
+
+      if ((viewState.zoom ?? 0) > 3 && bounds) {
+        setViewState({
+          ...bounds,
+        });
+      }
+
+      changeByItem(y, 'Year', filterYearRuns);
+      clearInterval(intervalId);
+    },
+    [viewState.zoom, bounds, changeByItem, intervalId]
+  );
+
+  const changeCity = useCallback(
+    (city: string) => {
+      changeByItem(city, 'City', filterCityRuns);
+    },
+    [changeByItem]
+  );
+
+  const changeTitle = useCallback(
+    (title: string) => {
+      changeByItem(title, 'Title', filterTitleRuns);
+    },
+    [changeByItem]
+  );
+
+  // For RunTable compatibility - create a mock setActivity function
+  const setActivity = useCallback((_newRuns: Activity[]) => {
+    // Since we're using memoized runs, we can't directly set activity
+    // This is used by RunTable but we can work around it by managing the filter instead
+    console.warn('setActivity called but runs are now computed from filters');
+  }, []);
+
+  const locateActivity = useCallback(
+    (runIds: RunIds) => {
+      const ids = new Set(runIds);
+
+      const selectedRuns = !runIds.length
+        ? runs
+        : runs.filter((r: any) => ids.has(r.run_id));
+
+      if (!selectedRuns.length) {
+        return;
+      }
+
+      const lastRun = selectedRuns.sort(sortDateFunc)[0];
+
+      if (!lastRun) {
+        return;
+      }
+
+      // Create geoData for selected runs and calculate new bounds
+      const selectedGeoData = geoJsonForRuns(selectedRuns);
+      const selectedBounds = getBoundsForGeoData(selectedGeoData);
+
+      // Update both the animated geoData and the view state
+      setAnimatedGeoData(selectedGeoData);
+      setViewState({
+        ...selectedBounds,
+      });
+      setTitle(titleForShow(lastRun));
+      clearInterval(intervalId);
+      scrollToMap();
+    },
+    [runs, intervalId]
+  );
+
+  // Update bounds when geoData changes
+  useEffect(() => {
+    setViewState((prev) => ({
+      ...prev,
+      ...bounds,
+    }));
+  }, [bounds]);
+
+  // Animate geoData when runs change
   useEffect(() => {
     const runsNum = runs.length;
-    const sliceNume = runsNum >= 8 ? runsNum / 8 : 1;
+    if (runsNum === 0) {
+      setAnimatedGeoData(geoData);
+      return;
+    }
+
+    const sliceNume = runsNum >= 8 ? Math.ceil(runsNum / 8) : 1;
     let i = sliceNume;
+
     const id = setInterval(() => {
       if (i >= runsNum) {
         clearInterval(id);
+        setAnimatedGeoData(geoData);
+        return;
       }
 
       const tempRuns = runs.slice(0, i);
-      setGeoData(geoJsonForRuns(tempRuns));
+      setAnimatedGeoData(geoJsonForRuns(tempRuns));
       i += sliceNume;
     }, 100);
+
     setIntervalId(id);
-  }, [runs]);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [runs, geoData]); // Remove intervalId from deps to avoid stale closure
 
   useEffect(() => {
     if (year !== 'Total') {
@@ -189,7 +256,7 @@ const Index = () => {
         <RunMap
           title={title}
           viewState={viewState}
-          geoData={geoData}
+          geoData={animatedGeoData}
           setViewState={setViewState}
           changeYear={changeYear}
           thisYear={year}

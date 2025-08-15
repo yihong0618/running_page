@@ -1,5 +1,11 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React, { useRef, useCallback, useState, useEffect } from 'react';
+import React, {
+  useRef,
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+} from 'react';
 import Map, {
   Layer,
   Source,
@@ -65,15 +71,30 @@ const RunMap = ({
   const [mapGeoData, setMapGeoData] =
     useState<FeatureCollection<RPGeometry> | null>(null);
   const [isLoadingMapData, setIsLoadingMapData] = useState(false);
-  const mapStyle = getMapStyle(
-    MAP_TILE_VENDOR,
-    MAP_TILE_STYLE,
-    MAP_TILE_ACCESS_TOKEN
+
+  // Memoize map style to prevent recreating it on every render
+  const mapStyle = useMemo(
+    () => getMapStyle(MAP_TILE_VENDOR, MAP_TILE_STYLE, MAP_TILE_ACCESS_TOKEN),
+    []
   );
+
   // animation state (single run only)
   const [animatedPoints, setAnimatedPoints] = useState<Coordinate[]>([]);
   const routeAnimatorRef = useRef<RouteAnimator | null>(null);
   const lastRouteKeyRef = useRef<string | null>(null);
+
+  // Memoize filter arrays to prevent recreating them on every render
+  const filterProvinces = useMemo(() => {
+    const filtered = provinces.slice();
+    filtered.unshift('in', 'name');
+    return filtered;
+  }, [provinces]);
+
+  const filterCountries = useMemo(() => {
+    const filtered = countries.slice();
+    filtered.unshift('in', 'name');
+    return filtered;
+  }, [countries]);
 
   function switchLayerVisibility(map: MapInstance, lights: boolean) {
     const styleJson = map.getStyle();
@@ -123,11 +144,6 @@ const RunMap = ({
     },
     [mapRef, lights]
   );
-  const filterProvinces = provinces.slice();
-  const filterCountries = countries.slice();
-  // for geojson format
-  filterProvinces.unshift('in', 'name');
-  filterCountries.unshift('in', 'name');
 
   const initGeoDataLength = geoData.features.length;
   const isBigMap = (viewState.zoom ?? 0) <= 3;
@@ -157,36 +173,55 @@ const RunMap = ({
     }
   }
 
-  const isSingleRun =
-    geoData.features.length === 1 &&
-    geoData.features[0].geometry.coordinates.length;
-  let startLon = 0;
-  let startLat = 0;
-  let endLon = 0;
-  let endLat = 0;
-  if (isSingleRun) {
-    const points = geoData.features[0].geometry.coordinates as Coordinate[];
-    [startLon, startLat] = points[0];
-    [endLon, endLat] = points[points.length - 1];
-  }
-  let dash = USE_DASH_LINE && !isSingleRun && !isBigMap ? [2, 2] : [2, 0];
-  const onMove = React.useCallback(
+  // Memoize expensive calculations
+  const { isSingleRun, startLon, startLat, endLon, endLat } = useMemo(() => {
+    const isSingle =
+      geoData.features.length === 1 &&
+      geoData.features[0].geometry.coordinates.length;
+
+    let startLon = 0;
+    let startLat = 0;
+    let endLon = 0;
+    let endLat = 0;
+
+    if (isSingle) {
+      const points = geoData.features[0].geometry.coordinates as Coordinate[];
+      [startLon, startLat] = points[0];
+      [endLon, endLat] = points[points.length - 1];
+    }
+
+    return { isSingleRun: isSingle, startLon, startLat, endLon, endLat };
+  }, [geoData]);
+
+  const dash = useMemo(() => {
+    return USE_DASH_LINE && !isSingleRun && !isBigMap ? [2, 2] : [2, 0];
+  }, [isSingleRun, isBigMap]);
+
+  const onMove = useCallback(
     ({ viewState }: { viewState: IViewState }) => {
       setViewState(viewState);
     },
+    [setViewState]
+  );
+
+  const style: React.CSSProperties = useMemo(
+    () => ({
+      width: '100%',
+      height: MAP_HEIGHT,
+      maxWidth: '100%', // Prevent overflow on mobile
+    }),
     []
   );
-  const style: React.CSSProperties = {
-    width: '100%',
-    height: MAP_HEIGHT,
-    maxWidth: '100%', // Prevent overflow on mobile
-  };
-  const fullscreenButton: React.CSSProperties = {
-    position: 'absolute',
-    marginTop: '29.2px',
-    right: '0px',
-    opacity: 0.3,
-  };
+
+  const fullscreenButton: React.CSSProperties = useMemo(
+    () => ({
+      position: 'absolute',
+      marginTop: '29.2px',
+      right: '0px',
+      opacity: 0.3,
+    }),
+    []
+  );
 
   useEffect(() => {
     const handleFullscreenChange = () => {
