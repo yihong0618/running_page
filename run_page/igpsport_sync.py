@@ -1,6 +1,5 @@
 import os
 import sys
-import json
 import argparse
 import requests
 from config import (
@@ -30,7 +29,7 @@ class IGPSPORT:
         req = {
             "appId": "igpsport-web",
             "username": self.username,
-            "password": self.password
+            "password": self.password,
         }
         rsp = self.session.post(LOGIN_URL, json=req)
         if not rsp.ok:
@@ -45,11 +44,7 @@ class IGPSPORT:
     def get_activity_list(self, page_no, ext):
         if page_no < 1:
             raise Exception("pageNo must be greater than 0")
-        params = {
-            "pageNo": str(page_no),
-            "pageSize": "20",
-            "sort": "1"
-        }
+        params = {"pageNo": str(page_no), "pageSize": "20", "sort": "1"}
         if ext == "fit":
             params["reqType"] = "0"
         elif ext == "gpx":
@@ -113,10 +108,24 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("username", help="igpsport phone number")
     parser.add_argument("password", help="igpsport password")
-    parser.add_argument("--token", default="", help="from authorization token for download data")
-    parser.add_argument("--with-gpx", action="store_true", help="get all igpsport data to gpx and download")
-    parser.add_argument("--with-tcx", action="store_true", help="get all igpsport data to tcx and download")
-    parser.add_argument("--with-fit", action="store_true", help="get all igpsport data to fit and download")
+    parser.add_argument(
+        "--token", default="", help="from authorization token for download data"
+    )
+    parser.add_argument(
+        "--with-gpx",
+        action="store_true",
+        help="get all igpsport data to gpx and download",
+    )
+    parser.add_argument(
+        "--with-tcx",
+        action="store_true",
+        help="get all igpsport data to tcx and download",
+    )
+    parser.add_argument(
+        "--with-fit",
+        action="store_true",
+        help="get all igpsport data to fit and download",
+    )
     args = parser.parse_args()
 
     # 如果用户没有指定任何下载类型，只下载 tcx
