@@ -839,7 +839,7 @@ python run_page/coros_sync.py 'your coros account' 'your coros password'
 #### Enter the following command in the terminal
 
 ```bash
-go run run_page/igpsport_sync.go -username 'your igpsport account' -password 'your igpsport password' -with-gpx
+python3 run_page/igpsport_sync.py 'your igpsport account' 'your igpsport password' -with-gpx
 ```
 
 You can replace `with-gpx` with `with-fit` to acquire data in fit format.
