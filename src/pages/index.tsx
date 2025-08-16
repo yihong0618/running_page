@@ -36,6 +36,43 @@ const Index = () => {
     func: (_run: Activity, _value: string) => boolean;
   }>({ item: thisYear, func: filterYearRuns });
 
+  // State to track if we're showing a single run from URL hash
+  const [singleRunId, setSingleRunId] = useState<number | null>(null);
+
+  // Animation trigger for single runs - increment this to force animation replay
+  const [animationTrigger, setAnimationTrigger] = useState(0);
+
+  // Parse URL hash on mount to check for run ID
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && hash.startsWith('run_')) {
+      const runId = parseInt(hash.replace('run_', ''), 10);
+      if (!isNaN(runId)) {
+        setSingleRunId(runId);
+      }
+    }
+
+    // Listen for hash changes (browser back/forward buttons)
+    const handleHashChange = () => {
+      const newHash = window.location.hash.replace('#', '');
+      if (newHash && newHash.startsWith('run_')) {
+        const runId = parseInt(newHash.replace('run_', ''), 10);
+        if (!isNaN(runId)) {
+          setSingleRunId(runId);
+        }
+      } else {
+        // Hash was cleared, reset to normal view
+        setSingleRunId(null);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+
   // Memoize expensive calculations
   const runs = useMemo(() => {
     return filterAndSortRuns(
@@ -138,24 +175,66 @@ const Index = () => {
         return;
       }
 
+      // Update URL hash when a single run is located
+      if (runIds.length === 1) {
+        const runId = runIds[0];
+        const newHash = `#run_${runId}`;
+        if (window.location.hash !== newHash) {
+          window.history.pushState(null, '', newHash);
+        }
+        setSingleRunId(runId);
+      } else {
+        // If multiple runs or no runs, clear the hash and single run state
+        if (window.location.hash) {
+          window.history.pushState(null, '', window.location.pathname);
+        }
+        setSingleRunId(null);
+      }
+
       // Create geoData for selected runs and calculate new bounds
       const selectedGeoData = geoJsonForRuns(selectedRuns);
       const selectedBounds = getBoundsForGeoData(selectedGeoData);
 
-      // Update both the animated geoData and the view state
-      setAnimatedGeoData(selectedGeoData);
-      setViewState({
-        ...selectedBounds,
-      });
-      setTitle(titleForShow(lastRun));
+      // Clear any existing animation interval first
       if (intervalIdRef.current) {
         clearInterval(intervalIdRef.current);
         intervalIdRef.current = null;
       }
+
+      // Update the animated geoData immediately to trigger RunMap animation
+      setAnimatedGeoData(selectedGeoData);
+
+      // For single run, trigger animation by incrementing the trigger
+      if (runIds.length === 1) {
+        setAnimationTrigger((prev) => prev + 1);
+      }
+
+      // Update view state
+      setViewState({
+        ...selectedBounds,
+      });
+      setTitle(titleForShow(lastRun));
       scrollToMap();
     },
     [runs]
   );
+
+  // Auto locate activity when singleRunId is set and activities are loaded
+  useEffect(() => {
+    if (singleRunId !== null && activities.length > 0) {
+      // Check if the run exists in our activities
+      const runExists = activities.some((run) => run.run_id === singleRunId);
+      if (runExists) {
+        // Automatically simulate clicking the single run
+        locateActivity([singleRunId]);
+      } else {
+        // If run doesn't exist, clear the hash and show a warning
+        console.warn(`Run with ID ${singleRunId} not found in activities`);
+        window.history.replaceState(null, '', window.location.pathname);
+        setSingleRunId(null);
+      }
+    }
+  }, [singleRunId, activities, locateActivity]);
 
   // Update bounds when geoData changes
   useEffect(() => {
@@ -187,7 +266,7 @@ const Index = () => {
       const tempRuns = runs.slice(0, i);
       setAnimatedGeoData(geoJsonForRuns(tempRuns));
       i += sliceNume;
-    }, 100);
+    }, 300);
 
     intervalIdRef.current = id;
 
@@ -270,6 +349,7 @@ const Index = () => {
           setViewState={setViewState}
           changeYear={changeYear}
           thisYear={year}
+          animationTrigger={animationTrigger}
         />
         {year === 'Total' ? (
           <SVGStat />

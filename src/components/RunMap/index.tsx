@@ -53,6 +53,7 @@ interface IRunMapProps {
   changeYear: (_year: string) => void;
   geoData: FeatureCollection<RPGeometry>;
   thisYear: string;
+  animationTrigger?: number; // Optional trigger to force animation replay
 }
 
 const RunMap = ({
@@ -62,6 +63,7 @@ const RunMap = ({
   changeYear,
   geoData,
   thisYear,
+  animationTrigger,
 }: IRunMapProps) => {
   const { countries, provinces } = useActivities();
   const mapRef = useRef<MapRef>();
@@ -275,6 +277,13 @@ const RunMap = ({
       }
     };
   }, [geoData, isSingleRun, startRouteAnimation]);
+
+  // Force animation when animationTrigger changes (for table clicks)
+  useEffect(() => {
+    if (animationTrigger && animationTrigger > 0 && isSingleRun) {
+      startRouteAnimation();
+    }
+  }, [animationTrigger, isSingleRun, startRouteAnimation]);
 
   const handleMapClick = useCallback(() => {
     if (!isSingleRun) return;
