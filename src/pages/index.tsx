@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
@@ -30,7 +30,7 @@ const Index = () => {
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [title, setTitle] = useState('');
-  const [intervalId, setIntervalId] = useState<number>();
+  const intervalIdRef = useRef<number | null>(null);
   const [currentFilter, setCurrentFilter] = useState<{
     item: string;
     func: (_run: Activity, _value: string) => boolean;
@@ -91,9 +91,12 @@ const Index = () => {
       }
 
       changeByItem(y, 'Year', filterYearRuns);
-      clearInterval(intervalId);
+      if (intervalIdRef.current) {
+        clearInterval(intervalIdRef.current);
+        intervalIdRef.current = null;
+      }
     },
-    [viewState.zoom, bounds, changeByItem, intervalId]
+    [viewState.zoom, bounds, changeByItem]
   );
 
   const changeCity = useCallback(
@@ -145,10 +148,13 @@ const Index = () => {
         ...selectedBounds,
       });
       setTitle(titleForShow(lastRun));
-      clearInterval(intervalId);
+      if (intervalIdRef.current) {
+        clearInterval(intervalIdRef.current);
+        intervalIdRef.current = null;
+      }
       scrollToMap();
     },
-    [runs, intervalId]
+    [runs]
   );
 
   // Update bounds when geoData changes
@@ -173,6 +179,7 @@ const Index = () => {
     const id = setInterval(() => {
       if (i >= runsNum) {
         clearInterval(id);
+        intervalIdRef.current = null;
         setAnimatedGeoData(geoData);
         return;
       }
@@ -182,10 +189,13 @@ const Index = () => {
       i += sliceNume;
     }, 100);
 
-    setIntervalId(id);
+    intervalIdRef.current = id;
 
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      if (intervalIdRef.current) {
+        clearInterval(intervalIdRef.current);
+        intervalIdRef.current = null;
+      }
     };
   }, [runs, geoData]); // Remove intervalId from deps to avoid stale closure
 
