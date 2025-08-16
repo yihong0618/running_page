@@ -39,6 +39,9 @@ const Index = () => {
   // State to track if we're showing a single run from URL hash
   const [singleRunId, setSingleRunId] = useState<number | null>(null);
 
+  // Animation trigger for single runs - increment this to force animation replay
+  const [animationTrigger, setAnimationTrigger] = useState(0);
+
   // Parse URL hash on mount to check for run ID
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
@@ -69,7 +72,6 @@ const Index = () => {
       window.removeEventListener('hashchange', handleHashChange);
     };
   }, []);
-
 
   // Memoize expensive calculations
   const runs = useMemo(() => {
@@ -193,20 +195,46 @@ const Index = () => {
       const selectedGeoData = geoJsonForRuns(selectedRuns);
       const selectedBounds = getBoundsForGeoData(selectedGeoData);
 
-      // Update both the animated geoData and the view state
-      setAnimatedGeoData(selectedGeoData);
-      setViewState({
-        ...selectedBounds,
-      });
-      setTitle(titleForShow(lastRun));
+      // Clear any existing animation interval first
       if (intervalIdRef.current) {
         clearInterval(intervalIdRef.current);
         intervalIdRef.current = null;
       }
+
+      // Update the animated geoData immediately to trigger RunMap animation
+      setAnimatedGeoData(selectedGeoData);
+
+      // For single run, trigger animation by incrementing the trigger
+      if (runIds.length === 1) {
+        setAnimationTrigger((prev) => prev + 1);
+      }
+
+      // Update view state
+      setViewState({
+        ...selectedBounds,
+      });
+      setTitle(titleForShow(lastRun));
       scrollToMap();
     },
     [runs]
   );
+
+  // Auto locate activity when singleRunId is set and activities are loaded
+  useEffect(() => {
+    if (singleRunId !== null && activities.length > 0) {
+      // Check if the run exists in our activities
+      const runExists = activities.some((run) => run.run_id === singleRunId);
+      if (runExists) {
+        // Automatically simulate clicking the single run
+        locateActivity([singleRunId]);
+      } else {
+        // If run doesn't exist, clear the hash and show a warning
+        console.warn(`Run with ID ${singleRunId} not found in activities`);
+        window.history.replaceState(null, '', window.location.pathname);
+        setSingleRunId(null);
+      }
+    }
+  }, [singleRunId, activities, locateActivity]);
 
   // Update bounds when geoData changes
   useEffect(() => {
@@ -321,6 +349,7 @@ const Index = () => {
           setViewState={setViewState}
           changeYear={changeYear}
           thisYear={year}
+          animationTrigger={animationTrigger}
         />
         {year === 'Total' ? (
           <SVGStat />
