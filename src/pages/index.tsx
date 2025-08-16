@@ -36,6 +36,41 @@ const Index = () => {
     func: (_run: Activity, _value: string) => boolean;
   }>({ item: thisYear, func: filterYearRuns });
 
+  // State to track if we're showing a single run from URL hash
+  const [singleRunId, setSingleRunId] = useState<number | null>(null);
+
+  // Parse URL hash on mount to check for run ID
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && hash.startsWith('run_')) {
+      const runId = parseInt(hash.replace('run_', ''), 10);
+      if (!isNaN(runId)) {
+        setSingleRunId(runId);
+      }
+    }
+
+    // Listen for hash changes (browser back/forward buttons)
+    const handleHashChange = () => {
+      const newHash = window.location.hash.replace('#', '');
+      if (newHash && newHash.startsWith('run_')) {
+        const runId = parseInt(newHash.replace('run_', ''), 10);
+        if (!isNaN(runId)) {
+          setSingleRunId(runId);
+        }
+      } else {
+        // Hash was cleared, reset to normal view
+        setSingleRunId(null);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+
+
   // Memoize expensive calculations
   const runs = useMemo(() => {
     return filterAndSortRuns(
@@ -138,6 +173,22 @@ const Index = () => {
         return;
       }
 
+      // Update URL hash when a single run is located
+      if (runIds.length === 1) {
+        const runId = runIds[0];
+        const newHash = `#run_${runId}`;
+        if (window.location.hash !== newHash) {
+          window.history.pushState(null, '', newHash);
+        }
+        setSingleRunId(runId);
+      } else {
+        // If multiple runs or no runs, clear the hash and single run state
+        if (window.location.hash) {
+          window.history.pushState(null, '', window.location.pathname);
+        }
+        setSingleRunId(null);
+      }
+
       // Create geoData for selected runs and calculate new bounds
       const selectedGeoData = geoJsonForRuns(selectedRuns);
       const selectedBounds = getBoundsForGeoData(selectedGeoData);
@@ -187,7 +238,7 @@ const Index = () => {
       const tempRuns = runs.slice(0, i);
       setAnimatedGeoData(geoJsonForRuns(tempRuns));
       i += sliceNume;
-    }, 100);
+    }, 300);
 
     intervalIdRef.current = id;
 
