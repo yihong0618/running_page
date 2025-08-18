@@ -92,7 +92,6 @@
   --font-mono: 'IBM Plex Mono', monospace;
 }
 
-
 @layer base {
 
   html,
@@ -129,6 +128,14 @@ hr {
   border-bottom: 1px solid;
   border-color: var(--color-hr-primary);
   margin: 2rem 0;
+}
+
+.svg-color-bg {
+  fill: var(--color-run-row-hover-background);
+}
+
+.svg-color-text {
+  fill: var(--color-run-date);
 }
 
 /* Mobile-specific improvements */
