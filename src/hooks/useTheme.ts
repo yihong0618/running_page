@@ -106,7 +106,7 @@ export const useMapTheme = () => {
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['data-theme']
+      attributeFilter: ['data-theme'],
     });
 
     // Listen for custom theme change events
@@ -152,7 +152,9 @@ export const useTheme = () => {
     setThemeState(newTheme);
 
     // Dispatch custom event for theme change
-    const event = new CustomEvent(THEME_CHANGE_EVENT, { detail: { theme: newTheme } });
+    const event = new CustomEvent(THEME_CHANGE_EVENT, {
+      detail: { theme: newTheme },
+    });
     window.dispatchEvent(event);
   }, []);
 

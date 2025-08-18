@@ -328,10 +328,10 @@ const Index = () => {
   }, [year]);
 
   const { theme } = useTheme();
-  
+
   useEffect(() => {
     const htmlElement = document.documentElement;
-    
+
     if (theme === 'system') {
       htmlElement.removeAttribute('data-theme');
     } else {

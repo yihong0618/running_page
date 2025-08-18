@@ -237,7 +237,7 @@ const colorForRun = (run: Activity): string => {
       if (run.subtype === 'trail') {
         return RUN_TRAIL_COLOR;
       } else if (run.subtype === 'generic') {
-        return RUN_COLOR; 
+        return RUN_COLOR;
       }
       return RUN_COLOR;
     }
@@ -250,7 +250,7 @@ const colorForRun = (run: Activity): string => {
     case 'swimming':
       return SWIMMING_COLOR;
     default:
-      return MAIN_COLOR; 
+      return MAIN_COLOR;
   }
 };
 
@@ -457,13 +457,16 @@ const isTouchDevice = () => {
  */
 const getMapTheme = (): string => {
   if (typeof window === 'undefined') return MAP_TILE_STYLE_DARK;
-  
+
   // Check for explicit theme in DOM
-  const dataTheme = document.documentElement.getAttribute('data-theme') as 'light' | 'dark' | null;
-  
+  const dataTheme = document.documentElement.getAttribute('data-theme') as
+    | 'light'
+    | 'dark'
+    | null;
+
   // Check for saved theme in localStorage
   const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-  
+
   // Determine theme based on priority:
   // 1. DOM attribute
   // 2. localStorage

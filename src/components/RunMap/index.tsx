@@ -73,7 +73,7 @@ const RunMap = ({
   const [mapGeoData, setMapGeoData] =
     useState<FeatureCollection<RPGeometry> | null>(null);
   const [isLoadingMapData, setIsLoadingMapData] = useState(false);
-  
+
   // Use the map theme hook to get the current map theme
   const currentMapTheme = useMapTheme();
 
@@ -87,16 +87,16 @@ const RunMap = ({
   useEffect(() => {
     if (mapRef.current) {
       const map = mapRef.current.getMap();
-      
+
       // Save current map state before changing style
       const currentCenter = map.getCenter();
       const currentZoom = map.getZoom();
       const currentBearing = map.getBearing();
       const currentPitch = map.getPitch();
-      
+
       // Apply new style
       map.setStyle(mapStyle);
-      
+
       // Restore map state and visibility settings after style loads
       map.once('style.load', () => {
         // Restore map view state
@@ -104,7 +104,7 @@ const RunMap = ({
         map.setZoom(currentZoom);
         map.setBearing(currentBearing);
         map.setPitch(currentPitch);
-        
+
         // Reapply layer visibility settings
         switchLayerVisibility(map, lights);
       });

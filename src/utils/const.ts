@@ -198,16 +198,13 @@ export const MAP_TILE_STYLES = {
       'https://api.maptiler.com/maps/dataviz-dark/style.json?key=',
     'basic-light': 'https://api.maptiler.com/maps/basic-v2/style.json?key=',
     'basic-dark': 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=',
-    'streets-light':
-      'https://api.maptiler.com/maps/streets-v2/style.json?key=',
+    'streets-light': 'https://api.maptiler.com/maps/streets-v2/style.json?key=',
     'streets-dark':
       'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=',
-    'outdoor-light':
-      'https://api.maptiler.com/maps/outdoor-v2/style.json?key=',
+    'outdoor-light': 'https://api.maptiler.com/maps/outdoor-v2/style.json?key=',
     'outdoor-dark':
       'https://api.maptiler.com/maps/outdoor-v2-dark/style.json?key=',
-    'bright-light':
-      'https://api.maptiler.com/maps/bright-v2/style.json?key=',
+    'bright-light': 'https://api.maptiler.com/maps/bright-v2/style.json?key=',
     'bright-dark':
       'https://api.maptiler.com/maps/bright-v2-dark/style.json?key=',
     'topo-light': 'https://api.maptiler.com/maps/topo-v2/style.json?key=',
@@ -221,7 +218,7 @@ export const MAP_TILE_STYLES = {
   // https://docs.stadiamaps.com/themes/
   stadiamaps: {
     // light
-     alidade_smooth:
+    alidade_smooth:
       'https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=',
     alidade_smooth_dark:
       'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=',

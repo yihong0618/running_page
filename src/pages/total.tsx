@@ -6,11 +6,11 @@ import { useEffect } from 'react';
 const HomePage = () => {
   // Use the theme hook to get the current theme
   const { theme } = useTheme();
-  
+
   // Apply theme changes to the document when theme changes
   useEffect(() => {
     const htmlElement = document.documentElement;
-    
+
     if (theme === 'system') {
       // Remove theme attribute to use system preference
       htmlElement.removeAttribute('data-theme');

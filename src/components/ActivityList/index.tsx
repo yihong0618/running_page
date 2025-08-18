@@ -400,10 +400,7 @@ const ActivityList: React.FC = () => {
   return (
     <div className={styles.activityList}>
       <div className={styles.filterContainer}>
-        <button
-          className={styles.smallHomeButton}
-          onClick={handleHomeClick}
-        >
+        <button className={styles.smallHomeButton} onClick={handleHomeClick}>
           {HOME_PAGE_TITLE}
         </button>
         <select
