@@ -272,6 +272,10 @@ const ActivityList: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const handleHomeClick = () => {
+    navigate('/');
+  };
+
   const toggleInterval = (newInterval: IntervalType): void => {
     setInterval(newInterval);
   };
@@ -398,7 +402,7 @@ const ActivityList: React.FC = () => {
       <div className={styles.filterContainer}>
         <button
           className={styles.smallHomeButton}
-          onClick={() => navigate('/')}
+          onClick={handleHomeClick}
         >
           {HOME_PAGE_TITLE}
         </button>

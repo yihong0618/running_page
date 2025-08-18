@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import useSiteMetadata from '@/hooks/useSiteMetadata';
 import { useTheme, Theme } from '@/hooks/useTheme';
+import styles from './style.module.css';
 
 const Header = () => {
   const { logo, siteUrl, navLinks } = useSiteMetadata();
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   
   const icons = [
     {
@@ -47,14 +48,19 @@ const Header = () => {
               {n.name}
             </a>
           ))}
-          <div className="ml-4 flex items-center">
+          <div className="ml-4 flex items-center space-x-2">
             {icons.map((icon) => (
               <button 
                 key={icon.id}
+                type="button"
                 onClick={() => setTheme(icon.id as Theme)}
-                className="p-2"
+                className={`${styles.themeButton} ${theme === icon.id ? styles.themeButtonActive : ''}`}
+                aria-label={`Switch to ${icon.id} theme`}
+                title={`Switch to ${icon.id} theme`}
               >
-                {icon.svg}
+                <div className={styles.iconWrapper}>
+                  {icon.svg}
+                </div>
               </button>
             ))}
           </div>

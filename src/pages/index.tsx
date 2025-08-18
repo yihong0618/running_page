@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
 import RunMap from '@/components/RunMap';
@@ -23,6 +24,7 @@ import {
   titleForShow,
   RunIds,
 } from '@/utils/utils';
+import { useTheme } from '@/hooks/useTheme';
 
 const Index = () => {
   const { siteTitle } = useSiteMetadata();
@@ -325,8 +327,23 @@ const Index = () => {
     };
   }, [year]);
 
+  const { theme } = useTheme();
+  
+  useEffect(() => {
+    const htmlElement = document.documentElement;
+    
+    if (theme === 'system') {
+      htmlElement.removeAttribute('data-theme');
+    } else {
+      htmlElement.setAttribute('data-theme', theme);
+    }
+  }, [theme]);
+
   return (
     <Layout>
+      <Helmet>
+        <html lang="en" data-theme={theme !== 'system' ? theme : undefined} />
+      </Helmet>
       <div className="w-full lg:w-1/3">
         <h1 className="my-12 mt-6 text-5xl font-extrabold italic">
           <a href="/">{siteTitle}</a>

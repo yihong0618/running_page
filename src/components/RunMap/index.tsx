@@ -26,7 +26,6 @@ import {
   MAP_HEIGHT,
   PRIVACY_MODE,
   LIGHTS_ON,
-  MAP_TILE_STYLE,
   MAP_TILE_VENDOR,
   MAP_TILE_ACCESS_TOKEN,
 } from '@/utils/const';
@@ -45,6 +44,7 @@ import { FeatureCollection } from 'geojson';
 import { RPGeometry } from '@/static/run_countries';
 import './mapbox.css';
 import LightsControl from '@/components/RunMap/LightsControl';
+import { useMapTheme } from '@/hooks/useTheme';
 
 interface IRunMapProps {
   title: string;
@@ -73,12 +73,43 @@ const RunMap = ({
   const [mapGeoData, setMapGeoData] =
     useState<FeatureCollection<RPGeometry> | null>(null);
   const [isLoadingMapData, setIsLoadingMapData] = useState(false);
+  
+  // Use the map theme hook to get the current map theme
+  const currentMapTheme = useMapTheme();
 
-  // Memoize map style to prevent recreating it on every render
+  // Generate map style based on current theme
   const mapStyle = useMemo(
-    () => getMapStyle(MAP_TILE_VENDOR, MAP_TILE_STYLE, MAP_TILE_ACCESS_TOKEN),
-    []
+    () => getMapStyle(MAP_TILE_VENDOR, currentMapTheme, MAP_TILE_ACCESS_TOKEN),
+    [currentMapTheme]
   );
+
+  // Update map when theme changes
+  useEffect(() => {
+    if (mapRef.current) {
+      const map = mapRef.current.getMap();
+      
+      // Save current map state before changing style
+      const currentCenter = map.getCenter();
+      const currentZoom = map.getZoom();
+      const currentBearing = map.getBearing();
+      const currentPitch = map.getPitch();
+      
+      // Apply new style
+      map.setStyle(mapStyle);
+      
+      // Restore map state and visibility settings after style loads
+      map.once('style.load', () => {
+        // Restore map view state
+        map.setCenter(currentCenter);
+        map.setZoom(currentZoom);
+        map.setBearing(currentBearing);
+        map.setPitch(currentPitch);
+        
+        // Reapply layer visibility settings
+        switchLayerVisibility(map, lights);
+      });
+    }
+  }, [mapStyle]);
 
   // animation state (single run only)
   const [animatedPoints, setAnimatedPoints] = useState<Coordinate[]>([]);
@@ -98,6 +129,11 @@ const RunMap = ({
     return filtered;
   }, [countries]);
 
+  /**
+   * Toggle visibility of map layers based on lights setting
+   * @param map - The Mapbox map instance
+   * @param lights - Whether lights are on or off
+   */
   function switchLayerVisibility(map: MapInstance, lights: boolean) {
     const styleJson = map.getStyle();
     styleJson.layers.forEach((it: { id: string }) => {
@@ -107,6 +143,15 @@ const RunMap = ({
       }
     });
   }
+
+  // Apply layer visibility when lights setting changes
+  useEffect(() => {
+    if (mapRef.current) {
+      const map = mapRef.current.getMap();
+      switchLayerVisibility(map, lights);
+    }
+  }, [lights]);
+
   const mapRefCallback = useCallback(
     (ref: MapRef) => {
       if (ref !== null) {

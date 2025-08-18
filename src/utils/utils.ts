@@ -17,6 +17,7 @@ import {
   RUN_COLOR,
   RUN_TRAIL_COLOR,
   MAP_TILE_STYLES,
+  MAP_TILE_STYLE_DARK,
 } from './const';
 import {
   FeatureCollection,
@@ -24,6 +25,7 @@ import {
   Feature,
   GeoJsonProperties,
 } from 'geojson';
+import { getMapThemeFromCurrentTheme } from '@/hooks/useTheme';
 
 export type Coordinate = [number, number];
 
@@ -235,7 +237,7 @@ const colorForRun = (run: Activity): string => {
       if (run.subtype === 'trail') {
         return RUN_TRAIL_COLOR;
       } else if (run.subtype === 'generic') {
-        return RUN_COLOR;
+        return RUN_COLOR; 
       }
       return RUN_COLOR;
     }
@@ -248,7 +250,7 @@ const colorForRun = (run: Activity): string => {
     case 'swimming':
       return SWIMMING_COLOR;
     default:
-      return MAIN_COLOR;
+      return MAIN_COLOR; 
   }
 };
 
@@ -449,6 +451,32 @@ const isTouchDevice = () => {
   ); // Consider small screens as touch devices
 };
 
+/**
+ * Determines the appropriate map theme based on current settings
+ * @returns The map theme style to use
+ */
+const getMapTheme = (): string => {
+  if (typeof window === 'undefined') return MAP_TILE_STYLE_DARK;
+  
+  // Check for explicit theme in DOM
+  const dataTheme = document.documentElement.getAttribute('data-theme') as 'light' | 'dark' | null;
+  
+  // Check for saved theme in localStorage
+  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+  
+  // Determine theme based on priority:
+  // 1. DOM attribute
+  // 2. localStorage
+  // 3. System preference
+  if (dataTheme) {
+    return getMapThemeFromCurrentTheme(dataTheme);
+  } else if (savedTheme) {
+    return getMapThemeFromCurrentTheme(savedTheme);
+  } else {
+    return getMapThemeFromCurrentTheme('system');
+  }
+};
+
 export {
   titleForShow,
   formatPace,
@@ -470,4 +498,5 @@ export {
   convertMovingTime2Sec,
   getMapStyle,
   isTouchDevice,
+  getMapTheme,
 };
