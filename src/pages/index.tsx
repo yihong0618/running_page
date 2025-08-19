@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
@@ -8,6 +8,7 @@ import SVGStat from '@/components/SVGStat';
 import YearsStat from '@/components/YearsStat';
 import useActivities from '@/hooks/useActivities';
 import useSiteMetadata from '@/hooks/useSiteMetadata';
+import { useInterval } from '@/hooks/useInterval';
 import { IS_CHINESE } from '@/utils/const';
 import {
   Activity,
@@ -30,7 +31,10 @@ const Index = () => {
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [title, setTitle] = useState('');
-  const intervalIdRef = useRef<number | null>(null);
+  // Animation states for replacing intervalIdRef
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [currentAnimationIndex, setCurrentAnimationIndex] = useState(0);
+  const [animationRuns, setAnimationRuns] = useState<Activity[]>([]);
   const [currentFilter, setCurrentFilter] = useState<{
     item: string;
     func: (_run: Activity, _value: string) => boolean;
@@ -99,6 +103,47 @@ const Index = () => {
   // Add state for animated geoData to handle the animation effect
   const [animatedGeoData, setAnimatedGeoData] = useState(geoData);
 
+  // Use useInterval for animation instead of intervalIdRef
+  useInterval(
+    () => {
+      if (!isAnimating || currentAnimationIndex >= animationRuns.length) {
+        setIsAnimating(false);
+        setAnimatedGeoData(geoData);
+        return;
+      }
+
+      const runsNum = animationRuns.length;
+      const sliceNum = runsNum >= 8 ? Math.ceil(runsNum / 8) : 1;
+      const nextIndex = Math.min(currentAnimationIndex + sliceNum, runsNum);
+      const tempRuns = animationRuns.slice(0, nextIndex);
+      setAnimatedGeoData(geoJsonForRuns(tempRuns));
+      setCurrentAnimationIndex(nextIndex);
+
+      if (nextIndex >= runsNum) {
+        setIsAnimating(false);
+        setAnimatedGeoData(geoData);
+      }
+    },
+    isAnimating ? 300 : null
+  );
+
+  // Helper function to start animation
+  const startAnimation = useCallback(
+    (runsToAnimate: Activity[]) => {
+      if (runsToAnimate.length === 0) {
+        setAnimatedGeoData(geoData);
+        return;
+      }
+
+      const sliceNum =
+        runsToAnimate.length >= 8 ? Math.ceil(runsToAnimate.length / 8) : 1;
+      setAnimationRuns(runsToAnimate);
+      setCurrentAnimationIndex(sliceNum);
+      setIsAnimating(true);
+    },
+    [geoData]
+  );
+
   const changeByItem = useCallback(
     (
       item: string,
@@ -112,6 +157,11 @@ const Index = () => {
       setCurrentFilter({ item, func });
       setRunIndex(-1);
       setTitle(`${item} ${name} Running Heatmap`);
+      // Reset single run state when changing filters
+      setSingleRunId(null);
+      if (window.location.hash) {
+        window.history.pushState(null, '', window.location.pathname);
+      }
     },
     [thisYear]
   );
@@ -128,10 +178,8 @@ const Index = () => {
       }
 
       changeByItem(y, 'Year', filterYearRuns);
-      if (intervalIdRef.current) {
-        clearInterval(intervalIdRef.current);
-        intervalIdRef.current = null;
-      }
+      // Stop current animation
+      setIsAnimating(false);
     },
     [viewState.zoom, bounds, changeByItem]
   );
@@ -175,6 +223,15 @@ const Index = () => {
         return;
       }
 
+      // Set runIndex for table highlighting when single run is selected
+      if (runIds.length === 1) {
+        const runId = runIds[0];
+        const runIdx = runs.findIndex((run) => run.run_id === runId);
+        setRunIndex(runIdx);
+      } else {
+        setRunIndex(-1);
+      }
+
       // Update URL hash when a single run is located
       if (runIds.length === 1) {
         const runId = runIds[0];
@@ -195,11 +252,8 @@ const Index = () => {
       const selectedGeoData = geoJsonForRuns(selectedRuns);
       const selectedBounds = getBoundsForGeoData(selectedGeoData);
 
-      // Clear any existing animation interval first
-      if (intervalIdRef.current) {
-        clearInterval(intervalIdRef.current);
-        intervalIdRef.current = null;
-      }
+      // Stop any existing animation
+      setIsAnimating(false);
 
       // Update the animated geoData immediately to trigger RunMap animation
       setAnimatedGeoData(selectedGeoData);
@@ -246,37 +300,8 @@ const Index = () => {
 
   // Animate geoData when runs change
   useEffect(() => {
-    const runsNum = runs.length;
-    if (runsNum === 0) {
-      setAnimatedGeoData(geoData);
-      return;
-    }
-
-    const sliceNume = runsNum >= 8 ? Math.ceil(runsNum / 8) : 1;
-    let i = sliceNume;
-
-    const id = setInterval(() => {
-      if (i >= runsNum) {
-        clearInterval(id);
-        intervalIdRef.current = null;
-        setAnimatedGeoData(geoData);
-        return;
-      }
-
-      const tempRuns = runs.slice(0, i);
-      setAnimatedGeoData(geoJsonForRuns(tempRuns));
-      i += sliceNume;
-    }, 300);
-
-    intervalIdRef.current = id;
-
-    return () => {
-      if (intervalIdRef.current) {
-        clearInterval(intervalIdRef.current);
-        intervalIdRef.current = null;
-      }
-    };
-  }, [runs, geoData]); // Remove intervalId from deps to avoid stale closure
+    startAnimation(runs);
+  }, [runs, startAnimation]);
 
   useEffect(() => {
     if (year !== 'Total') {
