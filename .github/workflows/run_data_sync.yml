@@ -252,9 +252,9 @@ jobs:
           DATA_CACHE_PREFIX: ${{ env.DATA_CACHE_PREFIX }}
           BUILD_GH_PAGES: ${{ env.BUILD_GH_PAGES }}
         run: |
-          echo 'SAVE_DATA_IN_GITHUB_CACHE=$SAVE_DATA_IN_GITHUB_CACHE' >> '$GITHUB_OUTPUT'
-          echo 'DATA_CACHE_PREFIX=$DATA_CACHE_PREFIX' >> '$GITHUB_OUTPUT'
-          echo 'BUILD_GH_PAGES=$BUILD_GH_PAGES' >> '$GITHUB_OUTPUT'
+          echo "SAVE_DATA_IN_GITHUB_CACHE=$SAVE_DATA_IN_GITHUB_CACHE" >> "$GITHUB_OUTPUT"
+          echo "DATA_CACHE_PREFIX=$DATA_CACHE_PREFIX" >> "$GITHUB_OUTPUT"
+          echo "BUILD_GH_PAGES=$BUILD_GH_PAGES" >> "$GITHUB_OUTPUT"
 
   publish_github_pages:
     if: needs.sync.result == 'success' && needs.sync.outputs.BUILD_GH_PAGES == 'true'
