@@ -10,8 +10,8 @@ const GridSvg = lazy(() => loadSvgComponent(totalStat, './grid.svg'));
 const SVGStat = () => (
   <div id="svgStat">
     <Suspense fallback={<div className="text-center">Loading...</div>}>
-      <GithubSvg className="mt-4 h-auto w-full" />
-      <GridSvg className="mt-4 h-auto w-full" />
+      <GithubSvg className="github-svg mt-4 h-auto w-full" />
+      <GridSvg className="grid-svg mt-4 h-auto w-full" />
     </Suspense>
   </div>
 );

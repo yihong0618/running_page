@@ -17,6 +17,8 @@ const colorClassMapping: { [key: string]: string } = {
   // Background
   '#1a1a1a': 'svg-color-bg',
   '#222': 'svg-color-bg',
+  '#444': 'svg-color-inactive-cell',
+  '#4dd2ff': 'svg-color-active-cell',
   // Primary Text
   '#fff': 'svg-color-text',
   '#e1ed5e': 'svg-color-text',

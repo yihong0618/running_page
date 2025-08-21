@@ -19,8 +19,10 @@
   --color-run-row-hover-background: var(--color-run-row-hover-background);
   /* activity-card */
   --color-activity-card: var(--color-activity-card);
-  /* fonts */
-  --font-sans: var(--font-sans);
+  /* svg */
+  --svg-color-active-cell: var(--svg-color-inactive-cell)
+    /* fonts */
+    --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
 
@@ -37,6 +39,7 @@
     --color-run-table-thead: var(--color-neutral-800);
     --color-run-row-hover-background: var(--color-neutral-200);
     --color-activity-card: var(--color-neutral-300);
+    --svg-color-active-cell: var(--color-neutral-600);
     --font-sans: 'IBM Plex Sans', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
@@ -55,6 +58,7 @@
     --color-run-table-thead: var(--color-zinc-300);
     --color-run-row-hover-background: var(--color-neutral-800);
     --color-activity-card: var(--color-neutral-700);
+    --svg-color-active-cell: #4dd2ff;
     --font-sans: 'IBM Plex Sans', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
@@ -72,6 +76,7 @@
   --color-run-table-thead: var(--color-neutral-800);
   --color-run-row-hover-background: var(--color-neutral-200);
   --color-activity-card: var(--color-neutral-300);
+  --svg-color-inactive-cell: var(--color-neutral-600);
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
@@ -88,11 +93,13 @@
   --color-run-table-thead: var(--color-zinc-300);
   --color-run-row-hover-background: var(--color-neutral-800);
   --color-activity-card: var(--color-neutral-700);
+  --svg-color-active-cell: #4dd2ff;
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
 
 @layer base {
+
   html,
   body {
     background-color: var(--color-background);
@@ -129,12 +136,26 @@ hr {
   margin: 2rem 0;
 }
 
+.github-svg text,
+.grid-svg text {
+  fill: var(--color-run-date);
+}
+
 .svg-color-bg {
   fill: var(--color-run-row-hover-background);
 }
 
-.svg-color-text {
-  fill: var(--color-run-date);
+.svg-color-inactive-cell {
+  fill: var(--color-activity-card);
+}
+
+.svg-color-active-cell {
+  fill: var(--svg-color-active-cell);
+}
+
+.grid-svg .svg-color-active-cell {
+  fill: none;
+  stroke: var(--svg-color-active-cell);
 }
 
 /* Mobile-specific improvements */
