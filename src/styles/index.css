@@ -20,8 +20,7 @@
   /* activity-card */
   --color-activity-card: var(--color-activity-card);
   /* svg */
-  --svg-color-active-cell: var(--svg-color-inactive-cell)
-    /* fonts */
+  --svg-color-active-cell: var(--svg-color-inactive-cell) /* fonts */
     --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
@@ -99,7 +98,6 @@
 }
 
 @layer base {
-
   html,
   body {
     background-color: var(--color-background);
