@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import useSiteMetadata from '@/hooks/useSiteMetadata';
 import { useTheme, Theme } from '@/hooks/useTheme';
 import styles from './style.module.css';
@@ -6,6 +7,7 @@ import styles from './style.module.css';
 const Header = () => {
   const { logo, siteUrl, navLinks } = useSiteMetadata();
   const { theme, setTheme } = useTheme();
+  const [currentIconIndex, setCurrentIconIndex] = useState(0);
 
   const icons = [
     {
@@ -70,6 +72,14 @@ const Header = () => {
     },
   ];
 
+  const handleToggle = () => {
+    const nextIndex = (currentIconIndex + 1) % icons.length;
+    setCurrentIconIndex(nextIndex);
+    setTheme(icons[nextIndex].id as Theme);
+  };
+
+  const currentIcon = icons[currentIconIndex];
+
   return (
     <>
       <nav className="mx-auto mt-12 flex w-full min-w-max max-w-screen-2xl items-center justify-between pl-6 lg:px-16">
@@ -91,18 +101,15 @@ const Header = () => {
             </a>
           ))}
           <div className="ml-4 flex items-center space-x-2">
-            {icons.map((icon) => (
-              <button
-                key={icon.id}
-                type="button"
-                onClick={() => setTheme(icon.id as Theme)}
-                className={`${styles.themeButton} ${theme === icon.id ? styles.themeButtonActive : ''}`}
-                aria-label={`Switch to ${icon.id} theme`}
-                title={`Switch to ${icon.id} theme`}
-              >
-                <div className={styles.iconWrapper}>{icon.svg}</div>
-              </button>
-            ))}
+            <button
+              type="button"
+              onClick={handleToggle}
+              className={`${styles.themeButton} ${styles.themeButtonActive}`}
+              aria-label={`Switch to ${currentIcon.id} theme`}
+              title={`Switch to ${currentIcon.id} theme`}
+            >
+              <div className={styles.iconWrapper}>{currentIcon.svg}</div>
+            </button>
           </div>
         </div>
       </nav>

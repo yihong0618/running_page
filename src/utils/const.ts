@@ -171,7 +171,7 @@ export const MAIN_COLOR = nike;
 export const PROVINCE_FILL_COLOR = '#47b8e0';
 export const COUNTRY_FILL_COLOR = dark_vanilla;
 
-export const RUN_COLOR = MAIN_COLOR;
+export const RUN_COLOR = '#47b8e0';
 export const RUN_TRAIL_COLOR = 'rgb(255,153,51)';
 export const CYCLING_COLOR = 'rgb(51,255,87)';
 export const HIKING_COLOR = 'rgb(151,51,255)';
