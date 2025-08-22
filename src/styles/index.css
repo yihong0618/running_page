@@ -20,8 +20,9 @@
   /* activity-card */
   --color-activity-card: var(--color-activity-card);
   /* svg */
-  --svg-color-active-cell: var(--svg-color-inactive-cell) /* fonts */
-    --font-sans: var(--font-sans);
+  --svg-color-active-cell: var(--svg-color-inactive-cell);
+  /* fonts */
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
 
