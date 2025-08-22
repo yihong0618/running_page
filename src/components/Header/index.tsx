@@ -6,7 +6,7 @@ import styles from './style.module.css';
 
 const Header = () => {
   const { logo, siteUrl, navLinks } = useSiteMetadata();
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const [currentIconIndex, setCurrentIconIndex] = useState(0);
 
   const icons = [
