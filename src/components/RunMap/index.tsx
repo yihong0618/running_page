@@ -77,12 +77,14 @@ const RunMap = ({
 
   // Use the map theme hook to get the current map theme
   const currentMapTheme = useMapTheme();
-  
   // Listen for theme changes to update single run color
   const themeChangeCounter = useThemeChangeCounter();
 
   // Get theme-aware single run color that updates when theme changes
-  const singleRunColor = useMemo(() => getRuntimeSingleRunColor(), [themeChangeCounter]);
+  const singleRunColor = useMemo(
+    () => getRuntimeSingleRunColor(),
+    [themeChangeCounter]
+  );
 
   // Generate map style based on current theme
   const mapStyle = useMemo(
