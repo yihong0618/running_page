@@ -92,7 +92,7 @@ const Index = () => {
 
   const geoData = useMemo(() => {
     return geoJsonForRuns(runs);
-  }, [runs, themeChangeCounter]); // Add themeChangeCounter to dependencies
+  }, [runs]);
 
   // for auto zoom
   const bounds = useMemo(() => {
@@ -354,11 +354,6 @@ const Index = () => {
   }, [year]);
 
   const { theme } = useTheme();
-
-  useEffect(() => {
-    const htmlElement = document.documentElement;
-    htmlElement.setAttribute('data-theme', theme);
-  }, [theme]);
 
   return (
     <Layout>
