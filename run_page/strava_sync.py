@@ -10,7 +10,7 @@ def run_strava_sync(
     client_id,
     client_secret,
     refresh_token,
-    sync_types: list = ["running"],
+    sync_types: list = [],
     only_run=False,
 ):
     generator = Generator(SQL_FILE)

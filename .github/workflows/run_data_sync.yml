@@ -109,44 +109,44 @@ jobs:
         if: env.RUN_TYPE == 'coros'
         run: |
           python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
-        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides , swims, strengths trains, hikes, runs, etc.).
+        # If you only want to sync 'type running' add args --only-run, default script is to sync all data (rides , swims, strengths trains, hikes, runs, etc.).
         # python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }} --only-run
 
       - name: Run sync Keep_to_strava script
         if: env.RUN_TYPE == 'keep_to_strava_sync'
         run: |
           python run_page/keep_to_strava_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }} --sync-types running cycling hiking
-        # If you only want to sync `type running` modify args --sync-types running, default script is to sync all data (rides, hikes and runs).
+        # If you only want to sync 'type running' modify args --sync-types running, default script is to sync all data (rides, hikes and runs).
 
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'
         run: |
           python run_page/strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
-        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # If you only want to sync 'type running' add args --only-run, default script is to sync all data (rides and runs).
 
-      # for garmin if you want generate `tcx` you can add --tcx command in the args.
+      # for garmin if you want generate 'tcx' you can add --tcx command in the args.
       - name: Run sync Garmin script
         if: env.RUN_TYPE == 'garmin'
         run: |
-          # make garmin secret string `python run_page/get_garmin_secret.py ${email} ${password}
           python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
-        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # make garmin secret string 'python run_page/get_garmin_secret.py ${email} ${password}'
+        # If you only want to sync 'type running' add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }} --only-run
 
       - name: Run sync Garmin CN script
         if: env.RUN_TYPE == 'garmin_cn'
         run: |
-          # make garmin secret string `python run_page/get_garmin_secret.py ${email} ${password} --is-cn
           python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
-        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # make garmin secret string 'python run_page/get_garmin_secret.py ${email} ${password} --is-cn'
+        # If you only want to sync 'type running' add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }}  --only-run --is-cn
 
       - name: Run sync Garmin CN to Garmin script
         if: env.RUN_TYPE == 'garmin_sync_cn_global'
         run: |
-          # make garmin secret string `python run_page/garmin_sync_cn_global.py ${email} ${password} --is-cn
           python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}
-        # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
+        # make garmin secret string 'python run_page/garmin_sync_cn_global.py ${email} ${password} --is-cn'
+        # If you only want to sync 'type running' add args --only-run, default script is to sync all data (rides and runs).
         # python run_page/garmin_sync_cn_global.py ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.GARMIN_SECRET_STRING }}  --only-run
 
       - name: Run sync Only GPX script
@@ -196,7 +196,7 @@ jobs:
         # If you want to sync fit activity in gpx format, please consider the following script:
         # python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-gpx
 
-      - name: Run db updater script to add "Elevation Gain" field to db
+      - name: Run db updater script to add 'Elevation Gain' field to db
         if: env.RUN_TYPE == 'db_updater'
         run: |
           python run_page/db_updater.py
@@ -213,6 +213,7 @@ jobs:
           python run_page/gen_svg.py --from-db --title "$TITLE_GRID" --type grid --athlete "$ATHLETE" --output assets/grid.svg --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime --min-distance "$MIN_GRID_DISTANCE"
           python run_page/gen_svg.py --from-db --type circular --use-localtime
           python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --github-style "align-firstday" --athlete "$ATHLETE" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
+
         # if you want use the style:the start day of each year always aligns with Monday. please use the following script:
         # python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
         # python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
@@ -221,13 +222,13 @@ jobs:
         env:
           BIRTHDAY_MONTH: ${{ env.BIRTHDAY_MONTH }}
         run: |
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_running.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Runner Month of Life' --sport-type running
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_walking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Walker Month of Life' --sport-type walking
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_hiking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Hiker Month of Life' --sport-type hiking
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_cycling.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Cylist Month of Life' --sport-type cycling
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Month of Life' --sport-type all
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_swimming.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Swimmer Month of Life' --sport-type swimming
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color '#f9d367'  --special-color2 '#f0a1a8' --output assets/mol_skiing.svg --use-localtime --athlete "${{env.ATHLETE}}" --title 'Skier Month of Life' --sport-type skiing
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_running.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Runner Month of Life" --sport-type running
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_walking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Walker Month of Life" --sport-type walking
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_hiking.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Hiker Month of Life" --sport-type hiking
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_cycling.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Cyclist Month of Life" --sport-type cycling
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Month of Life" --sport-type all
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_swimming.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Swimmer Month of Life" --sport-type swimming
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_skiing.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Skier Month of Life" --sport-type skiing
 
       - name: Save data to parqent
         if: env.SAVE_TO_PARQENT == 'true'
@@ -238,11 +239,11 @@ jobs:
       - name: Push new runs
         if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email 'action@github.com'
+          git config --local user.name 'GitHub Action'
           git add .
-          git commit -m 'update new runs' || echo "nothing to commit"
-          git push || echo "nothing to push"
+          git commit -m 'update new runs' || echo 'nothing to commit'
+          git push || echo 'nothing to push'
 
       - name: Set Output
         id: set_output

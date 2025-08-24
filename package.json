@@ -11,7 +11,7 @@
     "@surbowl/world-geo-json-zh": "^2.1.5",
     "@svgr/plugin-svgo": "^8.1.0",
     "@vercel/analytics": "^0.1.11",
-    "@vitejs/plugin-react": "^4.6.0",
+    "@vitejs/plugin-react": "^5.0.0",
     "gcoord": "^0.3.2",
     "geojson": "^0.5.0",
     "mapbox-gl": "^2.15.0",
@@ -23,16 +23,15 @@
     "react-map-gl": "^7.1.6",
     "react-router-dom": "^6.15.0",
     "recharts": "^2.15.2",
-    "vite": "^5.4.19",
+    "vite": "^7.1.2",
     "vite-plugin-svgr": "^4.3.0",
-    "vite-tsconfig-paths": "^4.2.0"
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
     "data:clean": "rm -f run_page/data.db {GPX,TCX,FIT}_OUT/* activities/* src/static/activities.json",
-    "clean": "rm -f run_page/data.db {GPX,TCX,FIT}_OUT/* activities/* src/static/activities.json",
     "data:download:garmin": "python3 run_page/garmin_sync.py",
     "data:analysis": "python3 run_page/gen_svg.py --from-db --type github --output assets/github.svg",
     "build": "vite build",
@@ -56,13 +55,13 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.32.0",
-    "@tailwindcss/vite": "^4.1.10",
+    "@tailwindcss/vite": "^4.1.11",
     "@types/geojson": "^7946.0.14",
     "@types/mapbox__polyline": "^1.0.2",
-    "@types/node": "^20.5.7",
+    "@types/node": "^24.2.1",
     "@types/prop-types": "^15.7.15",
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "^18.2.7",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
     "@typescript-eslint/eslint-plugin": "^8.37.0",
     "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^9.31.0",
@@ -76,5 +75,10 @@
     "tailwindcss": "^4.1.10",
     "typescript": "^5.2.2",
     "@types/bun": "latest"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/node": "^24.2.1"
+    }
   }
 }

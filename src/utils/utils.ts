@@ -14,9 +14,10 @@ import {
   HIKING_COLOR,
   WALKING_COLOR,
   SWIMMING_COLOR,
-  RUN_COLOR,
+  getRuntimeRunColor,
   RUN_TRAIL_COLOR,
   MAP_TILE_STYLES,
+  MAP_TILE_STYLE_DARK,
 } from './const';
 import {
   FeatureCollection,
@@ -24,6 +25,7 @@ import {
   Feature,
   GeoJsonProperties,
 } from 'geojson';
+import { getMapThemeFromCurrentTheme } from '@/hooks/useTheme';
 
 export type Coordinate = [number, number];
 
@@ -230,14 +232,16 @@ const pathForRun = (run: Activity): Coordinate[] => {
 };
 
 const colorForRun = (run: Activity): string => {
+  const dynamicRunColor = getRuntimeRunColor();
+
   switch (run.type) {
     case 'Run': {
       if (run.subtype === 'trail') {
         return RUN_TRAIL_COLOR;
       } else if (run.subtype === 'generic') {
-        return RUN_COLOR;
+        return dynamicRunColor;
       }
-      return RUN_COLOR;
+      return dynamicRunColor;
     }
     case 'cycling':
       return CYCLING_COLOR;
@@ -449,6 +453,35 @@ const isTouchDevice = () => {
   ); // Consider small screens as touch devices
 };
 
+/**
+ * Determines the appropriate map theme based on current settings
+ * @returns The map theme style to use
+ */
+const getMapTheme = (): string => {
+  if (typeof window === 'undefined') return MAP_TILE_STYLE_DARK;
+
+  // Check for explicit theme in DOM
+  const dataTheme = document.documentElement.getAttribute('data-theme') as
+    | 'light'
+    | 'dark'
+    | null;
+
+  // Check for saved theme in localStorage
+  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+
+  // Determine theme based on priority:
+  // 1. DOM attribute
+  // 2. localStorage
+  // 3. Default to dark theme
+  if (dataTheme) {
+    return getMapThemeFromCurrentTheme(dataTheme);
+  } else if (savedTheme) {
+    return getMapThemeFromCurrentTheme(savedTheme);
+  } else {
+    return getMapThemeFromCurrentTheme('dark');
+  }
+};
+
 export {
   titleForShow,
   formatPace,
@@ -470,4 +503,5 @@ export {
   convertMovingTime2Sec,
   getMapStyle,
   isTouchDevice,
+  getMapTheme,
 };
