@@ -217,6 +217,7 @@ const Index = () => {
         : runs.filter((r: any) => ids.has(r.run_id));
 
       if (!selectedRuns.length) {
+        setTitle('Test1111');
         return;
       }
 
@@ -232,6 +233,7 @@ const Index = () => {
         const runIdx = runs.findIndex((run) => run.run_id === runId);
         setRunIndex(runIdx);
       } else {
+        setTitle('Tes2222');
         setRunIndex(-1);
       }
 
