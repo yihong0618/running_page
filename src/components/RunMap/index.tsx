@@ -28,6 +28,7 @@ import {
   LIGHTS_ON,
   MAP_TILE_VENDOR,
   MAP_TILE_ACCESS_TOKEN,
+  getRuntimeSingleRunColor,
 } from '@/utils/const';
 import {
   Coordinate,
@@ -44,7 +45,7 @@ import { FeatureCollection } from 'geojson';
 import { RPGeometry } from '@/static/run_countries';
 import './mapbox.css';
 import LightsControl from '@/components/RunMap/LightsControl';
-import { useMapTheme } from '@/hooks/useTheme';
+import { useMapTheme, useThemeChangeCounter } from '@/hooks/useTheme';
 
 interface IRunMapProps {
   title: string;
@@ -66,7 +67,7 @@ const RunMap = ({
   animationTrigger,
 }: IRunMapProps) => {
   const { countries, provinces } = useActivities();
-  const mapRef = useRef<MapRef>();
+  const mapRef = useRef<MapRef>(null);
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
   // layers that should remain visible when lights are off
   const keepWhenLightsOff = ['runs2', 'animated-run'];
@@ -76,6 +77,12 @@ const RunMap = ({
 
   // Use the map theme hook to get the current map theme
   const currentMapTheme = useMapTheme();
+  
+  // Listen for theme changes to update single run color
+  const themeChangeCounter = useThemeChangeCounter();
+
+  // Get theme-aware single run color that updates when theme changes
+  const singleRunColor = useMemo(() => getRuntimeSingleRunColor(), [themeChangeCounter]);
 
   // Generate map style based on current theme
   const mapStyle = useMemo(
@@ -392,7 +399,7 @@ const RunMap = ({
             features: [
               {
                 type: 'Feature',
-                properties: { color: '#ff4d4f' },
+                properties: { color: singleRunColor },
                 geometry: {
                   type: 'LineString',
                   coordinates: animatedPoints,

@@ -25,11 +25,12 @@ import {
   titleForShow,
   RunIds,
 } from '@/utils/utils';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme, useThemeChangeCounter } from '@/hooks/useTheme';
 
 const Index = () => {
   const { siteTitle } = useSiteMetadata();
   const { activities, thisYear } = useActivities();
+  const themeChangeCounter = useThemeChangeCounter(); // Add theme change listener
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [title, setTitle] = useState('');
@@ -91,7 +92,7 @@ const Index = () => {
 
   const geoData = useMemo(() => {
     return geoJsonForRuns(runs);
-  }, [runs]);
+  }, [runs, themeChangeCounter]); // Add themeChangeCounter to dependencies
 
   // for auto zoom
   const bounds = useMemo(() => {
@@ -356,18 +357,13 @@ const Index = () => {
 
   useEffect(() => {
     const htmlElement = document.documentElement;
-
-    if (theme === 'system') {
-      htmlElement.removeAttribute('data-theme');
-    } else {
-      htmlElement.setAttribute('data-theme', theme);
-    }
+    htmlElement.setAttribute('data-theme', theme);
   }, [theme]);
 
   return (
     <Layout>
       <Helmet>
-        <html lang="en" data-theme={theme !== 'system' ? theme : undefined} />
+        <html lang="en" data-theme={theme} />
       </Helmet>
       <div className="w-full lg:w-1/3">
         <h1 className="my-12 mt-6 text-5xl font-extrabold italic">

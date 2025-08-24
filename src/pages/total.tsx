@@ -10,25 +10,17 @@ const HomePage = () => {
   // Apply theme changes to the document when theme changes
   useEffect(() => {
     const htmlElement = document.documentElement;
-
-    if (theme === 'system') {
-      // Remove theme attribute to use system preference
-      htmlElement.removeAttribute('data-theme');
-    } else {
-      // Set explicit theme attribute
-      htmlElement.setAttribute('data-theme', theme);
-    }
+    // Set explicit theme attribute
+    htmlElement.setAttribute('data-theme', theme);
   }, [theme]);
 
   return (
     <>
       <Helmet>
         {/* Set HTML attributes including theme */}
-        <html lang="en" data-theme={theme !== 'system' ? theme : undefined} />
+        <html lang="en" data-theme={theme} />
       </Helmet>
-      <div className="w-full">
-        <ActivityList />
-      </div>
+      <ActivityList />
     </>
   );
 };

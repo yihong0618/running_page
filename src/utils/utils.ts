@@ -14,7 +14,7 @@ import {
   HIKING_COLOR,
   WALKING_COLOR,
   SWIMMING_COLOR,
-  RUN_COLOR,
+  getRuntimeRunColor,
   RUN_TRAIL_COLOR,
   MAP_TILE_STYLES,
   MAP_TILE_STYLE_DARK,
@@ -232,14 +232,16 @@ const pathForRun = (run: Activity): Coordinate[] => {
 };
 
 const colorForRun = (run: Activity): string => {
+  const dynamicRunColor = getRuntimeRunColor();
+
   switch (run.type) {
     case 'Run': {
       if (run.subtype === 'trail') {
         return RUN_TRAIL_COLOR;
       } else if (run.subtype === 'generic') {
-        return RUN_COLOR;
+        return dynamicRunColor;
       }
-      return RUN_COLOR;
+      return dynamicRunColor;
     }
     case 'cycling':
       return CYCLING_COLOR;
@@ -470,13 +472,13 @@ const getMapTheme = (): string => {
   // Determine theme based on priority:
   // 1. DOM attribute
   // 2. localStorage
-  // 3. System preference
+  // 3. Default to dark theme
   if (dataTheme) {
     return getMapThemeFromCurrentTheme(dataTheme);
   } else if (savedTheme) {
     return getMapThemeFromCurrentTheme(savedTheme);
   } else {
-    return getMapThemeFromCurrentTheme('system');
+    return getMapThemeFromCurrentTheme('dark');
   }
 };
 

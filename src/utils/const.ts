@@ -171,6 +171,47 @@ export const MAIN_COLOR = nike;
 export const PROVINCE_FILL_COLOR = '#47b8e0';
 export const COUNTRY_FILL_COLOR = dark_vanilla;
 
+// Static color constants
+export const RUN_COLOR_LIGHT = '#47b8e0';
+export const RUN_COLOR_DARK = MAIN_COLOR;
+
+// Single run animation colors
+export const SINGLE_RUN_COLOR_LIGHT = '#52c41a'; // Green for light theme
+export const SINGLE_RUN_COLOR_DARK = '#ff4d4f'; // Red for dark theme
+
+// Helper function to get theme-aware RUN_COLOR
+export const getRuntimeRunColor = (): string => {
+  if (typeof window === 'undefined') return RUN_COLOR_DARK;
+
+  const dataTheme = document.documentElement.getAttribute('data-theme');
+  const savedTheme = localStorage.getItem('theme');
+
+  // Determine current theme (default to dark)
+  const isDark =
+    dataTheme === 'dark' ||
+    (!dataTheme && savedTheme === 'dark') ||
+    (!dataTheme && !savedTheme);
+
+  return isDark ? RUN_COLOR_DARK : RUN_COLOR_LIGHT;
+};
+
+// Helper function to get theme-aware SINGLE_RUN_COLOR
+export const getRuntimeSingleRunColor = (): string => {
+  if (typeof window === 'undefined') return SINGLE_RUN_COLOR_DARK;
+
+  const dataTheme = document.documentElement.getAttribute('data-theme');
+  const savedTheme = localStorage.getItem('theme');
+
+  // Determine current theme (default to dark)
+  const isDark =
+    dataTheme === 'dark' ||
+    (!dataTheme && savedTheme === 'dark') ||
+    (!dataTheme && !savedTheme);
+
+  return isDark ? SINGLE_RUN_COLOR_DARK : SINGLE_RUN_COLOR_LIGHT;
+};
+
+// Legacy export for backwards compatibility
 export const RUN_COLOR = '#47b8e0';
 export const RUN_TRAIL_COLOR = 'rgb(255,153,51)';
 export const CYCLING_COLOR = 'rgb(51,255,87)';
