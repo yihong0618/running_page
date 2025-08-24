@@ -21,7 +21,7 @@ from rich import print
 from tcxreader.tcxreader import TCXReader
 
 from .exceptions import TrackLoadError
-from .utils import parse_datetime_to_local
+from .utils import parse_datetime_to_local, get_normalized_sport_type
 
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
@@ -138,7 +138,7 @@ class Track:
         polyline_data = polyline.decode(summary_polyline) if summary_polyline else []
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
         self.run_id = activity.run_id
-        self.type = "running" if activity.type == "Run" else activity.type
+        self.type = get_normalized_sport_type(activity.type)
 
     def bbox(self):
         """Compute the smallest rectangle that contains the entire track (border box)."""
@@ -217,15 +217,16 @@ class Track:
         self.start_time, self.end_time = gpx.get_time_bounds()
         if self.start_time is None or self.end_time is None:
             # may be it's treadmill run, so we just use the start and end time of the extensions
-            self.start_time = datetime.datetime.fromisoformat(
-                self._load_gpx_extensions_item(gpx, "start_time")
-            )
-            self.end_time = datetime.datetime.fromisoformat(
-                self._load_gpx_extensions_item(gpx, "end_time")
-            )
-            self.start_time_local, self.end_time_local = parse_datetime_to_local(
-                self.start_time, self.end_time, None
-            )
+            start_time_str = self._load_gpx_extensions_item(gpx, "start_time")
+            end_time_str = self._load_gpx_extensions_item(gpx, "end_time")
+            if start_time_str:
+                self.start_time = datetime.datetime.fromisoformat(start_time_str)
+            if end_time_str:
+                self.end_time = datetime.datetime.fromisoformat(end_time_str)
+            if self.start_time and self.end_time:
+                self.start_time_local, self.end_time_local = parse_datetime_to_local(
+                    self.start_time, self.end_time, None
+                )
         # use timestamp as id
         self.run_id = self.__make_run_id(self.start_time)
         if self.start_time is None:
@@ -352,12 +353,6 @@ class Track:
             self.moving_dict["elapsed_time"]
             if gpx_extensions.get("elapsed_time") is None
             else datetime.timedelta(seconds=float(gpx_extensions.get("elapsed_time")))
-        )
-
-        self.elevation_gain = (
-            self.elevation_gain
-            if gpx_extensions.get("elevation_gain") is None
-            else float(gpx_extensions.get("elevation_gain"))
         )
 
     def _load_fit_data(self, fit: dict):

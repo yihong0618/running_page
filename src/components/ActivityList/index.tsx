@@ -15,7 +15,8 @@ import { ACTIVITY_TOTAL } from '@/utils/const';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
-import { getActivityTitle } from '@/utils/utils';
+import RoutePreview from '@/components/RoutePreview';
+import { Activity } from '@/utils/utils';
 
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
@@ -30,16 +31,6 @@ const SwimmingSvg = MonthOfLifeSvg('swimming');
 const SkiingSvg = MonthOfLifeSvg('skiing');
 const AllSvg = MonthOfLifeSvg('all');
 
-// Define interfaces for our data structures
-interface Activity {
-  start_date_local: string;
-  distance: number;
-  moving_time: string;
-  type: string;
-  location_country?: string;
-  elevation_gain?: number; // Optional if elevation gain is not used
-}
-
 interface ActivitySummary {
   totalDistance: number;
   totalTime: number;
@@ -49,6 +40,9 @@ interface ActivitySummary {
   maxDistance: number;
   maxSpeed: number;
   location: string;
+  totalHeartRate: number; // Add heart rate statistics
+  heartRateCount: number;
+  activities: Activity[]; // Add activities array for day interval
 }
 
 interface DisplaySummary {
@@ -60,6 +54,7 @@ interface DisplaySummary {
   maxSpeed: number;
   location: string;
   totalElevationGain?: number;
+  averageHeartRate?: number; // Add heart rate display
 }
 
 interface ChartData {
@@ -72,6 +67,7 @@ interface ActivityCardProps {
   summary: DisplaySummary;
   dailyDistances: number[];
   interval: string;
+  activities?: Activity[]; // Add activities for day interval
 }
 
 interface ActivityGroups {
@@ -85,7 +81,15 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   summary,
   dailyDistances,
   interval,
+  activities = [],
 }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const handleCardClick = () => {
+    if (interval === 'day' && activities.length > 0) {
+      setIsFlipped(!isFlipped);
+    }
+  };
   const generateLabels = (): number[] => {
     if (interval === 'month') {
       const [year, month] = period.split('-').map(Number);
@@ -130,78 +134,111 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   ); // Generate arithmetic sequence
 
   return (
-    <div className={styles.activityCard}>
-      <h2 className={styles.activityName}>{period}</h2>
-      <div className={styles.activityDetails}>
-        <p>
-          <strong>{ACTIVITY_TOTAL.TOTAL_DISTANCE_TITLE}:</strong>{' '}
-          {summary.totalDistance.toFixed(2)} km
-        </p>
-        {SHOW_ELEVATION_GAIN && summary.totalElevationGain !== undefined && (
-          <p>
-            <strong>{ACTIVITY_TOTAL.TOTAL_ELEVATION_GAIN_TITLE}:</strong>{' '}
-            {summary.totalElevationGain.toFixed(0)} m
-          </p>
-        )}
-        <p>
-          <strong>{ACTIVITY_TOTAL.AVERAGE_SPEED_TITLE}:</strong>{' '}
-          {formatPace(summary.averageSpeed)}
-        </p>
-        <p>
-          <strong>{ACTIVITY_TOTAL.TOTAL_TIME_TITLE}:</strong>{' '}
-          {formatTime(summary.totalTime)}
-        </p>
-        {interval !== 'day' && (
-          <>
+    <div
+      className={`${styles.activityCard} ${interval === 'day' ? styles.activityCardFlippable : ''}`}
+      onClick={handleCardClick}
+      style={{
+        cursor:
+          interval === 'day' && activities.length > 0 ? 'pointer' : 'default',
+      }}
+    >
+      <div className={`${styles.cardInner} ${isFlipped ? styles.flipped : ''}`}>
+        {/* Front side - Activity details */}
+        <div className={styles.cardFront}>
+          <h2 className={styles.activityName}>{period}</h2>
+          <div className={styles.activityDetails}>
             <p>
-              <strong>{ACTIVITY_TOTAL.ACTIVITY_COUNT_TITLE}:</strong>{' '}
-              {summary.count}
+              <strong>{ACTIVITY_TOTAL.TOTAL_DISTANCE_TITLE}:</strong>{' '}
+              {summary.totalDistance.toFixed(2)} km
+            </p>
+            {SHOW_ELEVATION_GAIN &&
+              summary.totalElevationGain !== undefined && (
+                <p>
+                  <strong>{ACTIVITY_TOTAL.TOTAL_ELEVATION_GAIN_TITLE}:</strong>{' '}
+                  {summary.totalElevationGain.toFixed(0)} m
+                </p>
+              )}
+            <p>
+              <strong>{ACTIVITY_TOTAL.AVERAGE_SPEED_TITLE}:</strong>{' '}
+              {formatPace(summary.averageSpeed)}
             </p>
             <p>
-              <strong>{ACTIVITY_TOTAL.MAX_DISTANCE_TITLE}:</strong>{' '}
-              {summary.maxDistance.toFixed(2)} km
+              <strong>{ACTIVITY_TOTAL.TOTAL_TIME_TITLE}:</strong>{' '}
+              {formatTime(summary.totalTime)}
             </p>
-            <p>
-              <strong>{ACTIVITY_TOTAL.MAX_SPEED_TITLE}:</strong>{' '}
-              {formatPace(summary.maxSpeed)}
-            </p>
-          </>
-        )}
-        {['month', 'week', 'year'].includes(interval) && (
-          <div
-            className={styles.chart}
-            style={{ height: '250px', width: '100%' }}
-          >
-            <ResponsiveContainer>
-              <BarChart
-                data={data}
-                margin={{ top: 20, right: 20, left: -20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                <XAxis dataKey="day" tick={{ fill: 'rgb(204, 204, 204)' }} />
-                <YAxis
-                  label={{
-                    value: 'km',
-                    angle: -90,
-                    position: 'insideLeft',
-                    fill: 'rgb(204, 204, 204)',
-                  }}
-                  domain={[0, yAxisMax]}
-                  ticks={yAxisTicks}
-                  tick={{ fill: 'rgb(204, 204, 204)' }}
-                />
-                <Tooltip
-                  formatter={(value) => `${value} km`}
-                  contentStyle={{
-                    backgroundColor: 'rgb(36, 36, 36)',
-                    border: '1px solid #444',
-                    color: 'rgb(204, 204, 204)',
-                  }}
-                  labelStyle={{ color: 'rgb(224, 237, 94)' }}
-                />
-                <Bar dataKey="distance" fill="rgb(224, 237, 94)" />
-              </BarChart>
-            </ResponsiveContainer>
+            {summary.averageHeartRate !== undefined && (
+              <p>
+                <strong>{ACTIVITY_TOTAL.AVERAGE_HEART_RATE_TITLE}:</strong>{' '}
+                {summary.averageHeartRate.toFixed(0)} bpm
+              </p>
+            )}
+            {interval !== 'day' && (
+              <>
+                <p>
+                  <strong>{ACTIVITY_TOTAL.ACTIVITY_COUNT_TITLE}:</strong>{' '}
+                  {summary.count}
+                </p>
+                <p>
+                  <strong>{ACTIVITY_TOTAL.MAX_DISTANCE_TITLE}:</strong>{' '}
+                  {summary.maxDistance.toFixed(2)} km
+                </p>
+                <p>
+                  <strong>{ACTIVITY_TOTAL.MAX_SPEED_TITLE}:</strong>{' '}
+                  {formatPace(summary.maxSpeed)}
+                </p>
+              </>
+            )}
+            {['month', 'week', 'year'].includes(interval) && (
+              <div className={styles.chart}>
+                <ResponsiveContainer>
+                  <BarChart
+                    data={data}
+                    margin={{ top: 20, right: 20, left: -20, bottom: 5 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--color-run-row-hover-background)"
+                    />
+                    <XAxis
+                      dataKey="day"
+                      tick={{ fill: 'var(--color-run-table-thead)' }}
+                    />
+                    <YAxis
+                      label={{
+                        value: 'km',
+                        angle: -90,
+                        position: 'insideLeft',
+                        fill: 'var(--color-run-table-thead)',
+                      }}
+                      domain={[0, yAxisMax]}
+                      ticks={yAxisTicks}
+                      tick={{ fill: 'var(--color-run-table-thead)' }}
+                    />
+                    <Tooltip
+                      formatter={(value) => `${value} km`}
+                      contentStyle={{
+                        backgroundColor:
+                          'var(--color-run-row-hover-background)',
+                        border:
+                          '1px solid var(--color-run-row-hover-background)',
+                        color: 'var(--color-run-table-thead)',
+                      }}
+                      labelStyle={{ color: 'var(--color-primary)' }}
+                    />
+                    <Bar dataKey="distance" fill="var(--color-primary)" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Back side - Route preview */}
+        {interval === 'day' && activities.length > 0 && (
+          <div className={styles.cardBack}>
+            <div className={styles.routeContainer}>
+              <RoutePreview activities={activities} />
+            </div>
           </div>
         )}
       </div>
@@ -215,14 +252,29 @@ const ActivityList: React.FC = () => {
   const [sportTypeOptions, setSportTypeOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    const uniqueSportTypes = [
-      ...new Set(activities.map((activity) => activity.type)),
-    ];
+    const sportTypeSet = new Set(activities.map((activity) => activity.type));
+    if (sportTypeSet.has('Run')) {
+      sportTypeSet.delete('Run');
+      sportTypeSet.add('running');
+    }
+    if (sportTypeSet.has('Walk')) {
+      sportTypeSet.delete('Walk');
+      sportTypeSet.add('walking');
+    }
+    if (sportTypeSet.has('Ride')) {
+      sportTypeSet.delete('Ride');
+      sportTypeSet.add('cycling');
+    }
+    const uniqueSportTypes = [...sportTypeSet];
     uniqueSportTypes.unshift('all');
     setSportTypeOptions(uniqueSportTypes);
   }, []);
 
   const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate('/');
+  };
 
   const toggleInterval = (newInterval: IntervalType): void => {
     setInterval(newInterval);
@@ -238,7 +290,21 @@ const ActivityList: React.FC = () => {
     sportType: string
   ): ActivityGroups => {
     return (activities as Activity[])
-      .filter((activity) => sportType === 'all' || activity.type === sportType)
+      .filter((activity) => {
+        if (sportType === 'all') {
+          return true;
+        }
+        if (sportType === 'running') {
+          return activity.type === 'running' || activity.type === 'Run';
+        }
+        if (sportType === 'walking') {
+          return activity.type === 'walking' || activity.type === 'Walk';
+        }
+        if (sportType === 'cycling') {
+          return activity.type === 'cycling' || activity.type === 'Ride';
+        }
+        return activity.type === sportType;
+      })
       .reduce((acc: ActivityGroups, activity) => {
         const date = new Date(activity.start_date_local);
         let key: string;
@@ -284,6 +350,9 @@ const ActivityList: React.FC = () => {
             maxDistance: 0,
             maxSpeed: 0,
             location: '',
+            totalHeartRate: 0,
+            heartRateCount: 0,
+            activities: [],
           };
 
         const distanceKm = activity.distance / 1000; // Convert to kilometers
@@ -298,7 +367,18 @@ const ActivityList: React.FC = () => {
           acc[key].totalElevationGain += activity.elevation_gain;
         }
 
+        // Heart rate statistics
+        if (activity.average_heartrate) {
+          acc[key].totalHeartRate += activity.average_heartrate;
+          acc[key].heartRateCount += 1;
+        }
+
         acc[key].count += 1;
+
+        // Store activity for day interval (for route display)
+        if (interval === 'day') {
+          acc[key].activities.push(activity);
+        }
 
         // Accumulate daily distances
         acc[key].dailyDistances[index] =
@@ -320,10 +400,7 @@ const ActivityList: React.FC = () => {
   return (
     <div className={styles.activityList}>
       <div className={styles.filterContainer}>
-        <button
-          className={styles.smallHomeButton}
-          onClick={() => navigate('/')}
-        >
+        <button className={styles.smallHomeButton} onClick={handleHomeClick}>
           {HOME_PAGE_TITLE}
         </button>
         <select
@@ -332,7 +409,7 @@ const ActivityList: React.FC = () => {
         >
           {sportTypeOptions.map((type) => (
             <option key={type} value={type}>
-              {getActivityTitle(type)}
+              {type}
             </option>
           ))}
         </select>
@@ -395,9 +472,14 @@ const ActivityList: React.FC = () => {
                   totalElevationGain: SHOW_ELEVATION_GAIN
                     ? summary.totalElevationGain
                     : undefined,
+                  averageHeartRate:
+                    summary.heartRateCount > 0
+                      ? summary.totalHeartRate / summary.heartRateCount
+                      : undefined,
                 }}
                 dailyDistances={summary.dailyDistances}
                 interval={interval}
+                activities={interval === 'day' ? summary.activities : undefined}
               />
             ))}
         </div>

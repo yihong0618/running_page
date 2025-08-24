@@ -12,7 +12,6 @@
    ```
 
 5. 2024.09.29: Added `Elevation Gain` field, If you forked the project before this update, please run the following command:
-
    - To resolve errors: `sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: activities.elevation_gain`
    - If you don't have a local environment, set `RUN_TYPE` to `db_updater` in the `.github/workflows/run_data_sync.yml` file once then change back.
 
@@ -125,6 +124,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Daniel](https://danielyu316.github.io/running_page) | <https://danielyu316.github.io/running_page/>  | Codoon      |
 | [arthurfsy2](https://github.com/arthurfsy2)          | <https://fsy.4a1801.life>                      | Garmin      |
 | [JMGutiH](https://github.com/JMGutiH)                | <https://jmgutih.github.io/workouts_page/>     | Strava      |
+| [Bolyn](https://run.wbolyn.com)                | <https://run.wbolyn.com>     | Coros      |
 
 </details>
 
@@ -162,6 +162,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
 - **[Coros](#coros)**
+- **[iGPSPORT](#igpsport)**
 
 ## Download
 
@@ -222,6 +223,29 @@ Open your browser and visit localhost:80
 const MAPBOX_TOKEN =
   'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
 ```
+
+## Change Default Map Tile Style
+
+> In addition to using the default map tile style, you can customize the map display by modifying the following configurations in `src/utils/const.ts`:
+
+```typescript
+const MAP_TILE_VENDOR = 'maptiler';
+const MAP_TILE_STYLE = 'winter-dark';
+const MAP_TILE_ACCESS_TOKEN = 'your_access_token';
+```
+
+Currently supported `MAP_TILE_VENDOR` options include:
+
+- **"mapbox"** - Mapbox map services
+- **"maptiler"** - MapTiler map services
+- **"stadiamaps"** - Stadia Maps services
+
+Each `MAP_TILE_VENDOR` provides multiple `MAP_TILE_STYLE` options. Ensure the style matches your selected vendor. For available `MAP_TILE_STYLE` names, refer to the definitions in `src/utils/const.ts`.
+
+When using **"maptiler"** or **"stadiamaps"**, you must configure an `ACCESS_TOKEN`. The default token may cause quota limit issues if not replaced.
+
+- **MapTiler**: Register at [https://cloud.maptiler.com/auth/widget](https://cloud.maptiler.com/auth/widget) (Free tier available)
+- **Stadia Maps**: Sign up at [https://client.stadiamaps.com/signup/](https://client.stadiamaps.com/signup/) (Free tier available)
 
 ## Custom your page
 
@@ -618,7 +642,6 @@ python run_page/nike_sync.py eyJhbGciThiMTItNGIw******
    ```
 
    References：
-
    - <https://developers.strava.com/docs/getting-started>
    - <https://github.com/barrald/strava-uploader>
    - <https://github.com/strava/go.strava>
@@ -757,7 +780,7 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 
 <br>
 
-1. finish garmin and strava setup, at the same time, you need to add additional strava config in GitHub Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`
+1. finish garmin and strava setup, at the same time, you need to add additional strava config in GitHub Actions secret: `secrets.STRAVA_EMAIL`,`secrets.STRAVA_PASSWORD`,`secrets.STRAVA_JWT`, Note: `STRAVA_JWT` is superior to `STRAVA_EMAIL` and `STRAVA_PASSWORD` ,`STRAVA_JWT` is the `strava_remember_token` field of the Strava web login Cookie.
 2. Execute in the root directory:
 
    ```bash
@@ -767,7 +790,7 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
    if your garmin account region is **China**, you need to execute the command:
 
    ```bash
-   python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+   python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}  ${{ secrets.STRAVA_JWT }} --is-cn
    ```
 
    If you want to add Garmin Device during sync, you should add `--use_fake_garmin_device` argument, this will add a Garmin Device (Garmin Forerunner 245 by default, and you can change device in `garmin_device_adaptor.py`) in synced Garmin workout record, this is essential when you want to sync the workout record to other APP like Keep, JoyRun etc.
@@ -777,7 +800,7 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
    the final command will be:
 
    ```bash
-   python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --use_fake_garmin_device
+   python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} ${{ secrets.STRAVA_JWT }}--use_fake_garmin_device
    ```
 
    ps: **when initializing for the first time, if you have a large amount of strava data, some data may fail to upload, just retry several times.**
@@ -788,6 +811,10 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 
 <details>
 <summary>Get your Coros data</summary>
+
+<br>
+
+- If you only want to sync `type running` add args --only-run
 
 #### Enter the following command in the terminal
 
@@ -805,6 +832,21 @@ python run_page/coros_sync.py 'your coros account' 'your coros password'
 
 </details>
 
+### iGPSPORT
+
+<details>
+<summary>Get your iGPSPORT data</summary>
+
+#### Enter the following command in the terminal
+
+```bash
+python3 run_page/igpsport_sync.py 'your igpsport account' 'your igpsport password' -with-gpx
+```
+
+You can replace `with-gpx` with `with-fit` to acquire data in fit format.
+
+</details>
+
 ### Total Data Analysis
 
 <details>
@@ -815,14 +857,76 @@ python run_page/coros_sync.py 'your coros account' 'your coros password'
 - Display of results:[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/master/assets/github.svg)、[Click to view](https://raw.githubusercontent.com/yihong0618/running_page/28fa801e4e30f30af5ae3dc906bf085daa137936/assets/grid.svg)
 
 ```bash
+
+python run_page/gen_svg.py -h
+
+usage: gen_svg.py [-h] [--gpx-dir DIR] [--output FILE] [--language LANGUAGE] [--year YEAR] [--title TITLE] [--athlete NAME] [--special FILE] [--type TYPE]
+                  [--background-color COLOR] [--track-color COLOR] [--track-color2 COLOR] [--text-color COLOR] [--special-color COLOR] [--special-color2 COLOR] [--units UNITS]
+                  [--verbose] [--logfile FILE] [--special-distance DISTANCE] [--special-distance2 DISTANCE] [--min-distance DISTANCE] [--use-localtime] [--from-db]
+                  [--github-style GITHUB_STYLE] [--circular-rings] [--circular-ring-color COLOR] [--empty-data-color COLOR] [--birth YYYY-MM]
+
+options:
+  -h, --help            show this help message and exit
+  --gpx-dir DIR         Directory containing GPX files (default: current directory).
+  --output FILE         Name of generated SVG image file (default: "poster.svg").
+  --language LANGUAGE   Language (default: english).
+  --year YEAR           Filter tracks by year; "NUM", "NUM-NUM", "all" (default: all years)
+  --title TITLE         Title to display.
+  --athlete NAME        Athlete name to display (default: "John Doe").
+  --special FILE        Mark track file from the GPX directory as special; use multiple times to mark multiple tracks.
+  --type TYPE           Type of poster to create (default: "grid", available: "grid", "circular", "github", "monthoflife").
+  --background-color COLOR
+                        Background color of poster (default: "#222222").
+  --track-color COLOR   Color of tracks (default: "#4DD2FF").
+  --track-color2 COLOR  Secondary color of tracks (default: none).
+  --text-color COLOR    Color of text (default: "#FFFFFF").
+  --special-color COLOR
+                        Special track color (default: "#FFFF00").
+  --special-color2 COLOR
+                        Secondary color of special tracks (default: none).
+  --units UNITS         Distance units; "metric", "imperial" (default: "metric").
+  --verbose             Verbose logging.
+  --logfile FILE
+  --special-distance DISTANCE
+                        Special Distance1 by km and color with the special_color
+  --special-distance2 DISTANCE
+                        Special Distance2 by km and corlor with the special_color2
+  --min-distance DISTANCE
+                        min distance by km for track filter
+  --use-localtime       Use utc time or local time
+  --from-db             activities db file
+  --github-style GITHUB_STYLE
+                        github svg style; "align-firstday", "align-monday" (default: "align-firstday").
+  --birth YYYY-MM       Birth date in format YYYY-MM
+
+Circular Type Options:
+  --circular-rings      Draw distance rings.
+  --circular-ring-color COLOR
+                        Color of distance rings.
+
+Github Type Options:
+  --empty-data-color COLOR
+                        Color for empty dates in github style poster (default: #444444)
+
+```
+
+Generate github style svg show
+
+```bash
 python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
 ```
+
+If you want to change the display color of empty data(only github style), please use `--empty-data-color`:
+
+```bash
+python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5 ----empty-data-color grey
+```
+
+Generate grid style svg show
 
 ```bash
 python run_page/gen_svg.py --from-db --title "${{ env.TITLE_GRID }}" --type grid --athlete "${{ env.ATHLETE }}"  --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime
 ```
-
-Generate year circular svg show
 
 ```bash
 python run_page/gen_svg.py --from-db --type circular --use-localtime
@@ -906,19 +1010,16 @@ For more display effects, see:
 1. Go to repository's `Settings -> GitHub Pages -> Source`, choose `GitHub Actions`
 
 2. Go to the repository's `Actions -> Workflows -> All Workflows`, choose `Run Data Sync` from the left panel, and click `Run workflow`.
-
    - The `Run Data Sync` will update data and then trigger the `Publish GitHub Pages` workflow
    - Make sure the workflow runs without errors.
 
 3. Open your website to check on the results
-
    - note if the website doesn't reflect the latest data, please refresh it by `F5`.
    - Some browsers (e.g. Chrome) won't refresh if there is a cache, you then need to use `Ctrl+F5` (Windows) or `Shift+Cmd+r` (Mac) to force clearing the cache and reload the page.
 
 4. make sure you have write permissions in Workflow permissions settings.
 
 5. If you want to deploy your running_page to xxx.github.io instead of xxx.github.io/running_page or redirect your GitHub Pages to a custom domain, you need to do three things:
-
    - Rename your forked running_page repository to `xxx.github.io`, where xxx is your GitHub username
    - Modify the Build module in gh-pages.yml, remove `${{ github.event.repository.name }}` and change to `run: PATH_PREFIX=/ pnpm build`
    - In `src/static/site-metadata.ts`, set siteUrl: '' or your custom domain URL
@@ -976,7 +1077,6 @@ Take the keep app as an example. Close the app after running, and then automatic
    <center><img src="https://cdn.jujimeizuo.cn/blog/2023/10/get-action-id.jpg" alt="get-action-id"></center>
 
 2. Binding shortcut instruction
-
    1. Get it via icloud [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
 
    2. Modify the dictionary parameters in the following figure

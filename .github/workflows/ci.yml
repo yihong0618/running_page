@@ -61,5 +61,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run lint and build
-        run: pnpm run ci
+      - name: Run check and build
+        run: |
+          pnpm run check
+          pnpm run lint
+          pnpm run build

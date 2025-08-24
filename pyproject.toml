@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [{ name = "yihong0618", email = "zouzou0208@gmail.com" }]
 dependencies = [
   "httpx",
-  "gpxpy==1.4.2",
+  "gpxpy==1.6.2",
   "stravalib==0.10.4",
   "appdirs>=1.4.0",
   "svgwrite>=1.1.9",
@@ -36,8 +36,8 @@ dependencies = [
   "duckdb",
   "openai",
   "svglib>=1.5.1",
-  "pycairo>=1.28.0",
   "cairosvg>=2.7.1",
+  "certifi==2025.1.31",
 ]
 requires-python = ">=3.12"
 readme = "README.md"

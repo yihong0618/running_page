@@ -1,4 +1,4 @@
-// const
+// Constants
 const MAPBOX_TOKEN =
   // For security reasons, please avoid using the default public token provided by Mapbox as much as possible.
   // Instead, manually add a new token and apply URL restrictions.
@@ -34,34 +34,35 @@ const GOOGLE_ANALYTICS_TRACKING_ID = '';
 const USE_DASH_LINE = true;
 // styling: route line opacity: [0, 1]
 const LINE_OPACITY = 0.4;
-// styling: map height
-const MAP_HEIGHT = 600;
+// styling: map height - responsive design
+// Use smaller height on mobile devices for better user experience
+const MAP_HEIGHT = window.innerWidth <= 768 ? 250 : 600;
 //set to `false` if you want to hide the road label characters
 const ROAD_LABEL_DISPLAY = true;
-// update for now 2024/11/17 the privacy mode is true
+// updated on 2024/11/17: privacy mode is set to true by default
 //set to `true` if you want to display only the routes without showing the map.
 const PRIVACY_MODE = false;
-// update for now 2024/11/17 the lights on default is false
+// updated on 2024/11/17: lights are turned off by default
 //set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
-const LIGHTS_ON = true;
+const LIGHTS_ON = false;
 //set to `true` if you want to show the 'Elevation Gain' column
 const SHOW_ELEVATION_GAIN = true;
 // richer title for the activity types (like garmin style)
 const RICH_TITLE = true;
 
-// IF you outside China please make sure IS_CHINESE = false
+// IF you are outside China please make sure IS_CHINESE = false
 const IS_CHINESE = true;
 const USE_ANIMATION_FOR_GRID = false;
 const CHINESE_INFO_MESSAGE = (yearLength: number, year: string): string => {
   const yearStr = year === 'Total' ? '所有' : ` ${year} `;
-  return `我用 App 记录自己跑步 ${yearLength} 年了，下面列表展示的是${yearStr}的数据`;
+  return `记录自己跑步 ${yearLength} 年了，下面列表展示的是${yearStr}的数据`;
 };
 const ENGLISH_INFO_MESSAGE = (yearLength: number, year: string): string =>
   `Running Journey with ${yearLength} Years, the table shows year ${year} data`;
 
-// not support English for now
+// English is not supported for location info messages yet
 const CHINESE_LOCATION_INFO_MESSAGE_FIRST =
-  '我跑过了一些地方，希望随着时间推移，地图点亮的地方越来越多';
+  '跑过了一些地方，希望随着时间推移，点亮的地方越来越多';
 const CHINESE_LOCATION_INFO_MESSAGE_SECOND = '不要停下来，不要停下奔跑的脚步';
 
 const INFO_MESSAGE = IS_CHINESE ? CHINESE_INFO_MESSAGE : ENGLISH_INFO_MESSAGE;
@@ -90,12 +91,13 @@ const TOTAL_DISTANCE_TITLE = IS_CHINESE ? '总距离' : 'Total Distance';
 const TOTAL_ELEVATION_GAIN_TITLE = IS_CHINESE
   ? '总海拔爬升'
   : 'Total Elevation Gain';
+const AVERAGE_HEART_RATE_TITLE = IS_CHINESE ? '平均心率' : 'Average Heart Rate';
 const YEARLY_TITLE = IS_CHINESE ? 'Year' : 'Yearly';
 const MONTHLY_TITLE = IS_CHINESE ? 'Month' : 'Monthly';
 const WEEKLY_TITLE = IS_CHINESE ? 'Week' : 'Weekly';
 const DAILY_TITLE = IS_CHINESE ? 'Day' : 'Daily';
 const LOCATION_TITLE = IS_CHINESE ? 'Location' : 'Location';
-const HOME_PAGE_TITLE = IS_CHINESE ? '返回首页' : 'Home';
+const HOME_PAGE_TITLE = IS_CHINESE ? '首页' : 'Home';
 
 const ACTIVITY_TYPES = {
   RUN_GENERIC_TITLE,
@@ -126,6 +128,7 @@ const ACTIVITY_TOTAL = {
   AVERAGE_SPEED_TITLE,
   TOTAL_DISTANCE_TITLE,
   TOTAL_ELEVATION_GAIN_TITLE,
+  AVERAGE_HEART_RATE_TITLE,
   YEARLY_TITLE,
   MONTHLY_TITLE,
   WEEKLY_TITLE,
@@ -158,7 +161,7 @@ export {
   HOME_PAGE_TITLE,
 };
 
-const nike = 'rgb(224,237,94)'; // if you want change the main color change here src/styles/variables.scss
+const nike = 'rgb(224,237,94)'; // if you want to change the main color, modify this value in src/styles/variables.scss
 const dark_vanilla = 'rgb(228,212,220)';
 
 // If your map has an offset please change this line
@@ -168,7 +171,48 @@ export const MAIN_COLOR = nike;
 export const PROVINCE_FILL_COLOR = '#47b8e0';
 export const COUNTRY_FILL_COLOR = dark_vanilla;
 
-export const RUN_COLOR = MAIN_COLOR;
+// Static color constants
+export const RUN_COLOR_LIGHT = '#47b8e0';
+export const RUN_COLOR_DARK = MAIN_COLOR;
+
+// Single run animation colors
+export const SINGLE_RUN_COLOR_LIGHT = '#52c41a'; // Green for light theme
+export const SINGLE_RUN_COLOR_DARK = '#ff4d4f'; // Red for dark theme
+
+// Helper function to get theme-aware RUN_COLOR
+export const getRuntimeRunColor = (): string => {
+  if (typeof window === 'undefined') return RUN_COLOR_DARK;
+
+  const dataTheme = document.documentElement.getAttribute('data-theme');
+  const savedTheme = localStorage.getItem('theme');
+
+  // Determine current theme (default to dark)
+  const isDark =
+    dataTheme === 'dark' ||
+    (!dataTheme && savedTheme === 'dark') ||
+    (!dataTheme && !savedTheme);
+
+  return isDark ? RUN_COLOR_DARK : RUN_COLOR_LIGHT;
+};
+
+// Helper function to get theme-aware SINGLE_RUN_COLOR
+export const getRuntimeSingleRunColor = (): string => {
+  if (typeof window === 'undefined') return SINGLE_RUN_COLOR_DARK;
+
+  const dataTheme = document.documentElement.getAttribute('data-theme');
+  const savedTheme = localStorage.getItem('theme');
+
+  // Determine current theme (default to dark)
+  const isDark =
+    dataTheme === 'dark' ||
+    (!dataTheme && savedTheme === 'dark') ||
+    (!dataTheme && !savedTheme);
+
+  return isDark ? SINGLE_RUN_COLOR_DARK : SINGLE_RUN_COLOR_LIGHT;
+};
+
+// Legacy export for backwards compatibility
+export const RUN_COLOR = '#47b8e0';
 export const RUN_TRAIL_COLOR = 'rgb(255,153,51)';
 export const CYCLING_COLOR = 'rgb(51,255,87)';
 export const HIKING_COLOR = 'rgb(151,51,255)';
@@ -180,38 +224,55 @@ export const SWIMMING_COLOR = 'rgb(255,51,51)';
 export const MAP_TILE_VENDOR = 'mapbox';
 
 // map tiles style name, see MAP_TILE_STYLES for more details
-export const MAP_TILE_STYLE = 'dark-v11';
+export const MAP_TILE_STYLE_LIGHT = 'light-v10';
+export const MAP_TILE_STYLE_DARK = 'dark-v10';
 
 // access token. you can apply a new one, it's free.
 // maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
-// stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 |sign up at https://client.stadiamaps.com/signup/
+// stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 | sign up at https://client.stadiamaps.com/signup/
 export const MAP_TILE_ACCESS_TOKEN = 'Gt5R0jT8tuIYxW6sNrAg';
 
 export const MAP_TILE_STYLES = {
   maptiler: {
+    'dataviz-light': 'https://api.maptiler.com/maps/dataviz/style.json?key=',
     'dataviz-dark':
       'https://api.maptiler.com/maps/dataviz-dark/style.json?key=',
+    'basic-light': 'https://api.maptiler.com/maps/basic-v2/style.json?key=',
     'basic-dark': 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=',
+    'streets-light': 'https://api.maptiler.com/maps/streets-v2/style.json?key=',
     'streets-dark':
       'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=',
+    'outdoor-light': 'https://api.maptiler.com/maps/outdoor-v2/style.json?key=',
     'outdoor-dark':
       'https://api.maptiler.com/maps/outdoor-v2-dark/style.json?key=',
+    'bright-light': 'https://api.maptiler.com/maps/bright-v2/style.json?key=',
     'bright-dark':
       'https://api.maptiler.com/maps/bright-v2-dark/style.json?key=',
+    'topo-light': 'https://api.maptiler.com/maps/topo-v2/style.json?key=',
     'topo-dark': 'https://api.maptiler.com/maps/topo-v2-dark/style.json?key=',
+    'winter-light': 'https://api.maptiler.com/maps/winter-v2/style.json?key=',
     'winter-dark':
       'https://api.maptiler.com/maps/winter-v2-dark/style.json?key=',
     hybrid: 'https://api.maptiler.com/maps/hybrid/style.json?key=',
   },
+
+  // https://docs.stadiamaps.com/themes/
   stadiamaps: {
+    // light
+    alidade_smooth:
+      'https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=',
     alidade_smooth_dark:
       'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=',
     alidade_satellite:
       'https://tiles.stadiamaps.com/styles/alidade_satellite.json?api_key=',
   },
+
+  // https://docs.mapbox.com/api/maps/styles/
   mapbox: {
     'dark-v10': 'mapbox://styles/mapbox/dark-v10',
     'dark-v11': 'mapbox://styles/mapbox/dark-v11',
+    'light-v10': 'mapbox://styles/mapbox/light-v10',
+    'light-v11': 'mapbox://styles/mapbox/light-v11',
     'navigation-night': 'mapbox://styles/mapbox/navigation-night-v1',
     'satellite-streets-v12': 'mapbox://styles/mapbox/satellite-streets-v12',
   },

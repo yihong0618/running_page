@@ -8,7 +8,7 @@ import time
 import urllib.parse
 import xml.etree.ElementTree as ET
 from collections import namedtuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from xml.dom import minidom
 
 import eviltransform
@@ -45,7 +45,7 @@ FitType = np.dtype(
 
 # device info
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
-did = "24-00000000-03e1-7dd7-0033-c5870033c588"
+did = "24-ffffffff-faac-3052-0033-c5870033c587"
 # May be Forerunner 945?
 CONNECT_API_PART_NUMBER = "006-D2449-00"
 
@@ -70,7 +70,7 @@ TCX_TYPE_DICT = {
 }
 
 # only for running sports, if you want others, please change the True to False
-IS_ONLY_RUN = True
+IS_ONLY_RUN = False
 
 # If your points need trans from gcj02 to wgs84 coordinate which use by Mapbox
 TRANS_GCJ02_TO_WGS84 = False
@@ -272,9 +272,8 @@ def tcx_job(run_data):
 
             fit_list.append((unix_time, hr, latitude, longitude, elevation))
 
-    fit_array = np.array(fit_list, dtype=FitType)
-
-    if fit_array is not None:
+    if fit_list:
+        fit_array = np.array(fit_list, dtype=FitType)
         # order array
         fit_array = np.sort(fit_array, order="time")
         # write to TCX file
@@ -439,7 +438,9 @@ class Codoon:
                 "latitude": point["latitude"],
                 "longitude": point["longitude"],
                 "elevation": point["elevation"],
-                "time": adjust_time_to_utc(to_date(point["time_stamp"]), BASE_TIMEZONE),
+                "time": adjust_time_to_utc(
+                    to_date(point["time_stamp"]), BASE_TIMEZONE
+                ).replace(tzinfo=timezone.utc),
             }
             points_dict_list.append(points_dict)
         gpx = gpxpy.gpx.GPX()
@@ -475,7 +476,7 @@ class Codoon:
 
     @staticmethod
     def _gt(dt_str):
-        dt, _, us = dt_str.partition(".")
+        dt, _, _ = dt_str.partition(".")
         return datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S")
 
     def parse_raw_data_to_namedtuple(
@@ -617,4 +618,4 @@ if __name__ == "__main__":
     generator.sync_from_app(tracks)
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
-        json.dump(activities_list, f)
+        json.dump(activities_list, f, indent=0)

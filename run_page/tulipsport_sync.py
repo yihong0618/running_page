@@ -30,7 +30,6 @@ def get_all_activity_summaries(session, headers, start_time=None):
     start_time_str = start_time.strftime("%Y-%m-%d %H:%M:%S")
     end_time_str = datetime.now(tz=DEFAULT_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S")
     result = []
-    # 接口全量返回，非分页模式
     r = session.get(
         ACTIVITY_LIST_API.format(
             start_time=quote(start_time_str), end_time=quote(end_time_str)

@@ -47,7 +47,7 @@ class MonthOfLifeDrawer(TracksDrawer):
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
         if self.poster.tracks is None:
             raise PosterError("No tracks to draw")
-        total_months = 1000
+        total_months = 1200
         # calculate grid: columns and rows
         cols = max(1, int(size.x / size.y * math.sqrt(total_months)))
         rows = math.ceil(total_months / cols)

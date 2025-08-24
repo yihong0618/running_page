@@ -14,7 +14,7 @@ if __name__ == "__main__":
     )
     options = parser.parse_args()
     if options.is_cn:
-        garth.configure(domain="garmin.cn")
+        garth.configure(domain="garmin.cn", ssl_verify=False)
     garth.login(options.email, options.password)
     secret_string = garth.client.dumps()
     print(secret_string)

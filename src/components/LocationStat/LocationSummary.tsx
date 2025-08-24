@@ -20,7 +20,7 @@ const LocationSummary = () => {
           <Stat value={Object.keys(cities).length} description=" 个城市" />
         ) : null}
       </section>
-      <hr color="red" />
+      <hr />
     </div>
   );
 };

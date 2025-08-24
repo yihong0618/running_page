@@ -25,7 +25,6 @@ except ImportError:
     tf = TimezoneFinder()
 
 
-from .value_range import ValueRange
 from .xy import XY
 
 
@@ -76,16 +75,6 @@ def project(
         if len(line) > 0:
             lines.append(line)
     return lines
-
-
-def compute_bounds_xy(lines: List[List[XY]]) -> Tuple[ValueRange, ValueRange]:
-    range_x = ValueRange()
-    range_y = ValueRange()
-    for line in lines:
-        for xy in line:
-            range_x.extend(xy.x)
-            range_y.extend(xy.y)
-    return range_x, range_y
 
 
 def compute_grid(
@@ -148,3 +137,14 @@ def parse_datetime_to_local(start_time, end_time, point):
             timezone = tf.timezone_at(lng=lng, lat=lat)
     tc_offset = datetime.now(pytz.timezone(timezone)).utcoffset()
     return start_time + tc_offset, end_time + tc_offset
+
+
+def get_normalized_sport_type(sport_type):
+    if sport_type == "Run":
+        return "running"
+    elif sport_type == "Walk":
+        return "walking"
+    elif sport_type == "Ride":
+        return "cycling"
+    else:
+        return sport_type

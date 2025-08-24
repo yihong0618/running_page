@@ -2,8 +2,7 @@ import datetime
 import random
 import string
 
-import geopy
-from geopy.geocoders import Nominatim
+from geopy.geocoders import options, Nominatim
 from sqlalchemy import (
     Column,
     Float,
@@ -26,7 +25,7 @@ def randomword():
     return "".join(random.choice(letters) for i in range(4))
 
 
-geopy.geocoders.options.default_user_agent = "my-application"
+options.default_user_agent = "running_page"
 # reverse the location (lat, lon) -> location detail
 g = Nominatim(user_agent=randomword())
 
@@ -88,6 +87,21 @@ def update_or_create_activity(session, run_activity):
         activity = (
             session.query(Activity).filter_by(run_id=int(run_activity.id)).first()
         )
+
+        current_elevation_gain = 0.0  # default value
+
+        # https://github.com/stravalib/stravalib/blob/main/src/stravalib/strava_model.py#L639C1-L643C41
+        if (
+            hasattr(run_activity, "total_elevation_gain")
+            and run_activity.total_elevation_gain is not None
+        ):
+            current_elevation_gain = float(run_activity.total_elevation_gain)
+        elif (
+            hasattr(run_activity, "elevation_gain")
+            and run_activity.elevation_gain is not None
+        ):
+            current_elevation_gain = float(run_activity.elevation_gain)
+
         if not activity:
             start_point = run_activity.start_latlng
             location_country = getattr(run_activity, "location_country", "")
@@ -96,7 +110,7 @@ def update_or_create_activity(session, run_activity):
                 try:
                     location_country = str(
                         g.reverse(
-                            f"{start_point.lat}, {start_point.lon}", language="zh-CN"
+                            f"{start_point.lat}, {start_point.lon}", language="zh-CN"  # type: ignore
                         )
                     )
                 # limit (only for the first time)
@@ -105,7 +119,7 @@ def update_or_create_activity(session, run_activity):
                         location_country = str(
                             g.reverse(
                                 f"{start_point.lat}, {start_point.lon}",
-                                language="zh-CN",
+                                language="zh-CN",  # type: ignore
                             )
                         )
                     except Exception:
@@ -124,11 +138,7 @@ def update_or_create_activity(session, run_activity):
                 location_country=location_country,
                 average_heartrate=run_activity.average_heartrate,
                 average_speed=float(run_activity.average_speed),
-                elevation_gain=(
-                    float(run_activity.elevation_gain)
-                    if run_activity.elevation_gain is not None
-                    else None
-                ),
+                elevation_gain=current_elevation_gain,
                 summary_polyline=(
                     run_activity.map and run_activity.map.summary_polyline or ""
                 ),
@@ -144,11 +154,7 @@ def update_or_create_activity(session, run_activity):
             activity.subtype = run_activity.subtype
             activity.average_heartrate = run_activity.average_heartrate
             activity.average_speed = float(run_activity.average_speed)
-            activity.elevation_gain = (
-                float(run_activity.elevation_gain)
-                if run_activity.elevation_gain is not None
-                else None
-            )
+            activity.elevation_gain = current_elevation_gain
             activity.summary_polyline = (
                 run_activity.map and run_activity.map.summary_polyline or ""
             )

@@ -1,5 +1,5 @@
 httpx
-gpxpy==1.4.2
+gpxpy==1.6.2
 stravalib==0.10.4
 appdirs>=1.4.0
 svgwrite>=1.1.9
@@ -13,7 +13,7 @@ tzfpy; platform_system != "Windows"
 timezonefinder; platform_system == "Windows"
 pyyaml
 aiofiles
-cloudscraper==1.2.58
+cloudscraper==1.2.71
 tcxreader
 rich
 lxml
@@ -28,5 +28,6 @@ haversine==2.8.0
 garth
 pycryptodome
 duckdb
-openai==1.76.2
-cairosvg
+openai==1.88.0
+# cairosvg
+certifi==2025.1.31

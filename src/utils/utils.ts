@@ -1,8 +1,7 @@
 import * as mapboxPolyline from '@mapbox/polyline';
 import gcoord from 'gcoord';
-import { WebMercatorViewport } from 'viewport-mercator-project';
-import { chinaGeojson, RPGeometry } from '@/static/run_countries';
-import worldGeoJson from '@surbowl/world-geo-json-zh/world.zh.json';
+import { WebMercatorViewport } from '@math.gl/web-mercator';
+import { RPGeometry } from '@/static/run_countries';
 import { chinaCities } from '@/static/city';
 import {
   MAIN_COLOR,
@@ -15,9 +14,10 @@ import {
   HIKING_COLOR,
   WALKING_COLOR,
   SWIMMING_COLOR,
-  RUN_COLOR,
+  getRuntimeRunColor,
   RUN_TRAIL_COLOR,
   MAP_TILE_STYLES,
+  MAP_TILE_STYLE_DARK,
 } from './const';
 import {
   FeatureCollection,
@@ -25,6 +25,7 @@ import {
   Feature,
   GeoJsonProperties,
 } from 'geojson';
+import { getMapThemeFromCurrentTheme } from '@/hooks/useTheme';
 
 export type Coordinate = [number, number];
 
@@ -95,10 +96,9 @@ const formatRunTime = (moving_time: string): string => {
 
 // for scroll to the map
 const scrollToMap = () => {
-  const el = document.querySelector('.fl.w-100.w-70-l');
-  const rect = el?.getBoundingClientRect();
-  if (rect) {
-    window.scroll(rect.left + window.scrollX, rect.top + window.scrollY);
+  const mapContainer = document.getElementById('map-container');
+  if (mapContainer) {
+    mapContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 };
 
@@ -226,20 +226,22 @@ const pathForRun = (run: Activity): Coordinate[] => {
       }
     }
     return c;
-  } catch (err) {
+  } catch (_err) {
     return [];
   }
 };
 
 const colorForRun = (run: Activity): string => {
+  const dynamicRunColor = getRuntimeRunColor();
+
   switch (run.type) {
     case 'Run': {
       if (run.subtype === 'trail') {
         return RUN_TRAIL_COLOR;
       } else if (run.subtype === 'generic') {
-        return RUN_COLOR;
+        return dynamicRunColor;
       }
-      return RUN_COLOR;
+      return dynamicRunColor;
     }
     case 'cycling':
       return CYCLING_COLOR;
@@ -272,13 +274,20 @@ const geoJsonForRuns = (runs: Activity[]): FeatureCollection<LineString> => ({
   }),
 });
 
-const geoJsonForMap = (): FeatureCollection<RPGeometry> => ({
-  type: 'FeatureCollection',
-  features: [...worldGeoJson.features, ...chinaGeojson.features] as Feature<
-    RPGeometry,
-    GeoJsonProperties
-  >[],
-});
+const geoJsonForMap = async (): Promise<FeatureCollection<RPGeometry>> => {
+  const [{ chinaGeojson }, worldGeoJson] = await Promise.all([
+    import('@/static/run_countries'),
+    import('@surbowl/world-geo-json-zh/world.zh.json'),
+  ]);
+
+  return {
+    type: 'FeatureCollection',
+    features: [
+      ...worldGeoJson.default.features,
+      ...chinaGeojson.features,
+    ] as Feature<RPGeometry, GeoJsonProperties>[],
+  };
+};
 
 const getActivitySport = (act: Activity): string => {
   if (act.type === 'Run') {
@@ -376,10 +385,15 @@ const getBoundsForGeoData = (
     [Math.min(...pointsLong), Math.min(...pointsLat)],
     [Math.max(...pointsLong), Math.max(...pointsLat)],
   ];
-  return new WebMercatorViewport({
+  const viewState = new WebMercatorViewport({
     width: 800,
     height: 600,
   }).fitBounds(cornersLongLat, { padding: 200 });
+  let { longitude, latitude, zoom } = viewState;
+  if (features.length > 1) {
+    zoom = 11.5;
+  }
+  return { longitude, latitude, zoom };
 };
 
 const filterYearRuns = (run: Activity, year: string) => {
@@ -430,28 +444,43 @@ const getMapStyle = (vendor: string, styleName: string, token: string) => {
   return style;
 };
 
-const getActivityTitle = (sportType: string) => {
-  switch (sportType) {
-    case 'Run':
-    case 'running':
-      return ACTIVITY_TYPES.RUN_GENERIC_TITLE;
-    case 'cycling':
-      return ACTIVITY_TYPES.CYCLING_TITLE;
-    case 'hiking':
-      return ACTIVITY_TYPES.HIKING_TITLE;
-    case 'walking':
-      return ACTIVITY_TYPES.WALKING_TITLE;
-    case 'skiing':
-      return ACTIVITY_TYPES.SKIING_TITLE;
-    case 'all':
-      return ACTIVITY_TYPES.ALL_TITLE;
-    default:
-      return sportType;
-  }
+const isTouchDevice = () => {
+  if (typeof window === 'undefined') return false;
+  return (
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    window.innerWidth <= 768
+  ); // Consider small screens as touch devices
 };
 
-const isTouchDevice = () =>
-  'ontouchstart' in window || navigator.maxTouchPoints > 0;
+/**
+ * Determines the appropriate map theme based on current settings
+ * @returns The map theme style to use
+ */
+const getMapTheme = (): string => {
+  if (typeof window === 'undefined') return MAP_TILE_STYLE_DARK;
+
+  // Check for explicit theme in DOM
+  const dataTheme = document.documentElement.getAttribute('data-theme') as
+    | 'light'
+    | 'dark'
+    | null;
+
+  // Check for saved theme in localStorage
+  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+
+  // Determine theme based on priority:
+  // 1. DOM attribute
+  // 2. localStorage
+  // 3. Default to dark theme
+  if (dataTheme) {
+    return getMapThemeFromCurrentTheme(dataTheme);
+  } else if (savedTheme) {
+    return getMapThemeFromCurrentTheme(savedTheme);
+  } else {
+    return getMapThemeFromCurrentTheme('dark');
+  }
+};
 
 export {
   titleForShow,
@@ -474,5 +503,5 @@ export {
   convertMovingTime2Sec,
   getMapStyle,
   isTouchDevice,
-  getActivityTitle,
+  getMapTheme,
 };
