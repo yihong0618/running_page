@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
 import LocationStat from '@/components/LocationStat';
 import RunMap from '@/components/RunMap';
@@ -24,10 +25,12 @@ import {
   titleForShow,
   RunIds,
 } from '@/utils/utils';
+import { useTheme, useThemeChangeCounter } from '@/hooks/useTheme';
 
 const Index = () => {
   const { siteTitle } = useSiteMetadata();
   const { activities, thisYear } = useActivities();
+  const themeChangeCounter = useThemeChangeCounter(); // Add theme change listener
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [title, setTitle] = useState('');
@@ -350,8 +353,13 @@ const Index = () => {
     };
   }, [year]);
 
+  const { theme } = useTheme();
+
   return (
     <Layout>
+      <Helmet>
+        <html lang="en" data-theme={theme} />
+      </Helmet>
       <div className="w-full lg:w-1/3">
         <h1 className="my-12 mt-6 text-5xl font-extrabold italic">
           <a href="/">{siteTitle}</a>

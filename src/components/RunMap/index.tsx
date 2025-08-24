@@ -26,9 +26,9 @@ import {
   MAP_HEIGHT,
   PRIVACY_MODE,
   LIGHTS_ON,
-  MAP_TILE_STYLE,
   MAP_TILE_VENDOR,
   MAP_TILE_ACCESS_TOKEN,
+  getRuntimeSingleRunColor,
 } from '@/utils/const';
 import {
   Coordinate,
@@ -45,6 +45,7 @@ import { FeatureCollection } from 'geojson';
 import { RPGeometry } from '@/static/run_countries';
 import './mapbox.css';
 import LightsControl from '@/components/RunMap/LightsControl';
+import { useMapTheme, useThemeChangeCounter } from '@/hooks/useTheme';
 
 interface IRunMapProps {
   title: string;
@@ -66,7 +67,7 @@ const RunMap = ({
   animationTrigger,
 }: IRunMapProps) => {
   const { countries, provinces } = useActivities();
-  const mapRef = useRef<MapRef>();
+  const mapRef = useRef<MapRef>(null);
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
   // layers that should remain visible when lights are off
   const keepWhenLightsOff = ['runs2', 'animated-run'];
@@ -74,11 +75,50 @@ const RunMap = ({
     useState<FeatureCollection<RPGeometry> | null>(null);
   const [isLoadingMapData, setIsLoadingMapData] = useState(false);
 
-  // Memoize map style to prevent recreating it on every render
-  const mapStyle = useMemo(
-    () => getMapStyle(MAP_TILE_VENDOR, MAP_TILE_STYLE, MAP_TILE_ACCESS_TOKEN),
-    []
+  // Use the map theme hook to get the current map theme
+  const currentMapTheme = useMapTheme();
+  // Listen for theme changes to update single run color
+  const themeChangeCounter = useThemeChangeCounter();
+
+  // Get theme-aware single run color that updates when theme changes
+  const singleRunColor = useMemo(
+    () => getRuntimeSingleRunColor(),
+    [themeChangeCounter]
   );
+
+  // Generate map style based on current theme
+  const mapStyle = useMemo(
+    () => getMapStyle(MAP_TILE_VENDOR, currentMapTheme, MAP_TILE_ACCESS_TOKEN),
+    [currentMapTheme]
+  );
+
+  // Update map when theme changes
+  useEffect(() => {
+    if (mapRef.current) {
+      const map = mapRef.current.getMap();
+
+      // Save current map state before changing style
+      const currentCenter = map.getCenter();
+      const currentZoom = map.getZoom();
+      const currentBearing = map.getBearing();
+      const currentPitch = map.getPitch();
+
+      // Apply new style
+      map.setStyle(mapStyle);
+
+      // Restore map state and visibility settings after style loads
+      map.once('style.load', () => {
+        // Restore map view state
+        map.setCenter(currentCenter);
+        map.setZoom(currentZoom);
+        map.setBearing(currentBearing);
+        map.setPitch(currentPitch);
+
+        // Reapply layer visibility settings
+        switchLayerVisibility(map, lights);
+      });
+    }
+  }, [mapStyle]);
 
   // animation state (single run only)
   const [animatedPoints, setAnimatedPoints] = useState<Coordinate[]>([]);
@@ -98,6 +138,11 @@ const RunMap = ({
     return filtered;
   }, [countries]);
 
+  /**
+   * Toggle visibility of map layers based on lights setting
+   * @param map - The Mapbox map instance
+   * @param lights - Whether lights are on or off
+   */
   function switchLayerVisibility(map: MapInstance, lights: boolean) {
     const styleJson = map.getStyle();
     styleJson.layers.forEach((it: { id: string }) => {
@@ -107,6 +152,15 @@ const RunMap = ({
       }
     });
   }
+
+  // Apply layer visibility when lights setting changes
+  useEffect(() => {
+    if (mapRef.current) {
+      const map = mapRef.current.getMap();
+      switchLayerVisibility(map, lights);
+    }
+  }, [lights]);
+
   const mapRefCallback = useCallback(
     (ref: MapRef) => {
       if (ref !== null) {
@@ -347,7 +401,7 @@ const RunMap = ({
             features: [
               {
                 type: 'Feature',
-                properties: { color: '#ff4d4f' },
+                properties: { color: singleRunColor },
                 geometry: {
                   type: 'LineString',
                   coordinates: animatedPoints,
