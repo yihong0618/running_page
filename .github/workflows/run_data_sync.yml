@@ -25,9 +25,9 @@ on:
 
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/db_updater, Please change the 'pass' it to your own
-  ATHLETE: yihong0618
-  TITLE: Yihong0618 Running
+  RUN_TYPE: strava # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/db_updater, Please change the 'pass' it to your own
+  ATHLETE: Ayu
+  TITLE: Ayu Running
   MIN_GRID_DISTANCE: 10 # change min distance here
   TITLE_GRID: Over 10km Runs # also here
 
@@ -41,7 +41,7 @@ env:
   BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
   SAVE_TO_PARQENT: false # If you want to save the data to the repo, set it to `true`
   GENERATE_MONTH_OF_LIFE: true # If you want to generate the month of life, set it to `true`
-  BIRTHDAY_MONTH: 1989-03 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
+  BIRTHDAY_MONTH: 1985-11 # If you want to generate the month of life, set it to your birthday month, format is YYYY-MM
 
 jobs:
   sync:
