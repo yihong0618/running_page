@@ -15,10 +15,10 @@ const getBasePath = () => {
 };
 
 const data: ISiteMetadataResult = {
-  siteTitle: 'Running Page',
-  siteUrl: 'https://yihong.run',
-  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
-  description: 'Personal site and blog',
+  siteTitle: 'GavenのHP',
+  siteUrl: 'https://wenxiaowan.com',
+  logo: 'https://blog.wenxiaowan.com/avatar.jpg',
+  description: 'Gaven HP Blog Running Page',
   navLinks: [
     {
       name: 'Summary',
@@ -26,10 +26,10 @@ const data: ISiteMetadataResult = {
     },
     {
       name: 'Blog',
-      url: 'https://github.com/yihong0618/gitblog',
+      url: 'https://blog.wenxiaowan.com',
     },
     {
-      name: 'About',
+      name: 'ThanksTo',
       url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
     },
   ],
