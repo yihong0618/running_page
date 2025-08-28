@@ -193,6 +193,7 @@ hr {
 
   /* Ensure mobile layout doesn't require min-width */
   body {
-    font-family: "DotGothic16", sans-serif;
+  overflow-x: hidden;
+  font-family: "DotGothic16", sans-serif;
   }
 }
