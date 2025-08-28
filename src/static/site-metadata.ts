@@ -15,7 +15,7 @@ const getBasePath = () => {
 };
 
 const data: ISiteMetadataResult = {
-  siteTitle: 'Running Page',
+  siteTitle: '阿瑜的运动记录',
   siteUrl: 'https://coffaye.github.io/running_page/',
   logo: 'https://raw.githubusercontent.com/coffaye/running_page/refs/heads/master/public/images/logo.png',
   description: 'Personal site and blog',
