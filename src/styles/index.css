@@ -186,7 +186,7 @@ hr {
 }
 
 /* Mobile-specific improvements */
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
   .mobile-map-container {
     margin-bottom: 1rem;
   }
