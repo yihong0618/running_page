@@ -92,7 +92,7 @@ const Index = () => {
 
   const geoData = useMemo(() => {
     return geoJsonForRuns(runs);
-  }, [runs]);
+  }, [runs, themeChangeCounter]);
 
   // for auto zoom
   const bounds = useMemo(() => {
