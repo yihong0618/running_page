@@ -28,7 +28,7 @@ import {
 import { useTheme, useThemeChangeCounter } from '@/hooks/useTheme';
 
 const Index = () => {
-  const { siteTitle } = useSiteMetadata();
+  const { siteTitle, siteUrl } = useSiteMetadata();
   const { activities, thisYear } = useActivities();
   const themeChangeCounter = useThemeChangeCounter(); // Add theme change listener
   const [year, setYear] = useState(thisYear);
@@ -362,7 +362,7 @@ const Index = () => {
       </Helmet>
       <div className="w-full lg:w-1/3">
         <h1 className="my-12 mt-6 text-5xl font-extrabold italic">
-          <a href="/">{siteTitle}</a>
+          <a href={siteUrl}>{siteTitle}</a>
         </h1>
         {(viewState.zoom ?? 0) <= 3 && IS_CHINESE ? (
           <LocationStat
