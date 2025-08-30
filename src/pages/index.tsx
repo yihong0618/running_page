@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
@@ -47,6 +47,9 @@ const Index = () => {
 
   // Animation trigger for single runs - increment this to force animation replay
   const [animationTrigger, setAnimationTrigger] = useState(0);
+
+  const selectedRunIdRef = useRef<number | null>(null);
+  const selectedRunDateRef = useRef<string | null>(null);
 
   // Parse URL hash on mount to check for run ID
   useEffect(() => {
@@ -326,7 +329,13 @@ const Index = () => {
           if (!runId) {
             return;
           }
-          locateActivity([runId]);
+          if (selectedRunIdRef.current === runId) {
+            selectedRunIdRef.current = null;
+            locateActivity(runs.map((r) => r.run_id));
+          } else {
+            selectedRunIdRef.current = runId;
+            locateActivity([runId]);
+          }
           return;
         }
 
@@ -342,7 +351,13 @@ const Index = () => {
           if (!runIDsOnDate.length) {
             return;
           }
-          locateActivity(runIDsOnDate);
+          if (selectedRunDateRef.current === runDate) {
+            selectedRunDateRef.current = null;
+            locateActivity(runs.map((r) => r.run_id));
+          } else {
+            selectedRunDateRef.current = runDate;
+            locateActivity(runIDsOnDate);
+          }
         }
       }
     };
