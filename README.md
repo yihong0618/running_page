@@ -22,6 +22,7 @@
    - For old data: To include `Elevation Gain` for past activities, perform a full reimport.
    - To show the 'Elevation Gain' column, modify `SHOW_ELEVATION_GAIN` in `src/utils/const.ts`
    - note: `Elevation Gain` may be inaccurate. You can use Strava's "Correct Elevation" or Garmin's "Elev Corrections" feature for more precise data.
+6. It cost me a lot money, so please do not use my mapbox token more check this [issue](https://github.com/yihong0618/running_page/issues/643)
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
