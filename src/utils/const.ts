@@ -276,5 +276,5 @@ export const MAP_TILE_STYLES = {
     'navigation-night': 'mapbox://styles/mapbox/navigation-night-v1',
     'satellite-streets-v12': 'mapbox://styles/mapbox/satellite-streets-v12',
   },
-  default: 'mapbox://styles/mapbox/dark-v10',
+  default: 'mapbox://styles/mapbox/dark-v11',
 };
