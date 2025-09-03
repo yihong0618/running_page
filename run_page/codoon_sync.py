@@ -175,7 +175,8 @@ def tcx_output(fit_array, run_data):
     #       DistanceMeters
     activity_lap.append(formated_input(run_data, "total_length", "DistanceMeters"))
     #       Calories
-    activity_lap.append(formated_input(run_data, "total_calories", "Calories"))
+    if "total_calories" in run_data:
+        activity_lap.append(formated_input(run_data, "total_calories", "Calories"))
 
     # Track
     track = ET.Element("Track")
