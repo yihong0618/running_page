@@ -42,6 +42,15 @@ FitType = np.dtype(
         "formats": ["i", "S4", "S32", "S32", "S8"],
     }
 )
+FitTypeHRT = np.dtype(
+    {
+        "names": [
+            "time",
+            "bpm",
+        ],  # unix timestamp, heart bpm
+        "formats": ["i", "S4"],
+    }
+)
 
 # device info
 user_agent = "CodoonSport(8.9.0 1170;Android 7;Sony XZ1)"
@@ -192,14 +201,14 @@ def tcx_output(fit_array, run_data):
         # HeartRateBpm
         # None was converted to bytes by np.dtype, becoming a string "None" after decode...-_-
         # as well as LatitudeDegrees and LongitudeDegrees below
-        if not bytes.decode(i["bpm"]) == "None":
+        if "bpm" in i and not bytes.decode(i["bpm"]) == "None":
             bpm = ET.Element("HeartRateBpm")
             bpm_value = ET.Element("Value")
             bpm.append(bpm_value)
             bpm_value.text = bytes.decode(i["bpm"])
             tp.append(bpm)
         # Position
-        if not bytes.decode(i["lati"]) == "None":
+        if "lati" in i and not bytes.decode(i["lati"]) == "None":
             position = ET.Element("Position")
             tp.append(position)
             #   LatitudeDegrees
@@ -272,9 +281,22 @@ def tcx_job(run_data):
             hr = fit_hrs.get(unix_time, None)
 
             fit_list.append((unix_time, hr, latitude, longitude, elevation))
+    elif fit_hrs:
+        # only heart rates
+        print("No track points, only heart rates " + str(run_data["id"]))
+        for unix_time, hr in fit_hrs.items():
+            fit_list.append((unix_time, hr))
 
-    if fit_list:
+    if len(own_points) > 0 and fit_list:
+        # track points
         fit_array = np.array(fit_list, dtype=FitType)
+        # order array
+        fit_array = np.sort(fit_array, order="time")
+        # write to TCX file
+        tcx_output(fit_array, run_data)
+    elif len(own_points) == 0 and fit_hrs and fit_list:
+        # only heart rate
+        fit_array = np.array(fit_list, dtype=FitTypeHRT)
         # order array
         fit_array = np.sort(fit_array, order="time")
         # write to TCX file
