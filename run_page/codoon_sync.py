@@ -228,7 +228,9 @@ def tcx_output(fit_array, run_data):
     author.append(author_part)
     # write to TCX file
     try:
-        xml_str = minidom.parseString(ET.tostring(training_center_database)).toprettyxml()
+        xml_str = minidom.parseString(
+            ET.tostring(training_center_database)
+        ).toprettyxml()
         with open(TCX_FOLDER + "/" + fit_id + ".tcx", "w") as f:
             f.write(str(xml_str))
     except Exception as e:
