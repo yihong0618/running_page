@@ -35,9 +35,11 @@ FitType = np.dtype(
         "names": [
             "time",
             "bpm",
+            "step",
             "lati",
             "longi",
             "elevation",
+        ],  # unix timestamp, heart bpm, step, LatitudeDegrees, LongitudeDegrees, elevation
         "formats": ["i", "S4", "S4", "S32", "S32", "S8"],
     }
 )
@@ -176,6 +178,16 @@ def tcx_output(fit_array, run_data):
     #       Calories
     if "total_calories" in run_data:
         activity_lap.append(formated_input(run_data, "total_calories", "Calories"))
+    #       AverageCadence
+    if "average_step_cadence" in run_data:
+        activity_lap.append(
+            formated_input(run_data, "average_step_cadence", "AverageCadence")
+        )
+    #       MaximumCadence
+    if "max_step_cadence" in run_data:
+        activity_lap.append(
+            formated_input(run_data, "max_step_cadence", "MaximumCadence")
+        )
 
     # Track
     track = ET.Element("Track")
@@ -197,6 +209,13 @@ def tcx_output(fit_array, run_data):
             bpm.append(bpm_value)
             bpm_value.text = bytes.decode(i["bpm"])
             tp.append(bpm)
+        # Cadence
+        # The unit is step-per-minute in Garmin
+        # but is stride-per-minute in Strava, Coros, and RQrun
+        if not bytes.decode(i["step"]) == "None":
+            step = ET.Element("Cadence")
+            step.text = bytes.decode(i["step"])
+            tp.append(step)
         # Position
         if not bytes.decode(i["lati"]) == "None":
             position = ET.Element("Position")
@@ -242,12 +261,16 @@ def tcx_job(run_data):
     fit_array = None
     fit_list = []
     fit_hrs = {}
+    fit_steps = {}
 
     # raw data
     own_heart_rate = None
     own_points = None
+    own_steps = None
     if "heart_rate" in run_data:
         own_heart_rate = run_data["heart_rate"]  # bpm key-value
+    if "user_steps_list_perm" in run_data:
+        own_steps = run_data["user_steps_list_perm"]  # step key-value
     if "points" in run_data:
         own_points = run_data["points"]  # track points
 
@@ -256,6 +279,21 @@ def tcx_job(run_data):
         for single_time, single_bpm in own_heart_rate.items():
             single_time = adjust_timestamp_to_utc(single_time, str(get_localzone()))
             fit_hrs[single_time] = single_bpm
+
+    # get single step
+    if own_steps is not None:
+        for l in own_steps:
+            [single_time, single_step] = l[0:2]
+            # firstly, convert 2025-09-16 20:08:00 to 2025-09-16T20:08:00
+            single_time = single_time.replace(" ", "T")
+            # move to UTC
+            utc = adjust_time_to_utc(to_date(single_time), str(get_localzone()))
+            time_stamp = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+            # to time array
+            time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%SZ")
+            # to unix timestamp
+            unix_time = int(time.mktime(time_array))
+            fit_steps[unix_time] = int(single_step)
 
     # get single track point
     if len(own_points) > 0:
@@ -276,14 +314,24 @@ def tcx_job(run_data):
             # get heart rate at unix_time
             hr = fit_hrs.get(unix_time, None)
 
-            fit_list.append((unix_time, hr, latitude, longitude, elevation))
+            # get steps per minute at unix_time
+            step = fit_steps.get(unix_time, None)
+
+            fit_list.append((unix_time, hr, step, latitude, longitude, elevation))
     elif fit_hrs:
         # not trackpoints but heart rates
-        print("No track points, but heart rates, might have steps " + str(run_data["id"]))
+        print(
+            "No track points, but heart rates, might have steps " + str(run_data["id"])
+        )
         for unix_time, hr in fit_hrs.items():
             # get heart rate at unix_time
             step = fit_steps.get(unix_time, None)
             fit_list.append((unix_time, hr, step, None, None, None))
+    elif fit_steps:
+        # not trackpoints but steps
+        print("No track points, only steps " + str(run_data["id"]))
+        for unix_time, step in fit_steps.items():
+            fit_list.append((unix_time, None, step, None, None, None))
 
     if fit_list:
         # track points
