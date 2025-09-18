@@ -227,9 +227,13 @@ def tcx_output(fit_array, run_data):
     author_part.text = CONNECT_API_PART_NUMBER
     author.append(author_part)
     # write to TCX file
-    xml_str = minidom.parseString(ET.tostring(training_center_database)).toprettyxml()
-    with open(TCX_FOLDER + "/" + fit_id + ".tcx", "w") as f:
-        f.write(str(xml_str))
+    try:
+        xml_str = minidom.parseString(ET.tostring(training_center_database)).toprettyxml()
+        with open(TCX_FOLDER + "/" + fit_id + ".tcx", "w") as f:
+            f.write(str(xml_str))
+    except Exception as e:
+        print(f"empty database error {str(e)}")
+        pass
 
 
 def tcx_job(run_data):
