@@ -418,7 +418,8 @@ const ActivityList: React.FC = () => {
             <option
               key={type}
               value={type}
-              disabled={interval === 'life' && type !== 'all'}>
+              disabled={interval === 'life' && type !== 'all'}
+            >
               {type}
             </option>
           ))}
