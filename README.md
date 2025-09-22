@@ -164,6 +164,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
 - **[Coros](#coros)**
 - **[iGPSPORT](#igpsport)**
+- **[Joyrun](#joyrun)**
 
 ## Download
 
@@ -845,6 +846,21 @@ python3 run_page/igpsport_sync.py 'your igpsport account' 'your igpsport passwor
 ```
 
 You can replace `with-gpx` with `with-fit` to acquire data in fit format.
+
+</details>
+
+### Joyrun
+
+<details>
+<summary>Get your Joyrun data</summary>
+
+#### Enter the following command in the terminal
+
+```bash
+python3 run_page/joyrun_sync.py 'your joyrun account' 'verication code' -with-gpx
+```
+
+You can replace `with-gpx` with `with-tcx` to acquire data in tcx format.
 
 </details>
 
