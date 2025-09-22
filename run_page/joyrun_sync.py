@@ -73,9 +73,7 @@ def download_joyrun_gpx(gpx_data, joyrun_id):
 def download_joyrun_tcx(tcx_data, joyrun_id):
     # write to TCX file
     try:
-        xml_str = minidom.parseString(
-            ET.tostring(tcx_data)
-        ).toprettyxml()
+        xml_str = minidom.parseString(ET.tostring(tcx_data)).toprettyxml()
         with open(TCX_FOLDER + "/" + joyrun_id + ".tcx", "w") as f:
             f.write(str(xml_str))
     except Exception as e:
@@ -405,7 +403,9 @@ class Joyrun:
         # local time
         fit_start_time_local = run_data["starttime"]
         # zulu time
-        fit_start_time = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.localtime(fit_start_time_local))
+        fit_start_time = time.strftime(
+            "%Y-%m-%dT%H:%M:%SZ", time.localtime(fit_start_time_local)
+        )
 
         # Root node
         training_center_database = ET.Element(
@@ -468,7 +468,9 @@ class Joyrun:
             tp = ET.Element("Trackpoint")
             track.append(tp)
             # Time
-            time_stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.localtime(current_time))
+            time_stamp = time.strftime(
+                "%Y-%m-%dT%H:%M:%SZ", time.localtime(current_time)
+            )
             time_label = ET.Element("Time")
             time_label.text = time_stamp
             tp.append(time_label)
@@ -539,7 +541,9 @@ class Joyrun:
         data = r.json()
         return data
 
-    def parse_raw_data_to_nametuple(self, run_data, old_gpx_ids, with_gpx=False, with_tcx=False):
+    def parse_raw_data_to_nametuple(
+            self, run_data, old_gpx_ids, with_gpx=False, with_tcx=False
+    ):
         run_data = run_data["runrecord"]
         joyrun_id = run_data["fid"]
 
