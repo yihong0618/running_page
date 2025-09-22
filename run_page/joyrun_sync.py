@@ -55,6 +55,7 @@ TCX_TYPE_DICT = {
     2: "Biking",
 }
 
+
 def get_md5_data(data):
     return md5(str(data).encode("utf-8")).hexdigest().upper()
 
@@ -69,7 +70,6 @@ def download_joyrun_gpx(gpx_data, joyrun_id):
         print(f"wrong id {joyrun_id}: {e}")
         pass
 
-
 def download_joyrun_tcx(tcx_data, joyrun_id):
     # write to TCX file
     try:
@@ -79,7 +79,6 @@ def download_joyrun_tcx(tcx_data, joyrun_id):
     except Exception as e:
         print(f"empty database error {str(e)}")
         pass
-
 
 def formated_input(
     run_data, run_data_label, tcx_label
@@ -527,7 +526,6 @@ class Joyrun:
 
         return training_center_database
 
-
     def get_single_run_record(self, fid):
         payload = {
             "fid": fid,
@@ -542,7 +540,7 @@ class Joyrun:
         return data
 
     def parse_raw_data_to_nametuple(
-            self, run_data, old_gpx_ids, with_gpx=False, with_tcx=False
+        self, run_data, old_gpx_ids, with_gpx=False, with_tcx=False
     ):
         run_data = run_data["runrecord"]
         joyrun_id = run_data["fid"]
@@ -621,7 +619,9 @@ class Joyrun:
         }
         return namedtuple("x", d.keys())(*d.values())
 
-    def get_all_joyrun_tracks(self, old_tracks_ids, with_gpx=False, with_tcx=False, threshold=10):
+    def get_all_joyrun_tracks(
+        self, old_tracks_ids, with_gpx=False, with_tcx=False, threshold=10
+    ):
         run_ids = self.get_runs_records_ids()
         old_tracks_ids = [int(i) for i in old_tracks_ids if i.isdigit()]
 
