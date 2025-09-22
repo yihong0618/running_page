@@ -270,6 +270,13 @@ const ActivityList: React.FC = () => {
     setSportTypeOptions(uniqueSportTypes);
   }, []);
 
+  // 添加useEffect监听interval变化
+  useEffect(() => {
+    if (interval === 'life' && sportType !== 'all') {
+      setSportType('all');
+    }
+  }, [interval, sportType]);
+
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
@@ -408,7 +415,11 @@ const ActivityList: React.FC = () => {
           value={sportType}
         >
           {sportTypeOptions.map((type) => (
-            <option key={type} value={type}>
+            <option
+              key={type}
+              value={type}
+              disabled={interval === 'life' && type !== 'all'}
+            >
               {type}
             </option>
           ))}
