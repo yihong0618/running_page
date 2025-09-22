@@ -70,6 +70,7 @@ def download_joyrun_gpx(gpx_data, joyrun_id):
         print(f"wrong id {joyrun_id}: {e}")
         pass
 
+
 def download_joyrun_tcx(tcx_data, joyrun_id):
     # write to TCX file
     try:
@@ -79,6 +80,7 @@ def download_joyrun_tcx(tcx_data, joyrun_id):
     except Exception as e:
         print(f"empty database error {str(e)}")
         pass
+
 
 def formated_input(
     run_data, run_data_label, tcx_label
@@ -385,7 +387,6 @@ class Joyrun:
         )
 
         return gpx
-
 
     def parse_points_to_tcx(self, run_data, interval=5) -> ET.Element:
         """
