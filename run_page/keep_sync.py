@@ -329,8 +329,9 @@ def parse_points_to_tcx(run_data, run_points_data, sport_type):
         tcx_data (str): TCX data in string format.
     """
 
+    # note that the timestamp of a point is decisecond(分秒)
     fit_start_time = datetime.fromtimestamp(
-        run_data.get("startTime") / 1000,  # note that the timestamp of a point is decisecond(分秒)
+        run_data.get("startTime") / 1000,
         tz=timezone.utc
     ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -381,8 +382,9 @@ def parse_points_to_tcx(run_data, run_points_data, sport_type):
         tp = ET.Element("Trackpoint")
         track.append(tp)
         # Time
+        # note that the timestamp of a point is decisecond(分秒)
         time_stamp = datetime.fromtimestamp(
-            (run_data.get("startTime") + point.get("timestamp")) / 1000,  # note that the timestamp of a point is decisecond(分秒)
+            (run_data.get("startTime") + point.get("timestamp")) / 1000,
             tz=timezone.utc
         ).strftime("%Y-%m-%dT%H:%M:%SZ")
         time_label = ET.Element("Time")
