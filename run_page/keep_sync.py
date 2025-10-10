@@ -331,8 +331,7 @@ def parse_points_to_tcx(run_data, run_points_data, sport_type):
 
     # note that the timestamp of a point is decisecond(分秒)
     fit_start_time = datetime.fromtimestamp(
-        run_data.get("startTime") / 1000,
-        tz=timezone.utc
+        run_data.get("startTime") / 1000, tz=timezone.utc
     ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Root node
@@ -384,8 +383,7 @@ def parse_points_to_tcx(run_data, run_points_data, sport_type):
         # Time
         # note that the timestamp of a point is decisecond(分秒)
         time_stamp = datetime.fromtimestamp(
-            (run_data.get("startTime") + point.get("timestamp")) / 1000,
-            tz=timezone.utc
+            (run_data.get("startTime") + point.get("timestamp")) / 1000, tz=timezone.utc
         ).strftime("%Y-%m-%dT%H:%M:%SZ")
         time_label = ET.Element("Time")
         time_label.text = time_stamp
