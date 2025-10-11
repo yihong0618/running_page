@@ -1,4 +1,4 @@
-# some code from 
+# some code from
 # https://github.com/timschneeb/KomootGPX.git
 # great thanks
 
@@ -14,7 +14,11 @@ from config import GPX_FOLDER
 
 
 def extract_user_from_tip(json):
-    if "_embedded" in json and "creator" in json["_embedded"] and "display_name" in json["_embedded"]["creator"]:
+    if (
+        "_embedded" in json
+        and "creator" in json["_embedded"]
+        and "display_name" in json["_embedded"]["creator"]
+    ):
         return json["_embedded"]["creator"]["display_name"] + ": "
     return ""
 
@@ -24,15 +28,17 @@ class BasicAuthToken(requests.auth.AuthBase):
         self.value = value
 
     def __call__(self, r):
-        authstr = 'Basic ' + base64.b64encode(bytes(self.key + ":" + self.value, 'utf-8')).decode('utf-8')
-        r.headers['Authorization'] = authstr
+        authstr = "Basic " + base64.b64encode(
+            bytes(self.key + ":" + self.value, "utf-8")
+        ).decode("utf-8")
+        r.headers["Authorization"] = authstr
         return r
 
 
 class KomootApi:
     def __init__(self):
-        self.user_id = ''
-        self.token = ''
+        self.user_id = ""
+        self.token = ""
 
     def __build_header(self):
         if self.user_id and self.token:
@@ -51,13 +57,15 @@ class KomootApi:
     def login(self, email, password):
         print("Logging in...")
 
-        r = self.__send_request("https://api.komoot.de/v006/account/email/" + email + "/",
-                                BasicAuthToken(email, password))
+        r = self.__send_request(
+            "https://api.komoot.de/v006/account/email/" + email + "/",
+            BasicAuthToken(email, password),
+        )
 
-        self.user_id = r.json()['username']
-        self.token = r.json()['password']
+        self.user_id = r.json()["username"]
+        self.token = r.json()["password"]
 
-        print("Logged in as '" + r.json()['user']['displayname'] + "'")
+        print("Logged in as '" + r.json()["user"]["displayname"] + "'")
 
     def fetch_tours(self, silent=False):
         if not silent:
@@ -69,15 +77,17 @@ class KomootApi:
         while has_next_page:
             r = self.__send_request(current_uri, self.__build_header())
 
-            has_next_page = 'next' in r.json()['_links'] and 'href' in r.json()['_links']['next']
+            has_next_page = (
+                "next" in r.json()["_links"] and "href" in r.json()["_links"]["next"]
+            )
             if has_next_page:
-                current_uri = r.json()['_links']['next']['href']
+                current_uri = r.json()["_links"]["next"]["href"]
 
-            tours = r.json()['_embedded']['tours']
+            tours = r.json()["_embedded"]["tours"]
             for tour in tours:
-                if tour['type'] != "tour_recorded":
+                if tour["type"] != "tour_recorded":
                     continue
-                results[tour['id']] = tour
+                results[tour["id"]] = tour
 
         print("Found " + str(len(results)) + " tours")
         return results
@@ -86,21 +96,28 @@ class KomootApi:
     def fetch_tour(self, tour_id):
         print("Fetching tour '" + tour_id + "'...")
 
-        r = self.__send_request("https://api.komoot.de/v007/tours/" + tour_id + "?_embedded=coordinates,way_types,"
-                                                                                "surfaces,directions,participants,"
-                                                                                "timeline&directions=v2&fields"
-                                                                                "=timeline&format=coordinate_array"
-                                                                                "&timeline_highlights_fields=tips,"
-                                                                                "recommenders",
-                                self.__build_header())
+        r = self.__send_request(
+            "https://api.komoot.de/v007/tours/"
+            + tour_id
+            + "?_embedded=coordinates,way_types,"
+            "surfaces,directions,participants,"
+            "timeline&directions=v2&fields"
+            "=timeline&format=coordinate_array"
+            "&timeline_highlights_fields=tips,"
+            "recommenders",
+            self.__build_header(),
+        )
 
         return r.json()
 
     def fetch_highlight_tips(self, highlight_id):
         print("Fetching highlight '" + highlight_id + "'...")
 
-        r = self.__send_request("https://api.komoot.de/v007/highlights/" + highlight_id + "/tips/",
-                                self.__build_header(), critical=False)
+        r = self.__send_request(
+            "https://api.komoot.de/v007/highlights/" + highlight_id + "/tips/",
+            self.__build_header(),
+            critical=False,
+        )
 
         return r.json()
 
@@ -151,7 +168,10 @@ class GpxCompiler:
             return
 
         self.pois = []
-        if "timeline" in tour["_embedded"] and "_embedded" in tour["_embedded"]["timeline"]:
+        if (
+            "timeline" in tour["_embedded"]
+            and "_embedded" in tour["_embedded"]["timeline"]
+        ):
             for item in tour["_embedded"]["timeline"]["_embedded"]["items"]:
                 if item["type"] != "poi" and item["type"] != "highlight":
                     continue
@@ -167,9 +187,9 @@ class GpxCompiler:
                     if "location" in ref:
                         point = Point(ref["location"])
                     if "details" in ref:
-                        details = ', '.join(str(x['formatted']) for x in ref['details'])
+                        details = ", ".join(str(x["formatted"]) for x in ref["details"])
 
-                    self.pois.append(POI(name, point, '', '', details, "POI"))
+                    self.pois.append(POI(name, point, "", "", details, "POI"))
 
                 elif item["type"] == "highlight":
                     name = "Unknown Highlight"
@@ -184,34 +204,45 @@ class GpxCompiler:
                         point = Point(ref["mid_point"])
                     if "front_image" in ref["_embedded"]:
                         if "src" in ref["_embedded"]["front_image"]:
-                            image_url = ref["_embedded"]["front_image"]["src"].split("?", 1)[0]
+                            image_url = ref["_embedded"]["front_image"]["src"].split(
+                              "?", 1
+                            )[0]
 
                     tips = self.api.fetch_highlight_tips(str(ref["id"]))
                     if "_embedded" in tips and "items" in tips["_embedded"]:
-                        details += "\n――――――――――\n".join(str(extract_user_from_tip(x) + x["text"]) for x in tips["_embedded"]["items"])
-
+                        details += "\n――――――――――\n".join(
+                            str(extract_user_from_tip(x) + x["text"])
+                            for x in tips["_embedded"]["items"]
+                        )
                     if max_desc_length == 0:
                         details = ""
                     elif max_desc_length > 0 and len(details) > max_desc_length:
-                        details = details[:max_desc_length - 3] + "..."
+                        details = details[: max_desc_length - 3] + "..."
 
-                    self.pois.append(POI(name, point, image_url, url, details, "Highlight"))
+                    self.pois.append(
+                        POI(name, point, image_url, url, details, "Highlight")
+                    )
 
     def generate(self):
         gpx = gpxpy.gpx.GPX()
         gpx.name = self.tour["name"]
-        if self.tour['type'] == "tour_recorded":
+        if self.tour["type"] == "tour_recorded":
             gpx.name = gpx.name + " (Completed)"
-        gpx.description = f"Distance: {str(int(self.tour['distance']) / 1000.0)}km, " \
-                          f"Estimated duration: {str(round(self.tour['duration'] / 3600.0, 2))}h, " \
-                          f"Elevation up: {self.tour['elevation_up']}m, " \
-                          f"Elevation down: {self.tour['elevation_down']}m" \
-
+        gpx.description = (
+            f"Distance: {str(int(self.tour['distance']) / 1000.0)}km, "
+            f"Estimated duration: {str(round(self.tour['duration'] / 3600.0, 2))}h, "
+            f"Elevation up: {self.tour['elevation_up']}m, "
+            f"Elevation down: {self.tour['elevation_down']}m"
+        )
         if "difficulty" in self.tour:
-            gpx.description = gpx.description + f", Grade: {self.tour['difficulty']['grade']}"
-
+            gpx.description = (
+                gpx.description + f", Grade: {self.tour['difficulty']['grade']}"
+            )
+        
         gpx.author_name = self.tour["_embedded"]["creator"]["display_name"]
-        gpx.author_link = "https://www.komoot.de/user/" + str(self.tour["_embedded"]["creator"]["username"])
+        gpx.author_link = "https://www.komoot.de/user/" + str(
+          self.tour["_embedded"]["creator"]["username"]
+        )
         gpx.author_link_text = "View " + gpx.author_name + "'s Profile on Komoot"
         gpx.link = "https://www.komoot.de/tour/" + str(self.tour["id"])
         gpx.link_text = "View tour on Komoot"
@@ -230,7 +261,7 @@ class GpxCompiler:
         track.segments.append(segment)
 
         augment_timestamp = self.route[0].time == 0
-        start_date = datetime.strptime(self.tour['date'], "%Y-%m-%dT%H:%M:%S.%f%z")
+        start_date = datetime.strptime(self.tour["date"], "%Y-%m-%dT%H:%M:%S.%f%z")
 
         for coord in self.route:
             point = gpxpy.gpx.GPXTrackPoint(coord.lat, coord.lng)
@@ -267,30 +298,60 @@ class GpxCompiler:
 output_dir_contents = set()
 
 def usage():
-    print('komootgpx.py [options]')
-
-    print('\n' + '[Authentication]')
-    print('\t{:<2s}, {:<30s} {:<10s}'.format('mail', 'Login using specified email address'))
-    print('\t{:<2s}, {:<30s} {:<10s}'.format('password', 'Use provided password and skip interactive prompt'))
-    print('\t{:<2s}, {:<30s} {:<10s}'.format('-n', '--anonymous', 'Skip authentication, no interactive prompt, valid only with -d'))
-
-    print('\n' + '[Tours]')
-    print('\t{:<2s}, {:<30s} {:<10s}'.format('-r', '--remove-deleted', 'Remove GPX files (from --output dir) without corresponding tour in Komoot (deleted and previous versions)'))
-
-    print('\n' + '[Filters]')
-    print('\t{:<34s} {:<10s}'.format('--start-date=YYYY-MM-DD', 'Filter tours on or after specified date (optional)'))
-    print('\t{:<34s} {:<10s}'.format('--end-date=YYYY-MM-DD', 'Filter tours on or before specified date (optional)'))
-
-    print('\n' + '[Generator]')
-    print('\t{:<2s}, {:<30s} {:<10s}'.format('-e', '--no-poi', 'Do not include highlights as POIs'))
+    print("komoot_sync.py [options]")
+    print("\n" + "[Authentication]")
+    print(
+        "\t{:<2s}, {:<30s} {:<10s}".format(
+            "mail", "Login using specified email address"
+        )
+    )
+    print(
+        "\t{:<2s}, {:<30s} {:<10s}".format(
+            "password", "Use provided password and skip interactive prompt"
+        )
+    )
+    print(
+        "\t{:<2s}, {:<30s} {:<10s}".format(
+            "-n",
+            "--anonymous",
+            "Skip authentication, no interactive prompt, valid only with -d",
+        )
+    )
+    print("\n" + "[Tours]")
+    print(
+        "\t{:<2s}, {:<30s} {:<10s}".format(
+            "-r",
+            "--remove-deleted",
+            "Remove GPX files (from --output dir) without corresponding tour in Komoot (deleted and previous versions)",
+        )
+    )
+    print("\n" + "[Filters]")
+    print(
+        "\t{:<34s} {:<10s}".format(
+            "--start-date=YYYY-MM-DD",
+            "Filter tours on or after specified date (optional)",
+        )
+    )
+    print(
+        "\t{:<34s} {:<10s}".format(
+            "--end-date=YYYY-MM-DD",
+            "Filter tours on or before specified date (optional)",
+        )
+    )
+    print("\n" + "[Generator]")
+    print(
+        "\t{:<2s}, {:<30s} {:<10s}".format(
+            "-e", "--no-poi", "Do not include highlights as POIs"
+        )
+    )
 
 
 def is_tour_in_date_range(tour, start_date, end_date):
     """Check if a tour falls within the specified date range."""
-    if 'date' not in tour:
+    if "date" not in tour:
         return True  # If tour has no date info, include it
 
-    tour_date_str = tour['date'][:10]  # Extract YYYY-MM-DD
+    tour_date_str = tour["date"][:10]  # Extract YYYY-MM-DD
     tour_date = datetime.strptime(tour_date_str, "%Y-%m-%d").date()
 
     # If only start_date is provided, include all tours on or after start_date
@@ -306,6 +367,7 @@ def is_tour_in_date_range(tour, start_date, end_date):
         return False
 
     return True
+
 
 def date_filter(tours, start_date, end_date):
     # Filter tours by date if specified
@@ -327,6 +389,7 @@ def date_filter(tours, start_date, end_date):
 
     print(f"Filtered to {len(filtered_tours)} tours {date_criteria}")
     return filtered_tours
+
 
 def make_gpx(tour_id, api, no_poi, tour_base):
     tour = None
@@ -418,25 +481,43 @@ def main(args):
             os.unlink(f"{GPX_FOLDER}/{f}")
             print(f"{f} removed from {GPX_FOLDER}")
 
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Download Komoot tours and highlights as GPX files.",
         # override the auto-created help from argparse to show usage() instead
-        add_help=False
+        add_help=False,
     )
     parser.add_argument("mail", type=str, help="Email address for login")
     parser.add_argument("password", type=str, help="Password for login")
-    parser.add_argument("-n", "--anonymous", action="store_true", default=False, help="Login anonymously")
+    parser.add_argument(
+        "-n",
+        "--anonymous",
+        action="store_true",
+        default=False,
+        help="Login anonymously",
+    )
     parser.add_argument(
         "--with-gpx",
         dest="with_gpx",
         action="store_true",
         help="get all komoot data to gpx and download",
     )
-    parser.add_argument("-r", "--remove-deleted", action="store_true", help="Remove gpx files for nonexistent tours")
-    parser.add_argument("-e", "--no-poi", action="store_true", help="Do not include POIs in GPX")
-    parser.add_argument("--start-date", type=str, help="Filter tours on or after this date (YYYY-MM-DD)")
-    parser.add_argument("--end-date", type=str, help="Filter tours on or before this date (YYYY-MM-DD)")
+    parser.add_argument(
+        "-r",
+        "--remove-deleted",
+        action="store_true",
+        help="Remove gpx files for nonexistent tours",
+    )
+    parser.add_argument(
+        "-e", "--no-poi", action="store_true", help="Do not include POIs in GPX"
+    )
+    parser.add_argument(
+        "--start-date", type=str, help="Filter tours on or after this date (YYYY-MM-DD)"
+    )
+    parser.add_argument(
+        "--end-date", type=str, help="Filter tours on or before this date (YYYY-MM-DD)"
+    )
     parser.add_argument("-h", "--help", action="store_true", help="Prints help")
     return parser.parse_args()
 
