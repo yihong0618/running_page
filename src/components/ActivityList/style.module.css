@@ -51,7 +51,8 @@
 /* Flip card styles */
 .activityCardFlippable {
   perspective: 1000px;
-  padding: 0; /* Remove padding for flippable cards */
+  padding: 0;
+  /* Remove padding for flippable cards */
 }
 
 .cardInner {
