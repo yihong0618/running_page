@@ -301,11 +301,7 @@ output_dir_contents = set()
 def usage():
     print("komoot_sync.py [options]")
     print("\n" + "[Authentication]")
-    print(
-        "\t{:<34s} {:<10s}".format(
-            "mail", "Login using specified email address"
-        )
-    )
+    print("\t{:<34s} {:<10s}".format("mail", "Login using specified email address"))
     print(
         "\t{:<34s} {:<10s}".format(
             "password", "Use provided password and skip interactive prompt"
