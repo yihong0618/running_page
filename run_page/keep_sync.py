@@ -168,7 +168,7 @@ def parse_raw_data_to_nametuple(
                     download_keep_gpx(gpx_data.to_xml(), str(keep_id))
             if with_tcx:
                 tcx_data = parse_points_to_tcx(
-                    run_points_data_gpx, start_time, KEEP2TCX[run_data["dataType"]]
+                    run_data, run_points_data_gpx, KEEP2TCX[run_data["dataType"]]
                 )
                 # elevation_gain = tcx_data.get_uphill_downhill().uphill
                 if str(keep_id) not in old_tcx_ids:
@@ -318,30 +318,20 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
     return gpx
 
 
-def parse_points_to_tcx(run_points_data, start_time, sport_type):
+def parse_points_to_tcx(run_data, run_points_data, sport_type):
     """
     Convert run points data to TCX format.
 
     Args:
-        run_id (str): The ID of the run.
         run_points_data (list of dict): A list of run data points.
-        start_time (int): The start time for adjusting timestamps. Note that the unit of the start_time is millisecond
 
     Returns:
         tcx_data (str): TCX data in string format.
     """
-    # early timestamp fields in keep's data stands for delta time, but in newly data timestamp field stands for exactly time,
-    # so it doesn't need to plus extra start_time
-    if (
-        run_points_data
-        and run_points_data[0]["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND
-    ):
-        start_time = 0
 
+    # note that the timestamp of a point is decisecond(分秒)
     fit_start_time = datetime.fromtimestamp(
-        (run_points_data[0]["timestamp"] * 100 + start_time)
-        / 1000,  # note that the timestamp of a point is decisecond(分秒)
-        tz=timezone.utc,
+        run_data.get("startTime") / 1000, tz=timezone.utc
     ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Root node
@@ -374,12 +364,16 @@ def parse_points_to_tcx(run_points_data, start_time, sport_type):
     activity.append(activity_lap)
     # TotalTimeSeconds
     activity_total_time = ET.Element("TotalTimeSeconds")
-    activity_total_time.text = str(run_points_data[-1]["currentTotalDuration"])
+    activity_total_time.text = str(run_data.get("duration"))
     activity_lap.append(activity_total_time)
     # DistanceMeters
     activity_distance = ET.Element("DistanceMeters")
-    activity_distance.text = str(run_points_data[-1]["currentTotalDistance"])
+    activity_distance.text = str(run_data.get("distance"))
     activity_lap.append(activity_distance)
+    #       Calories
+    activity_calories = ET.Element("Calories")
+    activity_calories.text = str(run_data.get("calorie"))
+    activity_lap.append(activity_calories)
     # Track
     track = ET.Element("Track")
     activity_lap.append(track)
@@ -387,10 +381,9 @@ def parse_points_to_tcx(run_points_data, start_time, sport_type):
         tp = ET.Element("Trackpoint")
         track.append(tp)
         # Time
+        # note that the timestamp of a point is decisecond(分秒)
         time_stamp = datetime.fromtimestamp(
-            (point["timestamp"] * 100 + start_time)
-            / 1000,  # note that the timestamp of a point is decisecond(分秒)
-            tz=timezone.utc,
+            (run_data.get("startTime") + point.get("timestamp")) / 1000, tz=timezone.utc
         ).strftime("%Y-%m-%dT%H:%M:%SZ")
         time_label = ET.Element("Time")
         time_label.text = time_stamp
