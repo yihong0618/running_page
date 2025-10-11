@@ -22,6 +22,7 @@ def extract_user_from_tip(json):
         return json["_embedded"]["creator"]["display_name"] + ": "
     return ""
 
+
 class BasicAuthToken(requests.auth.AuthBase):
     def __init__(self, key, value):
         self.key = key
@@ -91,7 +92,6 @@ class KomootApi:
 
         print("Found " + str(len(results)) + " tours")
         return results
-
 
     def fetch_tour(self, tour_id):
         print("Fetching tour '" + tour_id + "'...")
@@ -205,7 +205,7 @@ class GpxCompiler:
                     if "front_image" in ref["_embedded"]:
                         if "src" in ref["_embedded"]["front_image"]:
                             image_url = ref["_embedded"]["front_image"]["src"].split(
-                              "?", 1
+                                "?", 1
                             )[0]
 
                     tips = self.api.fetch_highlight_tips(str(ref["id"]))
@@ -238,10 +238,10 @@ class GpxCompiler:
             gpx.description = (
                 gpx.description + f", Grade: {self.tour['difficulty']['grade']}"
             )
-        
+
         gpx.author_name = self.tour["_embedded"]["creator"]["display_name"]
         gpx.author_link = "https://www.komoot.de/user/" + str(
-          self.tour["_embedded"]["creator"]["username"]
+            self.tour["_embedded"]["creator"]["username"]
         )
         gpx.author_link_text = "View " + gpx.author_name + "'s Profile on Komoot"
         gpx.link = "https://www.komoot.de/tour/" + str(self.tour["id"])
@@ -296,6 +296,7 @@ class GpxCompiler:
 
 
 output_dir_contents = set()
+
 
 def usage():
     print("komoot_sync.py [options]")
