@@ -1,4 +1,4 @@
-import React, { lazy, useState, Suspense, useEffect } from 'react';
+import React, { lazy, useState, Suspense, useEffect,useRef } from 'react';
 import {
   BarChart,
   Bar,
@@ -17,7 +17,7 @@ import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
 import RoutePreview from '@/components/RoutePreview';
 import { Activity } from '@/utils/utils';
-
+import VariableSizeList from '../vitualList';
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
   return lazy(() => loadSvgComponent(totalStat, path));
@@ -84,7 +84,6 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   activities = [],
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-
   const handleCardClick = () => {
     if (interval === 'day' && activities.length > 0) {
       setIsFlipped(!isFlipped);
@@ -250,6 +249,8 @@ const ActivityList: React.FC = () => {
   const [interval, setInterval] = useState<IntervalType>('month');
   const [sportType, setSportType] = useState<string>('all');
   const [sportTypeOptions, setSportTypeOptions] = useState<string[]>([]);
+  const [calcGroup,setCalcGroup] = useState([])
+  const [Row,setRow] = useState(null)
 
   useEffect(() => {
     const sportTypeSet = new Set(activities.map((activity) => activity.type));
@@ -269,6 +270,13 @@ const ActivityList: React.FC = () => {
     uniqueSportTypes.unshift('all');
     setSportTypeOptions(uniqueSportTypes);
   }, []);
+
+  // 添加useEffect监听interval变化
+  useEffect(() => {
+    if (interval === 'life' && sportType !== 'all') {
+      setSportType('all');
+    }
+  }, [interval, sportType]);
 
   const navigate = useNavigate();
 
@@ -396,6 +404,103 @@ const ActivityList: React.FC = () => {
   };
 
   const activitiesByInterval = groupActivities(interval, sportType);
+  const finalList = Object.entries(activitiesByInterval)
+  .sort(([a], [b]) => {
+    if (interval === 'day') {
+      return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
+    } else if (interval === 'week') {
+      const [yearA, weekA] = a.split('-W').map(Number);
+      const [yearB, weekB] = b.split('-W').map(Number);
+      return yearB - yearA || weekB - weekA; // Sort by year and week number
+    } else {
+      const [yearA, monthA = 0] = a.split('-').map(Number);
+      const [yearB, monthB = 0] = b.split('-').map(Number);
+      return yearB - yearA || monthB - monthA; // Sort by year and month
+    }
+  })
+    .map(([period, summary]) => (
+      <ActivityCard
+        key={period}
+        period={period}
+        summary={{
+          totalDistance: summary.totalDistance,
+          averageSpeed: summary.totalTime
+            ? summary.totalDistance / (summary.totalTime / 3600)
+            : 0,
+          totalTime: summary.totalTime,
+          count: summary.count,
+          maxDistance: summary.maxDistance,
+          maxSpeed: summary.maxSpeed,
+          location: summary.location,
+          totalElevationGain: SHOW_ELEVATION_GAIN
+            ? summary.totalElevationGain
+            : undefined,
+          averageHeartRate:
+            summary.heartRateCount > 0
+              ? summary.totalHeartRate / summary.heartRateCount
+              : undefined,
+        }}
+        dailyDistances={summary.dailyDistances}
+        interval={interval}
+        activities={interval === 'day' ? summary.activities : undefined}
+      />
+    ))
+  console.log('finalList', finalList);
+  
+  const itemWidth = 280
+  const gap = 20
+  const containerRef = useRef(null);
+  const [itemsPerRow, setItemsPerRow] = useState(0);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    console.log('123container', container);
+   const calculateItemsPerRow = () => {
+      const containerWidth = container.clientWidth;
+      // 计算一行能放多少个（考虑间距）
+     const count = Math.floor((containerWidth + gap) / (itemWidth + gap));
+     console.log('123count', count);
+      setItemsPerRow(count);
+    };
+
+    // 立即计算一次
+    calculateItemsPerRow();
+
+    // 使用ResizeObserver监听容器尺寸变化
+    const resizeObserver = new ResizeObserver(calculateItemsPerRow);
+    resizeObserver.observe(container);
+
+    return () => resizeObserver.disconnect();
+  }, [itemWidth, gap]);
+  useEffect(() => { 
+    if(itemsPerRow<1) return
+    const groupLength = Math.ceil(finalList.length / itemsPerRow);
+    const calc = () => {
+      const calcGroup = []
+      for (let i = 0; i < groupLength; i++) {
+        let curGroup = []
+        finalList.map((item, index) => {
+          if (index <= (i + 1)* itemsPerRow - 1 && index >= i * itemsPerRow) { 
+            curGroup.push(item)
+          }
+        })
+        calcGroup.push(curGroup)
+      }
+      return calcGroup
+    }
+    console.log('123groupLength',groupLength);
+    const calcGroup = calc()
+    setCalcGroup(calcGroup)
+    const Row = ({ index }) => calcGroup[index];
+    setRow(() => Row)
+    debugger
+  }, [itemsPerRow,interval, sportType]);
+  
+
+
+  console.log('calcGroup',calcGroup);
+  
 
   return (
     <div className={styles.activityList}>
@@ -408,7 +513,11 @@ const ActivityList: React.FC = () => {
           value={sportType}
         >
           {sportTypeOptions.map((type) => (
-            <option key={type} value={type}>
+            <option
+              key={type}
+              value={type}
+              disabled={interval === 'life' && type !== 'all'}
+            >
               {type}
             </option>
           ))}
@@ -438,50 +547,18 @@ const ActivityList: React.FC = () => {
           </Suspense>
         </div>
       )}
-
+       
       {interval !== 'life' && (
-        <div className={styles.summaryContainer}>
-          {Object.entries(activitiesByInterval)
-            .sort(([a], [b]) => {
-              if (interval === 'day') {
-                return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
-              } else if (interval === 'week') {
-                const [yearA, weekA] = a.split('-W').map(Number);
-                const [yearB, weekB] = b.split('-W').map(Number);
-                return yearB - yearA || weekB - weekA; // Sort by year and week number
-              } else {
-                const [yearA, monthA = 0] = a.split('-').map(Number);
-                const [yearB, monthB = 0] = b.split('-').map(Number);
-                return yearB - yearA || monthB - monthA; // Sort by year and month
-              }
-            })
-            .map(([period, summary]) => (
-              <ActivityCard
-                key={period}
-                period={period}
-                summary={{
-                  totalDistance: summary.totalDistance,
-                  averageSpeed: summary.totalTime
-                    ? summary.totalDistance / (summary.totalTime / 3600)
-                    : 0,
-                  totalTime: summary.totalTime,
-                  count: summary.count,
-                  maxDistance: summary.maxDistance,
-                  maxSpeed: summary.maxSpeed,
-                  location: summary.location,
-                  totalElevationGain: SHOW_ELEVATION_GAIN
-                    ? summary.totalElevationGain
-                    : undefined,
-                  averageHeartRate:
-                    summary.heartRateCount > 0
-                      ? summary.totalHeartRate / summary.heartRateCount
-                      : undefined,
-                }}
-                dailyDistances={summary.dailyDistances}
-                interval={interval}
-                activities={interval === 'day' ? summary.activities : undefined}
-              />
-            ))}
+        <div className={styles.summaryContainer} ref={containerRef}>
+          <VariableSizeList
+            height="calc(100vh - 86px)"
+            width="100%"
+            itemCount={calcGroup.length}
+            isDynamic
+          >
+          {Row}
+          </VariableSizeList>
+
         </div>
       )}
     </div>
