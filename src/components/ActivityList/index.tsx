@@ -462,7 +462,7 @@ const ActivityList: React.FC = () => {
     [activitiesByInterval, interval]
   );
 
-  console.log('dataList', dataList);
+  // console.log('dataList', dataList);
 
   const itemWidth = 280
   const gap = 20
@@ -472,6 +472,18 @@ const ActivityList: React.FC = () => {
   const [rowHeight, setRowHeight] = useState<number>(360); // will be measured by sampleRef
   const sampleRef = useRef<HTMLDivElement | null>(null);
   const [listHeight, setListHeight] = useState<number>(500);
+
+  // virtual list styles: allow overriding scrollbar styles via rc-virtual-list `styles` prop
+  const virtualListStyles = useMemo(() => ({
+    horizontalScrollBar: {},
+    horizontalScrollBarThumb: {
+      background: 'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
+    },
+    verticalScrollBar: {},
+    verticalScrollBarThumb: {
+      background: 'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
+    },
+  }), []);
 
   const calculateItemsPerRow = useCallback(() => {
     const container = containerRef.current;
@@ -499,7 +511,7 @@ const ActivityList: React.FC = () => {
   useEffect(() => {
     const updateListHeight = () => {
       const filterH = filterRef.current?.clientHeight || 0;
-      const h = Math.max(100, window.innerHeight - filterH); // ensure some minimum
+      const h = Math.max(100, window.innerHeight - filterH - 40); // ensure some minimum
       setListHeight(h);
     };
 
@@ -548,8 +560,8 @@ const ActivityList: React.FC = () => {
 
 
 
-  console.log('calcGroup', calcGroup);
-  console.log('itemsPerRow', itemsPerRow)
+  // console.log('calcGroup', calcGroup);
+  // console.log('itemsPerRow', itemsPerRow)
   return (
     <div className={styles.activityList}>
       <div className={styles.filterContainer} ref={filterRef}>
@@ -641,6 +653,7 @@ const ActivityList: React.FC = () => {
             height={listHeight}
             itemHeight={rowHeight}
             itemKey={(row, idx) => row[0]?.period ?? idx}
+            styles={virtualListStyles}
           >
             {(row) => (
               <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0' }}>
