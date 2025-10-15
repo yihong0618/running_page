@@ -1,4 +1,4 @@
-import React, { lazy, useState, Suspense, useEffect,useRef } from 'react';
+import React, { lazy, useState, Suspense, useEffect, useRef } from 'react';
 import {
   BarChart,
   Bar,
@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
+import VirtualList from 'rc-virtual-list';
 import { useNavigate } from 'react-router-dom';
 import activities from '@/static/activities.json';
 import styles from './style.module.css';
@@ -249,8 +250,8 @@ const ActivityList: React.FC = () => {
   const [interval, setInterval] = useState<IntervalType>('month');
   const [sportType, setSportType] = useState<string>('all');
   const [sportTypeOptions, setSportTypeOptions] = useState<string[]>([]);
-  const [calcGroup,setCalcGroup] = useState([])
-  const [Row,setRow] = useState(null)
+  const [calcGroup, setCalcGroup] = useState([])
+  const [Row, setRow] = useState(null)
 
   useEffect(() => {
     const sportTypeSet = new Set(activities.map((activity) => activity.type));
@@ -404,63 +405,42 @@ const ActivityList: React.FC = () => {
   };
 
   const activitiesByInterval = groupActivities(interval, sportType);
-  const finalList = Object.entries(activitiesByInterval)
-  .sort(([a], [b]) => {
-    if (interval === 'day') {
-      return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
-    } else if (interval === 'week') {
-      const [yearA, weekA] = a.split('-W').map(Number);
-      const [yearB, weekB] = b.split('-W').map(Number);
-      return yearB - yearA || weekB - weekA; // Sort by year and week number
-    } else {
-      const [yearA, monthA = 0] = a.split('-').map(Number);
-      const [yearB, monthB = 0] = b.split('-').map(Number);
-      return yearB - yearA || monthB - monthA; // Sort by year and month
-    }
-  })
-    .map(([period, summary]) => (
-      <ActivityCard
-        key={period}
-        period={period}
-        summary={{
-          totalDistance: summary.totalDistance,
-          averageSpeed: summary.totalTime
-            ? summary.totalDistance / (summary.totalTime / 3600)
-            : 0,
-          totalTime: summary.totalTime,
-          count: summary.count,
-          maxDistance: summary.maxDistance,
-          maxSpeed: summary.maxSpeed,
-          location: summary.location,
-          totalElevationGain: SHOW_ELEVATION_GAIN
-            ? summary.totalElevationGain
-            : undefined,
-          averageHeartRate:
-            summary.heartRateCount > 0
-              ? summary.totalHeartRate / summary.heartRateCount
-              : undefined,
-        }}
-        dailyDistances={summary.dailyDistances}
-        interval={interval}
-        activities={interval === 'day' ? summary.activities : undefined}
-      />
-    ))
-  console.log('finalList', finalList);
-  
+  // Build a pure data list (not JSX) so we can group into rows for VirtualList
+  const dataList = Object.entries(activitiesByInterval)
+    .sort(([a], [b]) => {
+      if (interval === 'day') {
+        return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
+      } else if (interval === 'week') {
+        const [yearA, weekA] = a.split('-W').map(Number);
+        const [yearB, weekB] = b.split('-W').map(Number);
+        return yearB - yearA || weekB - weekA; // Sort by year and week number
+      } else {
+        const [yearA, monthA = 0] = a.split('-').map(Number);
+        const [yearB, monthB = 0] = b.split('-').map(Number);
+        return yearB - yearA || monthB - monthA; // Sort by year and month
+      }
+    })
+    .map(([period, summary]) => ({ period, summary }));
+
+  console.log('dataList', dataList);
+
   const itemWidth = 280
   const gap = 20
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const filterRef = useRef<HTMLDivElement | null>(null);
   const [itemsPerRow, setItemsPerRow] = useState(0);
+  const rowHeight = 360; // approximate row height (adjust if needed)
+  const [listHeight, setListHeight] = useState<number>(500);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
     console.log('123container', container);
-   const calculateItemsPerRow = () => {
+    const calculateItemsPerRow = () => {
       const containerWidth = container.clientWidth;
       // 计算一行能放多少个（考虑间距）
-     const count = Math.floor((containerWidth + gap) / (itemWidth + gap));
-     console.log('123count', count);
+      const count = Math.floor((containerWidth + gap) / (itemWidth + gap));
+      console.log('123count', count);
       setItemsPerRow(count);
     };
 
@@ -473,38 +453,58 @@ const ActivityList: React.FC = () => {
 
     return () => resizeObserver.disconnect();
   }, [itemWidth, gap]);
-  useEffect(() => { 
-    if(itemsPerRow<1) return
-    const groupLength = Math.ceil(finalList.length / itemsPerRow);
+
+  // compute list height = viewport height - filter container height
+  useEffect(() => {
+    const updateListHeight = () => {
+      const filterH = filterRef.current?.clientHeight || 0;
+      const h = Math.max(100, window.innerHeight - filterH); // ensure some minimum
+      setListHeight(h);
+    };
+
+    // initial
+    updateListHeight();
+
+    // window resize
+    window.addEventListener('resize', updateListHeight);
+
+    // observe filter size changes
+    const ro = new ResizeObserver(updateListHeight);
+    if (filterRef.current) ro.observe(filterRef.current);
+
+    return () => {
+      window.removeEventListener('resize', updateListHeight);
+      ro.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    if (itemsPerRow < 1) return
+    const groupLength = Math.ceil(dataList.length / itemsPerRow);
     const calc = () => {
-      const calcGroup = []
+      const calcGroup: Array<any> = []
       for (let i = 0; i < groupLength; i++) {
-        let curGroup = []
-        finalList.map((item, index) => {
-          if (index <= (i + 1)* itemsPerRow - 1 && index >= i * itemsPerRow) { 
-            curGroup.push(item)
-          }
-        })
-        calcGroup.push(curGroup)
+        const start = i * itemsPerRow;
+        const end = start + itemsPerRow;
+        const curGroup = dataList.slice(start, end);
+        calcGroup.push(curGroup);
       }
       return calcGroup
     }
-    console.log('123groupLength',groupLength);
-    const calcGroup = calc()
-    setCalcGroup(calcGroup)
-    const Row = ({ index }) => calcGroup[index];
+    console.log('123groupLength', groupLength);
+    const calcGroupRows = calc()
+    setCalcGroup(calcGroupRows)
+    const Row = ({ index }) => calcGroupRows[index];
     setRow(() => Row)
     debugger
-  }, [itemsPerRow,interval, sportType]);
-  
+  }, [itemsPerRow, interval, sportType]);
 
 
-  console.log('calcGroup',calcGroup);
-  
 
+  console.log('calcGroup', calcGroup);
+  console.log('itemsPerRow', itemsPerRow)
   return (
     <div className={styles.activityList}>
-      <div className={styles.filterContainer}>
+      <div className={styles.filterContainer} ref={filterRef}>
         <button className={styles.smallHomeButton} onClick={handleHomeClick}>
           {HOME_PAGE_TITLE}
         </button>
@@ -547,18 +547,55 @@ const ActivityList: React.FC = () => {
           </Suspense>
         </div>
       )}
-       
+
       {interval !== 'life' && (
         <div className={styles.summaryContainer} ref={containerRef}>
-          <VariableSizeList
+          {/* <VariableSizeList
             height="calc(100vh - 86px)"
             width="100%"
             itemCount={calcGroup.length}
             isDynamic
           >
           {Row}
-          </VariableSizeList>
-
+          </VariableSizeList> */}
+          <VirtualList
+            data={calcGroup}
+            height={listHeight}
+            itemHeight={rowHeight}
+            itemKey={(row, idx) => row[0]?.period ?? idx}
+          >
+            {(row) => (
+              <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0' }}>
+                {row.map((cardData) => (
+                  <ActivityCard
+                    key={cardData.period}
+                    period={cardData.period}
+                    summary={{
+                      totalDistance: cardData.summary.totalDistance,
+                      averageSpeed: cardData.summary.totalTime
+                        ? cardData.summary.totalDistance / (cardData.summary.totalTime / 3600)
+                        : 0,
+                      totalTime: cardData.summary.totalTime,
+                      count: cardData.summary.count,
+                      maxDistance: cardData.summary.maxDistance,
+                      maxSpeed: cardData.summary.maxSpeed,
+                      location: cardData.summary.location,
+                      totalElevationGain: SHOW_ELEVATION_GAIN
+                        ? cardData.summary.totalElevationGain
+                        : undefined,
+                      averageHeartRate:
+                        cardData.summary.heartRateCount > 0
+                          ? cardData.summary.totalHeartRate / cardData.summary.heartRateCount
+                          : undefined,
+                    }}
+                    dailyDistances={cardData.summary.dailyDistances}
+                    interval={interval}
+                    activities={interval === 'day' ? cardData.summary.activities : undefined}
+                  />
+                ))}
+              </div>
+            )}
+          </VirtualList>
         </div>
       )}
     </div>
