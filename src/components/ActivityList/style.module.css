@@ -170,3 +170,14 @@
   display: flex;
   justify-content: center;
 }
+
+/* Inner wrapper to center the virtual list rows and constrain width */
+.summaryInner {
+  display: flex;
+  justify-content: center;
+  /* center the inner fixed-width content */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+  /* small horizontal padding on narrow screens */
+}

@@ -558,6 +558,13 @@ const ActivityList: React.FC = () => {
     return arr;
   }, [dataList, itemsPerRow]);
 
+  // compute a row width so we can center the VirtualList and keep cards left-aligned inside
+  const rowWidth = useMemo(() => {
+    if (itemsPerRow < 1) return '100%';
+    const w = itemsPerRow * itemWidth + Math.max(0, itemsPerRow - 1) * gap;
+    return `${w}px`;
+  }, [itemsPerRow, itemWidth, gap]);
+
 
 
   // console.log('calcGroup', calcGroup);
@@ -648,45 +655,49 @@ const ActivityList: React.FC = () => {
           >
           {Row}
           </VariableSizeList> */}
-          <VirtualList
-            data={calcGroup}
-            height={listHeight}
-            itemHeight={rowHeight}
-            itemKey={(row, idx) => row[0]?.period ?? idx}
-            styles={virtualListStyles}
-          >
-            {(row) => (
-              <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0' }}>
-                {row.map((cardData) => (
-                  <ActivityCard
-                    key={cardData.period}
-                    period={cardData.period}
-                    summary={{
-                      totalDistance: cardData.summary.totalDistance,
-                      averageSpeed: cardData.summary.totalTime
-                        ? cardData.summary.totalDistance / (cardData.summary.totalTime / 3600)
-                        : 0,
-                      totalTime: cardData.summary.totalTime,
-                      count: cardData.summary.count,
-                      maxDistance: cardData.summary.maxDistance,
-                      maxSpeed: cardData.summary.maxSpeed,
-                      location: cardData.summary.location,
-                      totalElevationGain: SHOW_ELEVATION_GAIN
-                        ? cardData.summary.totalElevationGain
-                        : undefined,
-                      averageHeartRate:
-                        cardData.summary.heartRateCount > 0
-                          ? cardData.summary.totalHeartRate / cardData.summary.heartRateCount
-                          : undefined,
-                    }}
-                    dailyDistances={cardData.summary.dailyDistances}
-                    interval={interval}
-                    activities={interval === 'day' ? cardData.summary.activities : undefined}
-                  />
-                ))}
-              </div>
-            )}
-          </VirtualList>
+          <div className={styles.summaryInner}>
+            <div style={{ width: rowWidth }}>
+              <VirtualList
+                data={calcGroup}
+                height={listHeight}
+                itemHeight={rowHeight}
+                itemKey={(row, idx) => row[0]?.period ?? idx}
+                styles={virtualListStyles}
+              >
+                {(row) => (
+                  <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0', justifyContent: 'flex-start' }}>
+                    {row.map((cardData) => (
+                      <ActivityCard
+                        key={cardData.period}
+                        period={cardData.period}
+                        summary={{
+                          totalDistance: cardData.summary.totalDistance,
+                          averageSpeed: cardData.summary.totalTime
+                            ? cardData.summary.totalDistance / (cardData.summary.totalTime / 3600)
+                            : 0,
+                          totalTime: cardData.summary.totalTime,
+                          count: cardData.summary.count,
+                          maxDistance: cardData.summary.maxDistance,
+                          maxSpeed: cardData.summary.maxSpeed,
+                          location: cardData.summary.location,
+                          totalElevationGain: SHOW_ELEVATION_GAIN
+                            ? cardData.summary.totalElevationGain
+                            : undefined,
+                          averageHeartRate:
+                            cardData.summary.heartRateCount > 0
+                              ? cardData.summary.totalHeartRate / cardData.summary.heartRateCount
+                              : undefined,
+                        }}
+                        dailyDistances={cardData.summary.dailyDistances}
+                        interval={interval}
+                        activities={interval === 'day' ? cardData.summary.activities : undefined}
+                      />
+                    ))}
+                  </div>
+                )}
+              </VirtualList>
+            </div>
+          </div>
         </div>
       )}
     </div>
