@@ -665,7 +665,7 @@ const ActivityList: React.FC = () => {
                 styles={virtualListStyles}
               >
                 {(row) => (
-                  <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0', justifyContent: 'flex-start' }}>
+                  <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0', justifyContent: 'flex-start', paddingRight: '12px' }}>
                     {row.map((cardData) => (
                       <ActivityCard
                         key={cardData.period}
