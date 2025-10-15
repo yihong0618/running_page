@@ -18,7 +18,7 @@ import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
 import RoutePreview from '@/components/RoutePreview';
 import { Activity } from '@/utils/utils';
-import VariableSizeList from '../vitualList';
+// import VariableSizeList from '../vitualList';
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
   return lazy(() => loadSvgComponent(totalStat, path));
@@ -429,7 +429,8 @@ const ActivityList: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const filterRef = useRef<HTMLDivElement | null>(null);
   const [itemsPerRow, setItemsPerRow] = useState(0);
-  const rowHeight = 360; // approximate row height (adjust if needed)
+  const [rowHeight, setRowHeight] = useState<number>(360); // will be measured by sampleRef
+  const sampleRef = useRef<HTMLDivElement | null>(null);
   const [listHeight, setListHeight] = useState<number>(500);
 
   useEffect(() => {
@@ -477,6 +478,21 @@ const ActivityList: React.FC = () => {
       ro.disconnect();
     };
   }, []);
+
+  // measure representative card height using a hidden sample and ResizeObserver
+  useEffect(() => {
+    const el = sampleRef.current;
+    if (!el) return;
+    const update = () => {
+      const h = el.offsetHeight;
+      if (h && h !== rowHeight) setRowHeight(h);
+    };
+    // initial
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [dataList, rowHeight]);
   useEffect(() => {
     if (itemsPerRow < 1) return
     const groupLength = Math.ceil(dataList.length / itemsPerRow);
@@ -550,6 +566,36 @@ const ActivityList: React.FC = () => {
 
       {interval !== 'life' && (
         <div className={styles.summaryContainer} ref={containerRef}>
+          {/* hidden sample card for measuring row height */}
+          <div style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none', height: 'auto' }} ref={sampleRef}>
+            {dataList[0] && (
+              <ActivityCard
+                key={dataList[0].period}
+                period={dataList[0].period}
+                summary={{
+                  totalDistance: dataList[0].summary.totalDistance,
+                  averageSpeed: dataList[0].summary.totalTime
+                    ? dataList[0].summary.totalDistance / (dataList[0].summary.totalTime / 3600)
+                    : 0,
+                  totalTime: dataList[0].summary.totalTime,
+                  count: dataList[0].summary.count,
+                  maxDistance: dataList[0].summary.maxDistance,
+                  maxSpeed: dataList[0].summary.maxSpeed,
+                  location: dataList[0].summary.location,
+                  totalElevationGain: SHOW_ELEVATION_GAIN
+                    ? dataList[0].summary.totalElevationGain
+                    : undefined,
+                  averageHeartRate:
+                    dataList[0].summary.heartRateCount > 0
+                      ? dataList[0].summary.totalHeartRate / dataList[0].summary.heartRateCount
+                      : undefined,
+                }}
+                dailyDistances={dataList[0].summary.dailyDistances}
+                interval={interval}
+                activities={interval === 'day' ? dataList[0].summary.activities : undefined}
+              />
+            )}
+          </div>
           {/* <VariableSizeList
             height="calc(100vh - 86px)"
             width="100%"
