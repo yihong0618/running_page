@@ -285,7 +285,8 @@ def tcx_job(run_data):
         for own_step in own_steps:
             [single_time, single_step] = own_step[0:2]
             # firstly, convert 2025-09-16 20:08:00 to 2025-09-16T20:08:00
-            single_time = single_time.replace(" ", "T")
+            # also,    convert 2015-09-16+20:08:00 to 2015-09-16T20:08:00
+            single_time = single_time.replace(" ", "T").replace("+", "T")
             # move to UTC
             utc = adjust_time_to_utc(to_date(single_time), str(get_localzone()))
             time_stamp = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -296,7 +297,7 @@ def tcx_job(run_data):
             fit_steps[unix_time] = int(single_step)
 
     # get single track point
-    if len(own_points) > 0:
+    if own_points:
         for point in own_points:
             time_stamp = point.get("time_stamp")
             latitude = point.get("latitude")
