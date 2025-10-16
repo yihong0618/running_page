@@ -512,7 +512,7 @@ const ActivityList: React.FC = () => {
     const container = containerRef.current;
     if (!container) return;
     const containerWidth = container.clientWidth;
-    // 计算一行能放多少个（考虑间距）
+    // Calculate how many items can fit in one row (considering gaps)
     const count = Math.floor((containerWidth + gap) / (itemWidth + gap));
     setItemsPerRow(count);
   }, [gap, itemWidth]);
@@ -520,10 +520,10 @@ const ActivityList: React.FC = () => {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    // 立即计算一次
+    // Calculate immediately once
     calculateItemsPerRow();
 
-    // 使用ResizeObserver监听容器尺寸变化
+    // Use ResizeObserver to monitor container size changes
     const resizeObserver = new ResizeObserver(calculateItemsPerRow);
     resizeObserver.observe(container);
 
