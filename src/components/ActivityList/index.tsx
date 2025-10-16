@@ -20,7 +20,7 @@ import VirtualList from 'rc-virtual-list';
 import { useNavigate } from 'react-router-dom';
 import activities from '@/static/activities.json';
 import styles from './style.module.css';
-import { ACTIVITY_TOTAL } from '@/utils/const';
+import { ACTIVITY_TOTAL, LOADING_TEXT } from '@/utils/const';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
@@ -757,7 +757,7 @@ const ActivityList: React.FC = () => {
                       color: 'var(--color-run-table-thead)',
                     }}
                   >
-                    加载中...
+                    {LOADING_TEXT}
                   </div>
                 </div>
               ) : (
