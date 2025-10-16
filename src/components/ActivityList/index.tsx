@@ -625,7 +625,7 @@ const ActivityList: React.FC = () => {
   const calcGroup: RowGroup[] = useMemo(() => {
     if (itemsPerRow < 1) return [];
     const groupLength = Math.ceil(dataList.length / itemsPerRow);
-    const arr: Array<any> = [];
+    const arr: RowGroup[] = [];
     for (let i = 0; i < groupLength; i++) {
       const start = i * itemsPerRow;
       arr.push(dataList.slice(start, start + itemsPerRow));
