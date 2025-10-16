@@ -76,6 +76,9 @@ interface ActivityGroups {
 
 type IntervalType = 'year' | 'month' | 'week' | 'day' | 'life';
 
+// A row group contains multiple activity card data items that will be rendered in one virtualized row
+type RowGroup = Array<{ period: string; summary: ActivitySummary }>;
+
 const ActivityCardInner: React.FC<ActivityCardProps> = ({
   period,
   summary,
@@ -546,7 +549,7 @@ const ActivityList: React.FC = () => {
   }, [dataList, rowHeight]);
 
   // group into rows for rendering (memoized)
-  const calcGroup = useMemo(() => {
+  const calcGroup: RowGroup[] = useMemo(() => {
     if (itemsPerRow < 1) return [];
     const groupLength = Math.ceil(dataList.length / itemsPerRow);
     const arr: Array<any> = [];
@@ -563,6 +566,9 @@ const ActivityList: React.FC = () => {
     const w = itemsPerRow * itemWidth + Math.max(0, itemsPerRow - 1) * gap;
     return `${w}px`;
   }, [itemsPerRow, itemWidth, gap]);
+
+  // Loading state: true until we have measured itemsPerRow and rowHeight
+  const loading = useMemo(() => itemsPerRow < 1 || !rowHeight || rowHeight === 0, [itemsPerRow, rowHeight]);
 
 
 
@@ -648,45 +654,63 @@ const ActivityList: React.FC = () => {
           </div>
           <div className={styles.summaryInner}>
             <div style={{ width: rowWidth }}>
-              <VirtualList
-                data={calcGroup}
-                height={listHeight}
-                itemHeight={rowHeight}
-                itemKey={(row, idx) => row[0]?.period ?? idx}
-                styles={virtualListStyles}
-              >
-                {(row) => (
-                  <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0', justifyContent: 'flex-start', paddingRight: '12px' }}>
-                    {row.map((cardData) => (
-                      <ActivityCard
-                        key={cardData.period}
-                        period={cardData.period}
-                        summary={{
-                          totalDistance: cardData.summary.totalDistance,
-                          averageSpeed: cardData.summary.totalTime
-                            ? cardData.summary.totalDistance / (cardData.summary.totalTime / 3600)
-                            : 0,
-                          totalTime: cardData.summary.totalTime,
-                          count: cardData.summary.count,
-                          maxDistance: cardData.summary.maxDistance,
-                          maxSpeed: cardData.summary.maxSpeed,
-                          location: cardData.summary.location,
-                          totalElevationGain: SHOW_ELEVATION_GAIN
-                            ? cardData.summary.totalElevationGain
-                            : undefined,
-                          averageHeartRate:
-                            cardData.summary.heartRateCount > 0
-                              ? cardData.summary.totalHeartRate / cardData.summary.heartRateCount
+              {loading ? (
+                // Use full viewport height (or viewport minus filter height if available) to avoid flicker
+                <div
+                  style={{
+                    height: filterRef.current
+                      ? `${Math.max(100, window.innerHeight - (filterRef.current.clientHeight || 0) - 40)}px`
+                      : '100vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ padding: 20, color: 'var(--color-run-table-thead)' }}>加载中...</div>
+                </div>
+              ) : (
+                <VirtualList
+                  data={calcGroup}
+                  height={listHeight}
+                  itemHeight={rowHeight}
+                  // rc-virtual-list expects itemKey to be either a Key or a function that maps the item to a Key.
+                  // Provide a single-argument function and avoid using the index parameter to satisfy TypeScript.
+                  itemKey={(row: RowGroup) => row[0]?.period ?? ''}
+                  styles={virtualListStyles}
+                >
+                  {(row: RowGroup) => (
+                    <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0', justifyContent: 'flex-start', paddingRight: '12px' }}>
+                      {row.map((cardData: { period: string; summary: ActivitySummary }) => (
+                        <ActivityCard
+                          key={cardData.period}
+                          period={cardData.period}
+                          summary={{
+                            totalDistance: cardData.summary.totalDistance,
+                            averageSpeed: cardData.summary.totalTime
+                              ? cardData.summary.totalDistance / (cardData.summary.totalTime / 3600)
+                              : 0,
+                            totalTime: cardData.summary.totalTime,
+                            count: cardData.summary.count,
+                            maxDistance: cardData.summary.maxDistance,
+                            maxSpeed: cardData.summary.maxSpeed,
+                            location: cardData.summary.location,
+                            totalElevationGain: SHOW_ELEVATION_GAIN
+                              ? cardData.summary.totalElevationGain
                               : undefined,
-                        }}
-                        dailyDistances={cardData.summary.dailyDistances}
-                        interval={interval}
-                        activities={interval === 'day' ? cardData.summary.activities : undefined}
-                      />
-                    ))}
-                  </div>
-                )}
-              </VirtualList>
+                            averageHeartRate:
+                              cardData.summary.heartRateCount > 0
+                                ? cardData.summary.totalHeartRate / cardData.summary.heartRateCount
+                                : undefined,
+                          }}
+                          dailyDistances={cardData.summary.dailyDistances}
+                          interval={interval}
+                          activities={interval === 'day' ? cardData.summary.activities : undefined}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </VirtualList>
+              )}
             </div>
           </div>
         </div>
