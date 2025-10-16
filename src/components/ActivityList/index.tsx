@@ -444,7 +444,6 @@ const ActivityList: React.FC = () => {
     [groupActivities, interval, sportType]
   );
 
-  // Build a pure data list (not JSX) so we can group into rows for VirtualList
   const dataList = useMemo(() =>
     Object.entries(activitiesByInterval)
       .sort(([a], [b]) => {
@@ -464,18 +463,16 @@ const ActivityList: React.FC = () => {
     [activitiesByInterval, interval]
   );
 
-  // console.log('dataList', dataList);
 
   const itemWidth = 280
   const gap = 20
   const containerRef = useRef<HTMLDivElement | null>(null);
   const filterRef = useRef<HTMLDivElement | null>(null);
   const [itemsPerRow, setItemsPerRow] = useState(0);
-  const [rowHeight, setRowHeight] = useState<number>(360); // will be measured by sampleRef
+  const [rowHeight, setRowHeight] = useState<number>(360);
   const sampleRef = useRef<HTMLDivElement | null>(null);
   const [listHeight, setListHeight] = useState<number>(500);
 
-  // virtual list styles: allow overriding scrollbar styles via rc-virtual-list `styles` prop
   const virtualListStyles = useMemo(() => ({
     horizontalScrollBar: {},
     horizontalScrollBarThumb: {
@@ -513,7 +510,26 @@ const ActivityList: React.FC = () => {
   useEffect(() => {
     const updateListHeight = () => {
       const filterH = filterRef.current?.clientHeight || 0;
-      const h = Math.max(100, window.innerHeight - filterH - 40); // ensure some minimum
+      const containerEl = containerRef.current;
+      let topOffset = 0;
+      if (containerEl) {
+        const rect = containerEl.getBoundingClientRect();
+        topOffset = Math.max(0, rect.top);
+      }
+      const base = topOffset || filterH || 0;
+      // Try to compute a dynamic bottom padding by checking the container's parent element's bottom
+      let bottomPadding = 16; // fallback
+      if (containerEl && containerEl.parentElement) {
+        try {
+          const parentRect = containerEl.parentElement.getBoundingClientRect();
+          const containerRect = containerEl.getBoundingClientRect();
+          const distanceToParentBottom = Math.max(0, parentRect.bottom - containerRect.bottom);
+          // Use a small fraction of that distance (or clamp) to avoid huge paddings
+          bottomPadding = Math.min(48, Math.max(8, Math.round(distanceToParentBottom / 4)));
+        } catch (e) {
+        }
+      }
+      const h = Math.max(100, window.innerHeight - base - bottomPadding);
       setListHeight(h);
     };
 
@@ -673,8 +689,6 @@ const ActivityList: React.FC = () => {
                   data={calcGroup}
                   height={listHeight}
                   itemHeight={rowHeight}
-                  // rc-virtual-list expects itemKey to be either a Key or a function that maps the item to a Key.
-                  // Provide a single-argument function and avoid using the index parameter to satisfy TypeScript.
                   itemKey={(row: RowGroup) => row[0]?.period ?? ''}
                   styles={virtualListStyles}
                 >
