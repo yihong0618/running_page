@@ -180,9 +180,18 @@
 }
 
 /* Prevent content from sitting flush against the custom scrollbar. The inner wrapper (direct child) gets right padding. */
-.summaryInner > div {
+.summaryInner>div {
   padding-right: 16px;
   box-sizing: content-box;
+}
+
+/* Row container used by VirtualList rows */
+.rowContainer {
+  display: flex;
+  padding: 10px 0;
+  justify-content: flex-start;
+  padding-right: 12px;
+  box-sizing: border-box;
 }
 
 /* rc-virtual-list view and body panes: ensure there's a little inner spacing so content doesn't overlap scrollbar */

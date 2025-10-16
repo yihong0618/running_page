@@ -772,13 +772,8 @@ const ActivityList: React.FC = () => {
                   {(row: RowGroup) => (
                     <div
                       ref={virtualListRef}
-                      style={{
-                        display: 'flex',
-                        gap: `${gap}px`,
-                        padding: '10px 0',
-                        justifyContent: 'flex-start',
-                        paddingRight: '12px',
-                      }}
+                      className={styles.rowContainer}
+                      style={{ gap: `${gap}px` }}
                     >
                       {row.map(
                         (cardData: {
