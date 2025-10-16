@@ -518,7 +518,9 @@ const ActivityList: React.FC = () => {
       if (el) {
         try {
           el.scrollTop = 0;
-        } catch (e) { }
+        } catch (e) {
+          console.error(e);
+        }
       }
     };
 
@@ -554,6 +556,7 @@ const ActivityList: React.FC = () => {
           // Use a small fraction of that distance (or clamp) to avoid huge paddings
           bottomPadding = Math.min(48, Math.max(8, Math.round(distanceToParentBottom / 4)));
         } catch (e) {
+          console.error(e);
         }
       }
       const h = Math.max(100, window.innerHeight - base - bottomPadding);
