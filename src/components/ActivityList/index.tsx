@@ -29,6 +29,17 @@ import { Activity } from '@/utils/utils';
 // Layout constants (avoid magic numbers)
 const ITEM_WIDTH = 280;
 const ITEM_GAP = 20;
+
+const VIRTUAL_LIST_STYLES = {
+  horizontalScrollBar: {},
+  horizontalScrollBarThumb: {
+    background: 'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
+  },
+  verticalScrollBar: {},
+  verticalScrollBarThumb: {
+    background: 'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
+  },
+};
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
   return lazy(() => loadSvgComponent(totalStat, path));
@@ -331,134 +342,95 @@ const ActivityList: React.FC = () => {
     navigate('/');
   };
 
-  const toggleInterval = useCallback((newInterval: IntervalType): void => {
+  function toggleInterval(newInterval: IntervalType): void {
     setInterval(newInterval);
-  }, []);
+  }
 
-  const convertTimeToSeconds = useCallback((time: string): number => {
+  function convertTimeToSeconds(time: string): number {
     const [hours, minutes, seconds] = time.split(':').map(Number);
     return hours * 3600 + minutes * 60 + seconds;
-  }, []);
+  }
 
-  const groupActivities = useCallback(
-    (interval: IntervalType, sportType: string): ActivityGroups => {
-      return (activities as Activity[])
-        .filter((activity) => {
-          if (sportType === 'all') {
-            return true;
+  function groupActivitiesFn(intervalArg: IntervalType, sportTypeArg: string): ActivityGroups {
+    return (activities as Activity[])
+      .filter((activity) => {
+        if (sportTypeArg === 'all') return true;
+        if (sportTypeArg === 'running') return activity.type === 'running' || activity.type === 'Run';
+        if (sportTypeArg === 'walking') return activity.type === 'walking' || activity.type === 'Walk';
+        if (sportTypeArg === 'cycling') return activity.type === 'cycling' || activity.type === 'Ride';
+        return activity.type === sportTypeArg;
+      })
+      .reduce((acc: ActivityGroups, activity) => {
+        const date = new Date(activity.start_date_local);
+        let key: string;
+        let index: number;
+        switch (intervalArg) {
+          case 'year':
+            key = date.getFullYear().toString();
+            index = date.getMonth();
+            break;
+          case 'month':
+            key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+            index = date.getDate() - 1;
+            break;
+          case 'week': {
+            const currentDate = new Date(date.valueOf());
+            currentDate.setDate(currentDate.getDate() + 4 - (currentDate.getDay() || 7));
+            const yearStart = new Date(currentDate.getFullYear(), 0, 1);
+            const weekNum = Math.ceil(((currentDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+            key = `${currentDate.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
+            index = (date.getDay() + 6) % 7;
+            break;
           }
-          if (sportType === 'running') {
-            return activity.type === 'running' || activity.type === 'Run';
-          }
-          if (sportType === 'walking') {
-            return activity.type === 'walking' || activity.type === 'Walk';
-          }
-          if (sportType === 'cycling') {
-            return activity.type === 'cycling' || activity.type === 'Ride';
-          }
-          return activity.type === sportType;
-        })
-        .reduce((acc: ActivityGroups, activity) => {
-          const date = new Date(activity.start_date_local);
-          let key: string;
-          let index: number;
-          switch (interval) {
-            case 'year':
-              key = date.getFullYear().toString();
-              index = date.getMonth(); // Return current month (0-11)
-              break;
-            case 'month':
-              key = `${date.getFullYear()}-${(date.getMonth() + 1)
-                .toString()
-                .padStart(2, '0')}`; // Zero padding
-              index = date.getDate() - 1; // Return current day (0-30)
-              break;
-            case 'week': {
-              const currentDate = new Date(date.valueOf());
-              currentDate.setDate(
-                currentDate.getDate() + 4 - (currentDate.getDay() || 7)
-              ); // Set to nearest Thursday (ISO weeks defined by Thursday)
-              const yearStart = new Date(currentDate.getFullYear(), 0, 1);
-              const weekNum = Math.ceil(
-                ((currentDate.getTime() - yearStart.getTime()) / 86400000 + 1) /
-                7
-              );
-              key = `${currentDate.getFullYear()}-W${weekNum
-                .toString()
-                .padStart(2, '0')}`;
-              index = (date.getDay() + 6) % 7; // Return current day (0-6, Monday-Sunday)
-              break;
-            }
-            case 'day':
-              key = date.toLocaleDateString('zh').replaceAll('/', '-'); // Format date as YYYY-MM-DD
-              index = 0; // Return 0
-              break;
-            default:
-              key = date.getFullYear().toString();
-              index = 0; // Default return 0
-          }
+          case 'day':
+            key = date.toLocaleDateString('zh').replaceAll('/', '-');
+            index = 0;
+            break;
+          default:
+            key = date.getFullYear().toString();
+            index = 0;
+        }
 
-          if (!acc[key])
-            acc[key] = {
-              totalDistance: 0,
-              totalTime: 0,
-              totalElevationGain: 0,
-              count: 0,
-              dailyDistances: [],
-              maxDistance: 0,
-              maxSpeed: 0,
-              location: '',
-              totalHeartRate: 0,
-              heartRateCount: 0,
-              activities: [],
-            };
+        if (!acc[key]) acc[key] = {
+          totalDistance: 0,
+          totalTime: 0,
+          totalElevationGain: 0,
+          count: 0,
+          dailyDistances: [],
+          maxDistance: 0,
+          maxSpeed: 0,
+          location: '',
+          totalHeartRate: 0,
+          heartRateCount: 0,
+          activities: [],
+        };
 
-          const distanceKm = activity.distance / 1000; // Convert to kilometers
-          const timeInSeconds = convertTimeToSeconds(activity.moving_time);
-          const speedKmh =
-            timeInSeconds > 0 ? distanceKm / (timeInSeconds / 3600) : 0;
+        const distanceKm = activity.distance / 1000;
+        const timeInSeconds = convertTimeToSeconds(activity.moving_time);
+        const speedKmh = timeInSeconds > 0 ? distanceKm / (timeInSeconds / 3600) : 0;
 
-          acc[key].totalDistance += distanceKm;
-          acc[key].totalTime += timeInSeconds;
+        acc[key].totalDistance += distanceKm;
+        acc[key].totalTime += timeInSeconds;
 
-          if (SHOW_ELEVATION_GAIN && activity.elevation_gain) {
-            acc[key].totalElevationGain += activity.elevation_gain;
-          }
+        if (SHOW_ELEVATION_GAIN && activity.elevation_gain) acc[key].totalElevationGain += activity.elevation_gain;
 
-          // Heart rate statistics
-          if (activity.average_heartrate) {
-            acc[key].totalHeartRate += activity.average_heartrate;
-            acc[key].heartRateCount += 1;
-          }
+        if (activity.average_heartrate) {
+          acc[key].totalHeartRate += activity.average_heartrate;
+          acc[key].heartRateCount += 1;
+        }
 
-          acc[key].count += 1;
+        acc[key].count += 1;
+        if (intervalArg === 'day') acc[key].activities.push(activity);
+        acc[key].dailyDistances[index] = (acc[key].dailyDistances[index] || 0) + distanceKm;
+        if (distanceKm > acc[key].maxDistance) acc[key].maxDistance = distanceKm;
+        if (speedKmh > acc[key].maxSpeed) acc[key].maxSpeed = speedKmh;
+        if (intervalArg === 'day') acc[key].location = activity.location_country || '';
 
-          // Store activity for day interval (for route display)
-          if (interval === 'day') {
-            acc[key].activities.push(activity);
-          }
+        return acc;
+      }, {} as ActivityGroups);
+  }
 
-          // Accumulate daily distances
-          acc[key].dailyDistances[index] =
-            (acc[key].dailyDistances[index] || 0) + distanceKm;
-
-          if (distanceKm > acc[key].maxDistance)
-            acc[key].maxDistance = distanceKm;
-          if (speedKmh > acc[key].maxSpeed) acc[key].maxSpeed = speedKmh;
-
-          if (interval === 'day')
-            acc[key].location = activity.location_country || '';
-
-          return acc;
-        }, {});
-    },
-    [convertTimeToSeconds]
-  );
-
-  const activitiesByInterval = useMemo(
-    () => groupActivities(interval, sportType),
-    [groupActivities, interval, sportType]
-  );
+  const activitiesByInterval = useMemo(() => groupActivitiesFn(interval, sportType), [interval, sportType]);
 
   const dataList = useMemo(
     () =>
@@ -488,22 +460,6 @@ const ActivityList: React.FC = () => {
   const [rowHeight, setRowHeight] = useState<number>(360);
   const sampleRef = useRef<HTMLDivElement | null>(null);
   const [listHeight, setListHeight] = useState<number>(500);
-
-  const virtualListStyles = useMemo(
-    () => ({
-      horizontalScrollBar: {},
-      horizontalScrollBarThumb: {
-        background:
-          'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
-      },
-      verticalScrollBar: {},
-      verticalScrollBarThumb: {
-        background:
-          'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
-      },
-    }),
-    []
-  );
 
   // ref to the VirtualList DOM node so we can control scroll position
   const virtualListRef = useRef<HTMLDivElement | null>(null);
@@ -634,16 +590,9 @@ const ActivityList: React.FC = () => {
   }, [dataList, itemsPerRow]);
 
   // compute a row width so we can center the VirtualList and keep cards left-aligned inside
-  const rowWidth = useMemo(() => {
-    if (itemsPerRow < 1) return '100%';
-    const w = itemsPerRow * itemWidth + Math.max(0, itemsPerRow - 1) * gap;
-    return `${w}px`;
-  }, [itemsPerRow, itemWidth, gap]);
+  const rowWidth = itemsPerRow < 1 ? '100%' : `${itemsPerRow * itemWidth + Math.max(0, itemsPerRow - 1) * gap}px`;
 
-  const loading = useMemo(
-    () => itemsPerRow < 1 || !rowHeight,
-    [itemsPerRow, rowHeight]
-  );
+  const loading = itemsPerRow < 1 || !rowHeight;
 
   return (
     <div className={styles.activityList}>
@@ -767,7 +716,7 @@ const ActivityList: React.FC = () => {
                   height={listHeight}
                   itemHeight={rowHeight}
                   itemKey={(row: RowGroup) => row[0]?.period ?? ''}
-                  styles={virtualListStyles}
+                  styles={VIRTUAL_LIST_STYLES}
                 >
                   {(row: RowGroup) => (
                     <div
