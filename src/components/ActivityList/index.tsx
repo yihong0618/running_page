@@ -18,7 +18,6 @@ import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
 import RoutePreview from '@/components/RoutePreview';
 import { Activity } from '@/utils/utils';
-// import VariableSizeList from '../vitualList';
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
   return lazy(() => loadSvgComponent(totalStat, path));
@@ -647,14 +646,6 @@ const ActivityList: React.FC = () => {
               />
             )}
           </div>
-          {/* <VariableSizeList
-            height="calc(100vh - 86px)"
-            width="100%"
-            itemCount={calcGroup.length}
-            isDynamic
-          >
-          {Row}
-          </VariableSizeList> */}
           <div className={styles.summaryInner}>
             <div style={{ width: rowWidth }}>
               <VirtualList
