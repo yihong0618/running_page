@@ -484,6 +484,9 @@ const ActivityList: React.FC = () => {
     },
   }), []);
 
+  // ref to the VirtualList DOM node so we can control scroll position
+  const virtualListRef = useRef<HTMLDivElement | null>(null);
+
   const calculateItemsPerRow = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -505,6 +508,30 @@ const ActivityList: React.FC = () => {
 
     return () => resizeObserver.disconnect();
   }, [calculateItemsPerRow]);
+
+  // when the interval changes, scroll the virtual list to top to improve UX
+  useEffect(() => {
+    // attempt to find the virtual list DOM node and reset scrollTop
+    const resetScroll = () => {
+      // prefer an explicit ref if available
+      const el = virtualListRef.current || document.querySelector('.rc-virtual-list');
+      if (el) {
+        try {
+          el.scrollTop = 0;
+        } catch (e) { }
+      }
+    };
+
+    // Defer to next frame so the list has time to re-render with new data
+    const id = requestAnimationFrame(() => requestAnimationFrame(resetScroll));
+    // also fallback to a short timeout
+    const t = setTimeout(resetScroll, 50);
+
+    return () => {
+      cancelAnimationFrame(id);
+      clearTimeout(t);
+    };
+  }, [interval, sportType]);
 
   // compute list height = viewport height - filter container height
   useEffect(() => {
@@ -680,6 +707,7 @@ const ActivityList: React.FC = () => {
                 </div>
               ) : (
                 <VirtualList
+                  key={`${sportType}-${interval}-${itemsPerRow}`}
                   data={calcGroup}
                   height={listHeight}
                   itemHeight={rowHeight}
@@ -687,7 +715,7 @@ const ActivityList: React.FC = () => {
                   styles={virtualListStyles}
                 >
                   {(row: RowGroup) => (
-                    <div style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0', justifyContent: 'flex-start', paddingRight: '12px' }}>
+                    <div ref={virtualListRef} style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0', justifyContent: 'flex-start', paddingRight: '12px' }}>
                       {row.map((cardData: { period: string; summary: ActivitySummary }) => (
                         <ActivityCard
                           key={cardData.period}
