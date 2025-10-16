@@ -26,6 +26,9 @@ import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
 import RoutePreview from '@/components/RoutePreview';
 import { Activity } from '@/utils/utils';
+// Layout constants (avoid magic numbers)
+const ITEM_WIDTH = 280;
+const ITEM_GAP = 20;
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
   return lazy(() => loadSvgComponent(totalStat, path));
@@ -274,7 +277,7 @@ const activityCardAreEqual = (
     s1.maxSpeed !== s2.maxSpeed ||
     s1.location !== s2.location ||
     (s1.totalElevationGain ?? undefined) !==
-      (s2.totalElevationGain ?? undefined) ||
+    (s2.totalElevationGain ?? undefined) ||
     (s1.averageHeartRate ?? undefined) !== (s2.averageHeartRate ?? undefined)
   ) {
     return false;
@@ -378,7 +381,7 @@ const ActivityList: React.FC = () => {
               const yearStart = new Date(currentDate.getFullYear(), 0, 1);
               const weekNum = Math.ceil(
                 ((currentDate.getTime() - yearStart.getTime()) / 86400000 + 1) /
-                  7
+                7
               );
               key = `${currentDate.getFullYear()}-W${weekNum
                 .toString()
@@ -477,8 +480,8 @@ const ActivityList: React.FC = () => {
     [activitiesByInterval, interval]
   );
 
-  const itemWidth = 280;
-  const gap = 20;
+  const itemWidth = ITEM_WIDTH;
+  const gap = ITEM_GAP;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const filterRef = useRef<HTMLDivElement | null>(null);
   const [itemsPerRow, setItemsPerRow] = useState(0);
@@ -708,7 +711,7 @@ const ActivityList: React.FC = () => {
                   totalDistance: dataList[0].summary.totalDistance,
                   averageSpeed: dataList[0].summary.totalTime
                     ? dataList[0].summary.totalDistance /
-                      (dataList[0].summary.totalTime / 3600)
+                    (dataList[0].summary.totalTime / 3600)
                     : 0,
                   totalTime: dataList[0].summary.totalTime,
                   count: dataList[0].summary.count,
@@ -721,7 +724,7 @@ const ActivityList: React.FC = () => {
                   averageHeartRate:
                     dataList[0].summary.heartRateCount > 0
                       ? dataList[0].summary.totalHeartRate /
-                        dataList[0].summary.heartRateCount
+                      dataList[0].summary.heartRateCount
                       : undefined,
                 }}
                 dailyDistances={dataList[0].summary.dailyDistances}
@@ -789,7 +792,7 @@ const ActivityList: React.FC = () => {
                               totalDistance: cardData.summary.totalDistance,
                               averageSpeed: cardData.summary.totalTime
                                 ? cardData.summary.totalDistance /
-                                  (cardData.summary.totalTime / 3600)
+                                (cardData.summary.totalTime / 3600)
                                 : 0,
                               totalTime: cardData.summary.totalTime,
                               count: cardData.summary.count,
@@ -802,7 +805,7 @@ const ActivityList: React.FC = () => {
                               averageHeartRate:
                                 cardData.summary.heartRateCount > 0
                                   ? cardData.summary.totalHeartRate /
-                                    cardData.summary.heartRateCount
+                                  cardData.summary.heartRateCount
                                   : undefined,
                             }}
                             dailyDistances={cardData.summary.dailyDistances}
