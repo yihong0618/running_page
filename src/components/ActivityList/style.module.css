@@ -12,7 +12,6 @@
 
 /* rc-virtual-list renders its scrollbar elements with classnames we can target globally. */
 :global(.rc-virtual-list-scrollbar) {
-  /* ensure the scrollbar track is transparent by default */
   background: transparent;
 }
 
@@ -175,23 +174,19 @@
 .summaryInner {
   display: flex;
   justify-content: center;
-  /* center the inner fixed-width content */
   width: 100%;
   box-sizing: border-box;
   padding: 0 10px;
-  /* small horizontal padding on narrow screens */
 }
 
 /* Prevent content from sitting flush against the custom scrollbar. The inner wrapper (direct child) gets right padding. */
 .summaryInner>div {
   padding-right: 16px;
-  /* space for scrollbar area */
   box-sizing: content-box;
 }
 
 /* rc-virtual-list view and body panes: ensure there's a little inner spacing so content doesn't overlap scrollbar */
 :global(.rc-virtual-list-holder-inner),
 :global(.rc-virtual-list-holder) {
-  /* make room inside the holder for the custom scrollbar */
   padding-right: 4px;
 }

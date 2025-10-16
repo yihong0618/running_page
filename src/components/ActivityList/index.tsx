@@ -564,7 +564,6 @@ const ActivityList: React.FC = () => {
     return () => ro.disconnect();
   }, [dataList, rowHeight]);
 
-  // group into rows for rendering (memoized)
   const calcGroup: RowGroup[] = useMemo(() => {
     if (itemsPerRow < 1) return [];
     const groupLength = Math.ceil(dataList.length / itemsPerRow);
@@ -583,13 +582,8 @@ const ActivityList: React.FC = () => {
     return `${w}px`;
   }, [itemsPerRow, itemWidth, gap]);
 
-  // Loading state: true until we have measured itemsPerRow and rowHeight
-  const loading = useMemo(() => itemsPerRow < 1 || !rowHeight || rowHeight === 0, [itemsPerRow, rowHeight]);
+  const loading = useMemo(() => itemsPerRow < 1 || !rowHeight, [itemsPerRow, rowHeight]);
 
-
-
-  // console.log('calcGroup', calcGroup);
-  // console.log('itemsPerRow', itemsPerRow)
   return (
     <div className={styles.activityList}>
       <div className={styles.filterContainer} ref={filterRef}>
