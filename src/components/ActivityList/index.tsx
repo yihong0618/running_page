@@ -1,4 +1,12 @@
-import React, { lazy, useState, Suspense, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, {
+  lazy,
+  useState,
+  Suspense,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   BarChart,
   Bar,
@@ -249,7 +257,10 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
 };
 
 // custom equality for memo: compare key summary fields, dailyDistances values and activities length
-const activityCardAreEqual = (prev: ActivityCardProps, next: ActivityCardProps) => {
+const activityCardAreEqual = (
+  prev: ActivityCardProps,
+  next: ActivityCardProps
+) => {
   if (prev.period !== next.period) return false;
   if (prev.interval !== next.interval) return false;
   const s1 = prev.summary;
@@ -262,7 +273,8 @@ const activityCardAreEqual = (prev: ActivityCardProps, next: ActivityCardProps) 
     s1.maxDistance !== s2.maxDistance ||
     s1.maxSpeed !== s2.maxSpeed ||
     s1.location !== s2.location ||
-    (s1.totalElevationGain ?? undefined) !== (s2.totalElevationGain ?? undefined) ||
+    (s1.totalElevationGain ?? undefined) !==
+      (s2.totalElevationGain ?? undefined) ||
     (s1.averageHeartRate ?? undefined) !== (s2.averageHeartRate ?? undefined)
   ) {
     return false;
@@ -365,7 +377,8 @@ const ActivityList: React.FC = () => {
               ); // Set to nearest Thursday (ISO weeks defined by Thursday)
               const yearStart = new Date(currentDate.getFullYear(), 0, 1);
               const weekNum = Math.ceil(
-                ((currentDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
+                ((currentDate.getTime() - yearStart.getTime()) / 86400000 + 1) /
+                  7
               );
               key = `${currentDate.getFullYear()}-W${weekNum
                 .toString()
@@ -374,9 +387,7 @@ const ActivityList: React.FC = () => {
               break;
             }
             case 'day':
-              key = date
-                .toLocaleDateString('zh')
-                .replaceAll('/', '-'); // Format date as YYYY-MM-DD
+              key = date.toLocaleDateString('zh').replaceAll('/', '-'); // Format date as YYYY-MM-DD
               index = 0; // Return 0
               break;
             default:
@@ -428,10 +439,12 @@ const ActivityList: React.FC = () => {
           acc[key].dailyDistances[index] =
             (acc[key].dailyDistances[index] || 0) + distanceKm;
 
-          if (distanceKm > acc[key].maxDistance) acc[key].maxDistance = distanceKm;
+          if (distanceKm > acc[key].maxDistance)
+            acc[key].maxDistance = distanceKm;
           if (speedKmh > acc[key].maxSpeed) acc[key].maxSpeed = speedKmh;
 
-          if (interval === 'day') acc[key].location = activity.location_country || '';
+          if (interval === 'day')
+            acc[key].location = activity.location_country || '';
 
           return acc;
         }, {});
@@ -444,28 +457,28 @@ const ActivityList: React.FC = () => {
     [groupActivities, interval, sportType]
   );
 
-  const dataList = useMemo(() =>
-    Object.entries(activitiesByInterval)
-      .sort(([a], [b]) => {
-        if (interval === 'day') {
-          return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
-        } else if (interval === 'week') {
-          const [yearA, weekA] = a.split('-W').map(Number);
-          const [yearB, weekB] = b.split('-W').map(Number);
-          return yearB - yearA || weekB - weekA; // Sort by year and week number
-        } else {
-          const [yearA, monthA = 0] = a.split('-').map(Number);
-          const [yearB, monthB = 0] = b.split('-').map(Number);
-          return yearB - yearA || monthB - monthA; // Sort by year and month
-        }
-      })
-      .map(([period, summary]) => ({ period, summary })),
+  const dataList = useMemo(
+    () =>
+      Object.entries(activitiesByInterval)
+        .sort(([a], [b]) => {
+          if (interval === 'day') {
+            return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
+          } else if (interval === 'week') {
+            const [yearA, weekA] = a.split('-W').map(Number);
+            const [yearB, weekB] = b.split('-W').map(Number);
+            return yearB - yearA || weekB - weekA; // Sort by year and week number
+          } else {
+            const [yearA, monthA = 0] = a.split('-').map(Number);
+            const [yearB, monthB = 0] = b.split('-').map(Number);
+            return yearB - yearA || monthB - monthA; // Sort by year and month
+          }
+        })
+        .map(([period, summary]) => ({ period, summary })),
     [activitiesByInterval, interval]
   );
 
-
-  const itemWidth = 280
-  const gap = 20
+  const itemWidth = 280;
+  const gap = 20;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const filterRef = useRef<HTMLDivElement | null>(null);
   const [itemsPerRow, setItemsPerRow] = useState(0);
@@ -473,16 +486,21 @@ const ActivityList: React.FC = () => {
   const sampleRef = useRef<HTMLDivElement | null>(null);
   const [listHeight, setListHeight] = useState<number>(500);
 
-  const virtualListStyles = useMemo(() => ({
-    horizontalScrollBar: {},
-    horizontalScrollBarThumb: {
-      background: 'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
-    },
-    verticalScrollBar: {},
-    verticalScrollBarThumb: {
-      background: 'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
-    },
-  }), []);
+  const virtualListStyles = useMemo(
+    () => ({
+      horizontalScrollBar: {},
+      horizontalScrollBarThumb: {
+        background:
+          'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
+      },
+      verticalScrollBar: {},
+      verticalScrollBarThumb: {
+        background:
+          'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
+      },
+    }),
+    []
+  );
 
   // ref to the VirtualList DOM node so we can control scroll position
   const virtualListRef = useRef<HTMLDivElement | null>(null);
@@ -514,7 +532,8 @@ const ActivityList: React.FC = () => {
     // attempt to find the virtual list DOM node and reset scrollTop
     const resetScroll = () => {
       // prefer an explicit ref if available
-      const el = virtualListRef.current || document.querySelector('.rc-virtual-list');
+      const el =
+        virtualListRef.current || document.querySelector('.rc-virtual-list');
       if (el) {
         try {
           el.scrollTop = 0;
@@ -552,9 +571,15 @@ const ActivityList: React.FC = () => {
         try {
           const parentRect = containerEl.parentElement.getBoundingClientRect();
           const containerRect = containerEl.getBoundingClientRect();
-          const distanceToParentBottom = Math.max(0, parentRect.bottom - containerRect.bottom);
+          const distanceToParentBottom = Math.max(
+            0,
+            parentRect.bottom - containerRect.bottom
+          );
           // Use a small fraction of that distance (or clamp) to avoid huge paddings
-          bottomPadding = Math.min(48, Math.max(8, Math.round(distanceToParentBottom / 4)));
+          bottomPadding = Math.min(
+            48,
+            Math.max(8, Math.round(distanceToParentBottom / 4))
+          );
         } catch (e) {
           console.error(e);
         }
@@ -612,7 +637,10 @@ const ActivityList: React.FC = () => {
     return `${w}px`;
   }, [itemsPerRow, itemWidth, gap]);
 
-  const loading = useMemo(() => itemsPerRow < 1 || !rowHeight, [itemsPerRow, rowHeight]);
+  const loading = useMemo(
+    () => itemsPerRow < 1 || !rowHeight,
+    [itemsPerRow, rowHeight]
+  );
 
   return (
     <div className={styles.activityList}>
@@ -663,7 +691,15 @@ const ActivityList: React.FC = () => {
       {interval !== 'life' && (
         <div className={styles.summaryContainer} ref={containerRef}>
           {/* hidden sample card for measuring row height */}
-          <div style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none', height: 'auto' }} ref={sampleRef}>
+          <div
+            style={{
+              position: 'absolute',
+              visibility: 'hidden',
+              pointerEvents: 'none',
+              height: 'auto',
+            }}
+            ref={sampleRef}
+          >
             {dataList[0] && (
               <ActivityCard
                 key={dataList[0].period}
@@ -671,7 +707,8 @@ const ActivityList: React.FC = () => {
                 summary={{
                   totalDistance: dataList[0].summary.totalDistance,
                   averageSpeed: dataList[0].summary.totalTime
-                    ? dataList[0].summary.totalDistance / (dataList[0].summary.totalTime / 3600)
+                    ? dataList[0].summary.totalDistance /
+                      (dataList[0].summary.totalTime / 3600)
                     : 0,
                   totalTime: dataList[0].summary.totalTime,
                   count: dataList[0].summary.count,
@@ -683,12 +720,17 @@ const ActivityList: React.FC = () => {
                     : undefined,
                   averageHeartRate:
                     dataList[0].summary.heartRateCount > 0
-                      ? dataList[0].summary.totalHeartRate / dataList[0].summary.heartRateCount
+                      ? dataList[0].summary.totalHeartRate /
+                        dataList[0].summary.heartRateCount
                       : undefined,
                 }}
                 dailyDistances={dataList[0].summary.dailyDistances}
                 interval={interval}
-                activities={interval === 'day' ? dataList[0].summary.activities : undefined}
+                activities={
+                  interval === 'day'
+                    ? dataList[0].summary.activities
+                    : undefined
+                }
               />
             )}
           </div>
@@ -706,7 +748,14 @@ const ActivityList: React.FC = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  <div style={{ padding: 20, color: 'var(--color-run-table-thead)' }}>加载中...</div>
+                  <div
+                    style={{
+                      padding: 20,
+                      color: 'var(--color-run-table-thead)',
+                    }}
+                  >
+                    加载中...
+                  </div>
                 </div>
               ) : (
                 <VirtualList
@@ -718,34 +767,54 @@ const ActivityList: React.FC = () => {
                   styles={virtualListStyles}
                 >
                   {(row: RowGroup) => (
-                    <div ref={virtualListRef} style={{ display: 'flex', gap: `${gap}px`, padding: '10px 0', justifyContent: 'flex-start', paddingRight: '12px' }}>
-                      {row.map((cardData: { period: string; summary: ActivitySummary }) => (
-                        <ActivityCard
-                          key={cardData.period}
-                          period={cardData.period}
-                          summary={{
-                            totalDistance: cardData.summary.totalDistance,
-                            averageSpeed: cardData.summary.totalTime
-                              ? cardData.summary.totalDistance / (cardData.summary.totalTime / 3600)
-                              : 0,
-                            totalTime: cardData.summary.totalTime,
-                            count: cardData.summary.count,
-                            maxDistance: cardData.summary.maxDistance,
-                            maxSpeed: cardData.summary.maxSpeed,
-                            location: cardData.summary.location,
-                            totalElevationGain: SHOW_ELEVATION_GAIN
-                              ? cardData.summary.totalElevationGain
-                              : undefined,
-                            averageHeartRate:
-                              cardData.summary.heartRateCount > 0
-                                ? cardData.summary.totalHeartRate / cardData.summary.heartRateCount
+                    <div
+                      ref={virtualListRef}
+                      style={{
+                        display: 'flex',
+                        gap: `${gap}px`,
+                        padding: '10px 0',
+                        justifyContent: 'flex-start',
+                        paddingRight: '12px',
+                      }}
+                    >
+                      {row.map(
+                        (cardData: {
+                          period: string;
+                          summary: ActivitySummary;
+                        }) => (
+                          <ActivityCard
+                            key={cardData.period}
+                            period={cardData.period}
+                            summary={{
+                              totalDistance: cardData.summary.totalDistance,
+                              averageSpeed: cardData.summary.totalTime
+                                ? cardData.summary.totalDistance /
+                                  (cardData.summary.totalTime / 3600)
+                                : 0,
+                              totalTime: cardData.summary.totalTime,
+                              count: cardData.summary.count,
+                              maxDistance: cardData.summary.maxDistance,
+                              maxSpeed: cardData.summary.maxSpeed,
+                              location: cardData.summary.location,
+                              totalElevationGain: SHOW_ELEVATION_GAIN
+                                ? cardData.summary.totalElevationGain
                                 : undefined,
-                          }}
-                          dailyDistances={cardData.summary.dailyDistances}
-                          interval={interval}
-                          activities={interval === 'day' ? cardData.summary.activities : undefined}
-                        />
-                      ))}
+                              averageHeartRate:
+                                cardData.summary.heartRateCount > 0
+                                  ? cardData.summary.totalHeartRate /
+                                    cardData.summary.heartRateCount
+                                  : undefined,
+                            }}
+                            dailyDistances={cardData.summary.dailyDistances}
+                            interval={interval}
+                            activities={
+                              interval === 'day'
+                                ? cardData.summary.activities
+                                : undefined
+                            }
+                          />
+                        )
+                      )}
                     </div>
                   )}
                 </VirtualList>
