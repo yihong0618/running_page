@@ -1,4 +1,12 @@
-import React, { lazy, useState, Suspense, useEffect } from 'react';
+import React, {
+  lazy,
+  useState,
+  Suspense,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   BarChart,
   Bar,
@@ -8,16 +16,32 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
+import VirtualList from 'rc-virtual-list';
 import { useNavigate } from 'react-router-dom';
 import activities from '@/static/activities.json';
 import styles from './style.module.css';
-import { ACTIVITY_TOTAL } from '@/utils/const';
+import { ACTIVITY_TOTAL, LOADING_TEXT } from '@/utils/const';
 import { totalStat } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
 import RoutePreview from '@/components/RoutePreview';
 import { Activity } from '@/utils/utils';
+// Layout constants (avoid magic numbers)
+const ITEM_WIDTH = 280;
+const ITEM_GAP = 20;
 
+const VIRTUAL_LIST_STYLES = {
+  horizontalScrollBar: {},
+  horizontalScrollBarThumb: {
+    background:
+      'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
+  },
+  verticalScrollBar: {},
+  verticalScrollBarThumb: {
+    background:
+      'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
+  },
+};
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
   return lazy(() => loadSvgComponent(totalStat, path));
@@ -76,7 +100,10 @@ interface ActivityGroups {
 
 type IntervalType = 'year' | 'month' | 'week' | 'day' | 'life';
 
-const ActivityCard: React.FC<ActivityCardProps> = ({
+// A row group contains multiple activity card data items that will be rendered in one virtualized row
+type RowGroup = Array<{ period: string; summary: ActivitySummary }>;
+
+const ActivityCardInner: React.FC<ActivityCardProps> = ({
   period,
   summary,
   dailyDistances,
@@ -84,7 +111,6 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   activities = [],
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-
   const handleCardClick = () => {
     if (interval === 'day' && activities.length > 0) {
       setIsFlipped(!isFlipped);
@@ -246,6 +272,41 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   );
 };
 
+// custom equality for memo: compare key summary fields, dailyDistances values and activities length
+const activityCardAreEqual = (
+  prev: ActivityCardProps,
+  next: ActivityCardProps
+) => {
+  if (prev.period !== next.period) return false;
+  if (prev.interval !== next.interval) return false;
+  const s1 = prev.summary;
+  const s2 = next.summary;
+  if (
+    s1.totalDistance !== s2.totalDistance ||
+    s1.averageSpeed !== s2.averageSpeed ||
+    s1.totalTime !== s2.totalTime ||
+    s1.count !== s2.count ||
+    s1.maxDistance !== s2.maxDistance ||
+    s1.maxSpeed !== s2.maxSpeed ||
+    s1.location !== s2.location ||
+    (s1.totalElevationGain ?? undefined) !==
+      (s2.totalElevationGain ?? undefined) ||
+    (s1.averageHeartRate ?? undefined) !== (s2.averageHeartRate ?? undefined)
+  ) {
+    return false;
+  }
+  const d1 = prev.dailyDistances || [];
+  const d2 = next.dailyDistances || [];
+  if (d1.length !== d2.length) return false;
+  for (let i = 0; i < d1.length; i++) if (d1[i] !== d2[i]) return false;
+  const a1 = prev.activities || [];
+  const a2 = next.activities || [];
+  if (a1.length !== a2.length) return false;
+  return true;
+};
+
+const ActivityCard = React.memo(ActivityCardInner, activityCardAreEqual);
+
 const ActivityList: React.FC = () => {
   const [interval, setInterval] = useState<IntervalType>('month');
   const [sportType, setSportType] = useState<string>('all');
@@ -283,68 +344,63 @@ const ActivityList: React.FC = () => {
     navigate('/');
   };
 
-  const toggleInterval = (newInterval: IntervalType): void => {
+  function toggleInterval(newInterval: IntervalType): void {
     setInterval(newInterval);
-  };
+  }
 
-  const convertTimeToSeconds = (time: string): number => {
+  function convertTimeToSeconds(time: string): number {
     const [hours, minutes, seconds] = time.split(':').map(Number);
     return hours * 3600 + minutes * 60 + seconds;
-  };
+  }
 
-  const groupActivities = (
-    interval: IntervalType,
-    sportType: string
-  ): ActivityGroups => {
+  function groupActivitiesFn(
+    intervalArg: IntervalType,
+    sportTypeArg: string
+  ): ActivityGroups {
     return (activities as Activity[])
       .filter((activity) => {
-        if (sportType === 'all') {
-          return true;
-        }
-        if (sportType === 'running') {
+        if (sportTypeArg === 'all') return true;
+        if (sportTypeArg === 'running')
           return activity.type === 'running' || activity.type === 'Run';
-        }
-        if (sportType === 'walking') {
+        if (sportTypeArg === 'walking')
           return activity.type === 'walking' || activity.type === 'Walk';
-        }
-        if (sportType === 'cycling') {
+        if (sportTypeArg === 'cycling')
           return activity.type === 'cycling' || activity.type === 'Ride';
-        }
-        return activity.type === sportType;
+        return activity.type === sportTypeArg;
       })
       .reduce((acc: ActivityGroups, activity) => {
         const date = new Date(activity.start_date_local);
         let key: string;
         let index: number;
-        switch (interval) {
+        switch (intervalArg) {
           case 'year':
             key = date.getFullYear().toString();
-            index = date.getMonth(); // Return current month (0-11)
+            index = date.getMonth();
             break;
           case 'month':
-            key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`; // Zero padding
-            index = date.getDate() - 1; // Return current day (0-30)
+            key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+            index = date.getDate() - 1;
             break;
           case 'week': {
             const currentDate = new Date(date.valueOf());
             currentDate.setDate(
               currentDate.getDate() + 4 - (currentDate.getDay() || 7)
-            ); // Set to nearest Thursday (ISO weeks defined by Thursday)
+            );
             const yearStart = new Date(currentDate.getFullYear(), 0, 1);
             const weekNum = Math.ceil(
               ((currentDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
             );
             key = `${currentDate.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
-            index = (date.getDay() + 6) % 7; // Return current day (0-6, Monday-Sunday)
+            index = (date.getDay() + 6) % 7;
             break;
           }
           case 'day':
-            key = date.toLocaleDateString('zh').replaceAll('/', '-'); // Format date as YYYY-MM-DD
-            index = 0; // Return 0
+            key = date.toLocaleDateString('zh').replaceAll('/', '-');
+            index = 0;
             break;
           default:
             key = date.getFullYear().toString();
-            index = 0; // Default return 0
+            index = 0;
         }
 
         if (!acc[key])
@@ -362,7 +418,7 @@ const ActivityList: React.FC = () => {
             activities: [],
           };
 
-        const distanceKm = activity.distance / 1000; // Convert to kilometers
+        const distanceKm = activity.distance / 1000;
         const timeInSeconds = convertTimeToSeconds(activity.moving_time);
         const speedKmh =
           timeInSeconds > 0 ? distanceKm / (timeInSeconds / 3600) : 0;
@@ -370,43 +426,201 @@ const ActivityList: React.FC = () => {
         acc[key].totalDistance += distanceKm;
         acc[key].totalTime += timeInSeconds;
 
-        if (SHOW_ELEVATION_GAIN && activity.elevation_gain) {
+        if (SHOW_ELEVATION_GAIN && activity.elevation_gain)
           acc[key].totalElevationGain += activity.elevation_gain;
-        }
 
-        // Heart rate statistics
         if (activity.average_heartrate) {
           acc[key].totalHeartRate += activity.average_heartrate;
           acc[key].heartRateCount += 1;
         }
 
         acc[key].count += 1;
-
-        // Store activity for day interval (for route display)
-        if (interval === 'day') {
-          acc[key].activities.push(activity);
-        }
-
-        // Accumulate daily distances
+        if (intervalArg === 'day') acc[key].activities.push(activity);
         acc[key].dailyDistances[index] =
           (acc[key].dailyDistances[index] || 0) + distanceKm;
-
         if (distanceKm > acc[key].maxDistance)
           acc[key].maxDistance = distanceKm;
         if (speedKmh > acc[key].maxSpeed) acc[key].maxSpeed = speedKmh;
-
-        if (interval === 'day')
+        if (intervalArg === 'day')
           acc[key].location = activity.location_country || '';
 
         return acc;
-      }, {});
-  };
+      }, {} as ActivityGroups);
+  }
 
-  const activitiesByInterval = groupActivities(interval, sportType);
+  const activitiesByInterval = useMemo(
+    () => groupActivitiesFn(interval, sportType),
+    [interval, sportType]
+  );
+
+  const dataList = useMemo(
+    () =>
+      Object.entries(activitiesByInterval)
+        .sort(([a], [b]) => {
+          if (interval === 'day') {
+            return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
+          } else if (interval === 'week') {
+            const [yearA, weekA] = a.split('-W').map(Number);
+            const [yearB, weekB] = b.split('-W').map(Number);
+            return yearB - yearA || weekB - weekA; // Sort by year and week number
+          } else {
+            const [yearA, monthA = 0] = a.split('-').map(Number);
+            const [yearB, monthB = 0] = b.split('-').map(Number);
+            return yearB - yearA || monthB - monthA; // Sort by year and month
+          }
+        })
+        .map(([period, summary]) => ({ period, summary })),
+    [activitiesByInterval, interval]
+  );
+
+  const itemWidth = ITEM_WIDTH;
+  const gap = ITEM_GAP;
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const filterRef = useRef<HTMLDivElement | null>(null);
+  const [itemsPerRow, setItemsPerRow] = useState(0);
+  const [rowHeight, setRowHeight] = useState<number>(360);
+  const sampleRef = useRef<HTMLDivElement | null>(null);
+  const [listHeight, setListHeight] = useState<number>(500);
+
+  // ref to the VirtualList DOM node so we can control scroll position
+  const virtualListRef = useRef<HTMLDivElement | null>(null);
+
+  const calculateItemsPerRow = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const containerWidth = container.clientWidth;
+    // Calculate how many items can fit in one row (considering gaps)
+    const count = Math.floor((containerWidth + gap) / (itemWidth + gap));
+    setItemsPerRow(count);
+  }, [gap, itemWidth]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    // Calculate immediately once
+    calculateItemsPerRow();
+
+    // Use ResizeObserver to monitor container size changes
+    const resizeObserver = new ResizeObserver(calculateItemsPerRow);
+    resizeObserver.observe(container);
+
+    return () => resizeObserver.disconnect();
+  }, [calculateItemsPerRow]);
+
+  // when the interval changes, scroll the virtual list to top to improve UX
+  useEffect(() => {
+    // attempt to find the virtual list DOM node and reset scrollTop
+    const resetScroll = () => {
+      // prefer an explicit ref if available
+      const el =
+        virtualListRef.current || document.querySelector('.rc-virtual-list');
+      if (el) {
+        try {
+          el.scrollTop = 0;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    };
+
+    // Defer to next frame so the list has time to re-render with new data
+    const id = requestAnimationFrame(() => requestAnimationFrame(resetScroll));
+    // also fallback to a short timeout
+    const t = setTimeout(resetScroll, 50);
+
+    return () => {
+      cancelAnimationFrame(id);
+      clearTimeout(t);
+    };
+  }, [interval, sportType]);
+
+  // compute list height = viewport height - filter container height
+  useEffect(() => {
+    const updateListHeight = () => {
+      const filterH = filterRef.current?.clientHeight || 0;
+      const containerEl = containerRef.current;
+      let topOffset = 0;
+      if (containerEl) {
+        const rect = containerEl.getBoundingClientRect();
+        topOffset = Math.max(0, rect.top);
+      }
+      const base = topOffset || filterH || 0;
+      // Try to compute a dynamic bottom padding by checking the container's parent element's bottom
+      let bottomPadding = 16; // fallback
+      if (containerEl && containerEl.parentElement) {
+        try {
+          const parentRect = containerEl.parentElement.getBoundingClientRect();
+          const containerRect = containerEl.getBoundingClientRect();
+          const distanceToParentBottom = Math.max(
+            0,
+            parentRect.bottom - containerRect.bottom
+          );
+          // Use a small fraction of that distance (or clamp) to avoid huge paddings
+          bottomPadding = Math.min(
+            48,
+            Math.max(8, Math.round(distanceToParentBottom / 4))
+          );
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      const h = Math.max(100, window.innerHeight - base - bottomPadding);
+      setListHeight(h);
+    };
+
+    // initial
+    updateListHeight();
+
+    // window resize
+    window.addEventListener('resize', updateListHeight);
+
+    // observe filter size changes
+    const ro = new ResizeObserver(updateListHeight);
+    if (filterRef.current) ro.observe(filterRef.current);
+
+    return () => {
+      window.removeEventListener('resize', updateListHeight);
+      ro.disconnect();
+    };
+  }, []);
+
+  // measure representative card height using a hidden sample and ResizeObserver
+  useEffect(() => {
+    const el = sampleRef.current;
+    if (!el) return;
+    const update = () => {
+      const h = el.offsetHeight;
+      if (h && h !== rowHeight) setRowHeight(h);
+    };
+    // initial
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [dataList, rowHeight]);
+
+  const calcGroup: RowGroup[] = useMemo(() => {
+    if (itemsPerRow < 1) return [];
+    const groupLength = Math.ceil(dataList.length / itemsPerRow);
+    const arr: RowGroup[] = [];
+    for (let i = 0; i < groupLength; i++) {
+      const start = i * itemsPerRow;
+      arr.push(dataList.slice(start, start + itemsPerRow));
+    }
+    return arr;
+  }, [dataList, itemsPerRow]);
+
+  // compute a row width so we can center the VirtualList and keep cards left-aligned inside
+  const rowWidth =
+    itemsPerRow < 1
+      ? '100%'
+      : `${itemsPerRow * itemWidth + Math.max(0, itemsPerRow - 1) * gap}px`;
+
+  const loading = itemsPerRow < 1 || !rowHeight;
 
   return (
     <div className={styles.activityList}>
-      <div className={styles.filterContainer}>
+      <div className={styles.filterContainer} ref={filterRef}>
         <button className={styles.smallHomeButton} onClick={handleHomeClick}>
           {HOME_PAGE_TITLE}
         </button>
@@ -451,48 +665,133 @@ const ActivityList: React.FC = () => {
       )}
 
       {interval !== 'life' && (
-        <div className={styles.summaryContainer}>
-          {Object.entries(activitiesByInterval)
-            .sort(([a], [b]) => {
-              if (interval === 'day') {
-                return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
-              } else if (interval === 'week') {
-                const [yearA, weekA] = a.split('-W').map(Number);
-                const [yearB, weekB] = b.split('-W').map(Number);
-                return yearB - yearA || weekB - weekA; // Sort by year and week number
-              } else {
-                const [yearA, monthA = 0] = a.split('-').map(Number);
-                const [yearB, monthB = 0] = b.split('-').map(Number);
-                return yearB - yearA || monthB - monthA; // Sort by year and month
-              }
-            })
-            .map(([period, summary]) => (
+        <div className={styles.summaryContainer} ref={containerRef}>
+          {/* hidden sample card for measuring row height */}
+          <div
+            style={{
+              position: 'absolute',
+              visibility: 'hidden',
+              pointerEvents: 'none',
+              height: 'auto',
+            }}
+            ref={sampleRef}
+          >
+            {dataList[0] && (
               <ActivityCard
-                key={period}
-                period={period}
+                key={dataList[0].period}
+                period={dataList[0].period}
                 summary={{
-                  totalDistance: summary.totalDistance,
-                  averageSpeed: summary.totalTime
-                    ? summary.totalDistance / (summary.totalTime / 3600)
+                  totalDistance: dataList[0].summary.totalDistance,
+                  averageSpeed: dataList[0].summary.totalTime
+                    ? dataList[0].summary.totalDistance /
+                      (dataList[0].summary.totalTime / 3600)
                     : 0,
-                  totalTime: summary.totalTime,
-                  count: summary.count,
-                  maxDistance: summary.maxDistance,
-                  maxSpeed: summary.maxSpeed,
-                  location: summary.location,
+                  totalTime: dataList[0].summary.totalTime,
+                  count: dataList[0].summary.count,
+                  maxDistance: dataList[0].summary.maxDistance,
+                  maxSpeed: dataList[0].summary.maxSpeed,
+                  location: dataList[0].summary.location,
                   totalElevationGain: SHOW_ELEVATION_GAIN
-                    ? summary.totalElevationGain
+                    ? dataList[0].summary.totalElevationGain
                     : undefined,
                   averageHeartRate:
-                    summary.heartRateCount > 0
-                      ? summary.totalHeartRate / summary.heartRateCount
+                    dataList[0].summary.heartRateCount > 0
+                      ? dataList[0].summary.totalHeartRate /
+                        dataList[0].summary.heartRateCount
                       : undefined,
                 }}
-                dailyDistances={summary.dailyDistances}
+                dailyDistances={dataList[0].summary.dailyDistances}
                 interval={interval}
-                activities={interval === 'day' ? summary.activities : undefined}
+                activities={
+                  interval === 'day'
+                    ? dataList[0].summary.activities
+                    : undefined
+                }
               />
-            ))}
+            )}
+          </div>
+          <div className={styles.summaryInner}>
+            <div style={{ width: rowWidth }}>
+              {loading ? (
+                // Use full viewport height (or viewport minus filter height if available) to avoid flicker
+                <div
+                  style={{
+                    height: filterRef.current
+                      ? `${Math.max(100, window.innerHeight - (filterRef.current.clientHeight || 0) - 40)}px`
+                      : '100vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: 20,
+                      color: 'var(--color-run-table-thead)',
+                    }}
+                  >
+                    {LOADING_TEXT}
+                  </div>
+                </div>
+              ) : (
+                <VirtualList
+                  key={`${sportType}-${interval}-${itemsPerRow}`}
+                  data={calcGroup}
+                  height={listHeight}
+                  itemHeight={rowHeight}
+                  itemKey={(row: RowGroup) => row[0]?.period ?? ''}
+                  styles={VIRTUAL_LIST_STYLES}
+                >
+                  {(row: RowGroup) => (
+                    <div
+                      ref={virtualListRef}
+                      className={styles.rowContainer}
+                      style={{ gap: `${gap}px` }}
+                    >
+                      {row.map(
+                        (cardData: {
+                          period: string;
+                          summary: ActivitySummary;
+                        }) => (
+                          <ActivityCard
+                            key={cardData.period}
+                            period={cardData.period}
+                            summary={{
+                              totalDistance: cardData.summary.totalDistance,
+                              averageSpeed: cardData.summary.totalTime
+                                ? cardData.summary.totalDistance /
+                                  (cardData.summary.totalTime / 3600)
+                                : 0,
+                              totalTime: cardData.summary.totalTime,
+                              count: cardData.summary.count,
+                              maxDistance: cardData.summary.maxDistance,
+                              maxSpeed: cardData.summary.maxSpeed,
+                              location: cardData.summary.location,
+                              totalElevationGain: SHOW_ELEVATION_GAIN
+                                ? cardData.summary.totalElevationGain
+                                : undefined,
+                              averageHeartRate:
+                                cardData.summary.heartRateCount > 0
+                                  ? cardData.summary.totalHeartRate /
+                                    cardData.summary.heartRateCount
+                                  : undefined,
+                            }}
+                            dailyDistances={cardData.summary.dailyDistances}
+                            interval={interval}
+                            activities={
+                              interval === 'day'
+                                ? cardData.summary.activities
+                                : undefined
+                            }
+                          />
+                        )
+                      )}
+                    </div>
+                  )}
+                </VirtualList>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
