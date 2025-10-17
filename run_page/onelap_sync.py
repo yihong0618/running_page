@@ -1,4 +1,4 @@
-# some code from 
+# some code from
 # https://github.com/DreamMryang/synchronizeTheRecordingOfOnelapToGiant.git
 # https://github.com/moruoxian/SyncOnelapToXoss.git
 # great thanks
@@ -23,8 +23,9 @@ class Onelap:
     def login(self):
         nonce = uuid.uuid4().hex[:16]
         timestamp = str(int(time.time()))
-        sign = hashlib.md5(f"account={self.account}&nonce={nonce}&password={hashlib.md5(self.password.encode()).hexdigest()}&timestamp={timestamp}&key=fe9f8382418fcdeb136461cac6acae7b".encode()).hexdigest()
-
+        sign = hashlib.md5(
+            f"account={self.account}&nonce={nonce}&***".encode()
+        ).hexdigest()
         headers = {
             "nonce": nonce,
             "timestamp": timestamp,
@@ -33,9 +34,12 @@ class Onelap:
 
         try:
             login_response = requests.post(
-                SIGNIN_URL, 
-                json={"account": self.account, "password": hashlib.md5(self.password.encode()).hexdigest()}, 
-                headers=headers
+                SIGNIN_URL,
+                json={
+                    "account": self.account,
+                    "password": hashlib.md5(self.password.encode()).hexdigest(),
+                },
+                headers=headers,
             )
             login_response.raise_for_status()
             login_response = login_response.json()
@@ -45,7 +49,7 @@ class Onelap:
         data = login_response.get("data", [])
         if not data:
             raise RuntimeError(login_response.get("error"))
-        
+
         return data[0]
 
     def get_activities(self):
@@ -57,24 +61,21 @@ class Onelap:
 
         cookies = f"ouid={uid}; XSRF-TOKEN={token}; OTOKEN={refresh_token}"
         headers = {
-            'Cookie': cookies,
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            "Cookie": cookies,
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
         }
 
         try:
-            activities_response = requests.get(
-                ACTIVITY_URL, 
-                headers=headers
-            )
+            activities_response = requests.get(ACTIVITY_URL, headers=headers)
             activities_response.raise_for_status()
             activities_response = activities_response.json()
         except requests.RequestException as e:
             raise RuntimeError(f"HTTP GET request failed: {e}")
-  
+
         activities = activities_response.get("data", [])
         if not activities:
             raise RuntimeError("no data returned.")
-            
+
         return activities
 
     def download_onelap_data(self):
