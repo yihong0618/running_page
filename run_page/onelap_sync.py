@@ -26,11 +26,7 @@ class Onelap:
         sign = hashlib.md5(
             f"account={self.account}&nonce={nonce}&***".encode()
         ).hexdigest()
-        headers = {
-            "nonce": nonce,
-            "timestamp": timestamp,
-            "sign": sign
-        }
+        headers = {"nonce": nonce, "timestamp": timestamp, "sign": sign}
 
         try:
             login_response = requests.post(
