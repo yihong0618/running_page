@@ -123,7 +123,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Shuqi](https://github.com/zhufengme)             | <https://runner-shuqi.devlink.cn/>             | Garmin      |
 | [shugoal](https://github.com/shugoal)             | <https://shugoal.github.io/wk-shu/>            | Garmin      |
 | [Bolyn](https://run.wbolyn.com)                | <https://run.wbolyn.com>     | Coros      |
-
+| [LeiChen](https://github.com/xthirty77)                | <https://xthirty77.github.io/running_page/>     | Coros      |
 </details>
 
 ## 它是怎么工作的
