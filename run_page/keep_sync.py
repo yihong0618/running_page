@@ -383,7 +383,8 @@ def parse_points_to_tcx(run_data, run_points_data, sport_type):
         # Time
         # note that the timestamp of a point is decisecond(分秒)
         time_stamp = datetime.fromtimestamp(
-            (run_data.get("startTime") // 1000  + point.get("timestamp") // 10), tz=timezone.utc
+            (run_data.get("startTime") // 1000 + point.get("timestamp") // 10),
+            tz=timezone.utc,
         ).strftime("%Y-%m-%dT%H:%M:%SZ")
         time_label = ET.Element("Time")
         time_label.text = time_stamp
@@ -444,9 +445,7 @@ def find_nearest_hr(
     min_difference = float("inf")
     if target_time > TIMESTAMP_THRESHOLD_IN_DECISECOND:
         # note that the unit of target_time is decisecond and the unit of start_time is normal millisecond
-        target_time = (
-            target_time - start_time // 100
-        )
+        target_time = target_time = target_time - start_time // 100
 
     for item in hr_data_list:
         timestamp = item["timestamp"]
