@@ -127,6 +127,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [JMGutiH](https://github.com/JMGutiH)                | <https://jmgutih.github.io/workouts_page/>     | Strava      |
 | [Bolyn](https://run.wbolyn.com)                      | <https://run.wbolyn.com>                       | Coros       |
 | [LeiChen](https://github.com/xthirty77)              | <https://xthirty77.github.io/running_page/>    | Coros       |
+| [itrunner](https://itrunner.cn)                      | <https://itrunner.cn>                          | Garmin      |
 
 </details>
 
