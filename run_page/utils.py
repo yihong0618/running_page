@@ -243,6 +243,16 @@ def add_argparse_arguments(parser, args_config):
             help="to download personal documents or ebook",
         )
 
+    if args_config.get("gpx"):
+        parser.add_argument(
+            "--gpx",
+            dest="download_file_type",
+            action="store_const",
+            const="gpx",
+            default=args_config.get("gpx_default", "gpx"),
+            help="download as gpx file format",
+        )
+
     if args_config.get("fit"):
         parser.add_argument(
             "--fit",

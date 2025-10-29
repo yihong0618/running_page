@@ -8,7 +8,7 @@ import aiofiles
 import httpx
 
 from config import JSON_FILE, SQL_FILE, FOLDER_DICT
-from utils import make_activities_file
+from utils import add_argparse_arguments, make_activities_file
 
 COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
@@ -187,13 +187,7 @@ if __name__ == "__main__":
 
     parser.add_argument("password", nargs="?", help="input coros password")
 
-    parser.add_argument(
-        "--only-run",
-        dest="only_run",
-        action="store_true",
-        help="if is only for running",
-    )
-
+    # Add common arguments with fit as default
     parser.add_argument(
         "--tcx",
         dest="download_file_type",
@@ -210,6 +204,7 @@ if __name__ == "__main__":
         default="fit",
         help="to download personal documents or ebook",
     )
+    add_argparse_arguments(parser, {"only_run": True})
     options = parser.parse_args()
 
     account = options.account
