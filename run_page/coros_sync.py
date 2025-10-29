@@ -187,14 +187,14 @@ if __name__ == "__main__":
 
     parser.add_argument("password", nargs="?", help="input coros password")
 
-    # Add common arguments with fit as default
+    # File format arguments (fit is default)
     parser.add_argument(
         "--tcx",
         dest="download_file_type",
         action="store_const",
         const="tcx",
         default="fit",
-        help="to download personal documents or ebook",
+        help="download as TCX file format",
     )
     parser.add_argument(
         "--gpx",
@@ -202,7 +202,7 @@ if __name__ == "__main__":
         action="store_const",
         const="gpx",
         default="fit",
-        help="to download personal documents or ebook",
+        help="download as GPX file format",
     )
     add_argparse_arguments(parser, {"only_run": True})
     options = parser.parse_args()

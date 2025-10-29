@@ -240,7 +240,7 @@ def add_argparse_arguments(parser, args_config):
             action="store_const",
             const="tcx",
             default="gpx",
-            help="to download personal documents or ebook",
+            help="download as TCX file format",
         )
 
     if args_config.get("gpx"):
@@ -250,7 +250,7 @@ def add_argparse_arguments(parser, args_config):
             action="store_const",
             const="gpx",
             default=args_config.get("gpx_default", "gpx"),
-            help="download as gpx file format",
+            help="download as GPX file format",
         )
 
     if args_config.get("fit"):
@@ -259,7 +259,7 @@ def add_argparse_arguments(parser, args_config):
             dest="download_file_type",
             action="store_const",
             const="fit",
-            help="download as fit file format",
+            help="download as FIT file format",
         )
 
     if args_config.get("all"):
