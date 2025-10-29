@@ -1,7 +1,9 @@
 import json
 import time
+import xml.etree.ElementTree as ET
 from datetime import datetime
 
+import gpxpy
 import pytz
 
 try:
@@ -116,3 +118,146 @@ def upload_file_to_strava(client, file_name, data_type, force_to_run=True):
         print(
             f"Uploading {data_type} file: {file_name} to strava, upload_id: {r.upload_id}."
         )
+
+
+def create_tcx_root():
+    """
+    Create the root TCX TrainingCenterDatabase element with standard namespaces.
+
+    Returns:
+        ET.Element: The root TrainingCenterDatabase element
+    """
+    return ET.Element(
+        "TrainingCenterDatabase",
+        {
+            "xmlns": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2",
+            "xmlns:ns5": "http://www.garmin.com/xmlschemas/ActivityGoals/v1",
+            "xmlns:ns3": "http://www.garmin.com/xmlschemas/ActivityExtension/v2",
+            "xmlns:ns2": "http://www.garmin.com/xmlschemas/UserProfile/v2",
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xmlns:ns4": "http://www.garmin.com/xmlschemas/ProfileExtension/v1",
+            "xsi:schemaLocation": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd",
+        },
+    )
+
+
+def add_tcx_author(root, part_number="000-00000-00"):
+    """
+    Add Author element to TCX root with standard Connect API information.
+
+    Args:
+        root: The root TrainingCenterDatabase element
+        part_number: The device part number (default: "000-00000-00")
+    """
+    author = ET.Element("Author", {"xsi:type": "Application_t"})
+    root.append(author)
+
+    author_name = ET.Element("Name")
+    author_name.text = "Connect Api"
+    author.append(author_name)
+
+    author_lang = ET.Element("LangID")
+    author_lang.text = "en"
+    author.append(author_lang)
+
+    author_part = ET.Element("PartNumber")
+    author_part.text = part_number
+    author.append(author_part)
+
+
+def create_gpx_track_segment(points_dict_list):
+    """
+    Create a GPX track segment from a list of point dictionaries.
+
+    Args:
+        points_dict_list: List of dictionaries with keys: latitude, longitude, time, elevation (optional), hr (optional), cad (optional)
+
+    Returns:
+        gpxpy.gpx.GPXTrackSegment: The created track segment
+    """
+    gpx_segment = gpxpy.gpx.GPXTrackSegment()
+
+    for p in points_dict_list:
+        point = gpxpy.gpx.GPXTrackPoint(
+            latitude=p["latitude"],
+            longitude=p["longitude"],
+            time=p["time"],
+            elevation=p.get("elevation"),
+        )
+
+        # Add heart rate and/or cadence extension if available
+        hr = p.get("hr")
+        cad = p.get("cad")
+        if hr is not None or cad is not None:
+            hr_str = f"<gpxtpx:hr>{hr}</gpxtpx:hr>" if hr is not None else ""
+            cad_str = f"<gpxtpx:cad>{cad}</gpxtpx:cad>" if cad is not None else ""
+            gpx_extension = ET.fromstring(
+                f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
+                    {hr_str}
+                    {cad_str}
+                    </gpxtpx:TrackPointExtension>
+                    """
+            )
+            point.extensions.append(gpx_extension)
+
+        gpx_segment.points.append(point)
+
+    return gpx_segment
+
+
+def add_argparse_arguments(parser, args_config):
+    """
+    Add common arguments to an ArgumentParser based on configuration.
+
+    Args:
+        parser: argparse.ArgumentParser instance
+        args_config: Dictionary with argument names as keys and configuration as values
+                     Example: {"is_cn": True, "only_run": True, "tcx": True, "all": True}
+
+    Returns:
+        argparse.ArgumentParser: The parser with added arguments
+    """
+    if args_config.get("is_cn"):
+        parser.add_argument(
+            "--is-cn",
+            dest="is_cn",
+            action="store_true",
+            help="if garmin account is cn",
+        )
+
+    if args_config.get("only_run"):
+        parser.add_argument(
+            "--only-run",
+            dest="only_run",
+            action="store_true",
+            help="if is only for running",
+        )
+
+    if args_config.get("tcx"):
+        parser.add_argument(
+            "--tcx",
+            dest="download_file_type",
+            action="store_const",
+            const="tcx",
+            default="gpx",
+            help="to download personal documents or ebook",
+        )
+
+    if args_config.get("fit"):
+        parser.add_argument(
+            "--fit",
+            dest="download_file_type",
+            action="store_const",
+            const="fit",
+            help="download as fit file format",
+        )
+
+    if args_config.get("all"):
+        parser.add_argument(
+            "--all",
+            dest="all",
+            action="store_true",
+            help="if upload to strava all without check last time",
+        )
+
+    return parser

@@ -20,7 +20,7 @@ import garth
 import httpx
 from config import FOLDER_DICT, JSON_FILE, SQL_FILE
 from garmin_device_adaptor import process_garmin_data
-from utils import make_activities_file
+from utils import add_argparse_arguments, make_activities_file
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -393,33 +393,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "secret_string", nargs="?", help="secret_string fro get_garmin_secret.py"
     )
-    parser.add_argument(
-        "--is-cn",
-        dest="is_cn",
-        action="store_true",
-        help="if garmin account is cn",
-    )
-    parser.add_argument(
-        "--only-run",
-        dest="only_run",
-        action="store_true",
-        help="if is only for running",
-    )
-    parser.add_argument(
-        "--tcx",
-        dest="download_file_type",
-        action="store_const",
-        const="tcx",
-        default="gpx",
-        help="to download personal documents or ebook",
-    )
-    parser.add_argument(
-        "--fit",
-        dest="download_file_type",
-        action="store_const",
-        const="fit",
-        default="gpx",
-        help="to download personal documents or ebook",
+    add_argparse_arguments(
+        parser, {"is_cn": True, "only_run": True, "tcx": True, "fit": True}
     )
     options = parser.parse_args()
     secret_string = options.secret_string

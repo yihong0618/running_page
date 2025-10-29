@@ -28,7 +28,7 @@ from config import (
     start_point,
 )
 from generator import Generator
-from utils import adjust_time
+from utils import add_tcx_author, adjust_time, create_tcx_root
 
 # struct body
 FitType = np.dtype(
@@ -407,18 +407,7 @@ class Joyrun:
         )
 
         # Root node
-        training_center_database = ET.Element(
-            "TrainingCenterDatabase",
-            {
-                "xmlns": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2",
-                "xmlns:ns5": "http://www.garmin.com/xmlschemas/ActivityGoals/v1",
-                "xmlns:ns3": "http://www.garmin.com/xmlschemas/ActivityExtension/v2",
-                "xmlns:ns2": "http://www.garmin.com/xmlschemas/UserProfile/v2",
-                "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                "xmlns:ns4": "http://www.garmin.com/xmlschemas/ProfileExtension/v1",
-                "xsi:schemaLocation": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd",
-            },
-        )
+        training_center_database = create_tcx_root()
         # xml tree
         ET.ElementTree(training_center_database)
         # Activities
@@ -512,17 +501,7 @@ class Joyrun:
                 pause = pause_list.next()
 
         # Author
-        author = ET.Element("Author", {"xsi:type": "Application_t"})
-        training_center_database.append(author)
-        author_name = ET.Element("Name")
-        author_name.text = "Connect Api"
-        author.append(author_name)
-        author_lang = ET.Element("LangID")
-        author_lang.text = "en"
-        author.append(author_lang)
-        author_part = ET.Element("PartNumber")
-        author_part.text = CONNECT_API_PART_NUMBER
-        author.append(author_part)
+        add_tcx_author(training_center_database, CONNECT_API_PART_NUMBER)
 
         return training_center_database
 

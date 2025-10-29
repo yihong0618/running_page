@@ -22,7 +22,7 @@ from config import (
 )
 from Crypto.Cipher import AES
 from generator import Generator
-from utils import adjust_time
+from utils import adjust_time, create_gpx_track_segment, create_tcx_root
 import xml.etree.ElementTree as ET
 
 KEEP_SPORT_TYPES = ["running", "hiking", "cycling"]
@@ -297,24 +297,8 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
     gpx.tracks.append(gpx_track)
 
     # Create first segment in our GPX track:
-    gpx_segment = gpxpy.gpx.GPXTrackSegment()
+    gpx_segment = create_gpx_track_segment(points_dict_list)
     gpx_track.segments.append(gpx_segment)
-    for p in points_dict_list:
-        point = gpxpy.gpx.GPXTrackPoint(
-            latitude=p["latitude"],
-            longitude=p["longitude"],
-            time=p["time"],
-            elevation=p.get("elevation"),
-        )
-        if p.get("hr") is not None:
-            gpx_extension_hr = ET.fromstring(
-                f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
-                    <gpxtpx:hr>{p["hr"]}</gpxtpx:hr>
-                    </gpxtpx:TrackPointExtension>
-                    """
-            )
-            point.extensions.append(gpx_extension_hr)
-        gpx_segment.points.append(point)
     return gpx
 
 
@@ -335,18 +319,7 @@ def parse_points_to_tcx(run_data, run_points_data, sport_type):
     ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Root node
-    training_center_database = ET.Element(
-        "TrainingCenterDatabase",
-        {
-            "xmlns": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2",
-            "xmlns:ns5": "http://www.garmin.com/xmlschemas/ActivityGoals/v1",
-            "xmlns:ns3": "http://www.garmin.com/xmlschemas/ActivityExtension/v2",
-            "xmlns:ns2": "http://www.garmin.com/xmlschemas/UserProfile/v2",
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xmlns:ns4": "http://www.garmin.com/xmlschemas/ProfileExtension/v1",
-            "xsi:schemaLocation": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd",
-        },
-    )
+    training_center_database = create_tcx_root()
     # xml tree
     ET.ElementTree(training_center_database)
     # Activities

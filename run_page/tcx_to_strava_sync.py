@@ -7,7 +7,12 @@ from strava_sync import run_strava_sync
 from stravalib.exc import RateLimitTimeout, ActivityUploadFailed
 from tcxreader.tcxreader import TCXReader
 
-from utils import make_strava_client, get_strava_last_time, upload_file_to_strava
+from utils import (
+    add_argparse_arguments,
+    get_strava_last_time,
+    make_strava_client,
+    upload_file_to_strava,
+)
 
 
 def get_to_generate_files(last_time):
@@ -39,12 +44,7 @@ if __name__ == "__main__":
     parser.add_argument("client_id", help="strava client id")
     parser.add_argument("client_secret", help="strava client secret")
     parser.add_argument("strava_refresh_token", help="strava refresh token")
-    parser.add_argument(
-        "--all",
-        dest="all",
-        action="store_true",
-        help="if upload to strava all without check last time",
-    )
+    add_argparse_arguments(parser, {"all": True})
     options = parser.parse_args()
     # upload new tcx to strava
     print("Need to load all tcx files maybe take some time")

@@ -23,7 +23,7 @@ from config import (
     UTC_TIMEZONE,
 )
 from generator import Generator
-from utils import adjust_time
+from utils import adjust_time, create_gpx_track_segment, create_tcx_root
 
 TOKEN_REFRESH_URL = "https://sport.health.heytapmobi.com/open/v1/oauth/token"
 
@@ -344,31 +344,8 @@ def parse_points_to_gpx(sport_data, points_dict_list):
     gpx.tracks.append(gpx_track)
 
     # Create first segment in our GPX track:
-    gpx_segment = gpxpy.gpx.GPXTrackSegment()
+    gpx_segment = create_gpx_track_segment(points_dict_list)
     gpx_track.segments.append(gpx_segment)
-    for p in points_dict_list:
-        point = gpxpy.gpx.GPXTrackPoint(
-            latitude=p["latitude"],
-            longitude=p["longitude"],
-            time=p["time"],
-            elevation=p.get("elevation"),
-        )
-        hr = p.get("hr")
-        cad = p.get("cad")
-        if hr is not None or cad is not None:
-            hr_str = f"""<gpxtpx:hr>{hr}</gpxtpx:hr>""" if hr is not None else ""
-            cad_str = (
-                f"""<gpxtpx:cad>{p["cad"]}</gpxtpx:cad>""" if cad is not None else ""
-            )
-            gpx_extension = ET.fromstring(
-                f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
-                    {hr_str}
-                    {cad_str}
-                    </gpxtpx:TrackPointExtension>
-                    """
-            )
-            point.extensions.append(gpx_extension)
-        gpx_segment.points.append(point)
     return gpx
 
 
@@ -453,18 +430,7 @@ def parse_points_to_tcx(sport_data, points_dict_list):
     )
 
     # Root node
-    training_center_database = ET.Element(
-        "TrainingCenterDatabase",
-        {
-            "xmlns": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2",
-            "xmlns:ns5": "http://www.garmin.com/xmlschemas/ActivityGoals/v1",
-            "xmlns:ns3": "http://www.garmin.com/xmlschemas/ActivityExtension/v2",
-            "xmlns:ns2": "http://www.garmin.com/xmlschemas/UserProfile/v2",
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xmlns:ns4": "http://www.garmin.com/xmlschemas/ProfileExtension/v1",
-            "xsi:schemaLocation": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd",
-        },
-    )
+    training_center_database = create_tcx_root()
     # xml tree
     ET.ElementTree(training_center_database)
     # Activities
