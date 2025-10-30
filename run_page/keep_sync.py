@@ -83,7 +83,7 @@ def get_to_download_runs_ids(session, headers, sport_type):
                 logs = [j["stats"] for j in i["logs"]]
                 result.extend(k["id"] for k in logs if not k["isDoubtful"])
             last_date = r.json()["data"]["lastTimestamp"]
-            since_time = datetime.fromtimestamp(last_date / 1000, tz=timezone.utc)
+            since_time = datetime.fromtimestamp(last_date // 1000, tz=timezone.utc)
             print(f"pares keep ids data since {since_time}")
             time.sleep(1)  # spider rule
             if not last_date:
@@ -168,7 +168,7 @@ def parse_raw_data_to_nametuple(
                     download_keep_gpx(gpx_data.to_xml(), str(keep_id))
             if with_tcx:
                 tcx_data = parse_points_to_tcx(
-                    run_points_data_gpx, start_time, KEEP2TCX[run_data["dataType"]]
+                    run_data, run_points_data_gpx, KEEP2TCX[run_data["dataType"]]
                 )
                 # elevation_gain = tcx_data.get_uphill_downhill().uphill
                 if str(keep_id) not in old_tcx_ids:
@@ -177,10 +177,10 @@ def parse_raw_data_to_nametuple(
         print(f"ID {keep_id} no gps data")
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
     start_latlng = start_point(*run_points_data[0]) if run_points_data else None
-    start_date = datetime.fromtimestamp(start_time / 1000, tz=timezone.utc)
+    start_date = datetime.fromtimestamp(start_time // 1000, tz=timezone.utc)
     tz_name = run_data.get("timezone", "")
     start_date_local = adjust_time(start_date, tz_name)
-    end = datetime.fromtimestamp(run_data["endTime"] / 1000, tz=timezone.utc)
+    end = datetime.fromtimestamp(run_data["endTime"] // 1000, tz=timezone.utc)
     end_local = adjust_time(end, tz_name)
     if not run_data["duration"]:
         print(f"ID {keep_id} has no total time just ignore please check")
@@ -202,7 +202,7 @@ def parse_raw_data_to_nametuple(
         "distance": run_data["distance"],
         "moving_time": timedelta(seconds=run_data["duration"]),
         "elapsed_time": timedelta(
-            seconds=int((run_data["endTime"] - run_data["startTime"]) / 1000)
+            seconds=int((run_data["endTime"] - run_data["startTime"]) // 1000)
         ),
         "average_speed": run_data["distance"] / run_data["duration"],
         "elevation_gain": elevation_gain,
@@ -280,9 +280,9 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
         points_dict = {
             "latitude": point["latitude"],
             "longitude": point["longitude"],
+            # note that the timestamp of a point is decisecond(分秒)
             "time": datetime.fromtimestamp(
-                (point["timestamp"] * 100 + start_time)
-                / 1000,  # note that the timestamp of a point is decisecond(分秒)
+                (start_time // 1000 + point["timestamp"] // 10),
                 tz=timezone.utc,
             ),
             "elevation": point.get("altitude"),
@@ -318,30 +318,20 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
     return gpx
 
 
-def parse_points_to_tcx(run_points_data, start_time, sport_type):
+def parse_points_to_tcx(run_data, run_points_data, sport_type):
     """
     Convert run points data to TCX format.
 
     Args:
-        run_id (str): The ID of the run.
         run_points_data (list of dict): A list of run data points.
-        start_time (int): The start time for adjusting timestamps. Note that the unit of the start_time is millisecond
 
     Returns:
         tcx_data (str): TCX data in string format.
     """
-    # early timestamp fields in keep's data stands for delta time, but in newly data timestamp field stands for exactly time,
-    # so it doesn't need to plus extra start_time
-    if (
-        run_points_data
-        and run_points_data[0]["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND
-    ):
-        start_time = 0
 
+    # note that the timestamp of a point is decisecond(分秒)
     fit_start_time = datetime.fromtimestamp(
-        (run_points_data[0]["timestamp"] * 100 + start_time)
-        / 1000,  # note that the timestamp of a point is decisecond(分秒)
-        tz=timezone.utc,
+        run_data.get("startTime") // 1000, tz=timezone.utc
     ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Root node
@@ -374,12 +364,16 @@ def parse_points_to_tcx(run_points_data, start_time, sport_type):
     activity.append(activity_lap)
     # TotalTimeSeconds
     activity_total_time = ET.Element("TotalTimeSeconds")
-    activity_total_time.text = str(run_points_data[-1]["currentTotalDuration"])
+    activity_total_time.text = str(run_data.get("duration"))
     activity_lap.append(activity_total_time)
     # DistanceMeters
     activity_distance = ET.Element("DistanceMeters")
-    activity_distance.text = str(run_points_data[-1]["currentTotalDistance"])
+    activity_distance.text = str(run_data.get("distance"))
     activity_lap.append(activity_distance)
+    #       Calories
+    activity_calories = ET.Element("Calories")
+    activity_calories.text = str(run_data.get("calorie"))
+    activity_lap.append(activity_calories)
     # Track
     track = ET.Element("Track")
     activity_lap.append(track)
@@ -387,9 +381,9 @@ def parse_points_to_tcx(run_points_data, start_time, sport_type):
         tp = ET.Element("Trackpoint")
         track.append(tp)
         # Time
+        # note that the timestamp of a point is decisecond(分秒)
         time_stamp = datetime.fromtimestamp(
-            (point["timestamp"] * 100 + start_time)
-            / 1000,  # note that the timestamp of a point is decisecond(分秒)
+            (run_data.get("startTime") // 1000 + point.get("timestamp") // 10),
             tz=timezone.utc,
         ).strftime("%Y-%m-%dT%H:%M:%SZ")
         time_label = ET.Element("Time")
@@ -450,9 +444,8 @@ def find_nearest_hr(
     # init difference value
     min_difference = float("inf")
     if target_time > TIMESTAMP_THRESHOLD_IN_DECISECOND:
-        target_time = (
-            target_time * 100 - start_time
-        ) / 100  # note that the unit of target_time is decisecond and the unit of start_time is normal millisecond
+        # note that the unit of target_time is decisecond and the unit of start_time is normal millisecond
+        target_time = target_time = target_time - start_time // 100
 
     for item in hr_data_list:
         timestamp = item["timestamp"]

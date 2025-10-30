@@ -22,6 +22,7 @@
    - For old data: To include `Elevation Gain` for past activities, perform a full reimport.
    - To show the 'Elevation Gain' column, modify `SHOW_ELEVATION_GAIN` in `src/utils/const.ts`
    - note: `Elevation Gain` may be inaccurate. You can use Strava's "Correct Elevation" or Garmin's "Elev Corrections" feature for more precise data.
+6. It cost me a lot money, so please do not use my mapbox token more check this [issue](https://github.com/yihong0618/running_page/issues/643)
 
 <p align="center">
   <img width="150" src="https://raw.githubusercontent.com/shaonianche/gallery/master/running_page/running_page_logo.png" />
@@ -124,7 +125,9 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Daniel](https://danielyu316.github.io/running_page) | <https://danielyu316.github.io/running_page/>  | Codoon      |
 | [arthurfsy2](https://github.com/arthurfsy2)          | <https://fsy.4a1801.life>                      | Garmin      |
 | [JMGutiH](https://github.com/JMGutiH)                | <https://jmgutih.github.io/workouts_page/>     | Strava      |
-| [Bolyn](https://run.wbolyn.com)                | <https://run.wbolyn.com>     | Coros      |
+| [Bolyn](https://run.wbolyn.com)                      | <https://run.wbolyn.com>                       | Coros       |
+| [LeiChen](https://github.com/xthirty77)              | <https://xthirty77.github.io/running_page/>    | Coros       |
+| [itrunner](https://itrunner.cn)                      | <https://itrunner.cn>                          | Garmin      |
 
 </details>
 
@@ -161,8 +164,11 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Gpx_to_Strava(upload all gpx data to strava)](#gpx_to_strava)**
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
-- **[Coros](#coros)**
+- **[COROS](#coros)**
 - **[iGPSPORT](#igpsport)**
+- **[Joyrun](#joyrun)**
+- **[Komoot](#komoot)**
+- **[Onelap](#onelap)**
 
 ## Download
 
@@ -807,10 +813,10 @@ python run_page/nike_to_strava_sync.py eyJhbGciThiMTItNGIw******  xxx xxx xxx
 
 </details>
 
-### Coros
+### COROS
 
 <details>
-<summary>Get your Coros data</summary>
+<summary>Get your COROS data</summary>
 
 <br>
 
@@ -840,10 +846,62 @@ python run_page/coros_sync.py 'your coros account' 'your coros password'
 #### Enter the following command in the terminal
 
 ```bash
-python3 run_page/igpsport_sync.py 'your igpsport account' 'your igpsport password' -with-gpx
+python3 run_page/igpsport_sync.py 'your igpsport phone' 'password' --with-gpx
 ```
 
 You can replace `with-gpx` with `with-fit` to acquire data in fit format.
+
+</details>
+
+### Joyrun
+
+<details>
+<summary>Get your Joyrun data</summary>
+
+#### Enter the following command in the terminal
+
+```bash
+python3 run_page/joyrun_sync.py 'your joyrun phone' 'verication code' --with-gpx
+```
+
+You can replace `with-gpx` with `with-tcx` to acquire data in tcx format.
+
+</details>
+
+### Komoot
+
+<details>
+<summary>Get your Komoot data</summary>
+
+#### Enter the following command in the terminal
+
+```bash
+python3 run_page/komoot_sync.py 'your komoot email' 'password' --with-gpx
+```
+
+| Parameter | Description |
+| --- | --- |
+| `mail` | Login using specified email address |
+| `password` | Use provided password and skip interactive prompt |
+| `-n`, `--anonymous` | Skip authentication, no interactive prompt (valid only with `-d`) |
+| `--with-gpx` | Download all tours as GPX |
+| `-r`, `--remove-deleted` | Remove GPX files (from `--output` dir) without corresponding tour in Komoot (deleted and previous versions) |
+| `--start-date=YYYY-MM-DD` | Filter tours on or after specified date |
+| `--end-date=YYYY-MM-DD` | Filter tours on or before specified date |
+| `-e`, `--no-poi` | Do not include highlights as POIs |
+
+</details>
+
+### Onelap
+
+<details>
+<summary>Get your Onelap data</summary>
+
+#### Enter the following command in the terminal
+
+```bash
+python3 run_page/onelap_sync.py 'your onelap phone' 'password' --with-fit
+```
 
 </details>
 

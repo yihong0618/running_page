@@ -4,13 +4,37 @@ import activities from '@/static/activities.json';
 
 // standardize country names for consistency between mapbox and activities data
 const standardizeCountryName = (country: string): string => {
-  switch (country) {
-    case '英国 / 英國':
-      return '英国';
-    case '美利坚合众国/美利堅合眾國':
-      return '美国';
-    default:
-      return country;
+  if (country.includes('美利坚合众国')) {
+    return '美国';
+  }
+  if (country.includes('英国')) {
+    return '英国';
+  }
+  if (country.includes('印度尼西亚')) {
+    return '印度尼西亚';
+  }
+  if (country.includes('韩国')) {
+    return '韩国';
+  }
+  if (country.includes('斯里兰卡')) {
+    return '斯里兰卡';
+  }
+  if (country.includes('所罗门群岛')) {
+    return '所罗门群岛';
+  }
+  if (country.includes('拉脱维亚')) {
+    return '拉脱维亚';
+  }
+  if (country.includes('爱沙尼亚')) {
+    return '爱沙尼亚';
+  }
+  if (country.includes('奧地利')) {
+    return '奥地利';
+  }
+  if (country.includes('澳大利亚')) {
+    return '澳大利亚';
+  } else {
+    return country;
   }
 };
 
