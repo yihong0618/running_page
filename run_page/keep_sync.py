@@ -7,7 +7,6 @@ import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta, timezone
 from xml.dom import minidom
-
 import eviltransform
 import gpxpy
 import polyline
@@ -448,7 +447,11 @@ def find_nearest_hr(
         target_time = target_time = target_time - start_time // 100
 
     for item in hr_data_list:
-        timestamp = item["timestamp"]
+        timestamp = item.get("timestamp")
+
+        if not timestamp:
+            continue
+
         difference = abs(timestamp - target_time)
 
         if difference <= threshold and difference < min_difference:
