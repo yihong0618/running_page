@@ -10,7 +10,6 @@ import xml.etree.ElementTree as ET
 from collections import namedtuple
 from datetime import datetime, timedelta, timezone
 from xml.dom import minidom
-
 import eviltransform
 import gpxpy
 import numpy as np
@@ -293,7 +292,12 @@ def tcx_job(run_data):
             # to time array
             time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%SZ")
             # to unix timestamp
-            unix_time = int(time.mktime(time_array))
+            try:
+                unix_time = int(time.mktime(time_array))
+            except OverflowError as e:
+                print(e, time_stamp)
+                continue
+
             fit_steps[unix_time] = int(single_step)
 
     # get single track point
@@ -310,7 +314,11 @@ def tcx_job(run_data):
             # to time array
             time_array = time.strptime(time_stamp, "%Y-%m-%dT%H:%M:%SZ")
             # to unix timestamp
-            unix_time = int(time.mktime(time_array))
+            try:
+                unix_time = int(time.mktime(time_array))
+            except OverflowError as e:
+                print(e, time_stamp)
+                continue
 
             # get heart rate at unix_time
             hr = fit_hrs.get(unix_time, None)

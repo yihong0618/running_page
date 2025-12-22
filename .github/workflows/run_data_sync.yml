@@ -230,6 +230,23 @@ jobs:
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_swimming.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Swimmer Month of Life" --sport-type swimming
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_skiing.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Skier Month of Life" --sport-type skiing
 
+      - name: Make year summary
+        if: env.GENERATE_MONTH_OF_LIFE == 'true'
+        env:
+          ATHLETE: ${{ env.ATHLETE }}
+        run: |
+          # Generate year summary SVG for all years with activities
+          python -c "
+          import sqlite3
+          conn = sqlite3.connect('run_page/data.db')
+          cursor = conn.cursor()
+          cursor.execute('SELECT DISTINCT strftime(\"%Y\", start_date_local) as year FROM activities ORDER BY year')
+          years = [row[0] for row in cursor.fetchall() if row[0]]
+          conn.close()
+          for year in years:
+              print(year)
+          " | xargs -I{} python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary_{}.svg --summary-year {} --athlete "$ATHLETE"
+
       - name: Save data to parqent
         if: env.SAVE_TO_PARQENT == 'true'
         run: |
