@@ -167,7 +167,45 @@
 
 .lifeContainer {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+}
+
+.yearSelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.yearButton {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.yearButton:hover {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+.yearButtonActive {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+.yearSummarySvg {
+  max-width: 100%;
+  height: auto;
+  max-height: 80vh;
 }
 
 /* Inner wrapper to center the virtual list rows and constrain width */
