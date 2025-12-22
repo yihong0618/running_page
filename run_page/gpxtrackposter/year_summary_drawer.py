@@ -6,7 +6,6 @@ from collections import defaultdict
 import svgwrite
 
 from .tracks_drawer import TracksDrawer
-from .utils import format_float
 from .xy import XY
 
 

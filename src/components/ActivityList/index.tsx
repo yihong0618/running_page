@@ -56,10 +56,15 @@ const SkiingSvg = MonthOfLifeSvg('skiing');
 const AllSvg = MonthOfLifeSvg('all');
 
 // Cache for year summary lazy components to prevent flickering
-const yearSummaryCache: Record<string, React.LazyExoticComponent<React.FC<React.SVGProps<SVGSVGElement>>>> = {};
+const yearSummaryCache: Record<
+  string,
+  React.LazyExoticComponent<React.FC<React.SVGProps<SVGSVGElement>>>
+> = {};
 const getYearSummarySvg = (year: string) => {
   if (!yearSummaryCache[year]) {
-    yearSummaryCache[year] = lazy(() => loadSvgComponent(yearSummaryStats, `./year_summary_${year}.svg`));
+    yearSummaryCache[year] = lazy(() =>
+      loadSvgComponent(yearSummaryStats, `./year_summary_${year}.svg`)
+    );
   }
   return yearSummaryCache[year];
 };
@@ -682,7 +687,9 @@ const ActivityList: React.FC = () => {
               <button
                 key={year}
                 className={`${styles.yearButton} ${selectedYear === year ? styles.yearButtonActive : ''}`}
-                onClick={() => setSelectedYear(selectedYear === year ? null : year)}
+                onClick={() =>
+                  setSelectedYear(selectedYear === year ? null : year)
+                }
               >
                 {year}
               </button>
@@ -698,7 +705,9 @@ const ActivityList: React.FC = () => {
             ) : (
               // Show Life SVG when no year is selected
               <>
-                {(sportType === 'running' || sportType === 'Run') && <RunningSvg />}
+                {(sportType === 'running' || sportType === 'Run') && (
+                  <RunningSvg />
+                )}
                 {sportType === 'walking' && <WalkingSvg />}
                 {sportType === 'hiking' && <HikingSvg />}
                 {sportType === 'cycling' && <CyclingSvg />}
