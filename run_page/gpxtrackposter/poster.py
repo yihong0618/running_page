@@ -111,10 +111,16 @@ class Poster:
         width = self.width
         if self.drawer_type == "plain":
             height = height - 100
+        if self.drawer_type == "year_summary":
+            # Year summary has its own layout, use full size
+            height = height
         d = svgwrite.Drawing(output, (f"{width}mm", f"{height}mm"))
         d.viewbox(0, 0, self.width, height)
         d.add(d.rect((0, 0), (width, height), fill=self.colors["background"]))
-        if not self.drawer_type == "plain":
+        if self.drawer_type == "year_summary":
+            # Year summary drawer handles its own layout
+            self.__draw_tracks(d, XY(width - 10, height - 10), XY(5, 5))
+        elif not self.drawer_type == "plain":
             self.__draw_header(d)
             self.__draw_footer(d)
             self.__draw_tracks(d, XY(width - 20, height - 30 - 30), XY(10, 30))
