@@ -341,6 +341,52 @@ const ActivityList: React.FC = () => {
     return Array.from(years).sort((a, b) => Number(b) - Number(a));
   }, []);
 
+  // Keyboard navigation for year selection in Life view
+  useEffect(() => {
+    if (interval !== 'life') return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle arrow keys
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+
+      // Prevent default scrolling behavior
+      e.preventDefault();
+
+      // Remove focus from current element to avoid visual confusion
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+
+      const currentIndex = selectedYear
+        ? availableYears.indexOf(selectedYear)
+        : -1;
+
+      if (e.key === 'ArrowLeft') {
+        // Move to newer year (left in UI, lower index since sorted descending)
+        if (currentIndex === -1) {
+          // No year selected, select the last (oldest) year
+          setSelectedYear(availableYears[availableYears.length - 1]);
+        } else if (currentIndex > 0) {
+          setSelectedYear(availableYears[currentIndex - 1]);
+        } else if (currentIndex === 0) {
+          // At the most recent year, deselect to show Life view
+          setSelectedYear(null);
+        }
+      } else if (e.key === 'ArrowRight') {
+        // Move to older year (right in UI, higher index since sorted descending)
+        if (currentIndex === -1) {
+          // No year selected, select the first (most recent) year
+          setSelectedYear(availableYears[0]);
+        } else if (currentIndex < availableYears.length - 1) {
+          setSelectedYear(availableYears[currentIndex + 1]);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [interval, selectedYear, availableYears]);
+
   useEffect(() => {
     const sportTypeSet = new Set(activities.map((activity) => activity.type));
     if (sportTypeSet.has('Run')) {
