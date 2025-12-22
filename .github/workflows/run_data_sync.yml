@@ -232,20 +232,8 @@ jobs:
 
       - name: Make year summary
         if: env.GENERATE_MONTH_OF_LIFE == 'true'
-        env:
-          ATHLETE: ${{ env.ATHLETE }}
         run: |
-          # Generate year summary SVG for all years with activities
-          python -c "
-          import sqlite3
-          conn = sqlite3.connect('run_page/data.db')
-          cursor = conn.cursor()
-          cursor.execute('SELECT DISTINCT strftime(\"%Y\", start_date_local) as year FROM activities ORDER BY year')
-          years = [row[0] for row in cursor.fetchall() if row[0]]
-          conn.close()
-          for year in years:
-              print(year)
-          " | xargs -I{} python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary_{}.svg --summary-year {} --athlete "$ATHLETE"
+          python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary.svg --athlete "${{ env.ATHLETE }}"
 
       - name: Save data to parqent
         if: env.SAVE_TO_PARQENT == 'true'
