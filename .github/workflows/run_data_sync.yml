@@ -243,8 +243,9 @@ jobs:
           cursor.execute('SELECT DISTINCT strftime(\"%Y\", start_date_local) as year FROM activities ORDER BY year')
           years = [row[0] for row in cursor.fetchall() if row[0]]
           conn.close()
-          print(' '.join(years))
-          " | xargs -n1 -I{} python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary_{}.svg --summary-year {} --athlete "$ATHLETE"
+          for year in years:
+              print(year)
+          " | xargs -I{} python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary_{}.svg --summary-year {} --athlete "$ATHLETE"
 
       - name: Save data to parqent
         if: env.SAVE_TO_PARQENT == 'true'
