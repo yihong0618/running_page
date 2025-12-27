@@ -331,12 +331,7 @@ class YearSummaryDrawer(TracksDrawer):
         """Get the date of the first run ever"""
         if not self.poster.tracks:
             return None
-        year_tracks = [
-            t for t in self.poster.tracks if t.start_time_local.year == self.year
-        ]
-        if not year_tracks:
-            return None
-        return min(t.start_time_local for t in year_tracks)
+        return min(t.start_time_local for t in self.poster.tracks)
 
     def _draw_monthly_grid_vertical(
         self,
