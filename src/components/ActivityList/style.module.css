@@ -218,7 +218,7 @@
 }
 
 /* Prevent content from sitting flush against the custom scrollbar. The inner wrapper (direct child) gets right padding. */
-.summaryInner>div {
+.summaryInner > div {
   padding-right: 16px;
   box-sizing: content-box;
 }
@@ -238,7 +238,7 @@
   padding-right: 4px;
 }
 
-.lifeContainer>svg,
+.lifeContainer > svg,
 .lifeContainer :global(svg) {
   max-width: 100%;
   height: auto;
