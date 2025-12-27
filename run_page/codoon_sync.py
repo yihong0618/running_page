@@ -414,9 +414,9 @@ class CodoonAuth:
             r.headers["timestamp"] = timestamp
             if "refresh_token" in params:
                 r.headers["authorization"] = "Basic " + basic_auth
-                r.headers[
-                    "content-type"
-                ] = "application/x-www-form-urlencode; charset=utf-8"
+                r.headers["content-type"] = (
+                    "application/x-www-form-urlencode; charset=utf-8"
+                )
             else:
                 r.headers["authorization"] = "Bearer " + self.token
                 r.headers["content-type"] = "application/json; charset=utf-8"
