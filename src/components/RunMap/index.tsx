@@ -106,19 +106,29 @@ const RunMap = ({
       // Apply new style
       map.setStyle(mapStyle);
 
-      // Restore map state and visibility settings after style loads
-      map.once('style.load', () => {
-        // Restore map view state
-        map.setCenter(currentCenter);
-        map.setZoom(currentZoom);
-        map.setBearing(currentBearing);
-        map.setPitch(currentPitch);
+      // Create a stable handler for style.load to ensure proper cleanup
+      const handleStyleLoad = () => {
+        // Add a small delay to ensure style is fully loaded
+        setTimeout(() => {
+          try {
+            // Restore map view state
+            map.setCenter(currentCenter);
+            map.setZoom(currentZoom);
+            map.setBearing(currentBearing);
+            map.setPitch(currentPitch);
 
-        // Reapply layer visibility settings
-        switchLayerVisibility(map, lights);
-      });
+            // Reapply layer visibility settings with current lights state
+            switchLayerVisibility(map, lights);
+          } catch (error) {
+            console.warn('Error applying map style changes:', error);
+          }
+        }, 100);
+      };
+
+      // Use once to automatically remove the listener after it fires
+      map.once('style.load', handleStyleLoad);
     }
-  }, [mapStyle]);
+  }, [mapStyle]); // Keep only mapStyle in dependency to prevent excessive re-renders
 
   // animation state (single run only)
   const [animatedPoints, setAnimatedPoints] = useState<Coordinate[]>([]);
@@ -157,7 +167,14 @@ const RunMap = ({
   useEffect(() => {
     if (mapRef.current) {
       const map = mapRef.current.getMap();
-      switchLayerVisibility(map, lights);
+      // Add a small delay to ensure map is ready
+      setTimeout(() => {
+        try {
+          switchLayerVisibility(map, lights);
+        } catch (error) {
+          console.warn('Error switching layer visibility:', error);
+        }
+      }, 50);
     }
   }, [lights]);
 

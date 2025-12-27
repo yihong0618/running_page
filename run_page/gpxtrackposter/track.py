@@ -139,6 +139,13 @@ class Track:
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
         self.run_id = activity.run_id
         self.type = get_normalized_sport_type(activity.type)
+        # Load moving_dict from database
+        self.moving_dict = {
+            "distance": self.length,
+            "moving_time": activity.moving_time,
+            "elapsed_time": activity.elapsed_time,
+            "average_speed": activity.average_speed or 0,
+        }
 
     def bbox(self):
         """Compute the smallest rectangle that contains the entire track (border box)."""

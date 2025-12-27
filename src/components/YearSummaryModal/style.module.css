@@ -1,0 +1,52 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #222222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #222222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 36px;
+  cursor: pointer;
+  transition: color 0.2s;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  color: #fff;
+}
+
+.svg {
+  width: auto;
+  height: 90vh;
+  max-width: 95vw;
+  display: block;
+}
+
+.loading {
+  color: #888;
+  padding: 40px;
+  text-align: center;
+}
