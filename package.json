@@ -16,6 +16,7 @@
     "geojson": "^0.5.0",
     "mapbox-gl": "^2.15.0",
     "prop-types": "^15.8.1",
+    "rc-virtual-list": "^3.19.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ga4": "^2.1.0",
@@ -39,8 +40,8 @@
     "dev": "vite dev",
     "serve": "vite serve",
     "lint": "eslint src --ext .ts,.tsx --fix",
-    "check": "prettier --check src/main.tsx src/**/*.{css,module.css,json,ts,tsx} *.{yaml,json,ts}",
-    "format": "prettier --write src/main.tsx src/**/*.{css,module.css,json,ts,tsx} *.{yaml,json,ts}",
+    "check": "prettier --check \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\"",
+    "format": "prettier --write \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\"",
     "ci": "pnpm run format && pnpm run lint && pnpm run build"
   },
   "engineStrict": true,

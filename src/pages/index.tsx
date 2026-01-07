@@ -25,11 +25,12 @@ import {
   titleForShow,
   RunIds,
 } from '@/utils/utils';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme, useThemeChangeCounter } from '@/hooks/useTheme';
 
 const Index = () => {
   const { siteTitle, siteUrl } = useSiteMetadata();
   const { activities, thisYear } = useActivities();
+  const themeChangeCounter = useThemeChangeCounter();
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [title, setTitle] = useState('');
@@ -94,7 +95,7 @@ const Index = () => {
 
   const geoData = useMemo(() => {
     return geoJsonForRuns(runs);
-  }, [runs]);
+  }, [runs, themeChangeCounter]);
 
   // for auto zoom
   const bounds = useMemo(() => {
@@ -279,13 +280,16 @@ const Index = () => {
   );
 
   // Auto locate activity when singleRunId is set and activities are loaded
+  // First, detect the run's year and switch to it if needed
   useEffect(() => {
     if (singleRunId !== null && activities.length > 0) {
-      // Check if the run exists in our activities
-      const runExists = activities.some((run) => run.run_id === singleRunId);
-      if (runExists) {
-        // Automatically simulate clicking the single run
-        locateActivity([singleRunId]);
+      const targetRun = activities.find((run) => run.run_id === singleRunId);
+      if (targetRun) {
+        const runYear = targetRun.start_date_local.slice(0, 4);
+        if (year !== runYear) {
+          setYear(runYear);
+          setCurrentFilter({ item: runYear, func: filterYearRuns });
+        }
       } else {
         // If run doesn't exist, clear the hash and show a warning
         console.warn(`Run with ID ${singleRunId} not found in activities`);
@@ -293,20 +297,35 @@ const Index = () => {
         setSingleRunId(null);
       }
     }
-  }, [singleRunId, activities, locateActivity]);
+  }, [singleRunId, activities]);
+
+  useEffect(() => {
+    if (singleRunId !== null && runs.length > 0) {
+      const runExistsInCurrentRuns = runs.some(
+        (run) => run.run_id === singleRunId
+      );
+      if (runExistsInCurrentRuns) {
+        locateActivity([singleRunId]);
+      }
+    }
+  }, [runs, singleRunId, locateActivity]);
 
   // Update bounds when geoData changes
   useEffect(() => {
-    setViewState((prev) => ({
-      ...prev,
-      ...bounds,
-    }));
-  }, [bounds]);
+    if (singleRunId === null) {
+      setViewState((prev) => ({
+        ...prev,
+        ...bounds,
+      }));
+    }
+  }, [bounds, singleRunId]);
 
   // Animate geoData when runs change
   useEffect(() => {
-    startAnimation(runs);
-  }, [runs, startAnimation]);
+    if (singleRunId === null) {
+      startAnimation(runs);
+    }
+  }, [runs, startAnimation, singleRunId]);
 
   useEffect(() => {
     if (year !== 'Total') {

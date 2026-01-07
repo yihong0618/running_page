@@ -133,6 +133,7 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
         "average_speed": average_speed,
         "elevation_gain": elevation_gain,
         "location_country": location_country,
+        "subtype": "Run",
     }
     return namedtuple("activity_db_instance", activity_db_instance.keys())(
         *activity_db_instance.values()
@@ -142,8 +143,8 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
 def compute_elevation_gain(altitudes):
     total_gain = 0
     for i in range(1, len(altitudes)):
-        if altitudes[i] > altitudes[i - 1]:
-            total_gain += altitudes[i] - altitudes[i - 1]
+        if float(altitudes[i]) > float(altitudes[i - 1]):
+            total_gain += float(altitudes[i]) - float(altitudes[i - 1])
     return total_gain
 
 
@@ -190,6 +191,10 @@ def get_new_activities(token, old_tracks_ids, with_gpx=False):
             if with_gpx and activity_summary["id"] not in old_gpx_ids:
                 save_activity_gpx(activity_summary, activity_detail, track)
         except Exception as e:
+            # print traceback.format_exc()
+            import traceback
+
+            traceback.print_exc()
             print(f"Something wrong parsing tulipsport id {activity_id} " + str(e))
     return tracks
 
