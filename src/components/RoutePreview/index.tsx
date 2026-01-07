@@ -1,5 +1,6 @@
 import React from 'react';
 import { pathForRun, Activity } from '@/utils/utils';
+import { NO_ROUTE_DATA, INVALID_ROUTE_DATA } from '@/utils/const';
 import styles from './style.module.css';
 
 interface RoutePreviewProps {
@@ -19,7 +20,7 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({
   if (activitiesWithRoutes.length === 0) {
     return (
       <div className={`${styles.routePreview} ${className || ''}`}>
-        <div className={styles.noRoute}>暂无路线数据</div>
+        <div className={styles.noRoute}>{NO_ROUTE_DATA}</div>
       </div>
     );
   }
@@ -39,7 +40,7 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({
   if (allPoints.length === 0) {
     return (
       <div className={`${styles.routePreview} ${className || ''}`}>
-        <div className={styles.noRoute}>路线数据无效</div>
+        <div className={styles.noRoute}>{INVALID_ROUTE_DATA}</div>
       </div>
     );
   }
