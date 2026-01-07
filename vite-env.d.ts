@@ -3,6 +3,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_MAPBOX_TOKEN?: string;
+  readonly VITE_MAP_TILE_ACCESS_TOKEN?: string;
 }
 
 interface ImportMeta {

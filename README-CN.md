@@ -12,6 +12,7 @@
    ```
 
 5. 2024.09.29: Added `Elevation Gain` field, If you forked the project before this update, please run the following command:
+
    - To resolve errors: `sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: activities.elevation_gain`
    - If you don't have a local environment, set `RUN_TYPE` to `db_updater` in the `.github/workflows/run_data_sync.yml` file once then change back.
 
@@ -22,7 +23,8 @@
    - For old data: To include `Elevation Gain` for past activities, perform a full reimport.
    - To show the 'Elevation Gain' column, modify `SHOW_ELEVATION_GAIN` in `src/utils/const.ts`
    - note: `Elevation Gain` may be inaccurate. You can use Strava's "Correct Elevation" or Garmin's "Elev Corrections" feature for more precise data.
-6. 请使用自己的 mapxbox token 参考这个 [issue](https://github.com/yihong0618/running_page/issues/643)
+
+6. 请使用自己的 mapbox token 参考这个 [issue](https://github.com/yihong0618/running_page/issues/643)
 
 ![running_page](https://socialify.git.ci/yihong0618/running_page/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fshaonianche%2Fgallery%2Fmaster%2Frunning_page%2Frunning_page_logo_150*150.jpg&owner=1&pulls=1&stargazers=1&theme=Light)
 
@@ -123,8 +125,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Shuqi](https://github.com/zhufengme)             | <https://runner-shuqi.devlink.cn/>             | Garmin      |
 | [shugoal](https://github.com/shugoal)             | <https://shugoal.github.io/wk-shu/>            | Garmin      |
 | [Bolyn](https://run.wbolyn.com)                   | <https://run.wbolyn.com>                       | Coros       |
-| [LeiChen](https://github.com/xthirty77)           | <https://xthirty77.github.io/running_page/>    | Coros       |
-| [itrunner](https://itrunner.cn)                   | <https://itrunner.cn>                          | Garmin      |
+
 </details>
 
 ## 它是怎么工作的
@@ -173,7 +174,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[Garmin_to_Strava(Using Garmin Run, Strava backup data)](#garmin_to_strava)**
 - **[Strava_to_Garmin(Using Strava Run, Garmin backup data)](#strava_to_garmin)**
 - **[Coros 高驰](#coros-高驰)**
-- **[iGPSPORT迹驰](#igpsport)**
+- **[iGPSPORT 迹驰](#igpsport)**
 - **[Komoot](#komoot)**
 - **[Onelap](#onelap)**
 
@@ -227,11 +228,11 @@ docker run -itd -p 80:80   running_page:latest
 
 ```
 
-## 替换 Mapbox token
+## 配置 Mapbox token
 
 > 建议有能力的同学把 `src/utils/const.ts` 文件中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
 >
-> 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.ts`
+> 如果你是海外用户/使用英文地图请更改 `IS_CHINESE = false` in `src/utils/const.ts`
 
 ```typescript
 const MAPBOX_TOKEN =
@@ -572,12 +573,10 @@ python run_page/garmin_sync.py xxxxxxxxxxx
 python run_page/get_garmin_secret.py ${your email} ${your password} --is-cn
 ```
 
-![get_garmin_cn_secret](docs/get_garmin_cn_secret.jpg)
-
 #### 执行佳明国区同步脚本
 
-复制上述终端中输出的密钥，如果您是使用 GitHub 请在 GitHub Action 中配置**GARMIN_SECRET_STRING_CN** 参数
-![get_garmin_secret](docs/add_garmin_secret_cn_string.jpg)
+复制上述终端中输出的密钥，如果您是使用 GitHub 请在 GitHub Action 中配置 **GARMIN_SECRET_STRING_CN** 参数
+
 示例：
 
 ```bash
@@ -977,7 +976,7 @@ python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PAS
 python run_page/igpsport_sync.py ${iGPSPORT_mobile} ${iGPSPORTS_password} --with-gpx
 ```
 
-如果你想要 fit 格式的数据而非 gpx,可以将`--with-gpx`替换为`--with-fit`。
+如果你想要 fit 格式的数据而非 gpx，可以将`--with-gpx`替换为`--with-fit`。
 
 </details>
 
@@ -1200,10 +1199,12 @@ python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --da
 1. 进入仓库的 "Settings -> GitHub Pages -> Source"，选择 "GitHub Actions"
 
 2. 进入仓库的 "Actions -> Workflows -> All Workflows"，选择左侧面板的 "Run Data Sync"，然后点击 "Run workflow"
+
    - "Run Data Sync" 将更新数据，然后触发 "Publish GitHub Pages" 工作流
    - 确认工作流运行没有错误
 
 3. 打开网站检查结果
+
    - 如果网站没有反映最新数据，请使用“F5”刷新页面
    - 某些浏览器 (比如 Chrome) 可能缓存网页不刷新，您需要使用 Ctrl+F5 (Windows) 或 Shift+Cmd+r (Mac) 强制清除缓存并重新加载页面
 
@@ -1261,6 +1262,7 @@ Actions [源码](https://github.com/yihong0618/running_page/blob/master/.github/
    <center><img src="https://cdn.jujimeizuo.cn/blog/2023/10/get-action-id.jpg" alt="get-action-id"></center>
 
 2. 结合快捷指令
+
    1. 通过 iCloud 获取 [running-page-shortcuts-template](https://www.icloud.com/shortcuts/4a5807a98b9a4e359815ff179c62bacb)
    2. 修改下图字典参数
 
