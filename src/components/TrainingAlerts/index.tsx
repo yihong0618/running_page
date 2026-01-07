@@ -17,11 +17,15 @@ interface Alert {
 }
 
 const getWeekNumber = (date: Date): string => {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const d = new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  );
   const dayNum = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  const weekNo = Math.ceil(
+    ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
+  );
   return `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
 };
 
@@ -53,7 +57,10 @@ const TrainingAlerts = ({ activities }: TrainingAlertsProps) => {
     const months = Object.keys(monthlyMileage).sort().reverse();
     const latestMonth = months[0];
 
-    if (latestMonth && monthlyMileage[latestMonth] > MONTHLY_MILEAGE_THRESHOLD) {
+    if (
+      latestMonth &&
+      monthlyMileage[latestMonth] > MONTHLY_MILEAGE_THRESHOLD
+    ) {
       alertList.push({
         type: 'warning',
         message: TRAINING_ALERT_MESSAGES.MONTHLY_OVERTRAINING.replace(
@@ -72,7 +79,9 @@ const TrainingAlerts = ({ activities }: TrainingAlertsProps) => {
       const previousWeekMileage = weeklyMileage[previousWeek] || 0;
 
       if (previousWeekMileage > 0) {
-        const increasePercent = ((latestWeekMileage - previousWeekMileage) / previousWeekMileage) * 100;
+        const increasePercent =
+          ((latestWeekMileage - previousWeekMileage) / previousWeekMileage) *
+          100;
 
         if (increasePercent > WEEKLY_INCREASE_THRESHOLD) {
           alertList.push({
@@ -108,7 +117,9 @@ const TrainingAlerts = ({ activities }: TrainingAlertsProps) => {
                 : 'border-blue-500/50 bg-blue-500/10 text-blue-600 dark:text-blue-400'
             }`}
           >
-            <span className="mr-2">{alert.type === 'warning' ? '⚠️' : 'ℹ️'}</span>
+            <span className="mr-2">
+              {alert.type === 'warning' ? '⚠️' : 'ℹ️'}
+            </span>
             {alert.message}
           </div>
         ))}
