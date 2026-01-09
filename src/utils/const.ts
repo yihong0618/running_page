@@ -1,9 +1,7 @@
 // Constants
-const MAPBOX_TOKEN =
-  // For security reasons, please avoid using the default public token provided by Mapbox as much as possible.
-  // Instead, manually add a new token and apply URL restrictions.
-  // (please refer to https://github.com/yihong0618/running_page/issues/643#issuecomment-2042668580)
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJjbWYxdXR4YncwMTJtMm5zOTE4eTZpMGdtIn0.OnsXdwkZFztR8a5Ph_T-xg';
+// MapTiler API Key for map tiles (supports multiple languages including Chinese)
+// You can get a free API key at https://cloud.maptiler.com/auth/widget
+const MAPTILER_API_KEY = 'Gt5R0jT8tuIYxW6sNrAg';
 const MUNICIPALITY_CITIES_ARR = [
   '北京市',
   '上海市',
@@ -147,7 +145,7 @@ export {
   GOOGLE_ANALYTICS_TRACKING_ID,
   CHINESE_LOCATION_INFO_MESSAGE_FIRST,
   CHINESE_LOCATION_INFO_MESSAGE_SECOND,
-  MAPBOX_TOKEN,
+  MAPTILER_API_KEY,
   MUNICIPALITY_CITIES_ARR,
   MAP_LAYER_LIST,
   IS_CHINESE,
@@ -228,46 +226,54 @@ export const HIKING_COLOR = 'rgb(151,51,255)';
 export const WALKING_COLOR = HIKING_COLOR;
 export const SWIMMING_COLOR = 'rgb(255,51,51)';
 
-// map tiles vendor, maptiler or mapbox or stadiamaps
-// if you want to use maptiler, set the access token in MAP_TILE_ACCESS_TOKEN
-export const MAP_TILE_VENDOR = 'mapbox';
+// map tiles vendor: maptiler (recommended, supports Chinese labels)
+// MapTiler provides free tier with 100k requests/month
+export const MAP_TILE_VENDOR = 'maptiler';
 
 // map tiles style name, see MAP_TILE_STYLES for more details
-export const MAP_TILE_STYLE_LIGHT = 'light-v10';
-export const MAP_TILE_STYLE_DARK = 'dark-v10';
+export const MAP_TILE_STYLE_LIGHT = 'dataviz-light';
+export const MAP_TILE_STYLE_DARK = 'dataviz-dark';
 
-// access token. you can apply a new one, it's free.
-// maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
-// stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 | sign up at https://client.stadiamaps.com/signup/
-export const MAP_TILE_ACCESS_TOKEN = 'Gt5R0jT8tuIYxW6sNrAg';
+// access token for map tiles
+// maptiler: sign up at https://cloud.maptiler.com/auth/widget (free tier available)
+export const MAP_TILE_ACCESS_TOKEN = MAPTILER_API_KEY;
 
+// Map tile styles configuration for MapLibre GL JS
+// All styles use open standard format (no proprietary mapbox:// URLs)
 export const MAP_TILE_STYLES = {
+  // MapTiler - Recommended for Chinese language support
+  // https://docs.maptiler.com/cloud/api/maps/
   maptiler: {
+    // Data visualization styles (default)
     'dataviz-light': 'https://api.maptiler.com/maps/dataviz/style.json?key=',
     'dataviz-dark':
       'https://api.maptiler.com/maps/dataviz-dark/style.json?key=',
-    'basic-light': 'https://api.maptiler.com/maps/basic-v2/style.json?key=',
-    'basic-dark': 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=',
-    'streets-light': 'https://api.maptiler.com/maps/streets-v2/style.json?key=',
-    'streets-dark':
+    // Basic styles
+    'basic-v2': 'https://api.maptiler.com/maps/basic-v2/style.json?key=',
+    'basic-v2-dark':
+      'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=',
+    // Streets styles (good for navigation, supports Chinese)
+    'streets-v2': 'https://api.maptiler.com/maps/streets-v2/style.json?key=',
+    'streets-v2-dark':
       'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=',
-    'outdoor-light': 'https://api.maptiler.com/maps/outdoor-v2/style.json?key=',
-    'outdoor-dark':
+    // Outdoor styles
+    'outdoor-v2': 'https://api.maptiler.com/maps/outdoor-v2/style.json?key=',
+    'outdoor-v2-dark':
       'https://api.maptiler.com/maps/outdoor-v2-dark/style.json?key=',
-    'bright-light': 'https://api.maptiler.com/maps/bright-v2/style.json?key=',
-    'bright-dark':
+    // Bright styles
+    'bright-v2': 'https://api.maptiler.com/maps/bright-v2/style.json?key=',
+    'bright-v2-dark':
       'https://api.maptiler.com/maps/bright-v2-dark/style.json?key=',
-    'topo-light': 'https://api.maptiler.com/maps/topo-v2/style.json?key=',
-    'topo-dark': 'https://api.maptiler.com/maps/topo-v2-dark/style.json?key=',
-    'winter-light': 'https://api.maptiler.com/maps/winter-v2/style.json?key=',
-    'winter-dark':
-      'https://api.maptiler.com/maps/winter-v2-dark/style.json?key=',
+    // Topo styles
+    'topo-v2': 'https://api.maptiler.com/maps/topo-v2/style.json?key=',
+    'topo-v2-dark': 'https://api.maptiler.com/maps/topo-v2-dark/style.json?key=',
+    // Satellite
     hybrid: 'https://api.maptiler.com/maps/hybrid/style.json?key=',
   },
 
+  // Stadia Maps - Alternative free option
   // https://docs.stadiamaps.com/themes/
   stadiamaps: {
-    // light
     alidade_smooth:
       'https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=',
     alidade_smooth_dark:
@@ -276,14 +282,6 @@ export const MAP_TILE_STYLES = {
       'https://tiles.stadiamaps.com/styles/alidade_satellite.json?api_key=',
   },
 
-  // https://docs.mapbox.com/api/maps/styles/
-  mapbox: {
-    'dark-v10': 'mapbox://styles/mapbox/dark-v10',
-    'dark-v11': 'mapbox://styles/mapbox/dark-v11',
-    'light-v10': 'mapbox://styles/mapbox/light-v10',
-    'light-v11': 'mapbox://styles/mapbox/light-v11',
-    'navigation-night': 'mapbox://styles/mapbox/navigation-night-v1',
-    'satellite-streets-v12': 'mapbox://styles/mapbox/satellite-streets-v12',
-  },
-  default: 'mapbox://styles/mapbox/dark-v10',
+  // Default style (MapTiler dataviz dark)
+  default: 'https://api.maptiler.com/maps/dataviz-dark/style.json?key=',
 };
