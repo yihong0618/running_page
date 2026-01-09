@@ -42,6 +42,8 @@
     "lint": "eslint src --ext .ts,.tsx --fix",
     "check": "prettier --check \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\"",
     "format": "prettier --write \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\"",
+    "verify:maps": "node scripts/verify_map_urls.cjs",
+    "test:maps": "pnpm verify:maps && echo '✅ Map URLs verified'",
     "ci": "pnpm run format && pnpm run lint && pnpm run build"
   },
   "engineStrict": true,

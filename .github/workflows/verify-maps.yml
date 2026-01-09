@@ -1,0 +1,35 @@
+name: Verify Map Tile URLs
+
+on:
+  pull_request:
+    paths:
+      - 'src/utils/const.ts'
+      - 'scripts/verify_map_urls.cjs'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify map tile URLs
+        run: node scripts/verify_map_urls.cjs
+
+      - name: Report results
+        if: success()
+        run: echo "✅ All map tile URLs are accessible"
+
+      - name: Report failures
+        if: failure()
+        run: |
+          echo "❌ Some map tile URLs failed verification"
+          echo "This may indicate broken URLs or network issues"
+          exit 1
