@@ -267,7 +267,7 @@ When using MapCN (Carto Basemaps), please ensure you comply with their attributi
 
 The project template already includes appropriate attribution in the map display.
 
-Using Other Providers
+## Using Other Providers
 If you prefer Mapbox, MapTiler, or Stadia Maps, you can change the vendor:
 
 ```typescript
