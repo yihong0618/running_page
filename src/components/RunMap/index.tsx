@@ -150,7 +150,7 @@ const RunMap = ({
           console.info('💡 Possible solutions:');
           console.info('   1. Check your internet connection');
           console.info(
-            '   2. If in China, Carto may be blocked.  Try fallback: '
+            '   2. If in China, Carto may be blocked.  Try fallback:'
           );
           console.info('      - Change MAP_TILE_VENDOR to "mapcn_openfreemap"');
           console.info(
