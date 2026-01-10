@@ -257,9 +257,9 @@ export const MAP_TILE_STYLES = {
     'dark-matter': 'https://tiles.openfreemap.org/styles/dark',
   },
   mapcn_maptiler_free: {
-    // Use MapTiler's free tier with explicit free styles
-    'osm-bright': 'https://api.maptiler.com/maps/basic/style.json?key=',
-    'dark-matter': 'https://api.maptiler.com/maps/basic-dark/style.json?key=',
+    // Use free, tokenless styles to avoid requiring an API key
+    'osm-bright': 'https://tiles.openfreemap.org/styles/bright',
+    'dark-matter': 'https://tiles.openfreemap.org/styles/dark',
   },
   maptiler: {
     'dataviz-light': 'https://api.maptiler.com/maps/dataviz/style.json?key=',
