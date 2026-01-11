@@ -6,6 +6,7 @@ import useHover from '@/hooks/useHover';
 import { yearStats } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN } from '@/utils/const';
+import { DIST_UNIT, M_TO_DIST, M_TO_ELEV } from '@/utils/utils';
 
 const YearStat = ({
   year,
@@ -51,8 +52,8 @@ const YearStat = ({
       streak = Math.max(streak, run.streak);
     }
   });
-  sumDistance = parseFloat((sumDistance / 1000.0).toFixed(1));
-  const sumElevationGainStr = sumElevationGain.toFixed(0);
+  sumDistance = parseFloat((sumDistance / M_TO_DIST).toFixed(1));
+  const sumElevationGainStr = (sumElevationGain * M_TO_ELEV).toFixed(0);
   const avgPace = formatPace(totalMetersAvail / totalSecondsAvail);
   const hasHeartRate = !(heartRate === 0);
   const avgHeartRate = (heartRate / (runs.length - heartRateNullCount)).toFixed(
@@ -63,7 +64,7 @@ const YearStat = ({
       <section {...eventHandlers}>
         <Stat value={year} description=" Journey" />
         <Stat value={runs.length} description=" Runs" />
-        <Stat value={sumDistance} description=" KM" />
+        <Stat value={sumDistance} description={` ${DIST_UNIT}`} />
         {SHOW_ELEVATION_GAIN && (
           <Stat value={sumElevationGainStr} description=" Elevation Gain" />
         )}

@@ -24,6 +24,7 @@ import { ACTIVITY_TOTAL, LOADING_TEXT } from '@/utils/const';
 import { totalStat, yearSummaryStats } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
+import { DIST_UNIT, M_TO_DIST, M_TO_ELEV } from '@/utils/utils';
 import RoutePreview from '@/components/RoutePreview';
 import { Activity } from '@/utils/utils';
 // Layout constants (avoid magic numbers)
@@ -156,12 +157,12 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
   };
 
   const formatPace = (speed: number): string => {
-    if (speed === 0) return '0:00 min/km';
-    const pace = 60 / speed; // min/km
-    const totalSeconds = Math.round(pace * 60); // Total seconds per km
+    if (speed === 0) return `0:00 min/${DIST_UNIT}`;
+    const pace = 60 / speed; // min/DIST_UNIT
+    const totalSeconds = Math.round(pace * 60); // Total seconds per DIST_UNIT
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds} min/km`;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds} min/${DIST_UNIT}`;
   };
 
   // Calculate Y-axis maximum value and ticks
@@ -189,7 +190,7 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
           <div className={styles.activityDetails}>
             <p>
               <strong>{ACTIVITY_TOTAL.TOTAL_DISTANCE_TITLE}:</strong>{' '}
-              {summary.totalDistance.toFixed(2)} km
+              {summary.totalDistance.toFixed(2)} {DIST_UNIT}
             </p>
             {SHOW_ELEVATION_GAIN &&
               summary.totalElevationGain !== undefined && (
@@ -220,7 +221,7 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
                 </p>
                 <p>
                   <strong>{ACTIVITY_TOTAL.MAX_DISTANCE_TITLE}:</strong>{' '}
-                  {summary.maxDistance.toFixed(2)} km
+                  {summary.maxDistance.toFixed(2)} {DIST_UNIT}
                 </p>
                 <p>
                   <strong>{ACTIVITY_TOTAL.MAX_SPEED_TITLE}:</strong>{' '}
@@ -228,7 +229,7 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
                 </p>
                 <p>
                   <strong>{ACTIVITY_TOTAL.AVERAGE_DISTANCE_TITLE}:</strong>{' '}
-                  {(summary.totalDistance / summary.count).toFixed(2)} km
+                  {(summary.totalDistance / summary.count).toFixed(2)} {DIST_UNIT}
                 </p>
               </>
             )}
@@ -249,7 +250,7 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
                     />
                     <YAxis
                       label={{
-                        value: 'km',
+                        value: DIST_UNIT,
                         angle: -90,
                         position: 'insideLeft',
                         fill: 'var(--color-run-table-thead)',
@@ -259,7 +260,7 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
                       tick={{ fill: 'var(--color-run-table-thead)' }}
                     />
                     <Tooltip
-                      formatter={(value) => `${value} km`}
+                      formatter={(value) => `${value} ${DIST_UNIT}`}
                       contentStyle={{
                         backgroundColor:
                           'var(--color-run-row-hover-background)',
@@ -493,7 +494,7 @@ const ActivityList: React.FC = () => {
             activities: [],
           };
 
-        const distanceKm = activity.distance / 1000;
+        const distanceKm = activity.distance / M_TO_DIST;
         const timeInSeconds = convertTimeToSeconds(activity.moving_time);
         const speedKmh =
           timeInSeconds > 0 ? distanceKm / (timeInSeconds / 3600) : 0;
