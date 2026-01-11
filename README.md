@@ -128,7 +128,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Bolyn](https://run.wbolyn.com)                      | <https://run.wbolyn.com>                       | Coros       |
 | [LeiChen](https://github.com/xthirty77)              | <https://xthirty77.github.io/running_page/>    | Coros       |
 | [itrunner](https://itrunner.cn)                      | <https://itrunner.cn>                          | Garmin      |
-
+| [maslke](https://github.com/maslke)                  | <https://maslke.space/running_page/>           | Garmin-cn   |
 </details>
 
 ## How it works
