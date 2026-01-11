@@ -105,7 +105,7 @@ const NO_ROUTE_DATA = IS_CHINESE ? '暂无路线数据' : 'No route data';
 const INVALID_ROUTE_DATA = IS_CHINESE ? '路线数据无效' : 'Invalid route data';
 
 // Set to true to enable science-based training alerts
-const SHOW_TRAINING_ALERTS = true;
+const SHOW_TRAINING_ALERTS = false;
 // Monthly mileage threshold in km (default: 300km as suggested in issue)
 const MONTHLY_MILEAGE_THRESHOLD = 300;
 // Weekly mileage increase threshold as percentage (10% rule)
