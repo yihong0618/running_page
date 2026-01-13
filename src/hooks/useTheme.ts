@@ -124,8 +124,8 @@ export const useMapTheme = () => {
 export const useTheme = () => {
   // Initialize theme from localStorage or default to dark
   const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === 'undefined') return 'dark';
-    return (localStorage.getItem('theme') as Theme) || 'dark';
+    if (typeof window === 'undefined') return 'light';
+    return (localStorage.getItem('theme') as Theme) || 'light';
   });
 
   /**
