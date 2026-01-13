@@ -106,18 +106,18 @@ const INVALID_ROUTE_DATA = IS_CHINESE ? '路线数据无效' : 'Invalid route da
 
 // Set to true to enable science-based training alerts
 const SHOW_TRAINING_ALERTS = false;
-// Monthly mileage threshold in km (default: 300km as suggested in issue)
+// Monthly distance threshold in km (default: 300km as suggested in issue)
 const MONTHLY_MILEAGE_THRESHOLD = 300;
-// Weekly mileage increase threshold as percentage (10% rule)
+// Weekly distance increase threshold as percentage (10% rule)
 const WEEKLY_INCREASE_THRESHOLD = 10;
 
 const TRAINING_ALERT_MESSAGES = {
   MONTHLY_OVERTRAINING: IS_CHINESE
     ? '本月跑量已超过 {threshold} 公里，请注意过度训练风险'
-    : 'Monthly mileage exceeds {threshold} km. Be aware of overtraining risk.',
+    : 'Monthly distance exceeds {threshold} km. Be aware of overtraining risk.',
   WEEKLY_INCREASE: IS_CHINESE
     ? '本周跑量较上周增加超过 {threshold}%，请注意循序渐进'
-    : 'Weekly mileage increased by more than {threshold}%. Follow the 10% rule to avoid injury.',
+    : 'Weekly distance increased by more than {threshold}%. Follow the 10% rule to avoid injury.',
   TRAINING_ALERTS_TITLE: IS_CHINESE ? '训练提醒' : 'Training Alerts',
 };
 

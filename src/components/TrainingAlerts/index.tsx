@@ -12,21 +12,47 @@ interface TrainingAlertsProps {
 }
 
 interface Alert {
+  id: string;
   type: 'warning' | 'info';
   message: string;
 }
 
-const getWeekNumber = (date: Date): string => {
-  const d = new Date(
-    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  );
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+// Returns ISO week info using local date (not UTC) to match start_date_local
+const getWeekInfo = (
+  date: Date
+): { year: number; week: number; key: string } => {
+  // Create a copy using local date components
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // ISO week starts on Monday (day 1), Sunday is day 7
+  const dayNum = d.getDay() || 7;
+  // Set to nearest Thursday (ISO week date algorithm)
+  d.setDate(d.getDate() + 4 - dayNum);
+  const year = d.getFullYear();
+  const yearStart = new Date(year, 0, 1);
   const weekNo = Math.ceil(
     ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
   );
-  return `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
+  return {
+    year,
+    week: weekNo,
+    key: `${year}-W${weekNo.toString().padStart(2, '0')}`,
+  };
+};
+
+// Check if two weeks are consecutive (handles year boundaries)
+const areConsecutiveWeeks = (
+  week1: { year: number; week: number },
+  week2: { year: number; week: number }
+): boolean => {
+  // Same year, consecutive weeks
+  if (week1.year === week2.year && week1.week === week2.week + 1) {
+    return true;
+  }
+  // Year boundary: week1 is W01 of new year, week2 is last week of previous year
+  if (week1.year === week2.year + 1 && week1.week === 1 && week2.week >= 52) {
+    return true;
+  }
+  return false;
 };
 
 const getMonthKey = (date: Date): string => {
@@ -41,27 +67,38 @@ const TrainingAlerts = ({ activities }: TrainingAlertsProps) => {
 
     const alertList: Alert[] = [];
 
-    const weeklyMileage: Record<string, number> = {};
-    const monthlyMileage: Record<string, number> = {};
+    const weeklyDistance: Record<
+      string,
+      { distance: number; year: number; week: number }
+    > = {};
+    const monthlyDistance: Record<string, number> = {};
 
     activities.forEach((activity) => {
       const activityDate = new Date(activity.start_date_local);
-      const weekKey = getWeekNumber(activityDate);
+      const weekInfo = getWeekInfo(activityDate);
       const monthKey = getMonthKey(activityDate);
       const distanceKm = (activity.distance || 0) / 1000;
 
-      weeklyMileage[weekKey] = (weeklyMileage[weekKey] || 0) + distanceKm;
-      monthlyMileage[monthKey] = (monthlyMileage[monthKey] || 0) + distanceKm;
+      if (!weeklyDistance[weekInfo.key]) {
+        weeklyDistance[weekInfo.key] = {
+          distance: 0,
+          year: weekInfo.year,
+          week: weekInfo.week,
+        };
+      }
+      weeklyDistance[weekInfo.key].distance += distanceKm;
+      monthlyDistance[monthKey] = (monthlyDistance[monthKey] || 0) + distanceKm;
     });
 
-    const months = Object.keys(monthlyMileage).sort().reverse();
+    const months = Object.keys(monthlyDistance).sort().reverse();
     const latestMonth = months[0];
 
     if (
       latestMonth &&
-      monthlyMileage[latestMonth] > MONTHLY_MILEAGE_THRESHOLD
+      monthlyDistance[latestMonth] > MONTHLY_MILEAGE_THRESHOLD
     ) {
       alertList.push({
+        id: 'monthly-overtraining',
         type: 'warning',
         message: TRAINING_ALERT_MESSAGES.MONTHLY_OVERTRAINING.replace(
           '{threshold}',
@@ -70,21 +107,32 @@ const TrainingAlerts = ({ activities }: TrainingAlertsProps) => {
       });
     }
 
-    const weeks = Object.keys(weeklyMileage).sort().reverse();
+    // Sort weeks by year and week number (handles year boundaries correctly)
+    const sortedWeeks = Object.entries(weeklyDistance).sort((a, b) => {
+      if (a[1].year !== b[1].year) return b[1].year - a[1].year;
+      return b[1].week - a[1].week;
+    });
 
-    if (weeks.length >= 2) {
-      const latestWeek = weeks[0];
-      const previousWeek = weeks[1];
-      const latestWeekMileage = weeklyMileage[latestWeek] || 0;
-      const previousWeekMileage = weeklyMileage[previousWeek] || 0;
+    if (sortedWeeks.length >= 2) {
+      const [, latestWeekData] = sortedWeeks[0];
+      const [, previousWeekData] = sortedWeeks[1];
 
-      if (previousWeekMileage > 0) {
+      // Only alert if weeks are actually consecutive
+      if (
+        areConsecutiveWeeks(
+          { year: latestWeekData.year, week: latestWeekData.week },
+          { year: previousWeekData.year, week: previousWeekData.week }
+        ) &&
+        previousWeekData.distance > 0
+      ) {
         const increasePercent =
-          ((latestWeekMileage - previousWeekMileage) / previousWeekMileage) *
+          ((latestWeekData.distance - previousWeekData.distance) /
+            previousWeekData.distance) *
           100;
 
         if (increasePercent > WEEKLY_INCREASE_THRESHOLD) {
           alertList.push({
+            id: 'weekly-increase',
             type: 'warning',
             message: TRAINING_ALERT_MESSAGES.WEEKLY_INCREASE.replace(
               '{threshold}',
@@ -108,17 +156,22 @@ const TrainingAlerts = ({ activities }: TrainingAlertsProps) => {
         {TRAINING_ALERT_MESSAGES.TRAINING_ALERTS_TITLE}
       </h3>
       <div className="space-y-2">
-        {alerts.map((alert, index) => (
+        {alerts.map((alert) => (
           <div
-            key={index}
+            key={alert.id}
+            role="alert"
+            aria-live="polite"
             className={`rounded-lg border p-3 text-sm ${
               alert.type === 'warning'
                 ? 'border-amber-500/50 bg-amber-500/10 text-amber-600 dark:text-amber-400'
                 : 'border-blue-500/50 bg-blue-500/10 text-blue-600 dark:text-blue-400'
             }`}
           >
-            <span className="mr-2">
+            <span className="mr-2" aria-hidden="true">
               {alert.type === 'warning' ? '⚠️' : 'ℹ️'}
+            </span>
+            <span className="sr-only">
+              {alert.type === 'warning' ? 'Warning: ' : 'Info: '}
             </span>
             {alert.message}
           </div>
