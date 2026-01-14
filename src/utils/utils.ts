@@ -33,9 +33,9 @@ export type RunIds = Array<number> | [];
 
 // Check for units environment variable
 const IS_IMPERIAL = import.meta.env.VITE_USE_IMPERIAL === 'true';
-export const M_TO_DIST = IS_IMPERIAL ? 1609.34 : 1000; // Meters to Mi or Km
+export const M_TO_DIST = IS_IMPERIAL ? 1609.344 : 1000; // Meters to Mi or Km
 export const M_TO_ELEV = IS_IMPERIAL ? 3.28084 : 1;    // Meters to Feet or Meters
-export const DIST_UNIT = IS_IMPERIAL ? 'mile' : 'km';  // Label
+export const DIST_UNIT = IS_IMPERIAL ? 'mi' : 'km';  // Label
 export const ELEV_UNIT = IS_IMPERIAL ? 'ft' : 'm';     // Label
 
 export interface Activity {
