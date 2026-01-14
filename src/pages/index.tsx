@@ -6,6 +6,8 @@ import LocationStat from '@/components/LocationStat';
 import RunMap from '@/components/RunMap';
 import RunTable from '@/components/RunTable';
 import SVGStat from '@/components/SVGStat';
+import TrainingAlerts from '@/components/TrainingAlerts';
+import { SHOW_TRAINING_ALERTS } from '@/utils/const';
 import YearsStat from '@/components/YearsStat';
 import useActivities from '@/hooks/useActivities';
 import useSiteMetadata from '@/hooks/useSiteMetadata';
@@ -397,6 +399,7 @@ const Index = () => {
         <h1 className="my-12 mt-6 text-5xl font-extrabold italic">
           <a href={siteUrl}>{siteTitle}</a>
         </h1>
+        {SHOW_TRAINING_ALERTS && <TrainingAlerts activities={activities} />}
         {(viewState.zoom ?? 0) <= 3 && IS_CHINESE ? (
           <LocationStat
             changeYear={changeYear}
