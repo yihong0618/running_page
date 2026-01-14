@@ -64,7 +64,7 @@ export const useMapTheme = () => {
       newTheme = MAP_TILE_STYLE_LIGHT;
     } else {
       // Default to dark theme
-      newTheme = MAP_TILE_STYLE_DARK;
+      newTheme = MAP_TILE_STYLE_LIGHT;
     }
 
     // Only update if theme has changed
