@@ -236,8 +236,8 @@ export const SWIMMING_COLOR = 'rgb(255,51,51)';
 export const MAP_TILE_VENDOR = 'maptiler';
 
 // map tiles style name, see MAP_TILE_STYLES for more details
-export const MAP_TILE_STYLE_LIGHT = 'dataviz-light';
-export const MAP_TILE_STYLE_DARK = 'outdoor-dark';
+export const MAP_TILE_STYLE_LIGHT = 'outdoor-light-v4';
+export const MAP_TILE_STYLE_DARK = 'dataviz-dark';
 
 // access token. you can apply a new one, it's free.
 // maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
@@ -256,6 +256,7 @@ export const MAP_TILE_STYLES = {
     'streets-dark':
       'https://api.maptiler.com/maps/streets-v2-dark/style.json?key=',
     'outdoor-light': 'https://api.maptiler.com/maps/outdoor-v2/style.json?key=',
+    'outdoor-light-v4': 'https://api.maptiler.com/maps/outdoor-v4/style.json?key=',
     'outdoor-dark':
       'https://api.maptiler.com/maps/outdoor-v2-dark/style.json?key=',
     'bright-light': 'https://api.maptiler.com/maps/bright-v2/style.json?key=',
