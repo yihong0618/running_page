@@ -108,7 +108,6 @@
 }
 
 @layer base {
-
   html,
   body {
     background-color: var(--color-background);
@@ -132,18 +131,18 @@ body {
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-
 }
 
 /* 直接在 CSS 文件末尾添加，风险最小 */
 body::before {
-  content: "";
+  content: '';
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('https://stonericky.github.io/img/bg-05.jpg') no-repeat center center fixed;
+  background: url('https://stonericky.github.io/img/bg-05.jpg') no-repeat center
+    center fixed;
   background-size: cover;
   /* filter: blur(10px); */
   border-radius: 8px;
@@ -171,7 +170,6 @@ hr {
 }
 
 .svg-color-bg {
-  
   fill: var(--color-run-row-hover-background);
 }
 
