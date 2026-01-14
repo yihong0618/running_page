@@ -31,13 +31,13 @@
   :root {
     --color-brand: var(--color-sky-900);
     --color-secondary: var(--color-sky-800);
-    --color-bg: var(--color-neutral-100);
+    --color-bg: rgba(245, 245, 245, 0.5);
     --color-tx: var(--color-sky-900);
     --color-hr: var(--color-neutral-300);
     --color-selected: var(--color-sky-900);
     --color-run-date: var(--color-neutral-800);
     --color-run-table-thead: var(--color-neutral-800);
-    --color-run-row-hover-background: var(--color-neutral-200);
+    --color-run-row-hover-background: rgba(245, 245, 245, 0.5);
     --color-activity-card: var(--color-neutral-300);
     --svg-color-active-cell: var(--color-neutral-400);
     --svg-special-color: #d4a574;
@@ -72,13 +72,13 @@
 [data-theme='light'] {
   --color-brand: var(--color-sky-900);
   --color-secondary: var(--color-sky-800);
-  --color-bg: var(--color-neutral-100);
+  --color-bg: rgba(245, 245, 245, 0.5);
   --color-tx: var(--color-sky-900);
   --color-hr: var(--color-neutral-300);
   --color-selected: var(--color-sky-900);
   --color-run-date: var(--color-neutral-800);
   --color-run-table-thead: var(--color-neutral-800);
-  --color-run-row-hover-background: var(--color-neutral-200);
+  --color-run-row-hover-background: rgba(245, 245, 245, 0.5);
   --color-activity-card: var(--color-neutral-300);
   --svg-color-inactive-cell: var(--color-neutral-600);
   --svg-color-active-cell: var(--color-neutral-400);
@@ -108,6 +108,7 @@
 }
 
 @layer base {
+
   html,
   body {
     background-color: var(--color-background);
@@ -131,6 +132,25 @@ body {
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+
+}
+
+/* 直接在 CSS 文件末尾添加，风险最小 */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://stonericky.github.io/img/bg-05.jpg') no-repeat center center fixed;
+  background-size: cover;
+  /* filter: blur(10px); */
+  border-radius: 8px;
+  /* 模糊 10px，并稍微调暗 */
+  z-index: -1;
+  transform: scale(1.1);
+  /* 消除模糊边缘的白边 */
 }
 
 iframe {
@@ -151,6 +171,7 @@ hr {
 }
 
 .svg-color-bg {
+  
   fill: var(--color-run-row-hover-background);
 }
 

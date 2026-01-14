@@ -28,12 +28,14 @@
 }
 
 .runTable {
+  border-radius: 8px;
   width: 100%;
   margin: 2rem 0 5rem 0;
   color: var(--color-run-table-thead);
   background-color: var(--color-background);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   table-layout: auto;
+
   :is(thead) {
     color: var(--color-run-table-thead);
 
@@ -51,6 +53,7 @@
       text-align: right;
     }
   }
+
   :is(th, td) {
     white-space: nowrap;
     text-align: center;
@@ -67,10 +70,12 @@
 
 .runRow {
   cursor: pointer;
+
   :is(td) {
     padding: 0.5rem;
     border: 0;
-    text-align: center; /* 默认居中 */
+    text-align: center;
+    /* 默认居中 */
   }
 
   :is(td):first-child {

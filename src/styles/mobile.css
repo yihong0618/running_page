@@ -1,6 +1,7 @@
 /* Mobile-specific improvements for running page */
 
 @media only screen and (max-width: 768px) {
+
   /* Prevent horizontal overflow on the main container */
   .mobile-map-container {
     margin-bottom: 1rem;
@@ -22,7 +23,7 @@
   }
 
   /* Improve spacing on mobile */
-  .lg\:p-16 {
+  .lg\:p-0 {
     padding: 1rem !important;
   }
 
@@ -44,6 +45,7 @@
 
 /* Additional mobile table improvements */
 @media only screen and (max-width: 480px) {
+
   /* For very small screens, make table even more compact */
   .runTable {
     min-width: 550px !important;
