@@ -29,7 +29,7 @@
 /* 1. System Theme (Base) */
 @media (prefers-color-scheme: light) {
   :root {
-    --color-brand: var(--color-sky-900);
+    --color-brand: #1E3A8A;
     --color-secondary: var(--color-sky-800);
     --color-bg: rgba(245, 245, 245, 0.5);
     --color-tx: var(--color-sky-900);
@@ -39,9 +39,9 @@
     --color-run-table-thead: var(--color-neutral-800);
     --color-run-row-hover-background: rgba(245, 245, 245, 0.5);
     --color-activity-card: var(--color-neutral-300);
-    --svg-color-active-cell: var(--color-neutral-400);
-    --svg-special-color: #d4a574;
-    --svg-special-color2: #c5756b;
+    --svg-color-active-cell: #F5E1EE;
+    --svg-special-color: #E18ABF;
+    --svg-special-color2: #800D55;
     --font-sans: 'IBM Plex Sans', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
@@ -50,7 +50,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* const nike = 'rgb(224,237,94)'; */
-    --color-brand: #e0ed5e;
+    --color-brand: #ff2099;
     --color-secondary: #ccd94a;
     --color-bg: var(--color-neutral-900);
     --color-tx: var(--color-brand);
@@ -60,9 +60,9 @@
     --color-run-table-thead: var(--color-zinc-300);
     --color-run-row-hover-background: var(--color-neutral-800);
     --color-activity-card: var(--color-neutral-700);
-    --svg-color-active-cell: #4dd2ff;
-    --svg-special-color: #f7d02c;
-    --svg-special-color2: #f56c6c;
+    --svg-color-active-cell: #F5E1EE;
+    --svg-special-color: #E18ABF;
+    --svg-special-color2: #800D55;
     --font-sans: 'IBM Plex Sans', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
@@ -70,7 +70,7 @@
 
 /* 2. Manual Override (Higher Priority) */
 [data-theme='light'] {
-  --color-brand: var(--color-sky-900);
+  --color-brand: #1E3A8A;
   --color-secondary: var(--color-sky-800);
   --color-bg: rgba(245, 245, 245, 0.5);
   --color-tx: var(--color-sky-900);
@@ -81,16 +81,16 @@
   --color-run-row-hover-background: rgba(245, 245, 245, 0.5);
   --color-activity-card: var(--color-neutral-300);
   --svg-color-inactive-cell: var(--color-neutral-600);
-  --svg-color-active-cell: var(--color-neutral-400);
-  --svg-special-color: #d4a574;
-  --svg-special-color2: #c5756b;
+  --svg-color-active-cell: #F5E1EE;
+  --svg-special-color: #E18ABF;
+  --svg-special-color2: #800D55;
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
 
 [data-theme='dark'] {
   /* const nike = 'rgb(224,237,94)'; */
-  --color-brand: #e0ed5e;
+  --color-brand: #ff2099;
   --color-secondary: #ccd94a;
   --color-bg: var(--color-neutral-900);
   --color-tx: var(--color-brand);
@@ -100,14 +100,15 @@
   --color-run-table-thead: var(--color-zinc-300);
   --color-run-row-hover-background: var(--color-neutral-800);
   --color-activity-card: var(--color-neutral-700);
-  --svg-color-active-cell: #4dd2ff;
-  --svg-special-color: #f7d02c;
-  --svg-special-color2: #f56c6c;
+  --svg-color-active-cell: #F5E1EE;
+  --svg-special-color: #E18ABF;
+  --svg-special-color2: #800D55;
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
 
 @layer base {
+
   html,
   body {
     background-color: var(--color-background);
@@ -141,8 +142,7 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('https://stonericky.github.io/img/bg-05.jpg') no-repeat center
-    center fixed;
+  background: url('https://stonericky.github.io/img/bg-09.jpg') no-repeat center center fixed;
   background-size: cover;
   /* filter: blur(10px); */
   border-radius: 8px;
@@ -167,6 +167,12 @@ hr {
 .grid-svg text,
 .year-svg text {
   fill: var(--color-run-date);
+}
+
+.github-svg,
+.grid-svg,
+.year-svg {
+  border-radius: 8px;
 }
 
 .svg-color-bg {

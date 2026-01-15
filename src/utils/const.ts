@@ -183,7 +183,7 @@ export const COUNTRY_FILL_COLOR = dark_vanilla;
 // Static color constants
 // export const RUN_COLOR_LIGHT = '#47b8e0';
 export const RUN_COLOR_LIGHT = '#C71585';
-export const RUN_COLOR_DARK = MAIN_COLOR;
+export const RUN_COLOR_DARK = '#ff1dac';
 
 // Single run animation colors
 export const SINGLE_RUN_COLOR_LIGHT = '#52c41a'; // Green for light theme

@@ -49,7 +49,6 @@ class Poster:
         self.colors = {
             "background": "#222222",
             "text": "#FFFFFF",
-            "special": "#FFFF00",
             "track": "#4DD2FF",
         }
         self.special_distance = {"special_distance": 10, "special_distance2": 20}
