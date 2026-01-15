@@ -24,7 +24,7 @@ import { ACTIVITY_TOTAL, LOADING_TEXT } from '@/utils/const';
 import { totalStat, yearSummaryStats } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
-import { DIST_UNIT, M_TO_DIST, M_TO_ELEV } from '@/utils/utils';
+import { DIST_UNIT, M_TO_DIST } from '@/utils/utils';
 import RoutePreview from '@/components/RoutePreview';
 import { Activity } from '@/utils/utils';
 // Layout constants (avoid magic numbers)
