@@ -34,9 +34,9 @@ export type RunIds = Array<number> | [];
 // Check for units environment variable
 const IS_IMPERIAL = import.meta.env.VITE_USE_IMPERIAL === 'true';
 export const M_TO_DIST = IS_IMPERIAL ? 1609.344 : 1000; // Meters to Mi or Km
-export const M_TO_ELEV = IS_IMPERIAL ? 3.28084 : 1;    // Meters to Feet or Meters
-export const DIST_UNIT = IS_IMPERIAL ? 'mi' : 'km';  // Label
-export const ELEV_UNIT = IS_IMPERIAL ? 'ft' : 'm';     // Label
+export const M_TO_ELEV = IS_IMPERIAL ? 3.28084 : 1; // Meters to Feet or Meters
+export const DIST_UNIT = IS_IMPERIAL ? 'mi' : 'km'; // Label
+export const ELEV_UNIT = IS_IMPERIAL ? 'ft' : 'm'; // Label
 
 export interface Activity {
   run_id: number;
@@ -57,7 +57,7 @@ export interface Activity {
 
 const titleForShow = (run: Activity): string => {
   const date = run.start_date_local.slice(0, 11);
-const distance = (run.distance / M_TO_DIST).toFixed(2);
+  const distance = (run.distance / M_TO_DIST).toFixed(2);
   let name = 'Run';
   if (run.name.slice(0, 7) === 'Running') {
     name = 'run';

@@ -229,7 +229,8 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
                 </p>
                 <p>
                   <strong>{ACTIVITY_TOTAL.AVERAGE_DISTANCE_TITLE}:</strong>{' '}
-                  {(summary.totalDistance / summary.count).toFixed(2)} {DIST_UNIT}
+                  {(summary.totalDistance / summary.count).toFixed(2)}{' '}
+                  {DIST_UNIT}
                 </p>
               </>
             )}
@@ -496,8 +497,7 @@ const ActivityList: React.FC = () => {
 
         const distance = activity.distance / M_TO_DIST;
         const timeInSeconds = convertTimeToSeconds(activity.moving_time);
-        const speed =
-          timeInSeconds > 0 ? distance / (timeInSeconds / 3600) : 0;
+        const speed = timeInSeconds > 0 ? distance / (timeInSeconds / 3600) : 0;
 
         acc[key].totalDistance += distance;
         acc[key].totalTime += timeInSeconds;
@@ -514,8 +514,7 @@ const ActivityList: React.FC = () => {
         if (intervalArg === 'day') acc[key].activities.push(activity);
         acc[key].dailyDistances[index] =
           (acc[key].dailyDistances[index] || 0) + distance;
-        if (distance > acc[key].maxDistance)
-          acc[key].maxDistance = distance;
+        if (distance > acc[key].maxDistance) acc[key].maxDistance = distance;
         if (speed > acc[key].maxSpeed) acc[key].maxSpeed = speed;
         if (intervalArg === 'day')
           acc[key].location = activity.location_country || '';

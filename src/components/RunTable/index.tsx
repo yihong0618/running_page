@@ -34,7 +34,9 @@ const RunTable = ({
   // Memoize sort functions to prevent recreating them on every render
   const sortFunctions = useMemo(() => {
     const sortKMFunc: SortFunc = (a, b) =>
-      sortFuncInfo === DIST_UNIT ? a.distance - b.distance : b.distance - a.distance;
+      sortFuncInfo === DIST_UNIT
+        ? a.distance - b.distance
+        : b.distance - a.distance;
     const sortElevationGainFunc: SortFunc = (a, b) =>
       sortFuncInfo === 'Elev'
         ? (a.elevation_gain ?? 0) - (b.elevation_gain ?? 0)
