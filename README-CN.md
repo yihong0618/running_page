@@ -125,6 +125,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Bolyn](https://run.wbolyn.com)                   | <https://run.wbolyn.com>                       | Coros       |
 | [LeiChen](https://github.com/xthirty77)           | <https://xthirty77.github.io/running_page/>    | Coros       |
 | [itrunner](https://itrunner.cn)                   | <https://itrunner.cn>                          | Garmin      |
+| [maslke](https://github.com/maslke)               | <https://maslke.space/running_page/>           | Garmin-cn   |
 </details>
 
 ## 它是怎么工作的
