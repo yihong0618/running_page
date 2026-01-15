@@ -494,12 +494,12 @@ const ActivityList: React.FC = () => {
             activities: [],
           };
 
-        const distanceKm = activity.distance / M_TO_DIST;
+        const distance = activity.distance / M_TO_DIST;
         const timeInSeconds = convertTimeToSeconds(activity.moving_time);
-        const speedKmh =
-          timeInSeconds > 0 ? distanceKm / (timeInSeconds / 3600) : 0;
+        const speed =
+          timeInSeconds > 0 ? distance / (timeInSeconds / 3600) : 0;
 
-        acc[key].totalDistance += distanceKm;
+        acc[key].totalDistance += distance;
         acc[key].totalTime += timeInSeconds;
 
         if (SHOW_ELEVATION_GAIN && activity.elevation_gain)
@@ -513,10 +513,10 @@ const ActivityList: React.FC = () => {
         acc[key].count += 1;
         if (intervalArg === 'day') acc[key].activities.push(activity);
         acc[key].dailyDistances[index] =
-          (acc[key].dailyDistances[index] || 0) + distanceKm;
-        if (distanceKm > acc[key].maxDistance)
-          acc[key].maxDistance = distanceKm;
-        if (speedKmh > acc[key].maxSpeed) acc[key].maxSpeed = speedKmh;
+          (acc[key].dailyDistances[index] || 0) + distance;
+        if (distance > acc[key].maxDistance)
+          acc[key].maxDistance = distance;
+        if (speed > acc[key].maxSpeed) acc[key].maxSpeed = speed;
         if (intervalArg === 'day')
           acc[key].location = activity.location_country || '';
 
