@@ -142,6 +142,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 3. React Hooks
 4. Mapbox for map display
 5. Supports most sports apps such as nike strava...
+6. Support for metric and imperial units
 
 > automatically backup gpx data for easy backup and uploading to other software.
 >
@@ -217,6 +218,10 @@ docker run -itd -p 80:80   running_page:latest
 Open your browser and visit localhost:80
 
 ```
+
+### Imperial Units
+* add `--build-arg VITE_USE_IMPERIAL=true` to `docker build ...`
+* add `--units imperial` flag to each `python3 run_page/gen_svg.py ...` command in the [Dockerfile](https://github.com/yihong0618/running_page/blob/master/Dockerfile)
 
 ## Local sync data
 
