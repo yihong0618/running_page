@@ -251,12 +251,16 @@ const colorForRun = (run: Activity): string => {
       return dynamicRunColor;
     }
     case 'cycling':
+    case 'Ride': // For Strava
       return CYCLING_COLOR;
     case 'hiking':
+    case 'Hike': // For Strava
       return HIKING_COLOR;
     case 'walking':
+    case 'Walk': // For Strava
       return WALKING_COLOR;
     case 'swimming':
+    case 'Swim': // For Strava
       return SWIMMING_COLOR;
     default:
       return MAIN_COLOR;
