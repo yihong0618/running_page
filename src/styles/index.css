@@ -35,7 +35,7 @@
     --color-tx: var(--color-sky-900);
     --color-hr: var(--color-neutral-300);
     --color-selected: var(--color-sky-900);
-    --color-run-date: var(--color-neutral-800);
+    --color-run-date: #1E3A8A;
     --color-run-table-thead: var(--color-neutral-800);
     --color-run-row-hover-background: rgba(245, 245, 245, 0.5);
     --color-activity-card: var(--color-neutral-300);
@@ -56,7 +56,7 @@
     --color-tx: var(--color-brand);
     --color-hr: var(--color-red-500);
     --color-selected: var(--color-brand);
-    --color-run-date: var(--color-neutral-300);
+    --color-run-date: #ff2099;
     --color-run-table-thead: var(--color-zinc-300);
     --color-run-row-hover-background: var(--color-neutral-800);
     --color-activity-card: var(--color-neutral-700);
@@ -76,7 +76,7 @@
   --color-tx: var(--color-sky-900);
   --color-hr: var(--color-neutral-300);
   --color-selected: var(--color-sky-900);
-  --color-run-date: var(--color-neutral-800);
+  --color-run-date: #1E3A8A;
   --color-run-table-thead: var(--color-neutral-800);
   --color-run-row-hover-background: rgba(245, 245, 245, 0.5);
   --color-activity-card: var(--color-neutral-300);
@@ -96,7 +96,7 @@
   --color-tx: var(--color-brand);
   --color-hr: var(--color-red-500);
   --color-selected: var(--color-brand);
-  --color-run-date: var(--color-neutral-300);
+  --color-run-date: #ff2099;
   --color-run-table-thead: var(--color-zinc-300);
   --color-run-row-hover-background: var(--color-neutral-800);
   --color-activity-card: var(--color-neutral-700);
@@ -172,11 +172,14 @@ hr {
 .github-svg,
 .grid-svg,
 .year-svg {
+  justify-self: center;
+  /* background: var(--color-run-row-hover-background); */
   border-radius: 8px;
+  
 }
 
 .svg-color-bg {
-  fill: var(--color-run-row-hover-background);
+  fill: none;
 }
 
 .svg-color-inactive-cell {

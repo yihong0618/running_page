@@ -109,6 +109,7 @@ def main():
         dest="track_color2",
         metavar="COLOR",
         type=str,
+        default="#800D55",
         help="Secondary color of tracks (default: none).",
     )
     args_parser.add_argument(
