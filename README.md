@@ -129,6 +129,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [LeiChen](https://github.com/xthirty77)              | <https://xthirty77.github.io/running_page/>    | Coros       |
 | [itrunner](https://itrunner.cn)                      | <https://itrunner.cn>                          | Garmin      |
 | [maslke](https://github.com/maslke)                  | <https://maslke.space/running_page/>           | Garmin-cn   |
+| [Niewei Yang](https://github.com/Niewei-Yang)        | <https://neewii-worksout.vercel.app/>          | Strava      |
 </details>
 
 ## How it works
