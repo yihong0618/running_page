@@ -3,7 +3,7 @@ WORKDIR /root/running_page
 SHELL ["/bin/bash", "-c"]
 RUN apt update && \
   apt install -y curl git python3 python3-pip nodejs && \
-  git clone --depth=1 --branch=composerize https://github.com/smolfeet/running_page.git /root/running_page && \
+  git clone --depth=1 --branch=master https://github.com/yihong0618/running_page.git /root/running_page && \
   mv docker-entrypoint.sh /docker-entrypoint.sh && \
   chmod +x /docker-entrypoint.sh && \
   chmod +x build_stats.sh && \
@@ -14,6 +14,10 @@ RUN apt update && \
   ln -s /root/running_page/data/data.db /root/running_page/run_page/data.db && \
   ln -s /root/running_page/data/activities.json /root/running_page/src/static/activities.json && \
   ln -s /root/running_page/data/imported.json /root/running_page/imported.json && \
+  ln -s /root/running_page/data/GPX_OUT /root/running_page/GPX_OUT && \
+  ln -s /root/running_page/data/FIT_OUT /root/running_page/FIT_OUT && \
+  ln -s /root/running_page/data/TCX_OUT /root/running_page/TCX_OUT && \
+  ln -s /root/running_page/data/dist /root/running_page/dist && \
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
   source ~/.bashrc && \
   nvm install node && \

@@ -31,14 +31,13 @@ if [[ -z "$TITLE" ]]; then
     echo "TITLE is not set, see dotenv"
     export TITLE="runner"
 fi
-if [[ "$ONLY_RUN" == "true" ]]; then
+if [[ $APP == "Garmin" && "$ONLY_RUN" == "true" ]]; then
     echo "Garmin with sync only runs"
     export ONLY_RUN="--only-run"
 else
     export ONLY_RUN=""
 fi
 function build_stats {
-	echo $APP
 	if [ "$APP" = "NRC" ] ; then
 		python3 run_page/nike_sync.py ${NIKE_REFRESH_TOKEN}
 	elif [ "$APP" = "Garmin" ] ; then
@@ -52,8 +51,7 @@ function build_stats {
 	elif [ "$APP" = "Keep" ] ; then
 		python3 run_page/keep_sync.py ${KEEP_PHONE_NUMBER} ${KEEP_PASSWORD}
 	else
-		echo "Unknown app"
-		echo "using demo data"
+		echo "Unknown app: using demo data"
 		curl -o data/activities.json https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/src/static/activities.json
 	fi
 	rm dist/assets/*.svg
@@ -91,13 +89,15 @@ if [[ "$1" == "24h" ]]; then
 	while true; do
 	    FILE="dist/index.html"
 	    if [[ -z $(find "$FILE" -mmin -1440 2>/dev/null) ]]; then
-	      echo "Rebuilding stats at $(date +%F-%H%M)"
+	      echo "**************** Building $APP Statistics"
+		  echo "$(date +%F-%H%M) ****************"
 	      build_stats
-		  echo "Will build again at $(date -d "+24 hours" +%F-%H%M)"
+		  echo "**************** Will build again at"
+		  echo "$(date -d "+24 hours" +%F-%H%M) ****************"
 	    else
 		MOD_TIME=$(stat -c %Y "$FILE")
 		FUTURE_TIME=$((MOD_TIME + 86400))
-		READABLE_TIME=$(date -d "@$FUTURE_TIME" "+%Y-%m-%d %H:%M:%S")
+		READABLE_TIME=$(date -d "@$FUTURE_TIME" "+%F-%H%M")
 	      echo "Waiting... will check at $READABLE_TIME"
 	    fi
 	    sleep 24h

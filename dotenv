@@ -73,11 +73,12 @@ VITE_USE_ANIMATION_FOR_GRID=false
 BIRTH_YM=2001-01
 
 ## Optional for traefik deployment
-#HOSTNAME=https://myhostname.tld/
+#HOSTNAME=myhostname.tld
 
 ## If using authentication middleware
 #AUTH_PROVIDER=middleware
 
-## if network exists for internal/Internet access
+## if Docker network exists for internal/Internet access
 #NETWORK=network
+#NETWORK_EXTERNAL=true
 
