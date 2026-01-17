@@ -7,9 +7,7 @@ RUN apt update && \
   mv docker-entrypoint.sh /docker-entrypoint.sh && \
   chmod +x /docker-entrypoint.sh && \
   chmod +x build_stats.sh && \
-  rm -f run_page/data.db && \
-  rm -f src/static/activities.json && \
-  rm -f imported.json && \
+  rm -rf run_page/data.db src/static/activities.json imported.json GPX_OUT FIT_OUT TCX_OUT dist && \
   mkdir data && \
   ln -s /root/running_page/data/data.db /root/running_page/run_page/data.db && \
   ln -s /root/running_page/data/activities.json /root/running_page/src/static/activities.json && \
