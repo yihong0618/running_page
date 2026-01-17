@@ -3,7 +3,7 @@ WORKDIR /root/running_page
 SHELL ["/bin/bash", "-c"]
 RUN apt update && \
   apt install -y curl git python3 python3-pip nodejs && \
-  git clone --depth=1 --branch=dockercompose https://github.com/smolfeet/running_page.git /root/running_page && \
+  git clone --depth=1 --branch=composerize https://github.com/smolfeet/running_page.git /root/running_page && \
   mv docker-entrypoint.sh /docker-entrypoint.sh && \
   chmod +x /docker-entrypoint.sh && \
   chmod +x build_stats.sh && \
@@ -25,6 +25,7 @@ RUN apt update && \
   npm config set registry https://registry.npmmirror.com && \
   npm install -g corepack && \
   corepack enable && \
-  COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_NPM_REGISTRY=https://registry.npmmirror.com pnpm install
+  COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_NPM_REGISTRY=https://registry.npmmirror.com pnpm install && \
+  apt clean
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD ["./build_stats.sh", "24h"]

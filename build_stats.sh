@@ -54,7 +54,7 @@ function build_stats {
 	else
 		echo "Unknown app"
 		echo "using demo data"
-		curl -o data/activities.json https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/src/static/activities.json
+		curl -o data/activities.json https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/src/static/activities.json
 	fi
 	rm dist/assets/*.svg
 	python3 run_page/gen_svg.py --type grid --from-db --units $UNITS --athlete "$ATHLETE_NAME" --output assets/grid.svg --use-localtime\

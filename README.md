@@ -233,10 +233,10 @@ You need these files from the repo:
 * Dockerfile-compose
 * Dockerfile-compose.dockerignore
 ```bash
-curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/docker-compose.yaml
-curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/dotenv
-curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/Dockerfile-compose
-curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/Dockerfile-compose.dockerignore
+curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/composerize/docker-compose.yaml
+curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/composerize/dotenv
+curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/composerize/Dockerfile-compose
+curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/composerize/Dockerfile-compose.dockerignore
 ```
 If you just want to see the demo, run the following:
 `docker compose build && docker compose up`
