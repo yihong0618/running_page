@@ -231,20 +231,31 @@ You need these files from the repo:
 * `docker-compose.yaml`
 * `dotenv`
 * Dockerfile-compose
-* Dockerfile-compose.dockerignore
+* EXAMPLE_docker-compose.yaml
 ```bash
-curl -O https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/docker-compose.yaml
+mkdir running_page && cd running_page
+curl -o docker-compose.yaml https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/EXAMPLE_docker-compose.yaml
 curl -O https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/dotenv
 curl -O https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/Dockerfile-compose
 curl -O https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/Dockerfile-compose.dockerignore
-```
 If you just want to see the demo, run the following:
 `docker compose build && docker compose up`
 http://localhost:80
 
-If you want to use your own data, `cp dotenv .env` and edit with personal defaults, then run the following:
+If you want to use your own data, `cp dotenv .env` and edit with personal defaults, then run the following, specifically edit the `APP` variable in the `.env` file:
+
 `docker compose build && docker compose up`
+
 http://hostname:<portFrom .env>
+
+Persistent data will be stored in the `data` directory.
+- `data/data.db` SQLite database of activities
+- `data/activities.json` JSON of activities
+- `data/imported.json` JSON of imported activities
+- `data/GPX_OUT` GPX files of activities
+- `data/FIT_OUT` FIT files of activities
+- `data/TCX_OUT` TCX files of activities
+- `data/dist` static files of the website
 
 ## Local sync data
 

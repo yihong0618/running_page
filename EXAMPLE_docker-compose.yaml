@@ -5,29 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile-compose
     image: running_page:${IMAGE_TAG:-latest}
-    environment:
-      VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN}
-      VITE_IS_CHINESE: ${VITE_IS_CHINESE}
-      VITE_ROAD_LABEL_DISPLAY: ${VITE_ROAD_LABEL_DISPLAY}
-      VITE_PRIVACY_MODE: ${VITE_PRIVACY_MODE}
-      VITE_LIGHTS_ON: ${VITE_LIGHTS_ON}
-      VITE_SHOW_ELEVATION_GAIN: ${VITE_SHOW_ELEVATION_GAIN}
-      VITE_RICH_TITLE: ${VITE_RICH_TITLE}
-      VITE_USE_ANIMATION_FOR_GRID: ${VITE_USE_ANIMATION_FOR_GRID}
-      PATH_PREFIX: ${PATH_PREFIX}
-      APP: ${APP}
-      ONLY_RUN: ${ONLY_RUN}
-      TITLE: ${TITLE}
-      SECRET_STRING: ${SECRET_STRING}
-      NIKE_REFRESH_TOKEN: ${NIKE_REFRESH_TOKEN}
-      CLIENT_ID: ${CLIENT_ID}
-      CLIENT_SECRET: ${CLIENT_SECRET}
-      REFRESH_TOKEN: ${REFRESH_TOKEN}
-      KEEP_PHONE_NUMBER: ${KEEP_PHONE_NUMBER}
-      KEEP_PASSWORD: ${KEEP_PASSWORD}
-      UNITS: ${UNITS}
-      ATHLETE_NAME: ${ATHLETE_NAME}
-      BIRTH_YM: ${BIRTH_YM}
+    env_file:
+      - .env
     restart: unless-stopped
     volumes:
       - ./data:/root/running_page/data
