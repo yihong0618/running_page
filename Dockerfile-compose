@@ -1,0 +1,30 @@
+FROM debian:bookworm
+WORKDIR /root/running_page
+SHELL ["/bin/bash", "-c"]
+RUN apt update && \
+  apt install -y curl git python3 python3-pip nodejs && \
+  git clone --depth=1 --branch=dockercompose https://github.com/smolfeet/running_page.git /root/running_page && \
+  mv docker-entrypoint.sh /docker-entrypoint.sh && \
+  chmod +x /docker-entrypoint.sh && \
+  chmod +x build_stats.sh && \
+  rm -f run_page/data.db && \
+  rm -f src/static/activities.json && \
+  rm -f imported.json && \
+  mkdir data && \
+  ln -s /root/running_page/data/data.db /root/running_page/run_page/data.db && \
+  ln -s /root/running_page/data/activities.json /root/running_page/src/static/activities.json && \
+  ln -s /root/running_page/data/imported.json /root/running_page/imported.json && \
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
+  source ~/.bashrc && \
+  nvm install node && \
+  apt-get purge -y --auto-remove && \
+  rm -rf /var/lib/apt/lists/* && \
+  pip3 install -i https://mirrors.aliyun.com/pypi/simple/ pip -U --break-system-packages && \
+  pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
+  pip3 install -r requirements.txt --break-system-packages && \
+  npm config set registry https://registry.npmmirror.com && \
+  npm install -g corepack && \
+  corepack enable && \
+  COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_NPM_REGISTRY=https://registry.npmmirror.com pnpm install
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD ["./build_stats.sh", "24h"]

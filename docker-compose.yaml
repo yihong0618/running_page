@@ -1,0 +1,63 @@
+services:
+  running_page:
+    container_name: running_page
+    build:
+      context: .
+      dockerfile: Dockerfile-compose
+    image: running_page:${IMAGE_TAG:-latest}
+    # environment:
+    #   VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN}
+    #   VITE_IS_CHINESE: ${VITE_IS_CHINESE}
+    #   VITE_ROAD_LABEL_DISPLAY: ${VITE_ROAD_LABEL_DISPLAY}
+    #   VITE_PRIVACY_MODE: ${VITE_PRIVACY_MODE}
+    #   VITE_LIGHTS_ON: ${VITE_LIGHTS_ON}
+    #   VITE_SHOW_ELEVATION_GAIN: ${VITE_SHOW_ELEVATION_GAIN}
+    #   VITE_RICH_TITLE: ${VITE_RICH_TITLE}
+    #   VITE_USE_ANIMATION_FOR_GRID: ${VITE_USE_ANIMATION_FOR_GRID}
+    #   PATH_PREFIX: ${PATH_PREFIX}
+    #   APP: ${APP}
+    #   ONLY_RUN: ${ONLY_RUN}
+    #   TITLE: ${TITLE}
+    #   SECRET_STRING: ${SECRET_STRING}
+    #   NIKE_REFRESH_TOKEN: ${NIKE_REFRESH_TOKEN}
+    #   CLIENT_ID: ${CLIENT_ID}
+    #   CLIENT_SECRET: ${CLIENT_SECRET}
+    #   REFRESH_TOKEN: ${REFRESH_TOKEN}
+    #   KEEP_PHONE_NUMBER: ${KEEP_PHONE_NUMBER}
+    #   KEEP_PASSWORD: ${KEEP_PASSWORD}
+    #   UNITS: ${UNITS}
+    #   ATHLETE_NAME: ${ATHLETE_NAME}
+    #   BIRTH_YM: ${BIRTH_YM}
+    restart: unless-stopped
+    volumes:
+      - ./GPX_OUT:/root/running_page/GPX_OUT
+      - ./web:/root/running_page/dist
+      - ./data:/root/running_page/data
+      # For development and troubleshooting
+      #   - ./build_stats.sh:/root/running_page/build_stats.sh
+      # command: [ "/bin/sh", "-c", "/root/running_page/build_stats.sh 24h" ]
+  running_page-nginx:
+    container_name: running_page-nginx
+    image: nginx:alpine
+    restart: unless-stopped
+    networks:
+      - frontend
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./web:/usr/share/nginx/html
+      #- ./nginx.conf:/etc/nginx/conf.d/default.conf
+      # OPTIONAL for traefik deployment
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.running.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.routers.running.entrypoints=websecure"
+      - "traefik.http.routers.running.tls=true"
+      - "traefik.http.routers.running.tls.certresolver=letencrypt"
+      - "traefik.http.services.running.loadbalancer.server.port=80"
+      - "traefik.http.routers.running.middlewares=${AUTH_PROVIDER}"
+    command: [ "/bin/sh", "-c", "curl -o /etc/nginx/conf.d/default.conf https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/nginx.conf && nginx -g 'daemon off;'" ]
+networks:
+  frontend:
+    name: frontend
+    external: true

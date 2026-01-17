@@ -1,0 +1,83 @@
+#####################################################################################################
+### Without an .env file, the app will display the runs from the repository
+### To use your own data, create a .env file in the root directory and fill in the variables below
+#####################################################################################################
+
+## APP Garmin, Garmin-CN, Strava, Nike_to_Strava, Keep
+#APP=Garmin
+
+## If you chose an APP, comment out the respective variables
+# NRC
+#NIKE_REFRESH_TOKEN=
+
+# Garmin and Garmin-CN
+#SECRET_STRING=
+
+# Keep
+#KEEP_PHONE_NUMBER=
+#KEEP_PASSWORD=
+
+# Strava
+#CLIENT_ID=
+#CLIENT_SECRET=
+#REFRESH_TOKEN=
+
+## HTTP port, default is 80
+#HTTP_PORT=8765
+
+## IF you are outside China please make sure VITE_IS_CHINESE = false
+VITE_IS_CHINESE=true
+
+## set to `false` if you want to hide the road label characters
+VITE_ROAD_LABEL_DISPLAY=true
+
+## updated on 2024/11/17: privacy mode is set to true by default
+## set to `true` if you want to display only the routes without showing the map.
+VITE_PRIVACY_MODE=true
+
+## updated on 2024/11/17: lights are turned off by default
+## set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
+VITE_LIGHTS_ON=true
+
+## set to `true` if you want to show the 'Elevation Gain' column
+VITE_SHOW_ELEVATION_GAIN=true
+
+## richer title for the activity types (like garmin style)
+VITE_RICH_TITLE=false
+
+## See: https://docs.mapbox.com/help/dive-deeper/access-tokens/
+## https://console.mapbox.com/account/access-tokens/
+## For security reasons, please avoid using the default public token provided by Mapbox as much as possible.
+## Instead, manually add a new token and apply URL restrictions.
+## (please refer to https://github.com/yihong0618/running_page/issues/643#issuecomment-2042668580)
+#VITE_MAPBOX_TOKEN=pk.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzAB
+
+VITE_USE_ANIMATION_FOR_GRID=false
+
+## Optional, only runs default is false
+#ONLY_RUN=true
+
+## Optional change site path
+#PATH_PREFIX=/running_page
+
+## Optional, title
+#TITLE=runner
+
+## Optional, units are metric by default
+#UNITS=imperial
+
+## Optional, athlete name
+#ATHLETE_NAME=YourName
+
+## Optional, birth year-month
+BIRTH_YM=2001-01
+
+## Optional for traefik deployment
+#HOSTNAME=https://myhostname.tld/
+
+## If using authentication middleware
+#AUTH_PROVIDER=middleware
+
+## if network exists for internal/Internet access
+#NETWORK=network
+

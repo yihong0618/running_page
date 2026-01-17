@@ -1,8 +1,6 @@
 // Constants
 const MAPBOX_TOKEN =
-  // For security reasons, please avoid using the default public token provided by Mapbox as much as possible.
-  // Instead, manually add a new token and apply URL restrictions.
-  // (please refer to https://github.com/yihong0618/running_page/issues/643#issuecomment-2042668580)
+  import.meta.env.VITE_MAPBOX_TOKEN ||
   'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJjbWYxdXR4YncwMTJtMm5zOTE4eTZpMGdtIn0.OnsXdwkZFztR8a5Ph_T-xg';
 const MUNICIPALITY_CITIES_ARR = [
   '北京市',
@@ -37,22 +35,14 @@ const LINE_OPACITY = 0.4;
 // styling: map height - responsive design
 // Use smaller height on mobile devices for better user experience
 const MAP_HEIGHT = window.innerWidth <= 768 ? 250 : 600;
-//set to `false` if you want to hide the road label characters
-const ROAD_LABEL_DISPLAY = true;
-// updated on 2024/11/17: privacy mode is set to true by default
-//set to `true` if you want to display only the routes without showing the map.
-const PRIVACY_MODE = false;
-// updated on 2024/11/17: lights are turned off by default
-//set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
-const LIGHTS_ON = false;
-//set to `true` if you want to show the 'Elevation Gain' column
-const SHOW_ELEVATION_GAIN = false;
-// richer title for the activity types (like garmin style)
-const RICH_TITLE = false;
-
-// IF you are outside China please make sure IS_CHINESE = false
-const IS_CHINESE = true;
-const USE_ANIMATION_FOR_GRID = false;
+const ROAD_LABEL_DISPLAY = import.meta.env.VITE_ROAD_LABEL_DISPLAY !== 'false';
+const PRIVACY_MODE = import.meta.env.VITE_PRIVACY_MODE !== 'false';
+const LIGHTS_ON = import.meta.env.VITE_LIGHTS_ON === 'true';
+const SHOW_ELEVATION_GAIN = import.meta.env.VITE_SHOW_ELEVATION_GAIN === 'true';
+const RICH_TITLE = import.meta.env.VITE_RICH_TITLE === 'true';
+const IS_CHINESE = import.meta.env.VITE_IS_CHINESE !== 'false';
+const USE_ANIMATION_FOR_GRID =
+  import.meta.env.VITE_USE_ANIMATION_FOR_GRID === 'true';
 const CHINESE_INFO_MESSAGE = (yearLength: number, year: string): string => {
   const yearStr = year === 'Total' ? '所有' : ` ${year} `;
   return `记录自己跑步 ${yearLength} 年了，下面列表展示的是${yearStr}的数据`;
@@ -103,6 +93,23 @@ const HOME_PAGE_TITLE = IS_CHINESE ? '首页' : 'Home';
 const LOADING_TEXT = IS_CHINESE ? '加载中...' : 'Loading...';
 const NO_ROUTE_DATA = IS_CHINESE ? '暂无路线数据' : 'No route data';
 const INVALID_ROUTE_DATA = IS_CHINESE ? '路线数据无效' : 'Invalid route data';
+
+// Set to true to enable science-based training alerts
+const SHOW_TRAINING_ALERTS = false;
+// Monthly distance threshold in km (default: 300km as suggested in issue)
+const MONTHLY_MILEAGE_THRESHOLD = 300;
+// Weekly distance increase threshold as percentage (10% rule)
+const WEEKLY_INCREASE_THRESHOLD = 10;
+
+const TRAINING_ALERT_MESSAGES = {
+  MONTHLY_OVERTRAINING: IS_CHINESE
+    ? '本月跑量已超过 {threshold} 公里，请注意过度训练风险'
+    : 'Monthly distance exceeds {threshold} km. Be aware of overtraining risk.',
+  WEEKLY_INCREASE: IS_CHINESE
+    ? '本周跑量较上周增加超过 {threshold}%，请注意循序渐进'
+    : 'Weekly distance increased by more than {threshold}%. Follow the 10% rule to avoid injury.',
+  TRAINING_ALERTS_TITLE: IS_CHINESE ? '训练提醒' : 'Training Alerts',
+};
 
 const ACTIVITY_TYPES = {
   RUN_GENERIC_TITLE,
@@ -168,6 +175,10 @@ export {
   LOADING_TEXT,
   NO_ROUTE_DATA,
   INVALID_ROUTE_DATA,
+  SHOW_TRAINING_ALERTS,
+  MONTHLY_MILEAGE_THRESHOLD,
+  WEEKLY_INCREASE_THRESHOLD,
+  TRAINING_ALERT_MESSAGES,
 };
 
 const nike = 'rgb(224,237,94)'; // if you want to change the main color, modify this value in src/styles/variables.scss

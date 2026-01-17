@@ -226,6 +226,26 @@ Open your browser and visit localhost:80
 * add `--build-arg VITE_USE_IMPERIAL=true` to `docker build ...`
 * add `--units imperial` flag to each `python3 run_page/gen_svg.py ...` command in the [Dockerfile](https://github.com/yihong0618/running_page/blob/master/Dockerfile)
 
+## Docker Compose: `docker-compose.yaml`
+You need these files from the repo:
+* `docker-compose.yaml`
+* `dotenv`
+* Dockerfile-compose
+* Dockerfile-compose.dockerignore
+```bash
+curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/docker-compose.yaml
+curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/dotenv
+curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/Dockerfile-compose
+curl -O https://raw.githubusercontent.com/smolfeet/running_page/refs/heads/dockercompose/Dockerfile-compose.dockerignore
+```
+If you just want to see the demo, run the following:
+`docker compose build && docker compose up`
+http://localhost:80
+
+If you want to use your own data, `cp dotenv .env` and edit with personal defaults, then run the following:
+`docker compose build && docker compose up`
+http://hostname:<portFrom .env>
+
 ## Local sync data
 
 ### Modifying Mapbox token
