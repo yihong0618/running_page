@@ -82,5 +82,5 @@ TITLE="my running page"
 #NETWORK=network
 #NETWORK_EXTERNAL=true
 
-## Rebuild interval in minutes (1440 minutes = 24 hours)
-INTERVAL_MIN=1440
+## Rebuild interval in minutes, default builds once (1440 minutes = 24 hours)
+#INTERVAL_MIN=1440
