@@ -12,7 +12,7 @@ services:
       - ./data:/root/running_page/data
       # For development and troubleshooting
       #   - ./build_stats.sh:/root/running_page/build_stats.sh
-      # command: [ "/bin/sh", "-c", "/root/running_page/build_stats.sh 24h" ]
+      # command: [ "/bin/sh", "-c", "/root/running_page/build_stats.sh" ]
   running_page-nginx:
     container_name: running_page-nginx
     image: nginx:alpine

@@ -85,7 +85,7 @@ function build_stats {
 	cp assets/*.svg dist/assets/
 }
 
-if [[ -z "$INTERVAL_MIN" ]]; then
+if [[ -n "$INTERVAL_MIN" ]]; then
 	while true; do
 	    FILE="dist/index.html"
 	    if [[ -z $(find "$FILE" -mmin -$INTERVAL_MIN 2>/dev/null) ]]; then
