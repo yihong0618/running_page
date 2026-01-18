@@ -56,7 +56,7 @@ function build_stats {
 	fi
 	rm dist/assets/*.svg
 	python3 run_page/gen_svg.py --type grid --from-db --units $UNITS --athlete "$ATHLETE_NAME" --output assets/grid.svg --use-localtime\
-	  --title "$TITLE Grid" \
+	  --title "${TITLE:-grid}" \
 	  --min-distance 6.0 \
 	  --special-color yellow \
 	  --special-color2 red \
@@ -64,7 +64,7 @@ function build_stats {
 	  --special-distance2 15
 	python3 run_page/gen_svg.py --type circular --from-db --units $UNITS --use-localtime
 	python3 run_page/gen_svg.py --type github --from-db --units $UNITS --athlete "$ATHLETE_NAME" --output assets/github.svg --use-localtime \
-	  --title "$TITLE GitHub" \
+	  --title "${TITLE:-github}" \
 	  --min-distance 0.5 \
 	  --special-distance 6 \
 	  --special-distance2 13 \
@@ -75,34 +75,35 @@ function build_stats {
 	  --special-distance2 200 \
 	  --special-color '#f9d367' \
 	  --special-color2 '#f0a1a8' \
-	  --title "$TITLE Month of Life"
+	  --title "${TITLE:-Month of Life}"
 	python3 run_page/gen_svg.py --type year_summary --from-db --units $UNITS --athlete "$ATHLETE_NAME" --birth $BIRTH_YM --output assets/year_summary.svg --use-localtime \
 	  --special-distance 13 \
 	  --special-color '#f9d367' \
-	  --title "$TITLE Year Summary"
+	  --title "${TITLE:-Year Summary}"
 	rm dist/assets/*.{js,css}
     pnpm run build
 	cp assets/*.svg dist/assets/
 }
 
-if [[ "$1" == "24h" ]]; then
+if [[ -z "$INTERVAL_MIN" ]]; then
 	while true; do
 	    FILE="dist/index.html"
-	    if [[ -z $(find "$FILE" -mmin -1440 2>/dev/null) ]]; then
+	    if [[ -z $(find "$FILE" -mmin -$INTERVAL_MIN 2>/dev/null) ]]; then
 	      echo "**************** Building $APP Statistics"
 		  echo "$(date +%F-%H%M) ****************"
 	      build_stats
 		  echo "**************** Will build again at"
-		  echo "$(date -d "+24 hours" +%F-%H%M) ****************"
+		  echo "$(date -d "+$INTERVAL_MIN minutes" +%F-%H%M) ****************"
 	    else
 		MOD_TIME=$(stat -c %Y "$FILE")
-		FUTURE_TIME=$((MOD_TIME + 86400))
+		FUTURE_TIME=$((MOD_TIME + $INTERVAL_MIN * 60))
 		READABLE_TIME=$(date -d "@$FUTURE_TIME" "+%F-%H%M")
 	      echo "Waiting... will check at $READABLE_TIME"
 	    fi
-	    sleep 24h
+	    sleep $INTERVAL_MIN
 	done
 else
 	echo "Rebuilding stats once"
 	build_stats
+	tail -f /dev/null
 fi

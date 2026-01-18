@@ -52,16 +52,16 @@ VITE_RICH_TITLE=false
 ## (please refer to https://github.com/yihong0618/running_page/issues/643#issuecomment-2042668580)
 #VITE_MAPBOX_TOKEN=pk.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzAB
 
-VITE_USE_ANIMATION_FOR_GRID=false
+#VITE_USE_ANIMATION_FOR_GRID=false
 
-## Optional, only runs default is false
+## Optional, only get runs fromGarmin and Garmin-CN, default is false
 #ONLY_RUN=true
 
 ## Optional change site path
 #PATH_PREFIX=/running_page
 
 ## Optional, title
-#TITLE=runner
+TITLE="my running page"
 
 ## Optional, units are metric by default
 #UNITS=imperial
@@ -70,7 +70,7 @@ VITE_USE_ANIMATION_FOR_GRID=false
 #ATHLETE_NAME=YourName
 
 ## Optional, birth year-month
-BIRTH_YM=2001-01
+#BIRTH_YM=2001-01
 
 ## Optional for traefik deployment
 #HOSTNAME=myhostname.tld
@@ -82,3 +82,5 @@ BIRTH_YM=2001-01
 #NETWORK=network
 #NETWORK_EXTERNAL=true
 
+## Rebuild interval in minutes (1440 minutes = 24 hours)
+INTERVAL_MIN=1440
