@@ -1,11 +1,15 @@
 #!/bin/bash
 set -e
-[ ! -L "GPX_OUT" ] && rm -rf GPX_OUT && mkdir "data/GPX_OUT"; ln -rs data/GPX_OUT GPX_OUT
-[ ! -L "FIT_OUT" ] && rm -rf FIT_OUT && mkdir "data/FIT_OUT"; ln -rs data/FIT_OUT FIT_OUT
-[ ! -L "TCX_OUT" ] && rm -rf TCX_OUT && mkdir "data/TCX_OUT"; ln -rs data/TCX_OUT TCX_OUT
-[ ! -L "dist" ]; rm -rf dist; mkdir "data/dist"; ln -rs data/dist dist
+[ ! -d "data/GPX_OUT" ] && mkdir data/GPX_OUT 
+[ ! -d "data/FIT_OUT" ] && mkdir data/FIT_OUT 
+[ ! -d "data/TCX_OUT" ] && mkdir data/TCX_OUT 
+[ ! -d "data/dist" ] && mkdir data/dist
+[ ! -L "GPX_OUT" ] && rm -rf GPX_OUT && ln -s data/GPX_OUT GPX_OUT
+[ ! -L "FIT_OUT" ] && rm -rf FIT_OUT && ln -s data/FIT_OUT FIT_OUT
+[ ! -L "TCX_OUT" ] && rm -rf TCX_OUT && ln -s data/TCX_OUT TCX_OUT
+[ ! -L "dist" ]&& rm -rf dist && ln -s data/dist dist
 
-if [[ -n $APP && ! -f ".live" ]]; then
+if [[ -n $APP && ! -f "data/.live" ]]; then
     echo "Running with $APP data..."
     echo -n | tee data/{imported.json,activities.json,data.db,.live}
     rm src/static/activities.json imported.json run_page/data.db
@@ -15,7 +19,7 @@ if [[ -n $APP && ! -f ".live" ]]; then
     rm data/.demo
 elif [[ -z $APP && ! -f "data/.demo" && ! -f "data/.live" ]]; then
     echo "Running with demonstration data..."
-    cp ./activities.json src/static/activities.json
+    cp ./activities.json data/activities.json
     echo -n | tee data/{imported.json,data.db,.demo}
     rm data/.live
 fi

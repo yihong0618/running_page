@@ -52,7 +52,7 @@ function build_stats {
 		python3 run_page/keep_sync.py ${KEEP_PHONE_NUMBER} ${KEEP_PASSWORD}
 	else
 		echo "Unknown app: using demo data"
-		curl -o data/activities.json https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/src/static/activities.json
+		cp ./activities.json data/activities.json
 	fi
 	rm dist/assets/*.svg
 	python3 run_page/gen_svg.py --type grid --from-db --units $UNITS --athlete "$ATHLETE_NAME" --output assets/grid.svg --use-localtime\
