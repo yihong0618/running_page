@@ -233,13 +233,14 @@ cp dotenv .env
 cp EXAMPLE_docker-compose.yaml docker-compose.yaml
 ```
 
-If you just want to see the demo, run the following:
+If you want to see the demo, run the following:
 `docker compose build && docker compose up`
 
 http://localhost:80
 
-If you want to use your own data, edit the `.env` file with personal defaults, then run the following, specifically edit the `APP` variable ans associated credentials in the `.env` file:
+If you want to use your own data, edit the `.env` file with personal defaults, then run the following, specifically edit the `APP` variable ans associated credentials in the `.env` file.
 
+If you want to use existing data, copy `data.db`, `activities.json`, `imported.json`, `GPX_OUT`, `FIT_OUT`, `TCX_OUT`, `dist` from the old container to the `data` directory. Be sure the varialbe `APP` in `.env` is set to something, not empty.
 `docker compose build && docker compose up`
 
 http://hostname:<portFrom .env>

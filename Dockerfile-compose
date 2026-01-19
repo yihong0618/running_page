@@ -31,4 +31,4 @@ RUN apt update && \
   COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_NPM_REGISTRY=https://registry.npmmirror.com pnpm install && \
   apt clean
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
-CMD ["./build_stats.sh", "24h"]
+CMD ["./build_stats.sh"]
