@@ -10,9 +10,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./data:/root/running_page/data
-      # For development and troubleshooting
-      #   - ./build_stats.sh:/root/running_page/build_stats.sh
-      # command: [ "/bin/sh", "-c", "/root/running_page/build_stats.sh" ]
   running_page-nginx:
     container_name: running_page-nginx
     image: nginx:alpine
@@ -23,8 +20,7 @@ services:
       - "${HTTP_PORT:-80}:80"
     volumes:
       - ./data/dist:/usr/share/nginx/html
-      #- ./nginx.conf:/etc/nginx/conf.d/default.conf
-      # OPTIONAL for traefik deployment
+      # OPTIONAL for traefik deployment, unless traefik is used, these do nothing
     labels:
       - traefik.enable=true
       - "traefik.http.routers.running.rule=Host(`${HOSTNAME}`)"
