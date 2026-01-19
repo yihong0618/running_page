@@ -20,7 +20,7 @@ services:
       - "${HTTP_PORT:-80}:80"
     volumes:
       - ./data/dist:/usr/share/nginx/html
-      # OPTIONAL for traefik deployment, unless traefik is used, these do nothing
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     labels:
       - traefik.enable=true
       - "traefik.http.routers.running.rule=Host(`${HOSTNAME}`)"
@@ -29,7 +29,6 @@ services:
       - "traefik.http.routers.running.tls.certresolver=letencrypt"
       - "traefik.http.services.running.loadbalancer.server.port=80"
       - "traefik.http.routers.running.middlewares=${AUTH_PROVIDER}"
-    command: [ "/bin/sh", "-c", "curl -o /etc/nginx/conf.d/default.conf https://raw.githubusercontent.com/yihong0618/running_page/refs/heads/master/nginx.conf && nginx -g 'daemon off;'" ]
 networks:
   running_page:
     name: ${NETWORK:-running_page}
