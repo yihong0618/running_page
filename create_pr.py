@@ -86,7 +86,7 @@ This addresses the TODO comment on line 33 of `utils.py`.""",
 
     if response.status_code == 201:
         pr_data = response.json()
-        print(f"✓ Pull request created successfully!")
+        print("✓ Pull request created successfully!")
         print(f"  URL: {pr_data['html_url']}")
         return True
     else:
