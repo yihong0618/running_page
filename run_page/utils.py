@@ -17,11 +17,11 @@ from stravalib.exc import RateLimitExceeded
 def adjust_time(time: datetime, tz_name: str) -> datetime:
     """
     Adjust a datetime object by adding the timezone offset.
-    
+
     Args:
         time: The datetime object to adjust
         tz_name: The timezone name (e.g., 'Asia/Shanghai')
-        
+
     Returns:
         Adjusted datetime object
     """
@@ -32,11 +32,11 @@ def adjust_time(time: datetime, tz_name: str) -> datetime:
 def adjust_time_to_utc(time: datetime, tz_name: str) -> datetime:
     """
     Convert a datetime object to UTC by subtracting the timezone offset.
-    
+
     Args:
         time: The datetime object to convert
         tz_name: The timezone name (e.g., 'Asia/Shanghai')
-        
+
     Returns:
         UTC datetime object
     """
@@ -47,11 +47,11 @@ def adjust_time_to_utc(time: datetime, tz_name: str) -> datetime:
 def adjust_timestamp_to_utc(timestamp: int, tz_name: str) -> int:
     """
     Convert a timestamp to UTC by subtracting the timezone offset.
-    
+
     Args:
         timestamp: The timestamp to convert
         tz_name: The timezone name (e.g., 'Asia/Shanghai')
-        
+
     Returns:
         UTC timestamp
     """
@@ -65,13 +65,13 @@ def to_date(ts: str) -> datetime:
     Parse ISO format timestamp string to datetime object.
     Uses datetime.fromisoformat() for standard ISO format strings.
     Falls back to strptime for non-standard formats.
-    
+
     Args:
         ts: ISO format timestamp string
-        
+
     Returns:
         Parsed datetime object
-        
+
     Raises:
         ValueError: If the timestamp cannot be parsed
     """
@@ -98,7 +98,7 @@ def make_activities_file(
 ) -> None:
     """
     Generate activities JSON file from SQL database and data directory.
-    
+
     Args:
         sql_file: Path to SQLite database file
         data_dir: Directory containing activity files (GPX, FIT, etc.)
@@ -117,15 +117,17 @@ def make_activities_file(
         json.dump(activities_list, f)
 
 
-def make_strava_client(client_id: str, client_secret: str, refresh_token: str) -> Client:
+def make_strava_client(
+    client_id: str, client_secret: str, refresh_token: str
+) -> Client:
     """
     Create and authenticate a Strava API client.
-    
+
     Args:
         client_id: Strava application client ID
         client_secret: Strava application client secret
         refresh_token: Strava refresh token
-        
+
     Returns:
         Authenticated Strava client instance
     """
@@ -141,11 +143,11 @@ def make_strava_client(client_id: str, client_secret: str, refresh_token: str) -
 def get_strava_last_time(client: Client, is_milliseconds: bool = True) -> int:
     """
     Get the timestamp of the end time of the most recent running activity.
-    
+
     Args:
         client: Authenticated Strava client instance
         is_milliseconds: If True, return timestamp in milliseconds; otherwise in seconds
-        
+
     Returns:
         Timestamp of the end time of the most recent run, or 0 if no runs found or error occurs
     """
@@ -177,13 +179,13 @@ def upload_file_to_strava(
 ) -> None:
     """
     Upload an activity file to Strava.
-    
+
     Args:
         client: Authenticated Strava client instance
         file_name: Path to the activity file to upload
         data_type: File type (e.g., 'gpx', 'tcx', 'fit')
         force_to_run: If True, force activity type to 'run'
-        
+
     Note:
         Automatically handles rate limiting by retrying after the specified timeout.
     """

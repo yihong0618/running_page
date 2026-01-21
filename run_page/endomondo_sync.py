@@ -23,13 +23,13 @@ run_map = namedtuple("polyline", "summary_polyline")
 def _make_heart_rate(en_dict: dict) -> Optional[int]:
     """
     Extract heart rate data from Endomondo activity dictionary.
-    
+
     Args:
         en_dict: Endomondo activity dictionary
-        
+
     Returns:
         Average heart rate as integer, or None if not available
-        
+
     Note:
         Endomondo JSON format may not always include heart rate data.
         This function can be extended if heart rate data becomes available in the format.
