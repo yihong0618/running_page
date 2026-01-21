@@ -1,5 +1,6 @@
 import Stat from '@/components/Stat';
 import useActivities from '@/hooks/useActivities';
+import { DIST_UNIT, M_TO_DIST } from '@/utils/utils';
 
 // only support China for now
 const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
@@ -14,7 +15,7 @@ const CitiesStat = ({ onClick }: { onClick: (_city: string) => void }) => {
           <Stat
             key={city}
             value={city}
-            description={` ${(distance / 1000).toFixed(0)} KM`}
+            description={` ${(distance / M_TO_DIST).toFixed(0)} ${DIST_UNIT}`}
             citySize={3}
             onClick={() => onClick(city)}
           />

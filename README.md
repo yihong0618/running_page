@@ -3,7 +3,7 @@
 1. clone or Fork before vercel 404 need to pull the latest code
 2. python in README means python3 python
 3. use v2.0 need change vercel setting from gatsby to vite
-4. 2023.09.26 garmin need secret_string(and in Actions) get
+4. 2023.09.26 garmin need secret_string(and in Actions) get 
 
    ```bash
      python run_page/get_garmin_secret.py ${email} ${password}
@@ -128,7 +128,10 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Bolyn](https://run.wbolyn.com)                      | <https://run.wbolyn.com>                       | Coros       |
 | [LeiChen](https://github.com/xthirty77)              | <https://xthirty77.github.io/running_page/>    | Coros       |
 | [itrunner](https://itrunner.cn)                      | <https://itrunner.cn>                          | Garmin      |
-
+| [maslke](https://github.com/maslke)                  | <https://maslke.space/running_page/>           | Garmin-cn   |
+| [Niewei Yang](https://github.com/Niewei-Yang)        | <https://neewii-worksout.vercel.app/>          | Strava      |
+| [RUN.LOG](https://github.com/bzzd2001)            | <https://run.731558.xyz:6881/>                 | Strava      |
+| [StoneRicky](https://github.com/StoneRicky)       | <https://stonericky.github.io/running_page/>   | COROS       |
 </details>
 
 ## How it works
@@ -142,6 +145,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 3. React Hooks
 4. Mapbox for map display
 5. Supports most sports apps such as nike strava...
+6. Support for metric and imperial units
 
 > automatically backup gpx data for easy backup and uploading to other software.
 >
@@ -217,6 +221,10 @@ docker run -itd -p 80:80   running_page:latest
 Open your browser and visit localhost:80
 
 ```
+
+### Imperial Units
+* add `--build-arg VITE_USE_IMPERIAL=true` to `docker build ...`
+* add `--units imperial` flag to each `python3 run_page/gen_svg.py ...` command in the [Dockerfile](https://github.com/yihong0618/running_page/blob/master/Dockerfile)
 
 ## Local sync data
 

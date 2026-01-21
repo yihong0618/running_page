@@ -201,7 +201,7 @@ class Poster:
 
             d.add(
                 d.text(
-                    f"Over {special_distance1:.1f} km",
+                    f"Over {special_distance1:.1f} {self.u()}",
                     insert=(70, self.height - 14.5),
                     fill=text_color,
                     style=small_value_style,
@@ -214,7 +214,7 @@ class Poster:
 
             d.add(
                 d.text(
-                    f"Over {special_distance2:.1f} km",
+                    f"Over {special_distance2:.1f} {self.u()}",
                     insert=(70, self.height - 10.5),
                     fill=text_color,
                     style=small_value_style,
