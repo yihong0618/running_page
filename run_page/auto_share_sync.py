@@ -7,7 +7,6 @@ import base64
 import os
 import cairosvg  # 替换 svglib.svglib 和 reportlab.graphics
 
-
 SVG_WIDTH = 800
 SVG_HEIGHT = 600
 SVG_MARGIN = 30
