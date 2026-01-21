@@ -7,7 +7,12 @@ import styles from './style.module.css';
 const Header = () => {
   const { logo, siteUrl, navLinks } = useSiteMetadata();
   const { setTheme } = useTheme();
-  const [currentIconIndex, setCurrentIconIndex] = useState(1);
+
+  const savedTheme = localStorage.getItem('theme');
+  const localStorageThemeIndex = savedTheme === 'dark' ? 0 : 1;
+  const [currentIconIndex, setCurrentIconIndex] = useState(
+    localStorageThemeIndex
+  );
 
   const icons = [
     {
