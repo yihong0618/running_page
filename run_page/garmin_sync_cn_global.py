@@ -76,7 +76,8 @@ if __name__ == "__main__":
             to_upload_files.append(os.path.join(GPX_FOLDER, f"{i}.gpx"))
 
     print("Files to sync:" + " ".join(to_upload_files))
-    # FIXME is com ok here?
+    # Use "COM" as auth_domain for global Garmin Connect (non-CN region)
+    # This is correct - "CN" is only used for Garmin China, all other regions use "COM"
     garmin_global_client = Garmin(
         secret_string_global,
         "COM",

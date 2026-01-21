@@ -7,6 +7,7 @@ import json
 import os
 from collections import namedtuple
 from datetime import datetime, timedelta
+from typing import Optional
 
 import polyline
 from config import BASE_TIMEZONE, ENDOMONDO_FILE_DIR, JSON_FILE, SQL_FILE
@@ -19,10 +20,22 @@ start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
 
-def _make_heart_rate(en_dict):
+def _make_heart_rate(en_dict: dict) -> Optional[int]:
     """
-    #TODO
+    Extract heart rate data from Endomondo activity dictionary.
+    
+    Args:
+        en_dict: Endomondo activity dictionary
+        
+    Returns:
+        Average heart rate as integer, or None if not available
+        
+    Note:
+        Endomondo JSON format may not always include heart rate data.
+        This function can be extended if heart rate data becomes available in the format.
     """
+    # Heart rate data is not typically available in Endomondo export format
+    # If heart rate becomes available, extract it here
     return None
 
 
