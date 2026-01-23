@@ -47,13 +47,16 @@ RUN DUMMY=${DUMMY}; \
   elif [ "$app" = "Nike_to_Strava" ] ; then \
   python3  run_page/nike_to_strava_sync.py ${nike_refresh_token} ${client_id} ${client_secret} ${refresh_token};\
   elif [ "$app" = "Keep" ] ; then \
-  python3 run_page/keep_sync.py ${keep_phone_number} ${keep_password};\
+  python3 run_page/keep_sync.py ${keep_phone_number} ${keep_password} --with-gpx;\
   else \
   echo "Unknown app" ; \
   fi
 RUN python3 run_page/gen_svg.py --from-db --title "my running page" --type grid --athlete "$YOUR_NAME" --output assets/grid.svg --min-distance 10.0 --special-color yellow --special-color2 red --special-distance 20 --special-distance2 40 --use-localtime \
   && python3 run_page/gen_svg.py --from-db --title "my running page" --type github --athlete "$YOUR_NAME" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5 \
-  && python3 run_page/gen_svg.py --from-db --type circular --use-localtime
+  && python3 run_page/gen_svg.py --from-db --type circular --use-localtime \
+  && python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --special-distance 10 --special-distance2 20 --special-color '#f9d367' --special-color2 '#f0a1a8' --output assets/mol.svg --use-localtime --athlete "$YOUR_NAME" --title 'Runner Month of Life' \
+  && python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_running.svg --use-localtime --athlete "$YOUR_NAME" --title "Runner Month of Life" --sport-type running  \
+  && python3 run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary.svg --athlete "$YOUR_NAME""
 
 
 FROM develop-node AS frontend-build
