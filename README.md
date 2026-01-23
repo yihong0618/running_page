@@ -3,7 +3,7 @@
 1. clone or Fork before vercel 404 need to pull the latest code
 2. python in README means python3 python
 3. use v2.0 need change vercel setting from gatsby to vite
-4. 2023.09.26 garmin need secret_string(and in Actions) get
+4. 2023.09.26 garmin need secret_string(and in Actions) get 
 
    ```bash
      python run_page/get_garmin_secret.py ${email} ${password}

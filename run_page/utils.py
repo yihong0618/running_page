@@ -30,19 +30,23 @@ def adjust_timestamp_to_utc(timestamp, tz_name):
 
 
 def to_date(ts):
-    # TODO use https://docs.python.org/3/library/datetime.html#datetime.datetime.fromisoformat
-    # once we decide to move on to python v3.7+
-    ts_fmts = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f"]
-
-    for ts_fmt in ts_fmts:
-        try:
-            # performance with using exceptions
-            # shouldn't be an issue since it's an offline cmdline tool
-            return datetime.strptime(ts, ts_fmt)
-        except ValueError:
-            pass
-
-    raise ValueError(f"cannot parse timestamp {ts} into date with fmts: {ts_fmts}")
+    """
+    Parse ISO format timestamp string to datetime object.
+    Uses datetime.fromisoformat() for standard ISO format strings.
+    Falls back to strptime for non-standard formats.
+    """
+    # Try fromisoformat first (Python 3.7+)
+    try:
+        return datetime.fromisoformat(ts)
+    except ValueError:
+        # Fallback to strptime for non-standard formats
+        ts_fmts = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f"]
+        for ts_fmt in ts_fmts:
+            try:
+                return datetime.strptime(ts, ts_fmt)
+            except ValueError:
+                pass
+        raise ValueError(f"cannot parse timestamp {ts} into date")
 
 
 def make_activities_file(
