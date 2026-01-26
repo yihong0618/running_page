@@ -1,24 +1,49 @@
 from typing import List, Tuple
 import polyline
 import os
+import warnings
 from haversine import haversine
 
-try:
-    IGNORE_POLYLINE = (
-        polyline.decode(os.getenv("IGNORE_POLYLINE"))
-        if os.getenv("IGNORE_POLYLINE")
-        else []
-    )
-except Exception:
-    print("IGNORE_POLYLINE is not a valid polyline")
-    exit(1)
+# Initialize IGNORE_POLYLINE with graceful error handling
+IGNORE_POLYLINE = []
+ignore_polyline_env = os.getenv("IGNORE_POLYLINE")
+if ignore_polyline_env:
+    try:
+        IGNORE_POLYLINE = polyline.decode(ignore_polyline_env)
+    except Exception as e:
+        warnings.warn(
+            f"IGNORE_POLYLINE is not a valid polyline: {e}. "
+            "Privacy filtering for specific polylines will be disabled.",
+            UserWarning
+        )
+        IGNORE_POLYLINE = []
+
+# Initialize IGNORE_RANGE and IGNORE_START_END_RANGE with graceful error handling
+IGNORE_RANGE = 0.0
+IGNORE_START_END_RANGE = 0.0
+
+ignore_range_env = os.getenv("IGNORE_RANGE", "0")
+ignore_start_end_range_env = os.getenv("IGNORE_START_END_RANGE", "0")
 
 try:
-    IGNORE_RANGE = int(os.getenv("IGNORE_RANGE", "0")) / 1000
-    IGNORE_START_END_RANGE = int(os.getenv("IGNORE_START_END_RANGE", "0")) / 1000
+    IGNORE_RANGE = int(ignore_range_env) / 1000
 except ValueError:
-    print("IGNORE_RANGE or IGNORE_START_END_RANGE is not a number")
-    exit(1)
+    warnings.warn(
+        f"IGNORE_RANGE is not a valid number: '{ignore_range_env}'. "
+        "Using default value of 0. Privacy filtering by range will be disabled.",
+        UserWarning
+    )
+    IGNORE_RANGE = 0.0
+
+try:
+    IGNORE_START_END_RANGE = int(ignore_start_end_range_env) / 1000
+except ValueError:
+    warnings.warn(
+        f"IGNORE_START_END_RANGE is not a valid number: '{ignore_start_end_range_env}'. "
+        "Using default value of 0. Start/end point filtering will be disabled.",
+        UserWarning
+    )
+    IGNORE_START_END_RANGE = 0.0
 
 
 def point_distance_in_range(
@@ -30,7 +55,8 @@ def point_distance_in_range(
 def point_in_list_points_range(
     point: Tuple[float], points: List[Tuple[float]], distance: int
 ) -> bool:
-    return any([point_distance_in_range(point, p, distance) for p in points])
+    # Use generator expression instead of list comprehension for better performance
+    return any(point_distance_in_range(point, p, distance) for p in points)
 
 
 def range_hiding(
