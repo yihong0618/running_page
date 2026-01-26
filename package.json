@@ -5,7 +5,6 @@
   "author": "Yi Hong <zouzou0208@gmail.com>",
   "packageManager": "pnpm@8.9.0+sha256.8f5264ad1d100da11a6add6bb8a94c6f1e913f9e9261b2a551fabefad2ec0fec",
   "dependencies": {
-    "@mapbox/mapbox-gl-language": "^1.0.1",
     "@mapbox/polyline": "^1.2.0",
     "@math.gl/web-mercator": "^4.1.0",
     "@surbowl/world-geo-json-zh": "^2.1.5",
@@ -14,7 +13,7 @@
     "@vitejs/plugin-react": "^5.0.0",
     "gcoord": "^0.3.2",
     "geojson": "^0.5.0",
-    "mapbox-gl": "^2.15.0",
+    "maplibre-gl": "^4.7.1",
     "prop-types": "^15.8.1",
     "rc-virtual-list": "^3.19.2",
     "react": "^18.2.0",

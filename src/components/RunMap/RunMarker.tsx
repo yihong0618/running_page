@@ -1,6 +1,6 @@
 import { ReactComponent as EndSvg } from '@assets/end.svg';
 import { ReactComponent as StartSvg } from '@assets/start.svg';
-import { Marker } from 'react-map-gl';
+import { Marker } from 'react-map-gl/maplibre';
 import styles from './style.module.css';
 
 interface IRunMarkerProperties {

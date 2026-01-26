@@ -3,6 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <script>
+      // Apply theme immediately to prevent flash of wrong theme
+      (function () {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } else {
+          // Default to dark theme
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+    <script>
       (function () {
         const basePath = '%BASE_URL%';
         const redirect = sessionStorage.getItem('redirect');

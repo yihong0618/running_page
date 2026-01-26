@@ -1,15 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import useSiteMetadata from '@/hooks/useSiteMetadata';
 import { useTheme, Theme } from '@/hooks/useTheme';
 import styles from './style.module.css';
 
 const Header = () => {
   const { logo, siteUrl, navLinks } = useSiteMetadata();
-  const { setTheme } = useTheme();
-  const [currentIconIndex, setCurrentIconIndex] = useState(0);
+  const { theme, setTheme } = useTheme();
 
-  const icons = [
+  const icons: { id: Theme; svg: JSX.Element }[] = [
     {
       id: 'dark',
       svg: (
@@ -52,13 +50,15 @@ const Header = () => {
     },
   ];
 
-  const handleToggle = () => {
-    const nextIndex = (currentIconIndex + 1) % icons.length;
-    setCurrentIconIndex(nextIndex);
-    setTheme(icons[nextIndex].id as Theme);
-  };
-
+  // Show icon representing current theme (moon for dark, sun for light)
+  const currentIconIndex = theme === 'dark' ? 0 : 1;
   const currentIcon = icons[currentIconIndex];
+  // The theme we'll switch to when clicked
+  const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
+
+  const handleToggle = () => {
+    setTheme(nextTheme);
+  };
 
   return (
     <>
@@ -85,8 +85,8 @@ const Header = () => {
               type="button"
               onClick={handleToggle}
               className={`${styles.themeButton} ${styles.themeButtonActive}`}
-              aria-label={`Switch to ${currentIcon.id} theme`}
-              title={`Switch to ${currentIcon.id} theme`}
+              aria-label={`Current: ${theme} theme. Click to switch to ${nextTheme}`}
+              title={`Switch to ${nextTheme} theme`}
             >
               <div className={styles.iconWrapper}>{currentIcon.svg}</div>
             </button>
