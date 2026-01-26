@@ -14,7 +14,7 @@ if ignore_polyline_env:
         warnings.warn(
             f"IGNORE_POLYLINE is not a valid polyline: {e}. "
             "Privacy filtering for specific polylines will be disabled.",
-            UserWarning
+            UserWarning,
         )
         IGNORE_POLYLINE = []
 
@@ -31,7 +31,7 @@ except ValueError:
     warnings.warn(
         f"IGNORE_RANGE is not a valid number: '{ignore_range_env}'. "
         "Using default value of 0. Privacy filtering by range will be disabled.",
-        UserWarning
+        UserWarning,
     )
     IGNORE_RANGE = 0.0
 
@@ -41,7 +41,7 @@ except ValueError:
     warnings.warn(
         f"IGNORE_START_END_RANGE is not a valid number: '{ignore_start_end_range_env}'. "
         "Using default value of 0. Start/end point filtering will be disabled.",
-        UserWarning
+        UserWarning,
     )
     IGNORE_START_END_RANGE = 0.0
 
