@@ -1,10 +1,15 @@
 import traceback
-
-from fit_tool.fit_file import FitFile
-from fit_tool.fit_file_builder import FitFileBuilder
-from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
-from fit_tool.profile.messages.record_message import RecordMessage
 from io import BytesIO
+
+try:
+    from fit_tool.fit_file import FitFile
+    from fit_tool.fit_file_builder import FitFileBuilder
+    from fit_tool.profile.messages.device_info_message import DeviceInfoMessage
+    from fit_tool.profile.messages.record_message import RecordMessage
+
+    FIT_TOOL_AVAILABLE = True
+except ImportError:
+    FIT_TOOL_AVAILABLE = False
 
 # the device manufacturer and product info can be found in github,
 # https://github.com/garmin/fit-python-sdk/blob/main/garmin_fit_sdk/profile.py
@@ -24,6 +29,14 @@ def is_fit_file(file):
 
 
 def process_garmin_data(origin_file, use_fake_garmin_device):
+    if not FIT_TOOL_AVAILABLE:
+        print(
+            "fit-tool not available, skipping Garmin data processing. "
+            "Install fit-tool for Python < 3.13 to use this feature."
+        )
+        origin_file.seek(0)
+        return BytesIO(origin_file.read())
+
     try:
         origin_file_content = origin_file.read()
         # if origin file is not fit format, skip

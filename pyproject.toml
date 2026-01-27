@@ -28,7 +28,7 @@ dependencies = [
   "tenacity",
   "numpy",
   "tzlocal",
-  "fit-tool",
+  "fit-tool; python_version < '3.13'",
   "garmin-fit-sdk",
   "haversine==2.8.0",
   "garth",
