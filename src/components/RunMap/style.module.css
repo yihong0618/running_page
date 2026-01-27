@@ -89,3 +89,57 @@
   background-position: center center;
   opacity: 1;
 }
+
+.mapErrorNotification {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff4444;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.mapErrorNotification button,
+.mapErrorNotification a {
+  background: white;
+  color: #ff4444;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.mapErrorNotification button:hover,
+.mapErrorNotification a:hover {
+  opacity: 0.8;
+}
+
+/* Base styles for map controls */
+:global(.mapboxgl-ctrl-group) {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+:global(.mapboxgl-ctrl-group > button) {
+  width: 29px;
+  height: 29px;
+  display: block;
+  padding: 0;
+  outline: none;
+  border: 0;
+  box-sizing: border-box;
+  background-color: transparent;
+  cursor: pointer;
+}
