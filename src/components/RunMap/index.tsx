@@ -93,6 +93,17 @@ const RunMap = ({
     [currentMapTheme]
   );
 
+  // Mapbox GL JS requires a token even when using other vendors
+  // Use actual MAPBOX_TOKEN when vendor is 'mapbox', otherwise use a dummy token
+  const mapboxAccessToken = useMemo(() => {
+    if (MAP_TILE_VENDOR === 'mapbox') {
+      return MAPBOX_TOKEN;
+    }
+    // Use a dummy token for other vendors (Mapbox GL JS still requires a token)
+    // This is a valid format but won't be used for actual mapbox requests
+    return 'pk.eyJ1IjoidW5rbm93biIsImEiOiJjbGZqY2N0d3EwMGNsM3BwN2N4d2N4d2N4In0.unknown';
+  }, []);
+
   // Update map when theme changes
   useEffect(() => {
     if (mapRef.current) {
@@ -422,7 +433,7 @@ const RunMap = ({
       mapStyle={mapStyle}
       ref={mapRefCallback}
       cooperativeGestures={isTouchDevice()}
-      mapboxAccessToken={MAPBOX_TOKEN}
+      mapboxAccessToken={mapboxAccessToken}
     >
       {mapError && (
         <div className={styles.mapErrorNotification}>
