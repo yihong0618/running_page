@@ -22,7 +22,8 @@ stravaweblib
 tenacity
 numpy
 tzlocal
-fit-tool; python_version < '3.13'
+# fit-tool has been removed from PyPI, install from git if needed:
+# git+https://github.com/shaonianche/python_fit_tool.git@main
 garmin-fit-sdk
 haversine==2.8.0
 garth
