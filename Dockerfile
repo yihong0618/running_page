@@ -56,7 +56,7 @@ RUN python3 run_page/gen_svg.py --from-db --title "my running page" --type grid 
   && python3 run_page/gen_svg.py --from-db --type circular --use-localtime \
   && python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --special-distance 10 --special-distance2 20 --special-color '#f9d367' --special-color2 '#f0a1a8' --output assets/mol.svg --use-localtime --athlete "$YOUR_NAME" --title 'Runner Month of Life' \
   && python3 run_page/gen_svg.py --from-db --type monthoflife --birth 1989-03 --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_running.svg --use-localtime --athlete "$YOUR_NAME" --title "Runner Month of Life" --sport-type running  \
-  && python3 run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary.svg --athlete "$YOUR_NAME""
+  && python3 run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary.svg --athlete "$YOUR_NAME"
 
 
 FROM develop-node AS frontend-build
