@@ -336,7 +336,7 @@ files = [
 
 [[package]]
 name = "fit-tool"
-version = "0.9.13"
+version = "0.9.14"
 summary = "A library for reading and writing Garmin FIT files."
 groups = ["default"]
 dependencies = [
@@ -344,8 +344,8 @@ dependencies = [
     "openpyxl==2.5.12",
 ]
 files = [
-    {file = "fit-tool-0.9.13.tar.gz", hash = "sha256:63d5655dbacf4121178e7743ad4cf0d980abd53da6316a419c205941ce049c55"},
-    {file = "fit_tool-0.9.13-py3-none-any.whl", hash = "sha256:15269280635ff3a4baedfe1346840767f660817f136f4dec69b858ee855a9e9c"},
+    {file = "fit_tool-0.9.14-py3-none-any.whl", hash = "sha256:490083406fb2af097b45377255ba3f7f4c0836cfba07ba48bb9002805cb72616"},
+    {file = "fit_tool-0.9.14.tar.gz", hash = "sha256:ae4e9a414f42be5e4eb2addb6703fd4f48dec5e281b1acfca56509c9117a0071"},
 ]
 
 [[package]]
