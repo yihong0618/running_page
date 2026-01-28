@@ -50,8 +50,8 @@ class Nike:
     def get_activity(self, activity_id):
         try:
             return self.request(f"activity/{activity_id}?metrics=ALL")
-        except Exception:
-            print("retry")
+        except Exception as e:
+            logger.warning(f"Error getting activity {activity_id}: {e}, retrying...")
             time.sleep(3)
             return self.request(f"activity/{activity_id}?metrics=ALL")
 
@@ -366,7 +366,7 @@ def make_new_gpxs(files):
                 json_data = json.loads(f.read())
             except Exception as e:
                 print(f"Error reading JSON file {file}: {e}")
-                return
+                continue
         # ALL save name using utc if you want local please offset
         activity_name = str(json_data["end_epoch_ms"])
         parsed_data = parse_activity_data(json_data)
