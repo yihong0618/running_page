@@ -135,7 +135,7 @@ const RunMap = ({
       // Use once to automatically remove the listener after it fires
       map.once('style.load', handleStyleLoad);
     }
-  }, [mapStyle]); // Keep only mapStyle in dependency to prevent excessive re-renders
+  }, [mapStyle, lights]); // Include lights to ensure layer visibility updates correctly when theme changes
 
   useEffect(() => {
     if (mapRef.current) {
