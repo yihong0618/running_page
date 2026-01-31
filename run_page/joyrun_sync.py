@@ -569,7 +569,9 @@ class Joyrun:
                 download_joyrun_tcx(tcx_data, str(joyrun_id))
         try:
             heart_rate_list = (
-                ast.literal_eval(run_data["heartrate"]) if run_data["heartrate"] else None
+                ast.literal_eval(run_data["heartrate"])
+                if run_data["heartrate"]
+                else None
             )
         except (ValueError, SyntaxError) as e:
             print(f"Heart Rate: can not parse for {run_data['heartrate']}: {e}")
