@@ -17,7 +17,6 @@ from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 import time
 import polyline
 from generator.db import Activity, init_db
-from sqlalchemy import func
 
 # Initialize geocoder
 geocoder = Nominatim(user_agent="running_page_location_fix")
@@ -136,9 +135,9 @@ def fix_location_for_activity(session, activity, dry_run=False):
             else:
                 print(f"  New location still generic: {new_location}")
         else:
-            print(f"  Failed to reverse geocode coordinates")
+            print("  Failed to reverse geocode coordinates")
     else:
-        print(f"  Could not extract coordinates from polyline")
+        print("  Could not extract coordinates from polyline")
 
     if dry_run and not new_location:
         print(f"Would attempt to fix activity {activity.run_id}: {reason}")
@@ -162,7 +161,7 @@ def fix_locations(session, dry_run=False, limit=None):
     # Find activities that need location fixes
     query = session.query(Activity).filter(
         (Activity.location_country == "China")
-        | ((Activity.location_country.is_(None)) & (Activity.summary_polyline != None))
+        | ((Activity.location_country.is_(None)) & (Activity.summary_polyline.isnot(None)))
     )
 
     if limit:
@@ -225,7 +224,7 @@ def main():
 
         print()
         print("=" * 60)
-        print(f"Summary:")
+        print("Summary:")
         print(f"  Total activities checked: {total_checked}")
         print(f"  Activities fixed: {fixed_count}")
         print("=" * 60)
