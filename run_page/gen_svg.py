@@ -240,6 +240,7 @@ def main():
     is_circular = args.type == "circular"
     is_mol = args.type == "monthoflife"
     is_year_summary = args.type == "year_summary"
+    is_github = args.type == "github"
 
     if not is_circular and not is_mol and not is_year_summary:
         print(
@@ -306,6 +307,26 @@ def main():
                 drawers[args.type],
                 os.path.join(output_dir, f"year_summary_{str(y)}.svg"),
             )
+    elif is_github and args.year == "all":
+        # Generate GitHub heat map for all years when --year is "all" (default)
+        years = p.years.all()[:]
+        output_dir = os.path.dirname(args.output) or "assets"
+        for y in years:
+            p.years.from_year, p.years.to_year = y, y
+            # Recalculate height for single year heat map
+            p.height = 55 + p.years.real_year * 43
+            # Re-set tracks for this year's data
+            p.set_tracks(tracks)
+            # Use year-specific title if available, otherwise use default
+            year_title = args.title if args.title else f"{y} Running"
+            original_title = p.title
+            p.title = year_title
+            p.draw(
+                drawers[args.type],
+                os.path.join(output_dir, f"github_{str(y)}.svg"),
+            )
+            # Restore original title for next iteration
+            p.title = original_title
     else:
         p.draw(drawers[args.type], args.output)
 
