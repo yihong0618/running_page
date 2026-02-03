@@ -161,7 +161,10 @@ def fix_locations(session, dry_run=False, limit=None):
     # Find activities that need location fixes
     query = session.query(Activity).filter(
         (Activity.location_country == "China")
-        | ((Activity.location_country.is_(None)) & (Activity.summary_polyline.isnot(None)))
+        | (
+            (Activity.location_country.is_(None))
+            & (Activity.summary_polyline.isnot(None))
+        )
     )
 
     if limit:
