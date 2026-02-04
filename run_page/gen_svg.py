@@ -201,6 +201,13 @@ def main():
         help="Sport type",
     )
 
+    args_parser.add_argument(
+        "--generate-all-years",
+        dest="generate_all_years",
+        action="store_true",
+        help="Generate separate SVG files for each year (for github type only)",
+    )
+
     for _, drawer in drawers.items():
         drawer.create_args(args_parser)
 
@@ -307,8 +314,8 @@ def main():
                 drawers[args.type],
                 os.path.join(output_dir, f"year_summary_{str(y)}.svg"),
             )
-    elif is_github and args.year == "all":
-        # Generate GitHub heat map for all years when --year is "all" (default)
+    elif is_github and args.year == "all" and args.generate_all_years:
+        # Generate GitHub heat map for all years when --generate-all-years flag is set
         years = p.years.all()[:]
         output_dir = os.path.dirname(args.output) or "assets"
         for y in years:
