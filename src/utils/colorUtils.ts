@@ -152,7 +152,11 @@ export const updateSvgSpecialColors = (): void => {
   const githubSvgs = document.querySelectorAll('.github-svg');
   const githubYearSvgs = document.querySelectorAll('.github-year-svg');
   const gridSvgs = document.querySelectorAll('.grid-svg');
-  const allSvgs = [...Array.from(githubSvgs), ...Array.from(githubYearSvgs), ...Array.from(gridSvgs)];
+  const allSvgs = [
+    ...Array.from(githubSvgs),
+    ...Array.from(githubYearSvgs),
+    ...Array.from(gridSvgs),
+  ];
 
   allSvgs.forEach((svg) => {
     // Find elements with special colors (typically fill="#FFFF00" or fill="#FF0000")
