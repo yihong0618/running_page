@@ -44,6 +44,7 @@ KEEP2TCX = {
 LOGIN_API = "https://api.gotokeep.com/v1.1/users/login"
 RUN_DATA_API = "https://api.gotokeep.com/pd/v3/stats/detail?dateUnit=all&type={sport_type}&lastDate={last_date}"
 RUN_LOG_API = "https://api.gotokeep.com/pd/v3/{sport_type}log/{run_id}"
+GRAPH_API = "https://api.gotokeep.com/minnow-webapp/v1/sportlog/sportData/chart/{log_id}?itemCount={item_count}"
 
 HR_FRAME_THRESHOLD_IN_DECISECOND = 100  # Maximum time difference to consider a data point as the nearest, the unit is decisecond(分秒)
 
@@ -98,6 +99,34 @@ def get_single_run_data(session, headers, run_id, sport_type):
         return r.json()
 
 
+def get_chart_data(session, headers, log_id, item_count=1000):
+    """
+    Fetch detailed chart data from Keep API including cadence, power, ground contact time, etc.
+    
+    Args:
+        session: requests session object
+        headers: request headers with authorization
+        log_id: The log ID from run data (middle part of run_id, e.g., from "5898009e387e28303988f3b7_9223370441312156007_rn")
+        item_count: Number of data points to fetch (default 1000, but there's a limit)
+    
+    Returns:
+        dict: Chart data with various metrics, or None if request fails
+    """
+    try:
+        r = session.get(
+            GRAPH_API.format(log_id=log_id, item_count=item_count), headers=headers
+        )
+        if r.ok:
+            time.sleep(0.5)  # Rate limiting - be respectful to API
+            return r.json()
+        else:
+            print(f"Failed to fetch chart data for log_id {log_id}: {r.status_code}")
+            return None
+    except Exception as e:
+        print(f"Error fetching chart data for log_id {log_id}: {str(e)}")
+        return None
+
+
 def decode_runmap_data(text, is_geo=False):
     _bytes = base64.b64decode(text)
     key = "NTZmZTU5OzgyZzpkODczYw=="
@@ -111,7 +140,7 @@ def decode_runmap_data(text, is_geo=False):
 
 
 def parse_raw_data_to_nametuple(
-    run_data, old_gpx_ids, old_tcx_ids, with_gpx=False, with_tcx=False
+    run_data, old_gpx_ids, old_tcx_ids, with_gpx=False, with_tcx=False, session=None, headers=None
 ):
     run_data = run_data["data"]
     run_points_data = []
@@ -123,6 +152,15 @@ def parse_raw_data_to_nametuple(
     avg_heart_rate = None
     elevation_gain = None
     decoded_hr_data = []
+    chart_data = None
+    
+    # Fetch detailed chart data if session and headers are available
+    if session and headers:
+        try:
+            chart_data = get_chart_data(session, headers, keep_id, item_count=1000)
+        except Exception as e:
+            print(f"Warning: Could not fetch chart data for {keep_id}: {str(e)}")
+    
     if run_data["heartRate"]:
         avg_heart_rate = run_data["heartRate"].get("averageHeartRate", None)
         heart_rate_data = run_data["heartRate"].get("heartRates", None)
@@ -144,6 +182,24 @@ def parse_raw_data_to_nametuple(
                 p["latitude"] = run_points_data[i][0]
                 p["longitude"] = run_points_data[i][1]
 
+        # Parse chart data and add to track points
+        chart_metrics = {}
+        if chart_data and "data" in chart_data:
+            # Chart data structure: {"data": {"cadence": [...], "power": [...], etc.}}
+            # Each metric has array of {x: relative_seconds, y: value, min: min_value, max: max_value}
+            for metric_name, metric_data in chart_data["data"].items():
+                if isinstance(metric_data, list):
+                    chart_metrics[metric_name] = {}
+                    for point in metric_data:
+                        # x is relative time in seconds, convert to deciseconds for matching
+                        rel_time_deci = int(point.get("x", 0) * 10)
+                        # Use average of min and max if available, otherwise use y
+                        if "min" in point and "max" in point:
+                            value = (point["min"] + point["max"]) / 2
+                        else:
+                            value = point.get("y", 0)
+                        chart_metrics[metric_name][rel_time_deci] = value
+
         for p in run_points_data_gpx:
             if "timestamp" not in p:
                 if "unixTimestamp" in p:
@@ -153,6 +209,41 @@ def parse_raw_data_to_nametuple(
             p_hr = find_nearest_hr(decoded_hr_data, int(p["timestamp"]), start_time)
             if p_hr:
                 p["hr"] = p_hr
+            
+            # Add chart data metrics to track point
+            # Convert timestamp to relative time in deciseconds for matching
+            if chart_metrics:
+                # Check if timestamp is absolute or relative
+                if p["timestamp"] > TIMESTAMP_THRESHOLD_IN_DECISECOND:
+                    # Absolute timestamp in deciseconds, calculate relative time
+                    # start_time is in milliseconds, convert to deciseconds: start_time // 100
+                    rel_time_deci = int(p["timestamp"] - start_time // 100)
+                else:
+                    # Already relative timestamp in deciseconds
+                    rel_time_deci = int(p["timestamp"])
+                
+                # Match chart data to this point (within 15 seconds = 150 deciseconds)
+                for metric_name, metric_data in chart_metrics.items():
+                    # Find closest data point within 15 seconds
+                    closest_time = None
+                    min_diff = float("inf")
+                    for chart_time in metric_data.keys():
+                        diff = abs(chart_time - rel_time_deci)
+                        if diff < min_diff and diff <= 150:  # 15 seconds threshold
+                            min_diff = diff
+                            closest_time = chart_time
+                    
+                    if closest_time is not None:
+                        # Map metric names to standard field names
+                        field_name = metric_name
+                        if metric_name == "cadence" or metric_name == "踏频":
+                            field_name = "cadence"
+                        elif metric_name == "power" or metric_name == "功率":
+                            field_name = "power"
+                        elif metric_name == "groundContactTime" or metric_name == "触地时间":
+                            field_name = "ground_contact_time"
+                        
+                        p[field_name] = metric_data[closest_time]
 
         if (
             run_data["dataType"].startswith("outdoor")
@@ -246,7 +337,7 @@ def get_all_keep_tracks(
             try:
                 run_data = get_single_run_data(s, headers, run, api)
                 track = parse_raw_data_to_nametuple(
-                    run_data, old_gpx_ids, old_tcx_ids, with_gpx, with_tcx
+                    run_data, old_gpx_ids, old_tcx_ids, with_gpx, with_tcx, s, headers
                 )
                 tracks.append(track)
             except Exception as e:
@@ -286,6 +377,9 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
             ),
             "elevation": point.get("altitude"),
             "hr": point.get("hr"),
+            "cadence": point.get("cadence"),
+            "power": point.get("power"),
+            "ground_contact_time": point.get("ground_contact_time"),
         }
         points_dict_list.append(points_dict)
     gpx = gpxpy.gpx.GPX()
@@ -305,14 +399,23 @@ def parse_points_to_gpx(run_points_data, start_time, sport_type):
             time=p["time"],
             elevation=p.get("elevation"),
         )
+        # Add heart rate, cadence, and power to GPX extensions if available
+        extension_elements = []
         if p.get("hr") is not None:
-            gpx_extension_hr = ET.fromstring(
+            extension_elements.append(f'<gpxtpx:hr>{p["hr"]}</gpxtpx:hr>')
+        if p.get("cadence") is not None:
+            extension_elements.append(f'<gpxtpx:cadence>{int(p["cadence"])}</gpxtpx:cadence>')
+        if p.get("power") is not None:
+            extension_elements.append(f'<gpxtpx:power>{int(p["power"])}</gpxtpx:power>')
+        
+        if extension_elements:
+            gpx_extension = ET.fromstring(
                 f"""<gpxtpx:TrackPointExtension xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
-                    <gpxtpx:hr>{p["hr"]}</gpxtpx:hr>
+                    {''.join(extension_elements)}
                     </gpxtpx:TrackPointExtension>
                     """
             )
-            point.extensions.append(gpx_extension_hr)
+            point.extensions.append(gpx_extension)
         gpx_segment.points.append(point)
     return gpx
 
@@ -413,6 +516,14 @@ def parse_points_to_tcx(run_data, run_points_data, sport_type):
             bpm.append(bpm_value)
             bpm_value.text = str(point["hr"])
             tp.append(bpm)
+        except KeyError:
+            pass
+        # Cadence
+        try:
+            if point.get("cadence") is not None:
+                cadence = ET.Element("Cadence")
+                cadence.text = str(int(point["cadence"]))
+                tp.append(cadence)
         except KeyError:
             pass
     # write to TCX file
