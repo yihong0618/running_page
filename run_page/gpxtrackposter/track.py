@@ -57,39 +57,55 @@ class Track:
         self.subtype = None  # for fit file
         self.device = ""
 
-    def load_gpx(self, file_name):
+    def _load_track_file(self, file_name, file_type, load_func, empty_error_msg):
         """
-        TODO refactor with load_tcx to one function
+        Common function to load track files (GPX, TCX, etc.).
+        
+        Args:
+            file_name: Path to the track file
+            file_type: Type of file (e.g., "GPX", "TCX") for error messages
+            load_func: Function to call for loading the file data
+            empty_error_msg: Error message for empty files
         """
         try:
             self.file_names = [os.path.basename(file_name)]
-            # Handle empty gpx files
+            # Handle empty files
             # (for example, treadmill runs pulled via garmin-connect-export)
             if os.path.getsize(file_name) == 0:
-                raise TrackLoadError("Empty GPX file")
-            with open(file_name, "r", encoding="utf-8", errors="ignore") as file:
-                self._load_gpx_data(mod_gpxpy.parse(file))
+                raise TrackLoadError(empty_error_msg)
+            load_func()
         except Exception as e:
             print(
-                f"Something went wrong when loading GPX. for file {self.file_names[0]}, we just ignore this file and continue"
+                f"Something went wrong when loading {file_type}. for file {self.file_names[0]}, we just ignore this file and continue"
             )
             print(str(e))
             pass
 
+    def load_gpx(self, file_name):
+        """Load a GPX file."""
+        def _load():
+            with open(file_name, "r", encoding="utf-8", errors="ignore") as file:
+                self._load_gpx_data(mod_gpxpy.parse(file))
+        
+        self._load_track_file(
+            file_name, 
+            "GPX", 
+            _load, 
+            "Empty GPX file"
+        )
+
     def load_tcx(self, file_name):
-        try:
-            self.file_names = [os.path.basename(file_name)]
-            # Handle empty tcx files
-            # (for example, treadmill runs pulled via garmin-connect-export)
+        """Load a TCX file."""
+        def _load():
             tcx = TCXReader()
-            if os.path.getsize(file_name) == 0:
-                raise TrackLoadError("Empty TCX file")
             self._load_tcx_data(tcx.read(file_name), file_name=file_name)
-        except Exception as e:
-            print(
-                f"Something went wrong when loading TCX. for file {self.file_names[0]}, we just ignore this file and continue"
-            )
-            print(str(e))
+        
+        self._load_track_file(
+            file_name, 
+            "TCX", 
+            _load, 
+            "Empty TCX file"
+        )
 
     def load_fit(self, file_name):
         try:
@@ -431,31 +447,79 @@ class Track:
                 self.device += " " + device_message["garmin_product"]
 
     def append(self, other):
-        """Append other track to self."""
-        self.end_time = other.end_time
-        self.length += other.length
-        # TODO maybe a better way
+        """
+        Append other track to self, combining their data.
+        
+        Args:
+            other: Another Track object to append to this track
+            
+        Raises:
+            ValueError: If other is not a Track instance or if required data is missing
+        """
+        if not isinstance(other, Track):
+            raise ValueError(f"Cannot append non-Track object: {type(other)}")
+        
+        if not hasattr(other, 'moving_dict') or not other.moving_dict:
+            raise ValueError("Other track missing required moving_dict data")
+        
         try:
-            self.moving_dict["distance"] += other.moving_dict["distance"]
-            self.moving_dict["moving_time"] += other.moving_dict["moving_time"]
-            self.moving_dict["elapsed_time"] += other.moving_dict["elapsed_time"]
-            self.polyline_container.extend(other.polyline_container)
-            self.polyline_str = polyline.encode(self.polyline_container)
-            self.moving_dict["average_speed"] = (
-                self.moving_dict["distance"]
-                / self.moving_dict["moving_time"].total_seconds()
-            )
-            self.file_names.extend(other.file_names)
-            self.special = self.special or other.special
-            self.average_heartrate = self.average_heartrate or other.average_heartrate
+            self.end_time = other.end_time
+            self.length += other.length
+            
+            # Combine moving statistics
+            self.moving_dict["distance"] += other.moving_dict.get("distance", 0)
+            self.moving_dict["moving_time"] += other.moving_dict.get("moving_time", datetime.timedelta(0))
+            self.moving_dict["elapsed_time"] += other.moving_dict.get("elapsed_time", datetime.timedelta(0))
+            
+            # Combine polyline data
+            if hasattr(other, 'polyline_container') and other.polyline_container:
+                if not hasattr(self, 'polyline_container') or not self.polyline_container:
+                    self.polyline_container = []
+                self.polyline_container.extend(other.polyline_container)
+                self.polyline_str = polyline.encode(self.polyline_container)
+            
+            # Combine polylines for visualization
+            if hasattr(other, 'polylines') and other.polylines:
+                if not hasattr(self, 'polylines') or not self.polylines:
+                    self.polylines = []
+                self.polylines.extend(other.polylines)
+            
+            # Recalculate average speed from combined data
+            total_moving_seconds = self.moving_dict["moving_time"].total_seconds()
+            if total_moving_seconds > 0:
+                self.moving_dict["average_speed"] = (
+                    self.moving_dict["distance"] / total_moving_seconds
+                )
+            else:
+                self.moving_dict["average_speed"] = 0
+            
+            # Combine metadata
+            if hasattr(other, 'file_names') and other.file_names:
+                if not hasattr(self, 'file_names') or not self.file_names:
+                    self.file_names = []
+                self.file_names.extend(other.file_names)
+            
+            self.special = self.special or (getattr(other, 'special', False))
+            
+            # Use the first non-None heartrate value, or average if both exist
+            if self.average_heartrate and other.average_heartrate:
+                # Could average, but keeping first for now to maintain behavior
+                pass
+            elif other.average_heartrate:
+                self.average_heartrate = other.average_heartrate
+            
+            # Combine elevation gain
             self.elevation_gain = (
-                self.elevation_gain if self.elevation_gain else 0
-            ) + (other.elevation_gain if other.elevation_gain else 0)
-        except Exception as e:
-            print(
-                f"something wrong append this {self.end_time},in files {str(self.file_names)}: {e}"
+                (self.elevation_gain if self.elevation_gain else 0) +
+                (other.elevation_gain if other.elevation_gain else 0)
             )
-            pass
+        except (KeyError, AttributeError, ZeroDivisionError) as e:
+            error_msg = (
+                f"Error appending track ending at {self.end_time} "
+                f"from files {str(self.file_names)}: {e}"
+            )
+            print(error_msg)
+            raise ValueError(error_msg) from e
 
     @staticmethod
     def _get_moving_data(gpx, moving_time):
