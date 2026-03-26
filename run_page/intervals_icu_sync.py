@@ -41,7 +41,7 @@ class IntervalsICU:
             response.raise_for_status()
             content = response.content
             # Decompress only if gzip-compressed (magic bytes: 1f 8b)
-            if content[:2] == bytes([0x1f, 0x8b]):
+            if content[:2] == bytes([0x1F, 0x8B]):
                 content = gzip.decompress(content)
 
             with open(output_path, "wb") as f:
