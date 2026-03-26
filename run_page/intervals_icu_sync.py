@@ -1,6 +1,5 @@
 import argparse
 import gzip
-import json
 import os
 import time
 from datetime import datetime
@@ -40,10 +39,13 @@ class IntervalsICU:
         try:
             response = self.session.get(url)
             response.raise_for_status()
-            file_bytes = gzip.decompress(response.content)
+            content = response.content
+            # Decompress only if gzip-compressed (magic bytes: 1f 8b)
+            if content[:2] == bytes([0x1f, 0x8b]):
+                content = gzip.decompress(content)
 
             with open(output_path, "wb") as f:
-                f.write(file_bytes)
+                f.write(content)
 
             return output_path
         except Exception:
