@@ -180,6 +180,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[iGPSPORT迹驰](#igpsport)**
 - **[Komoot](#komoot)**
 - **[Onelap](#onelap)**
+- **[Intervals.icu](#intervalsicu)**
 
 ## 视频教程
 
@@ -1067,6 +1068,42 @@ python3 run_page/komoot_sync.py 'your komoot email' 'password' --with-gpx
 ```bash
 python3 run_page/onelap_sync.py 'your onelap phone' 'password' --with-fit
 ```
+
+</details>
+
+### Intervals.icu
+
+<details>
+<summary>获取您的 <code>Intervals.icu</code> 数据</summary>
+
+<br>
+
+从 [Intervals.icu](https://intervals.icu) 同步跑步数据，下载原始 FIT/GPX 文件。
+
+1. 登录 [Intervals.icu](https://intervals.icu)，前往 **Settings** → **Developer Settings** 查看您的 **Athlete ID** 并创建 **API Key**。
+
+2. 在根目录下执行：
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key}
+```
+
+如果需要同步所有历史数据（默认为最近 6 个月）：
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --all
+```
+
+指定自定义起始日期：
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --start-date 2024-01-01
+```
+
+#### GitHub Actions
+
+1. 在 `run_data_sync.yml` 中将 `RUN_TYPE` 修改为 `intervals_icu`
+2. 在 GitHub 仓库的 Secrets 中添加 `INTERVALS_ICU_ATHLETE_ID` 和 `INTERVALS_ICU_API_KEY`
 
 </details>
 

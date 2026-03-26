@@ -173,6 +173,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 - **[Joyrun](#joyrun)**
 - **[Komoot](#komoot)**
 - **[Onelap](#onelap)**
+- **[Intervals.icu](#intervalsicu)**
 
 ## Download
 
@@ -941,6 +942,42 @@ python3 run_page/komoot_sync.py 'your komoot email' 'password' --with-gpx
 ```bash
 python3 run_page/onelap_sync.py 'your onelap phone' 'password' --with-fit
 ```
+
+</details>
+
+### Intervals.icu
+
+<details>
+<summary>Get your <code>Intervals.icu</code> data</summary>
+
+<br>
+
+Sync running activities from [Intervals.icu](https://intervals.icu). Downloads original FIT/GPX files.
+
+1. Log in to [Intervals.icu](https://intervals.icu), go to **Settings** → **Developer Settings** to find your **Athlete ID** and create an **API Key**.
+
+2. Execute in the root directory:
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key}
+```
+
+If you want to sync all historical data (default is last 6 months):
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --all
+```
+
+To specify a custom start date:
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --start-date 2024-01-01
+```
+
+#### GitHub Actions
+
+1. Change `RUN_TYPE` to `intervals_icu` in the `run_data_sync.yml` file
+2. Add `INTERVALS_ICU_ATHLETE_ID` and `INTERVALS_ICU_API_KEY` to your GitHub repository secrets
 
 </details>
 
