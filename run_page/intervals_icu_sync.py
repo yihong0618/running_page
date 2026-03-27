@@ -86,6 +86,7 @@ def run():
 
     # Only activities with a declared file type and supported folder mapping
     candidates = []
+    activity_title_dict = {}
     for activity in activities:
         file_type = activity.get("file_type")
         if not file_type:
@@ -94,9 +95,14 @@ def run():
         if file_type not in FOLDER_DICT:
             continue
         candidates.append((activity, file_type))
+        # Build title dict keyed by numeric ID (matching downloaded filename)
+        numeric_id = str(activity["id"]).lstrip("i")
+        if activity.get("name"):
+            activity_title_dict[numeric_id] = activity["name"]
 
     downloaded_count = 0
     used_file_types = set()
+    all_file_types = {ft for _, ft in candidates}
     total = len(candidates)
 
     for n, (activity, file_type) in enumerate(candidates, start=1):
@@ -126,9 +132,13 @@ def run():
 
         time.sleep(1)
 
-    for file_type in used_file_types:
+    for file_type in all_file_types:
         make_activities_file(
-            SQL_FILE, FOLDER_DICT[file_type], JSON_FILE, file_suffix=file_type
+            SQL_FILE,
+            FOLDER_DICT[file_type],
+            JSON_FILE,
+            file_suffix=file_type,
+            activity_title_dict=activity_title_dict,
         )
 
     print(f"Done. Downloaded {downloaded_count} new activities.")
