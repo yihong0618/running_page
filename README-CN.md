@@ -1100,6 +1100,12 @@ python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --all
 python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --start-date 2024-01-01
 ```
 
+如果你的数据来自华为等使用 GCJ-02 坐标系的国行设备，添加 `--gcj02` 参数可修复坐标偏移（将下载的 FIT/GPX/TCX 文件中的 GCJ-02 坐标转换为 WGS-84）：
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --gcj02
+```
+
 #### GitHub Actions
 
 1. 在 `run_data_sync.yml` 中将 `RUN_TYPE` 修改为 `intervals_icu`

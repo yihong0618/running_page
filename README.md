@@ -3,7 +3,7 @@
 1. clone or Fork before vercel 404 need to pull the latest code
 2. python in README means python3 python
 3. use v2.0 need change vercel setting from gatsby to vite
-4. 2023.09.26 garmin need secret_string(and in Actions) get 
+4. 2023.09.26 garmin need secret_string(and in Actions) get
 
    ```bash
      python run_page/get_garmin_secret.py ${email} ${password}
@@ -972,6 +972,12 @@ To specify a custom start date:
 
 ```bash
 python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --start-date 2024-01-01
+```
+
+If your data comes from a Huawei/China device using the GCJ-02 coordinate system, add `--gcj02` to fix the coordinate offset (converts GCJ-02 to WGS-84 in downloaded FIT/GPX/TCX files):
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --gcj02
 ```
 
 #### GitHub Actions
