@@ -320,8 +320,8 @@ def main():
         output_dir = os.path.dirname(args.output) or "assets"
         for y in years:
             p.years.from_year, p.years.to_year = y, y
-            # Recalculate height for single year heat map
-            p.height = 55 + p.years.real_year * 43
+            # Single year = height for exactly 1 year row
+            p.height = 55 + 1 * 43
             # Re-set tracks for this year's data
             p.set_tracks(tracks)
             # Use year-specific title if available, otherwise use default

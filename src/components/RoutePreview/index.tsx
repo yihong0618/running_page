@@ -1,6 +1,6 @@
 import React from 'react';
 import { pathForRun, Activity } from '@/utils/utils';
-import { NO_ROUTE_DATA, INVALID_ROUTE_DATA } from '@/utils/const';
+import { NO_ROUTE_DATA, INVALID_ROUTE_DATA, INDOOR_COLOR } from '@/utils/const';
 import styles from './style.module.css';
 
 interface RoutePreviewProps {
@@ -26,13 +26,14 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({
   }
 
   // Get all route coordinates
-  const allCoordinates: Array<{ path: [number, number][]; color: string }> =
+  const allCoordinates: Array<{ path: [number, number][]; color: string; indoor: boolean }> =
     activitiesWithRoutes.map((activity, index) => {
       const path = pathForRun(activity);
+      const indoor = activity.subtype === 'indoor' || activity.subtype === 'treadmill';
       // Use different colors for multiple routes
       const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
-      const color = colors[index % colors.length];
-      return { path, color };
+      const color = indoor ? INDOOR_COLOR : colors[index % colors.length];
+      return { path, color, indoor };
     });
 
   // Calculate bounding box for all routes
@@ -110,7 +111,8 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                opacity="0.8"
+                opacity={route.indoor ? 0.6 : 0.8}
+                strokeDasharray={route.indoor ? '4,3' : undefined}
               />
 
               {/* Start point */}

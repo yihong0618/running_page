@@ -227,6 +227,7 @@ export const CYCLING_COLOR = 'rgb(51,255,87)';
 export const HIKING_COLOR = 'rgb(151,51,255)';
 export const WALKING_COLOR = HIKING_COLOR;
 export const SWIMMING_COLOR = 'rgb(255,51,51)';
+export const INDOOR_COLOR = '#8899aa';
 
 // map tiles vendor, maptiler or mapbox or stadiamaps
 // if you want to use maptiler, set the access token in MAP_TILE_ACCESS_TOKEN
