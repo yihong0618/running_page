@@ -37,6 +37,7 @@ env:
   # Dont making this huge, just picking points you needing. https://developers.google.com/maps/documentation/utilities/polylineutility using this tool to making your polyline
   IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
   IGNORE_RANGE: 10 # Unit meter
+  USE_CLOUDFLARE_WARP: false # If you want to use Cloudflare WARP to bypass network restrictions, set it to `true`. Currently only Garmin needs this.
   SAVE_DATA_IN_GITHUB_CACHE: false # if you deploy in the vercel, check the README
   DATA_CACHE_PREFIX: 'track_data'
   BUILD_GH_PAGES: true # If you do not need GitHub Page please set it to `false`
@@ -71,6 +72,25 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+
+      - name: Install Cloudflare WARP
+        if: env.USE_CLOUDFLARE_WARP == 'true'
+        run: |
+          curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
+          sudo apt-get update && sudo apt-get install -y cloudflare-warp
+
+      - name: Connect Cloudflare WARP
+        if: env.USE_CLOUDFLARE_WARP == 'true'
+        run: |
+          warp-cli --accept-tos registration new
+          warp-cli --accept-tos mode warp
+          warp-cli --accept-tos connect
+          sleep 3
+          echo "WARP status:"
+          warp-cli --accept-tos status
+          echo "IP info:"
+          curl -s https://cloudflare.com/cdn-cgi/trace | grep -E "ip|warp"
 
       - name: Cache Data Files
         if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
@@ -248,6 +268,11 @@ jobs:
         run: |
           pip install duckdb==1.1.0
           python run_page/save_to_parqent.py
+
+      - name: Disconnect Cloudflare WARP
+        if: env.USE_CLOUDFLARE_WARP == 'true'
+        run: |
+          warp-cli --accept-tos disconnect
 
       - name: Push new runs
         if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
