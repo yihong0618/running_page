@@ -26,15 +26,19 @@ const RoutePreview: React.FC<RoutePreviewProps> = ({
   }
 
   // Get all route coordinates
-  const allCoordinates: Array<{ path: [number, number][]; color: string; indoor: boolean }> =
-    activitiesWithRoutes.map((activity, index) => {
-      const path = pathForRun(activity);
-      const indoor = activity.subtype === 'indoor' || activity.subtype === 'treadmill';
-      // Use different colors for multiple routes
-      const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
-      const color = indoor ? INDOOR_COLOR : colors[index % colors.length];
-      return { path, color, indoor };
-    });
+  const allCoordinates: Array<{
+    path: [number, number][];
+    color: string;
+    indoor: boolean;
+  }> = activitiesWithRoutes.map((activity, index) => {
+    const path = pathForRun(activity);
+    const indoor =
+      activity.subtype === 'indoor' || activity.subtype === 'treadmill';
+    // Use different colors for multiple routes
+    const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
+    const color = indoor ? INDOOR_COLOR : colors[index % colors.length];
+    return { path, color, indoor };
+  });
 
   // Calculate bounding box for all routes
   const allPoints = allCoordinates.flatMap((route) => route.path);

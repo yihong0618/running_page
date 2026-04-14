@@ -305,26 +305,34 @@ const RunMap = ({
   }
 
   // Memoize expensive calculations
-  const { isSingleRun, startLon, startLat, endLon, endLat, isIndoorRun } = useMemo(() => {
-    const isSingle =
-      geoData.features.length === 1 &&
-      geoData.features[0].geometry.coordinates.length;
+  const { isSingleRun, startLon, startLat, endLon, endLat, isIndoorRun } =
+    useMemo(() => {
+      const isSingle =
+        geoData.features.length === 1 &&
+        geoData.features[0].geometry.coordinates.length;
 
-    let startLon = 0;
-    let startLat = 0;
-    let endLon = 0;
-    let endLat = 0;
-    let isIndoor = false;
+      let startLon = 0;
+      let startLat = 0;
+      let endLon = 0;
+      let endLat = 0;
+      let isIndoor = false;
 
-    if (isSingle) {
-      const points = geoData.features[0].geometry.coordinates as Coordinate[];
-      [startLon, startLat] = points[0];
-      [endLon, endLat] = points[points.length - 1];
-      isIndoor = geoData.features[0].properties?.indoor === true;
-    }
+      if (isSingle) {
+        const points = geoData.features[0].geometry.coordinates as Coordinate[];
+        [startLon, startLat] = points[0];
+        [endLon, endLat] = points[points.length - 1];
+        isIndoor = geoData.features[0].properties?.indoor === true;
+      }
 
-    return { isSingleRun: isSingle, startLon, startLat, endLon, endLat, isIndoorRun: isIndoor };
-  }, [geoData]);
+      return {
+        isSingleRun: isSingle,
+        startLon,
+        startLat,
+        endLon,
+        endLat,
+        isIndoorRun: isIndoor,
+      };
+    }, [geoData]);
 
   const dash = useMemo(() => {
     return USE_DASH_LINE && !isSingleRun && !isBigMap ? [2, 2] : [2, 0];
