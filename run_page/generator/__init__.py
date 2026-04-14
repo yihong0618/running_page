@@ -10,8 +10,12 @@ from gpxtrackposter import track_loader
 from sqlalchemy import func
 
 from polyline_processor import filter_out
+from synced_data_file_logger import save_synced_data_file_list
 
 from .db import Activity, init_db, update_or_create_activity
+
+IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
+
 
 # Bounding box spread threshold (degrees) for indoor activity detection.
 # 0.002° ≈ 220m — treadmill GPS drift typically stays within this range.
@@ -115,11 +119,6 @@ def _build_route_for_distance(ref_coords, target_m):
             break
 
     return result
-
-
-from synced_data_file_logger import save_synced_data_file_list
-
-IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
 
 
 class Generator:
