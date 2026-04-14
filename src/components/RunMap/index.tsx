@@ -70,7 +70,7 @@ const RunMap = ({
   const mapRef = useRef<MapRef>(null);
   const [lights, setLights] = useState(PRIVACY_MODE ? false : LIGHTS_ON);
   // layers that should remain visible when lights are off
-  const keepWhenLightsOff = ['runs2', 'animated-run'];
+  const keepWhenLightsOff = ['runs2', 'runs2-indoor', 'animated-run'];
   const [mapGeoData, setMapGeoData] =
     useState<FeatureCollection<RPGeometry> | null>(null);
   const [isLoadingMapData, setIsLoadingMapData] = useState(false);
@@ -305,7 +305,7 @@ const RunMap = ({
   }
 
   // Memoize expensive calculations
-  const { isSingleRun, startLon, startLat, endLon, endLat } = useMemo(() => {
+  const { isSingleRun, startLon, startLat, endLon, endLat, isIndoorRun } = useMemo(() => {
     const isSingle =
       geoData.features.length === 1 &&
       geoData.features[0].geometry.coordinates.length;
@@ -314,14 +314,16 @@ const RunMap = ({
     let startLat = 0;
     let endLon = 0;
     let endLat = 0;
+    let isIndoor = false;
 
     if (isSingle) {
       const points = geoData.features[0].geometry.coordinates as Coordinate[];
       [startLon, startLat] = points[0];
       [endLon, endLat] = points[points.length - 1];
+      isIndoor = geoData.features[0].properties?.indoor === true;
     }
 
-    return { isSingleRun: isSingle, startLon, startLat, endLon, endLat };
+    return { isSingleRun: isSingle, startLon, startLat, endLon, endLat, isIndoorRun: isIndoor };
   }, [geoData]);
 
   const dash = useMemo(() => {
@@ -478,6 +480,24 @@ const RunMap = ({
             'line-join': 'round',
             'line-cap': 'round',
           }}
+          filter={['!=', ['get', 'indoor'], true]}
+        />
+        <Layer
+          id="runs2-indoor"
+          type="line"
+          paint={{
+            'line-color': ['get', 'color'],
+            'line-width': isBigMap && lights ? 1 : 2,
+            'line-dasharray': [4, 3],
+            'line-opacity':
+              isSingleRun || isBigMap || !lights ? 0.6 : LINE_OPACITY * 0.6,
+            'line-blur': 1,
+          }}
+          layout={{
+            'line-join': 'round',
+            'line-cap': 'round',
+          }}
+          filter={['==', ['get', 'indoor'], true]}
         />
       </Source>
       {isSingleRun && animatedPoints.length > 0 && (
@@ -503,8 +523,9 @@ const RunMap = ({
             type="line"
             paint={{
               'line-color': ['get', 'color'],
-              'line-width': 3,
+              'line-width': isIndoorRun ? 2 : 3,
               'line-opacity': 1,
+              'line-dasharray': isIndoorRun ? [4, 3] : [2, 0],
             }}
             layout={{
               'line-join': 'round',

@@ -67,6 +67,7 @@ class GridDrawer(TracksDrawer):
                 color = self.poster.colors.get("special2") or self.poster.colors.get(
                     "special"
                 )
+            is_indoor = getattr(tr, "subtype", None) == "indoor"
             polyline = dr.polyline(
                 points=line,
                 stroke=color,
@@ -74,6 +75,8 @@ class GridDrawer(TracksDrawer):
                 stroke_width=0.5,
                 stroke_linejoin="round",
                 stroke_linecap="round",
+                stroke_dasharray="1,0.5" if is_indoor else "none",
+                opacity=0.5 if is_indoor else 1,
             )
             polyline.set_desc(title=date_title, desc=tr.run_id)
             dr.add(polyline)

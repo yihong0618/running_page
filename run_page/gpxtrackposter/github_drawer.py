@@ -34,9 +34,32 @@ class GithubDrawer(TracksDrawer):
     def fetch_args(self, args):
         self.empty_color = args.github_empty_data_color
 
+    def _define_indoor_pattern(self, dr: svgwrite.Drawing):
+        """Define a diagonal stripe SVG pattern for indoor activity days."""
+        pattern = dr.pattern(
+            id="indoor-stripe",
+            size=(2, 2),
+            patternUnits="userSpaceOnUse",
+        )
+        pattern.add(
+            dr.line(
+                (0, 2),
+                (2, 0),
+                stroke="white",
+                stroke_width=0.5,
+                stroke_opacity=0.45,
+            )
+        )
+        dr.defs.add(pattern)
+
+    def _has_indoor_track(self, tracks):
+        """Check if any track in the list is an indoor activity."""
+        return any(getattr(t, "subtype", None) == "indoor" for t in tracks)
+
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
         if self.poster.tracks is None:
             raise PosterError("No tracks to draw")
+        self._define_indoor_pattern(dr)
         year_size = 200 * 4.0 / 80.0
         year_style = f"font-size:{year_size}px; font-family:Arial;"
         year_length_style = f"font-size:{110 * 3.0 / 80.0}px; font-family:Arial;"
@@ -171,6 +194,17 @@ class GithubDrawer(TracksDrawer):
                     rect = dr.rect((rect_x, rect_y), dom, fill=color)
                     rect.set_desc(title=date_title)
                     dr.add(rect)
+                    # Add diagonal stripe overlay for indoor days
+                    day_key = date_title.split(" ")[0]
+                    if day_key in self.poster.tracks_by_date:
+                        if self._has_indoor_track(self.poster.tracks_by_date[day_key]):
+                            dr.add(
+                                dr.rect(
+                                    (rect_x, rect_y),
+                                    dom,
+                                    fill="url(#indoor-stripe)",
+                                )
+                            )
                     github_rect_day += datetime.timedelta(1)
                 rect_x += 3.5
             offset.y += 3.5 * 9 + year_size + 1.0
