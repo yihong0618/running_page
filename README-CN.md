@@ -129,6 +129,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Niewei Yang](https://github.com/Niewei-Yang)     | <https://neewii-worksout.vercel.app/>          | Strava      |
 | [RUN.LOG](https://github.com/bzzd2001)            | <https://run.731558.xyz:6881/>                 | Strava      |
 | [StoneRicky](https://github.com/StoneRicky)       | <https://stonericky.github.io/running_page/>   | COROS       |
+| [coutureone](https://github.com/coutureone)          | <https://run.xcouture.cc/>                     | Garmin      |
 </details>
 
 ## 它是怎么工作的
