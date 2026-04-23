@@ -55,3 +55,8 @@ build-backend = "pdm.backend"
 [tool.pdm]
 distribution = true
 packages = ["run_page"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]

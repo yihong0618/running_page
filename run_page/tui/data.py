@@ -9,7 +9,6 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import Callable, Optional
 
-
 # ── constants matching web UI ──────────────────────────────
 
 DIST_UNIT = "km"

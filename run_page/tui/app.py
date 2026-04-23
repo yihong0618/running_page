@@ -9,13 +9,14 @@ from rich.console import Group as RichGroup
 from rich.panel import Panel
 from rich.table import Table as RichTable
 from rich.text import Text as RichText
+from textual import events
 from textual.app import App, ComposeResult
 from textual.message import Message
 from textual.binding import Binding
-from textual.containers import Horizontal, Vertical
+from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.reactive import reactive
 from textual.widget import Widget
-from textual.widgets import Button, DataTable, Input, Label
+from textual.widgets import Button, DataTable, Label, Static
 
 from .braille import render_polyline
 from .data import (
@@ -26,11 +27,9 @@ from .data import (
     aggregate_activities,
     find_data_file,
     load_activities,
-    make_search_filter,
     make_type_filter,
     make_year_filter,
 )
-
 
 # ── colour palette ─────────────────────────────────────────
 
@@ -167,26 +166,46 @@ def _render_monthly_chart(year: str, totals: list[float], width: int) -> Panel |
     )
 
 
-def _render_stats_cards(data: AggregatedData) -> RichTable:
+def _render_stats_cards(data: AggregatedData, width: int) -> RichTable:
     def metric_panel(title: str, value: str, accent: str = TEXT_COLOR) -> Panel:
         body = RichText()
         body.append(title + "\n", style=MUTED_TEXT_COLOR)
         body.append(value, style=f"bold {accent}")
         return Panel(body, border_style=CARD_BORDER_COLOR, padding=(0, 1))
 
-    grid = RichTable.grid(expand=True, padding=(0, 1))
-    grid.add_column(ratio=1)
-    grid.add_column(ratio=1)
-    grid.add_row(
-        metric_panel(
-            "Distance", f"{fmt_num(data.total_distance, 1)} km", PRIMARY_COLOR
+    cols = 4 if width >= 140 else (3 if width >= 100 else 2)
+
+    metrics: list[tuple[str, str, str]] = [
+        ("Distance", f"{fmt_num(data.total_distance, 1)} km", PRIMARY_COLOR),
+        ("Runs", f"{data.total_count}", TEXT_COLOR),
+        ("Total Time", fmt_duration(data.total_time_sec), TEXT_COLOR),
+        ("Avg Pace", f"{data.overall_avg_pace or '-'} /km", TEXT_COLOR),
+        ("Max Distance", f"{data.total_max_distance:.1f} km", TEXT_COLOR),
+        (
+            "Avg Heart Rate",
+            f"{data.overall_avg_hr:.0f} bpm" if data.overall_avg_hr else "-",
+            TEXT_COLOR,
         ),
-        metric_panel("Runs", f"{data.total_count}"),
-    )
-    grid.add_row(
-        metric_panel("Avg Pace", f"{data.overall_avg_pace or '-'} /km"),
-        metric_panel("Max Distance", f"{data.total_max_distance:.1f} km"),
-    )
+        ("Total Elevation", f"{fmt_num(data.total_elevation, 0)} m", TEXT_COLOR),
+        ("Cities", f"{len(data.city_details)}", TEXT_COLOR),
+        ("Countries", f"{len(data.countries)}", TEXT_COLOR),
+    ]
+
+    grid = RichTable.grid(expand=True, padding=(0, 1))
+    for _ in range(cols):
+        grid.add_column(ratio=1)
+
+    for i in range(0, len(metrics), cols):
+        row = metrics[i : i + cols]
+        while len(row) < cols:
+            row.append(("", "", TEXT_COLOR))
+        grid.add_row(
+            *[
+                metric_panel(title, value, accent) if title else ""
+                for title, value, accent in row
+            ]
+        )
+
     return grid
 
 
@@ -225,8 +244,55 @@ def _render_distribution_panel(data: AggregatedData, focus_year: str) -> Panel:
     )
 
 
+def _render_cities_panel(data: AggregatedData) -> Panel | None:
+    """Render a table of top cities by distance."""
+    if not data.city_details:
+        return None
+
+    t = RichTable(
+        show_header=True,
+        header_style=f"bold {PRIMARY_COLOR}",
+        border_style=CARD_BORDER_COLOR,
+        padding=(0, 1),
+    )
+    t.add_column("City", style="bold")
+    t.add_column("Runs", justify="right")
+    t.add_column("Distance", justify="right")
+    for city, stats in list(data.city_details.items())[:10]:
+        t.add_row(
+            city,
+            str(stats.count),
+            f"{stats.total_distance:.1f} km",
+        )
+
+    return Panel(
+        t,
+        title=f"Cities ({len(data.city_details)})",
+        title_align="left",
+        border_style=CARD_BORDER_COLOR,
+    )
+
+
 def _section_title(title: str) -> RichText:
-    return RichText(f"{title}\n", style=f"bold {PRIMARY_COLOR}")
+    return RichText(title, style=f"bold {PRIMARY_COLOR}")
+
+
+def _stats_layout_flags(
+    width: int, height: int, data: AggregatedData
+) -> dict[str, bool]:
+    compact = height <= 54 or width <= 140
+    tight = height <= 38
+    single_year = len(data.years) <= 1
+    single_type = len(data.type_counts) <= 1
+    return {
+        "compact": compact,
+        "tight": tight,
+        "single_column": width < 120,
+        "show_type_breakdown": not (compact and single_type),
+        "show_year_breakdown": not single_year and not tight,
+        "show_monthly_runs": not tight,
+        "show_distribution": height >= 58 and width >= 140 and not compact,
+    }
 
 
 # ── widgets ─────────────────────────────────────────────────
@@ -262,6 +328,81 @@ class RunDetailPanel(Widget):
     """Metadata for the selected activity."""
 
     activity: Optional[Activity] = reactive(None)
+    data: Optional[AggregatedData] = reactive(None)
+
+    def _rows(self, activity: Activity) -> list[tuple[str, str]]:
+        rows: list[tuple[str, str]] = [
+            ("Name", activity.name or "-"),
+            ("Date", activity.date_local),
+            ("Distance", f"{activity.distance_km:.2f} km"),
+            ("Time", activity.formatted_time),
+            ("Pace", f"{activity.pace_min_km} /km" if activity.pace_min_km else "-"),
+        ]
+        if activity.average_heartrate:
+            rows.append(("Heart Rate", f"{activity.average_heartrate:.0f} bpm"))
+        if activity.elevation_gain:
+            rows.append(("Elevation", f"{activity.elevation_gain:.0f} m"))
+        rows.append(("Speed", f"{activity.average_speed:.2f} m/s"))
+        if activity.city:
+            rows.append(("Location", activity.city))
+        return rows
+
+    def _extra_rows(self, activity: Activity) -> list[tuple[str, str]]:
+        """All contextual info (Day/Period/Streak/Race + progress + ranking)."""
+        rows: list[tuple[str, str]] = []
+
+        weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        rows.append(("Day", weekdays[activity.date_obj.weekday()]))
+        rows.append(("Period", activity.period))
+
+        if activity.streak > 1:
+            rows.append(("Streak", f"🔥 {activity.streak} days"))
+        if activity.race_label:
+            rows.append(("Race", f"[bold {SPECIAL_COLOR}]{activity.race_label}[/]"))
+
+        if not self.data:
+            return rows
+
+        year_acts = sorted(
+            [a for a in self.data.activities if a.year == activity.year],
+            key=lambda a: (a.date_local, a.run_id),
+        )
+        month = activity.date_local[:7]
+        month_acts = [a for a in year_acts if a.date_local.startswith(month)]
+
+        ytd_distance = 0.0
+        mtd_distance = 0.0
+        week_distance = 0.0
+        iso_year, iso_week, _ = activity.date_obj.isocalendar()
+
+        for idx, run in enumerate(year_acts, 1):
+            if run.date_local > activity.date_local or (
+                run.date_local == activity.date_local and run.run_id > activity.run_id
+            ):
+                break
+            ytd_distance += run.distance_km
+            run_iso_year, run_iso_week, _ = run.date_obj.isocalendar()
+            if run.date_local.startswith(month):
+                mtd_distance += run.distance_km
+            if run_iso_year == iso_year and run_iso_week == iso_week:
+                week_distance += run.distance_km
+
+        rows.append(("Week", f"{iso_week:02d}"))
+        rows.append(("Week km", f"{week_distance:.1f} km"))
+        rows.append(("MTD", f"{mtd_distance:.1f} km"))
+        rows.append(("YTD", f"{ytd_distance:.1f} km"))
+
+        for idx, run in enumerate(year_acts, 1):
+            if run.run_id == activity.run_id:
+                rows.append(("Year #", f"{idx} / {len(year_acts)}"))
+                break
+
+        for idx, run in enumerate(month_acts, 1):
+            if run.run_id == activity.run_id:
+                rows.append(("Month #", f"{idx} / {len(month_acts)}"))
+                break
+
+        return rows
 
     def render(self) -> RichTable | RichText:
         if self.activity is None:
@@ -269,38 +410,35 @@ class RunDetailPanel(Widget):
                 "  Select a run to view details", style=f"dim {MUTED_TEXT_COLOR}"
             )
         a = self.activity
-        color = _type_color(a)
-        t = RichTable(show_header=False, border_style=CARD_BORDER_COLOR, padding=(0, 1))
-        t.add_column("", style=f"bold {PRIMARY_COLOR}")
-        t.add_column("")
-        t.add_row("Name", a.name or "-")
-        t.add_row("Date", a.date_local)
-        t.add_row(
-            "Type",
-            f"[{color}]{a.type}[/]" + (f" ({a.subtype})" if a.subtype else ""),
-        )
-        t.add_row("Distance", f"{a.distance_km:.2f} km")
-        t.add_row("Time", a.formatted_time)
-        pace = a.pace_min_km
-        t.add_row("Pace", f"{pace} /km" if pace else "-")
-        if a.average_heartrate:
-            t.add_row("Heart Rate", f"{a.average_heartrate:.0f} bpm")
-        if a.elevation_gain:
-            t.add_row("Elevation", f"{a.elevation_gain:.0f} m")
-        t.add_row("Speed", f"{a.average_speed:.2f} m/s")
-        if a.location_country:
-            t.add_row("Location", a.location_country)
-        t.add_row("Route", "Yes" if a.has_route else "No")
-        if a.race_label:
-            t.add_row("Race", f"[bold {SPECIAL_COLOR}]{a.race_label}[/]")
-        return t
+
+        left = RichTable(show_header=False, padding=(0, 1))
+        left.add_column("", style=f"bold {PRIMARY_COLOR}")
+        left.add_column("")
+        for label, value in self._rows(a):
+            left.add_row(label, value)
+
+        extra = self._extra_rows(a)
+        if self.size.width >= 72 and extra:
+            right = RichTable(show_header=False, padding=(0, 1))
+            right.add_column("", style=f"bold {SECONDARY_COLOR}")
+            right.add_column("")
+            for label, value in extra:
+                right.add_row(label, value)
+
+            grid = RichTable.grid(expand=True, padding=(0, 1))
+            grid.add_column(ratio=5)
+            grid.add_column(ratio=4)
+            grid.add_row(left, right)
+            return grid
+
+        return left
 
 
 # ── filter bar ─────────────────────────────────────────────
 
 
 class FilterBar(Widget):
-    """Top bar with year selector, type filter, and search."""
+    """Top bar with summary plus year and type filters."""
 
     class FilterChanged(Message):
         pass
@@ -314,27 +452,14 @@ class FilterBar(Widget):
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="filter-row"):
-            with Horizontal(id="filter-meta"):
-                yield Label("running_page", id="fl-brand")
-                yield Label("0 activities", id="fl-summary")
-            with Horizontal(classes="filter-group compact-group", id="fl-year-group"):
-                yield Button(
-                    self._format_year_label(), id="fl-year", classes="filter-chip"
-                )
-            with Horizontal(classes="filter-group compact-group", id="fl-type-group"):
-                yield Button(
-                    self._format_type_label(), id="fl-type", classes="filter-chip"
-                )
-            with Horizontal(classes="filter-group search-group", id="fl-search-group"):
-                yield Input(placeholder="Search...", id="fl-search")
-
-    def on_mount(self) -> None:
-        self.styles.padding = (0, 1)
-        self.styles.background = SURFACE_COLOR
+            yield Label("running_page", id="fl-brand")
+            yield Label("0 activities", id="fl-summary")
+            yield Button(self._format_year_label(), id="fl-year", classes="filter-chip")
+            yield Button(self._format_type_label(), id="fl-type", classes="filter-chip")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "fl-year":
-            self.next_year()
+            self.cycle_year()
             self.post_message(self.FilterChanged())
         elif event.button.id == "fl-type":
             self.next_type()
@@ -348,24 +473,47 @@ class FilterBar(Widget):
     def selected_type(self) -> str:
         return self._types[self._type_idx]
 
-    @property
-    def search_query(self) -> str:
-        inp = self.query_one("#fl-search", Input)
-        return inp.value.strip()
-
     def _format_year_label(self) -> str:
         return self.selected_year
 
     def _format_type_label(self) -> str:
         return self.selected_type
 
-    def next_year(self) -> None:
-        self._year_idx = (self._year_idx + 1) % len(self._years)
+    def _set_selected_year(self, year: str) -> None:
+        if year in self._years:
+            self._year_idx = self._years.index(year)
+        self._refresh_year_controls()
+
+    def _refresh_year_controls(self) -> None:
         self.query_one("#fl-year", Button).label = self._format_year_label()
+
+    def cycle_year(self) -> None:
+        self._year_idx = (self._year_idx + 1) % len(self._years)
+        self._refresh_year_controls()
+
+    def previous_year(self) -> None:
+        year_values = self._years[1:]
+        if not year_values or self.selected_year == "All":
+            if year_values:
+                self._set_selected_year(year_values[0])
+            return
+        idx = year_values.index(self.selected_year)
+        if idx < len(year_values) - 1:
+            self._set_selected_year(year_values[idx + 1])
 
     def next_type(self) -> None:
         self._type_idx = (self._type_idx + 1) % len(self._types)
         self.query_one("#fl-type", Button).label = self._format_type_label()
+
+    def next_year(self) -> None:
+        year_values = self._years[1:]
+        if not year_values or self.selected_year == "All":
+            if year_values:
+                self._set_selected_year(year_values[0])
+            return
+        idx = year_values.index(self.selected_year)
+        if idx > 0:
+            self._set_selected_year(year_values[idx - 1])
 
     def set_options(
         self,
@@ -385,7 +533,7 @@ class FilterBar(Widget):
         self._type_idx = (
             self._types.index(selected_type) if selected_type in self._types else 0
         )
-        self.query_one("#fl-year", Button).label = self._format_year_label()
+        self._refresh_year_controls()
         self.query_one("#fl-type", Button).label = self._format_type_label()
 
     def set_summary(self, text: str) -> None:
@@ -437,24 +585,49 @@ class NavSidebar(Widget):
 # ── stats view ─────────────────────────────────────────────
 
 
-class StatsView(Widget):
+class StatsView(VerticalScroll):
     """Overall and per-year statistics."""
 
     data: Optional[AggregatedData] = reactive(None)
+    period_label = reactive("")
 
-    def render(self) -> RichText | RichGroup:
+    def compose(self) -> ComposeResult:
+        yield Static(id="stats-body")
+
+    def on_mount(self) -> None:
+        self._refresh_body(reset_scroll=False)
+
+    def watch_data(self, _: Optional[AggregatedData]) -> None:
+        self._refresh_body(reset_scroll=True)
+
+    def watch_period_label(self, _: str) -> None:
+        self._refresh_body(reset_scroll=False)
+
+    def on_resize(self, event: events.Resize) -> None:
+        del event
+        self._refresh_body(reset_scroll=False)
+
+    def _refresh_body(self, *, reset_scroll: bool) -> None:
+        if not self.is_mounted:
+            return
+        self.query_one("#stats-body", Static).update(self._build_renderable())
+        if reset_scroll:
+            self.scroll_home(animate=False)
+
+    def _build_renderable(self) -> RichText | RichGroup:
         if self.data is None:
             return RichText("  Loading...", style=f"dim {MUTED_TEXT_COLOR}")
 
         d = self.data
+        layout = _stats_layout_flags(self.size.width, self.size.height, d)
         parts: list = [
-            RichText("\n  Overview\n", style=f"bold {PRIMARY_COLOR}"),
-            _render_stats_cards(d),
+            _section_title("Overview"),
+            _render_stats_cards(d, self.size.width),
         ]
 
         # overall stats
         tbl = RichTable(
-            show_header=False, border_style=CARD_BORDER_COLOR, padding=(0, 2)
+            show_header=False, border_style=CARD_BORDER_COLOR, padding=(0, 1)
         )
         tbl.add_column("", style="bold")
         tbl.add_column("")
@@ -467,31 +640,73 @@ class StatsView(Widget):
             tbl.add_row("Avg Heart Rate", f"{d.overall_avg_hr:.0f} bpm")
         tbl.add_row("Total Elevation", f"{fmt_num(d.total_elevation, 0)} m")
         tbl.add_row("Max Distance", f"{d.total_max_distance:.2f} km")
-        if d.first_date and d.last_date:
-            tbl.add_row("Period", f"{d.first_date[:4]} – {d.last_date[:4]}")
-        left_parts: list = [_section_title("Overall Statistics"), tbl]
-
-        # races
+        period_label = self.period_label or (
+            f"{d.first_date[:4]}-{d.last_date[:4]}"
+            if d.first_date and d.last_date
+            else ""
+        )
+        if period_label:
+            tbl.add_row("Period", period_label)
         races = d.races
         if any(races.values()):
-            left_parts.append(RichText("\n", style=TEXT_COLOR))
-            left_parts.append(_section_title("Races"))
-            rt = RichTable(
-                show_header=False, border_style=SPECIAL_COLOR, padding=(0, 2)
-            )
-            rt.add_column("", style="bold")
-            rt.add_column("")
-            rt.add_row("Full Marathons", str(races["全程马拉松"]))
-            rt.add_row("Half Marathons", str(races["半程马拉松"]))
-            rt.add_row("10K+ Runs", str(races["10K"]))
-            left_parts.append(rt)
+            tbl.add_section()
+            tbl.add_row("Full Marathons", str(races["全程马拉松"]))
+            tbl.add_row("Half Marathons", str(races["半程马拉松"]))
+            tbl.add_row("10K+ Runs", str(races["10K"]))
+        overall_block = RichGroup(_section_title("Overall Statistics"), tbl)
 
-        # activity type breakdown
-        if d.type_counts:
-            left_parts.append(RichText("\n", style=TEXT_COLOR))
-            left_parts.append(_section_title("By Activity Type"))
+        # trends
+        trends_items: list = []
+        if d.year_stats and d.years:
+            focus_year = d.years[0]
+            monthly_distance_chart = _render_monthly_chart(
+                focus_year,
+                _monthly_distances(d.year_stats[focus_year]),
+                self.size.width,
+            )
+            monthly_count_chart = _render_bar_chart(
+                f"Monthly Runs ({focus_year})",
+                [f"{month:02d}" for month in range(1, 13)],
+                _monthly_counts(d.activities, focus_year),
+                width=self.size.width,
+                color=SECONDARY_COLOR,
+                suffix=" r",
+            )
+            distribution_panel = _render_distribution_panel(d, focus_year)
+            if monthly_distance_chart is not None:
+                trends_items.append(monthly_distance_chart)
+            if monthly_count_chart is not None and layout["show_monthly_runs"]:
+                trends_items.append(monthly_count_chart)
+            if distribution_panel is not None and layout["show_distribution"]:
+                trends_items.append(distribution_panel)
+        trends_block = (
+            RichGroup(_section_title("Trends"), *trends_items)
+            if trends_items
+            else None
+        )
+
+        # geography
+        cities_panel = _render_cities_panel(d)
+        geography_block = (
+            RichGroup(_section_title("Geography"), cities_panel)
+            if cities_panel is not None
+            else None
+        )
+
+        # Build main three-column layout
+        main_blocks: list = []
+        extra_parts: list = []
+        main_blocks.append(overall_block)
+        if trends_block is not None:
+            main_blocks.append(trends_block)
+        if geography_block is not None:
+            main_blocks.append(geography_block)
+
+        # Extra content below the main columns
+        if d.type_counts and layout["show_type_breakdown"]:
+            extra_parts.append(_section_title("By Activity Type"))
             tt = RichTable(
-                show_header=False, border_style=CARD_BORDER_COLOR, padding=(0, 2)
+                show_header=False, border_style=CARD_BORDER_COLOR, padding=(0, 1)
             )
             tt.add_column("Type", style="bold")
             tt.add_column("Count")
@@ -503,12 +718,10 @@ class StatsView(Widget):
                     str(d.type_counts[tname]),
                     f"{d.type_distances[tname]:.1f}",
                 )
-            left_parts.append(tt)
+            extra_parts.append(tt)
 
-        # per-year
-        if d.year_stats:
-            left_parts.append(RichText("\n", style=TEXT_COLOR))
-            left_parts.append(_section_title("Per-Year Breakdown"))
+        if d.year_stats and layout["show_year_breakdown"]:
+            extra_parts.append(_section_title("Per-Year Breakdown"))
             yt = RichTable(
                 show_header=True,
                 header_style=f"bold {PRIMARY_COLOR}",
@@ -535,42 +748,26 @@ class StatsView(Widget):
                     f"{ys.total_elevation:.0f}",
                     f"{ys.max_distance:.1f}",
                 )
-            left_parts.append(yt)
+            extra_parts.append(yt)
 
-        # monthly chart for the current / latest year in view
-        right_parts: list = []
-        if d.year_stats and d.years:
-            focus_year = d.years[0]
-            monthly_distance_chart = _render_monthly_chart(
-                focus_year,
-                _monthly_distances(d.year_stats[focus_year]),
-                self.size.width,
-            )
-            monthly_count_chart = _render_bar_chart(
-                f"Monthly Runs ({focus_year})",
-                [f"{month:02d}" for month in range(1, 13)],
-                _monthly_counts(d.activities, focus_year),
-                width=self.size.width,
-                color=SECONDARY_COLOR,
-                suffix=" r",
-            )
-            distribution_panel = _render_distribution_panel(d, focus_year)
-            right_parts.append(_section_title("Trends"))
-            if monthly_distance_chart is not None:
-                right_parts.append(monthly_distance_chart)
-            if monthly_count_chart is not None:
-                right_parts.append(monthly_count_chart)
-            if distribution_panel is not None:
-                right_parts.append(distribution_panel)
+        # Layout: 3-col, 2-col, or single column based on width
+        if len(main_blocks) >= 3 and self.size.width >= 120:
+            content_grid = RichTable.grid(expand=True, padding=(0, 1))
+            for _ in main_blocks:
+                content_grid.add_column(ratio=1)
+            content_grid.add_row(*main_blocks)
+            parts.append(content_grid)
+        elif len(main_blocks) >= 2 and not layout["single_column"]:
+            content_grid = RichTable.grid(expand=True, padding=(0, 1))
+            content_grid.add_column(ratio=1)
+            content_grid.add_column(ratio=1)
+            content_grid.add_row(*main_blocks[:2])
+            parts.append(content_grid)
+            parts.extend(main_blocks[2:])
+        else:
+            parts.extend(main_blocks)
 
-        content_grid = RichTable.grid(expand=True, padding=(0, 1))
-        content_grid.add_column(ratio=7)
-        content_grid.add_column(ratio=5)
-        content_grid.add_row(
-            RichGroup(*left_parts),
-            RichGroup(*right_parts) if right_parts else RichText(""),
-        )
-        parts.append(content_grid)
+        parts.extend(extra_parts)
 
         return RichGroup(*parts)
 
@@ -616,87 +813,62 @@ class RunningTUI(App):
     /* ── filter bar ──────────────────────────────────── */
     #filter-bar {
         dock: top;
-        height: 3;
-        padding: 0 1;
+        height: 4;
+        padding: 0 2;
         background: #171717;
-        border-bottom: solid #2f2f2f;
+        border: none;
     }
     #filter-row {
         height: 3;
         align: left middle;
         padding: 0;
     }
-    #filter-meta {
-        width: auto;
-        min-width: 18;
+    #fl-brand, #fl-summary {
         height: 3;
-        align: left middle;
+        margin: 0 1 0 0;
+        padding: 0 2;
+        background: #202020;
+        border: round #303030;
+        content-align: center middle;
     }
     #fl-brand {
-        width: auto;
-        min-width: 0;
-        height: 3;
+        width: 20;
         color: #e0ed5e;
         text-style: bold;
-        padding: 0 1 0 0;
         content-align: left middle;
     }
     #fl-summary {
-        width: auto;
-        height: 3;
+        width: 18;
         color: #8a8a8a;
         content-align: left middle;
     }
-    .filter-group {
-        height: 3;
-        width: auto;
-        min-width: 5;
-        margin: 0 1 0 0;
-        align: center middle;
-    }
-    #fl-year-group {
-        width: auto;
-        min-width: 5;
-    }
-    #fl-type-group {
-        width: auto;
-        min-width: 5;
-    }
-    .search-group {
-        width: 12;
-        margin: 0;
-    }
     .filter-chip {
-        width: auto;
-        min-width: 5;
-        height: 1;
-        padding: 0 1;
-        margin: 0;
-        background: #222222;
+        width: 9;
+        height: 3;
+        padding: 0 2;
+        margin: 0 1 0 0;
+        background: #202020;
         color: #d4d4d8;
-        border: none;
+        border: round #343434;
         text-style: bold;
         content-align: center middle;
     }
-    .filter-chip:hover {
-        background: #2c2c2c;
+    #fl-year {
+        width: 10;
+        background: #2b3016;
         color: #e0ed5e;
+        border: round #636a2d;
+    }
+    #fl-type { width: 8; }
+    .filter-chip:hover {
+        background: #2b2b2b;
+        color: #f0f777;
+        border: round #5b5b5b;
     }
     .filter-chip:focus {
-        background: #2f3218;
-        color: #e0ed5e;
-    }
-    .search-group > Input {
-        width: 1fr;
-        height: 3;
-        border: round #343434;
-        background: transparent;
-        color: #d4d4d8;
-        padding: 0 1;
-    }
-    .search-group > Input:focus {
-        background: #202015;
-        border: round #ccd94a;
+        background: #323717;
+        color: #f0f777;
+        border: round #8d9740;
     }
 
     #list-left { width: 45%; min-width: 40; border: solid #404040; background: #171717; }
@@ -716,8 +888,9 @@ class RunningTUI(App):
 
     /* ── detail / stats / places / grid views ────────── */
     #main-area { height: 1fr; }
-    #view-list { height: 1fr; }
-    #view-stats { height: 1fr; overflow-y: auto; padding: 0 2; }
+    #view-list { height: 1fr; padding: 1 2 0 2; }
+    #view-stats { height: 1fr; overflow-y: auto; padding: 1 2 0 2; }
+    #stats-body { height: auto; }
     """
 
     BINDINGS = [
@@ -726,7 +899,8 @@ class RunningTUI(App):
         Binding("s", "toggle_sort", "Sort"),
         Binding("n", "next_run", "Next"),
         Binding("p", "prev_run", "Prev"),
-        Binding("slash", "focus_search", "Search", key_display="/"),
+        Binding("left", "older_year", "Older Year", priority=True),
+        Binding("right", "newer_year", "Newer Year", priority=True),
         Binding("y", "next_year", "Year"),
         Binding("t", "next_type", "Type"),
         Binding("1", "view_list", "List"),
@@ -823,7 +997,9 @@ class RunningTUI(App):
         if not activities or index < 0 or index >= len(activities):
             return
         a = activities[index]
-        self.query_one(RunDetailPanel).activity = a
+        detail = self.query_one(RunDetailPanel)
+        detail.activity = a
+        detail.data = self.data
         rw = self.query_one(RouteMapWidget)
         rw.polyline_str = a.summary_polyline or ""
         rw.activity_name = a.name or ""
@@ -845,6 +1021,24 @@ class RunningTUI(App):
             selected_type=current_type if current_type in types else "All",
         )
 
+    def _overall_period_label(self) -> str:
+        if not self.data or not self.data.first_date or not self.data.last_date:
+            return ""
+        fb = self.query_one(FilterBar)
+        if fb.selected_year == "All":
+            return f"{self.data.first_date[:4]}-{self.data.last_date[:4]}"
+
+        start_year = fb.selected_year
+        try:
+            start_year_int = int(start_year)
+        except ValueError:
+            return start_year
+
+        next_year = str(start_year_int + 1)
+        if next_year in self.data.years:
+            return f"{start_year}-{next_year}"
+        return f"{start_year}-{start_year}"
+
     # ── filtering ───────────────────────────────────────────
 
     def _rebuild_filters(self) -> None:
@@ -854,9 +1048,6 @@ class RunningTUI(App):
             filters.append(make_year_filter(fb.selected_year))
         if fb.selected_type != "All":
             filters.append(make_type_filter(fb.selected_type))
-        q = fb.search_query
-        if q:
-            filters.append(make_search_filter(q))
         self._active_filters = filters
         self._apply_filters()
 
@@ -868,7 +1059,9 @@ class RunningTUI(App):
         self.filtered_data = aggregate_activities(filtered)
         table = self.query_one("#run-table", DataTable)
         self._populate_table(table, filtered)
-        self.query_one(StatsView).data = self.filtered_data
+        stats_view = self.query_one(StatsView)
+        stats_view.period_label = self._overall_period_label()
+        stats_view.data = self.filtered_data
         if filtered:
             self._select_activity(0)
         else:
@@ -906,14 +1099,6 @@ class RunningTUI(App):
             self._select_activity(idx)
         except (ValueError, IndexError):
             pass
-
-    def on_input_submitted(self, event: Input.Submitted) -> None:
-        if event.input.id == "fl-search":
-            self._rebuild_filters()
-
-    def on_input_changed(self, event: Input.Changed) -> None:
-        if event.input.id == "fl-search":
-            self._rebuild_filters()
 
     def on_filter_bar_filter_changed(self, event: FilterBar.FilterChanged) -> None:
         self._rebuild_filters()
@@ -966,10 +1151,15 @@ class RunningTUI(App):
             table.move_cursor(row=prv)
             self._select_activity(prv)
 
-    def action_focus_search(self) -> None:
-        self.query_one("#fl-search", Input).focus()
-
     def action_next_year(self) -> None:
+        self.query_one(FilterBar).cycle_year()
+        self._rebuild_filters()
+
+    def action_older_year(self) -> None:
+        self.query_one(FilterBar).previous_year()
+        self._rebuild_filters()
+
+    def action_newer_year(self) -> None:
         self.query_one(FilterBar).next_year()
         self._rebuild_filters()
 
@@ -984,6 +1174,7 @@ class RunningTUI(App):
     def action_view_stats(self) -> None:
         self._show_view("stats")
         self._sync_view_data()
+        self.query_one(StatsView).focus()
 
     def _sync_view_data(self) -> None:
         if self._current_view == "stats" and self.filtered_data:

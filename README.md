@@ -147,6 +147,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 4. Mapbox for map display
 5. Supports most sports apps such as nike strava...
 6. Support for metric and imperial units
+7. Terminal UI (TUI) for browsing activities locally
 
 > automatically backup gpx data for easy backup and uploading to other software.
 >
@@ -193,6 +194,30 @@ pnpm develop
 ```
 
 Open your browser and visit <http://localhost:5173/>
+
+## TUI (Terminal UI)
+
+You can browse your activities in the terminal using the built-in Textual TUI.
+
+```bash
+# Using make
+make tui
+
+# Or run directly with uv
+uv run run_page
+
+# Or specify a custom activities.json path
+uv run run_page /path/to/your/activities.json
+```
+
+Keyboard shortcuts inside TUI:
+
+- `1` / `2` – Switch between List and Stats views
+- `←` / `→` – Change year filter
+- `↑` / `↓` – Navigate activities
+- `y` – Cycle through years
+- `t` – Cycle through activity types
+- `q` – Quit
 
 ## Docker
 
