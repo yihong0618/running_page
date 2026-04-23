@@ -203,6 +203,7 @@ class GithubDrawer(TracksDrawer):
                                     (rect_x, rect_y),
                                     dom,
                                     fill="url(#indoor-stripe)",
+                                    style="pointer-events: none;",
                                 )
                             )
                     github_rect_day += datetime.timedelta(1)
