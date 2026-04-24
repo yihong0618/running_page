@@ -680,9 +680,7 @@ class StatsView(VerticalScroll):
             if distribution_panel is not None and layout["show_distribution"]:
                 trends_items.append(distribution_panel)
         trends_block = (
-            RichGroup(_section_title("Trends"), *trends_items)
-            if trends_items
-            else None
+            RichGroup(_section_title("Trends"), *trends_items) if trends_items else None
         )
 
         # geography
