@@ -342,7 +342,6 @@ class RunDetailPanel(Widget):
             rows.append(("Heart Rate", f"{activity.average_heartrate:.0f} bpm"))
         if activity.elevation_gain:
             rows.append(("Elevation", f"{activity.elevation_gain:.0f} m"))
-        rows.append(("Speed", f"{activity.average_speed:.2f} m/s"))
         if activity.city:
             rows.append(("Location", activity.city))
         return rows
