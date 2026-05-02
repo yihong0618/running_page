@@ -6,27 +6,18 @@ import React, {
   useRef,
   useCallback,
   useMemo,
+  useSyncExternalStore,
 } from 'react';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from 'recharts';
 import VirtualList from 'rc-virtual-list';
 import { useNavigate } from 'react-router-dom';
-import activities from '@/static/activities.json';
 import styles from './style.module.css';
 import { ACTIVITY_TOTAL, LOADING_TEXT } from '@/utils/const';
 import { totalStat, yearSummaryStats } from '@assets/index';
 import { loadSvgComponent } from '@/utils/svgUtils';
 import { SHOW_ELEVATION_GAIN, HOME_PAGE_TITLE } from '@/utils/const';
 import { DIST_UNIT, M_TO_DIST } from '@/utils/utils';
-import RoutePreview from '@/components/RoutePreview';
-import { Activity } from '@/utils/utils';
+import type { Activity } from '@/utils/utils';
+import useActivities from '@/hooks/useActivities';
 // Layout constants (avoid magic numbers)
 const ITEM_WIDTH = 280;
 const ITEM_GAP = 20;
@@ -43,6 +34,43 @@ const VIRTUAL_LIST_STYLES = {
       'var(--color-primary, var(--color-scrollbar-thumb, rgba(0,0,0,0.4)))',
   },
 };
+
+interface SnapshotStore<T> {
+  getSnapshot: () => T;
+  getServerSnapshot: () => T;
+  setSnapshot: (nextSnapshot: T) => void;
+  subscribe: (listener: () => void) => () => void;
+}
+
+function createSnapshotStore<T>(initialSnapshot: T): SnapshotStore<T> {
+  let snapshot = initialSnapshot;
+  const listeners = new Set<() => void>();
+
+  return {
+    getSnapshot: () => snapshot,
+    getServerSnapshot: () => initialSnapshot,
+    setSnapshot: (nextSnapshot) => {
+      if (Object.is(snapshot, nextSnapshot)) return;
+      snapshot = nextSnapshot;
+      listeners.forEach((listener) => listener());
+    },
+    subscribe: (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+  };
+}
+
+const getInitialListHeight = () =>
+  typeof window === 'undefined' ? 500 : Math.max(100, window.innerHeight - 40);
+
+const loadRoutePreview = () => import('@/components/RoutePreview');
+const RoutePreview = lazy(loadRoutePreview);
+const loadActivityChart = () => import('./ActivityChart');
+const ActivityChart = lazy(loadActivityChart);
+
+void loadActivityChart();
+
 const MonthOfLifeSvg = (sportType: string) => {
   const path = sportType === 'all' ? './mol.svg' : `./mol_${sportType}.svg`;
   return lazy(() => loadSvgComponent(totalStat, path));
@@ -56,19 +84,12 @@ const SwimmingSvg = MonthOfLifeSvg('swimming');
 const SkiingSvg = MonthOfLifeSvg('skiing');
 const AllSvg = MonthOfLifeSvg('all');
 
-// Cache for year summary lazy components to prevent flickering
-const yearSummaryCache: Record<
-  string,
-  React.LazyExoticComponent<React.FC<React.SVGProps<SVGSVGElement>>>
-> = {};
-const getYearSummarySvg = (year: string) => {
-  if (!yearSummaryCache[year]) {
-    yearSummaryCache[year] = lazy(() =>
-      loadSvgComponent(yearSummaryStats, `./year_summary_${year}.svg`)
-    );
-  }
-  return yearSummaryCache[year];
-};
+const yearSummarySvgs = Object.fromEntries(
+  Object.keys(yearSummaryStats).map((path) => [
+    path,
+    lazy(() => loadSvgComponent(yearSummaryStats, path)),
+  ])
+);
 
 interface ActivitySummary {
   totalDistance: number;
@@ -118,6 +139,464 @@ type IntervalType = 'year' | 'month' | 'week' | 'day' | 'life';
 // A row group contains multiple activity card data items that will be rendered in one virtualized row
 type RowGroup = Array<{ period: string; summary: ActivitySummary }>;
 
+interface ActivityListCache {
+  activityGroups: Map<string, ActivityGroups>;
+  availableYears?: string[];
+  periodSummaries: Map<string, RowGroup>;
+  sportTypeOptions?: string[];
+}
+
+const activityListCache = new WeakMap<Activity[], ActivityListCache>();
+
+const getActivityListCache = (activityData: Activity[]) => {
+  let cache = activityListCache.get(activityData);
+  if (!cache) {
+    cache = {
+      activityGroups: new Map(),
+      periodSummaries: new Map(),
+    };
+    activityListCache.set(activityData, cache);
+  }
+  return cache;
+};
+
+const getSportTypeOptions = (activityData: Activity[]) => {
+  const cache = getActivityListCache(activityData);
+  if (cache.sportTypeOptions) return cache.sportTypeOptions;
+
+  const sportTypeSet = new Set(activityData.map((activity) => activity.type));
+  if (sportTypeSet.has('Run')) {
+    sportTypeSet.delete('Run');
+    sportTypeSet.add('running');
+  }
+  if (sportTypeSet.has('Walk')) {
+    sportTypeSet.delete('Walk');
+    sportTypeSet.add('walking');
+  }
+  if (sportTypeSet.has('Ride')) {
+    sportTypeSet.delete('Ride');
+    sportTypeSet.add('cycling');
+  }
+  cache.sportTypeOptions = ['all', ...sportTypeSet];
+  return cache.sportTypeOptions;
+};
+
+const getAvailableActivityYears = (activityData: Activity[]) => {
+  const cache = getActivityListCache(activityData);
+  if (cache.availableYears) return cache.availableYears;
+
+  cache.availableYears = Array.from(
+    new Set(
+      activityData.map((activity) =>
+        new Date(activity.start_date_local).getFullYear().toString()
+      )
+    )
+  ).sort((a, b) => Number(b) - Number(a));
+  return cache.availableYears;
+};
+
+const convertTimeToSeconds = (time: string): number => {
+  const [hours, minutes, seconds] = time.split(':').map(Number);
+  return hours * 3600 + minutes * 60 + seconds;
+};
+
+const formatTime = (seconds: number): string => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return `${h}h ${m}m ${s}s`;
+};
+
+const formatPace = (speed: number): string => {
+  if (speed === 0) return `0:00 min/${DIST_UNIT}`;
+  const pace = 60 / speed;
+  const totalSeconds = Math.round(pace * 60);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds} min/${DIST_UNIT}`;
+};
+
+const generateLabels = (interval: string, period: string): number[] => {
+  if (interval === 'month') {
+    const [year, month] = period.split('-').map(Number);
+    return Array.from(
+      { length: new Date(year, month, 0).getDate() },
+      (_, i) => i + 1
+    );
+  }
+  if (interval === 'week') {
+    return Array.from({ length: 7 }, (_, i) => i + 1);
+  }
+  if (interval === 'year') {
+    return Array.from({ length: 12 }, (_, i) => i + 1);
+  }
+  return [];
+};
+
+const matchesSportType = (activity: Activity, sportTypeArg: string) => {
+  if (sportTypeArg === 'all') return true;
+  if (sportTypeArg === 'running') {
+    return activity.type === 'running' || activity.type === 'Run';
+  }
+  if (sportTypeArg === 'walking') {
+    return activity.type === 'walking' || activity.type === 'Walk';
+  }
+  if (sportTypeArg === 'cycling') {
+    return activity.type === 'cycling' || activity.type === 'Ride';
+  }
+  return activity.type === sportTypeArg;
+};
+
+const createEmptyActivitySummary = (): ActivitySummary => ({
+  totalDistance: 0,
+  totalTime: 0,
+  totalElevationGain: 0,
+  count: 0,
+  dailyDistances: [],
+  maxDistance: 0,
+  maxSpeed: 0,
+  location: '',
+  totalHeartRate: 0,
+  heartRateCount: 0,
+  activities: [],
+});
+
+const getActivitySummaryCacheKey = (
+  intervalArg: IntervalType,
+  sportTypeArg: string
+) => `${intervalArg}:${sportTypeArg}`;
+
+const groupActivitiesByInterval = (
+  activityData: Activity[],
+  intervalArg: IntervalType,
+  sportTypeArg: string
+): ActivityGroups => {
+  const cache = getActivityListCache(activityData);
+  const cacheKey = getActivitySummaryCacheKey(intervalArg, sportTypeArg);
+  const cachedGroups = cache.activityGroups.get(cacheKey);
+  if (cachedGroups) return cachedGroups;
+
+  const activityGroups = activityData
+    .filter((activity) => matchesSportType(activity, sportTypeArg))
+    .reduce((acc: ActivityGroups, activity) => {
+      const date = new Date(activity.start_date_local);
+      let key: string;
+      let index: number;
+      switch (intervalArg) {
+        case 'year':
+          key = date.getFullYear().toString();
+          index = date.getMonth();
+          break;
+        case 'month':
+          key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+          index = date.getDate() - 1;
+          break;
+        case 'week': {
+          const currentDate = new Date(date.valueOf());
+          currentDate.setDate(
+            currentDate.getDate() + 4 - (currentDate.getDay() || 7)
+          );
+          const yearStart = new Date(currentDate.getFullYear(), 0, 1);
+          const weekNum = Math.ceil(
+            ((currentDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
+          );
+          key = `${currentDate.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
+          index = (date.getDay() + 6) % 7;
+          break;
+        }
+        case 'day':
+          key = date.toLocaleDateString('zh').replaceAll('/', '-');
+          index = 0;
+          break;
+        default:
+          key = date.getFullYear().toString();
+          index = 0;
+      }
+
+      if (!acc[key]) acc[key] = createEmptyActivitySummary();
+
+      const distance = activity.distance / M_TO_DIST;
+      const timeInSeconds = convertTimeToSeconds(activity.moving_time);
+      const speed = timeInSeconds > 0 ? distance / (timeInSeconds / 3600) : 0;
+
+      acc[key].totalDistance += distance;
+      acc[key].totalTime += timeInSeconds;
+
+      if (SHOW_ELEVATION_GAIN && activity.elevation_gain) {
+        acc[key].totalElevationGain += activity.elevation_gain;
+      }
+
+      if (activity.average_heartrate) {
+        acc[key].totalHeartRate += activity.average_heartrate;
+        acc[key].heartRateCount += 1;
+      }
+
+      acc[key].count += 1;
+      if (intervalArg === 'day') acc[key].activities.push(activity);
+      acc[key].dailyDistances[index] =
+        (acc[key].dailyDistances[index] || 0) + distance;
+      if (distance > acc[key].maxDistance) acc[key].maxDistance = distance;
+      if (speed > acc[key].maxSpeed) acc[key].maxSpeed = speed;
+      if (intervalArg === 'day')
+        acc[key].location = activity.location_country || '';
+
+      return acc;
+    }, {} as ActivityGroups);
+
+  cache.activityGroups.set(cacheKey, activityGroups);
+  return activityGroups;
+};
+
+const sortPeriodSummaries = (
+  activitiesByInterval: ActivityGroups,
+  interval: IntervalType
+): RowGroup =>
+  Object.entries(activitiesByInterval)
+    .sort(([a], [b]) => {
+      if (interval === 'day') {
+        return new Date(b).getTime() - new Date(a).getTime();
+      }
+      if (interval === 'week') {
+        const [yearA, weekA] = a.split('-W').map(Number);
+        const [yearB, weekB] = b.split('-W').map(Number);
+        return yearB - yearA || weekB - weekA;
+      }
+      const [yearA, monthA = 0] = a.split('-').map(Number);
+      const [yearB, monthB = 0] = b.split('-').map(Number);
+      return yearB - yearA || monthB - monthA;
+    })
+    .map(([period, summary]) => ({ period, summary }));
+
+const getPeriodSummaries = (
+  activityData: Activity[],
+  intervalArg: IntervalType,
+  sportTypeArg: string
+): RowGroup => {
+  const cache = getActivityListCache(activityData);
+  const cacheKey = getActivitySummaryCacheKey(intervalArg, sportTypeArg);
+  const cachedSummaries = cache.periodSummaries.get(cacheKey);
+  if (cachedSummaries) return cachedSummaries;
+
+  const summaries = sortPeriodSummaries(
+    groupActivitiesByInterval(activityData, intervalArg, sportTypeArg),
+    intervalArg
+  );
+  cache.periodSummaries.set(cacheKey, summaries);
+  return summaries;
+};
+
+const toDisplaySummary = (summary: ActivitySummary): DisplaySummary => ({
+  totalDistance: summary.totalDistance,
+  averageSpeed: summary.totalTime
+    ? summary.totalDistance / (summary.totalTime / 3600)
+    : 0,
+  totalTime: summary.totalTime,
+  count: summary.count,
+  maxDistance: summary.maxDistance,
+  maxSpeed: summary.maxSpeed,
+  location: summary.location,
+  totalElevationGain: SHOW_ELEVATION_GAIN
+    ? summary.totalElevationGain
+    : undefined,
+  averageHeartRate:
+    summary.heartRateCount > 0
+      ? summary.totalHeartRate / summary.heartRateCount
+      : undefined,
+});
+
+function useActivityListMeasurements(itemWidth: number, gap: number) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const filterRef = useRef<HTMLDivElement | null>(null);
+  const sampleRef = useRef<HTMLDivElement | null>(null);
+  const containerResizeObserverRef = useRef<ResizeObserver | null>(null);
+  const filterResizeObserverRef = useRef<ResizeObserver | null>(null);
+  const sampleResizeObserverRef = useRef<ResizeObserver | null>(null);
+  const layoutFrameRef = useRef<number | null>(null);
+
+  const itemsPerRowStore = useMemo(() => createSnapshotStore(0), []);
+  const rowHeightStore = useMemo(() => createSnapshotStore(360), []);
+  const listHeightStore = useMemo(
+    () => createSnapshotStore(getInitialListHeight()),
+    []
+  );
+
+  const itemsPerRow = useSyncExternalStore(
+    itemsPerRowStore.subscribe,
+    itemsPerRowStore.getSnapshot,
+    itemsPerRowStore.getServerSnapshot
+  );
+  const rowHeight = useSyncExternalStore(
+    rowHeightStore.subscribe,
+    rowHeightStore.getSnapshot,
+    rowHeightStore.getServerSnapshot
+  );
+  const listHeight = useSyncExternalStore(
+    listHeightStore.subscribe,
+    listHeightStore.getSnapshot,
+    listHeightStore.getServerSnapshot
+  );
+
+  const updateItemsPerRow = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const containerWidth = container.clientWidth;
+    const count = Math.floor((containerWidth + gap) / (itemWidth + gap));
+    itemsPerRowStore.setSnapshot(count);
+  }, [gap, itemWidth, itemsPerRowStore]);
+
+  const updateListHeight = useCallback(() => {
+    const filterH = filterRef.current?.clientHeight || 0;
+    const containerEl = containerRef.current;
+    let topOffset = 0;
+    if (containerEl) {
+      const rect = containerEl.getBoundingClientRect();
+      topOffset = Math.max(0, rect.top);
+    }
+
+    const base = topOffset || filterH || 0;
+    let bottomPadding = 16;
+    if (containerEl?.parentElement) {
+      try {
+        const parentRect = containerEl.parentElement.getBoundingClientRect();
+        const containerRect = containerEl.getBoundingClientRect();
+        const distanceToParentBottom = Math.max(
+          0,
+          parentRect.bottom - containerRect.bottom
+        );
+        bottomPadding = Math.min(
+          48,
+          Math.max(8, Math.round(distanceToParentBottom / 4))
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    listHeightStore.setSnapshot(
+      Math.max(100, window.innerHeight - base - bottomPadding)
+    );
+  }, [listHeightStore]);
+
+  const updateRowHeight = useCallback(() => {
+    const height = sampleRef.current?.offsetHeight ?? 0;
+    if (height) rowHeightStore.setSnapshot(height);
+  }, [rowHeightStore]);
+
+  const updateMeasurements = useCallback(() => {
+    updateItemsPerRow();
+    updateListHeight();
+    updateRowHeight();
+  }, [updateItemsPerRow, updateListHeight, updateRowHeight]);
+
+  const scheduleMeasurementUpdate = useCallback(() => {
+    if (layoutFrameRef.current !== null) {
+      cancelAnimationFrame(layoutFrameRef.current);
+    }
+
+    layoutFrameRef.current = requestAnimationFrame(() => {
+      layoutFrameRef.current = null;
+      updateMeasurements();
+    });
+  }, [updateMeasurements]);
+
+  const disconnectContainerObserver = useCallback(() => {
+    containerResizeObserverRef.current?.disconnect();
+    containerResizeObserverRef.current = null;
+  }, []);
+
+  const disconnectFilterObserver = useCallback(() => {
+    filterResizeObserverRef.current?.disconnect();
+    filterResizeObserverRef.current = null;
+  }, []);
+
+  const disconnectSampleObserver = useCallback(() => {
+    sampleResizeObserverRef.current?.disconnect();
+    sampleResizeObserverRef.current = null;
+  }, []);
+
+  const setSummaryContainerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      disconnectContainerObserver();
+      containerRef.current = node;
+
+      if (!node) {
+        itemsPerRowStore.setSnapshot(0);
+        return;
+      }
+
+      const observer = new ResizeObserver(scheduleMeasurementUpdate);
+      observer.observe(node);
+      containerResizeObserverRef.current = observer;
+      scheduleMeasurementUpdate();
+    },
+    [disconnectContainerObserver, itemsPerRowStore, scheduleMeasurementUpdate]
+  );
+
+  const setFilterContainerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      disconnectFilterObserver();
+      filterRef.current = node;
+
+      if (!node) return;
+
+      const observer = new ResizeObserver(scheduleMeasurementUpdate);
+      observer.observe(node);
+      filterResizeObserverRef.current = observer;
+      scheduleMeasurementUpdate();
+    },
+    [disconnectFilterObserver, scheduleMeasurementUpdate]
+  );
+
+  const setSampleCardRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      disconnectSampleObserver();
+      sampleRef.current = node;
+
+      if (!node) return;
+
+      const observer = new ResizeObserver(scheduleMeasurementUpdate);
+      observer.observe(node);
+      sampleResizeObserverRef.current = observer;
+      scheduleMeasurementUpdate();
+    },
+    [disconnectSampleObserver, scheduleMeasurementUpdate]
+  );
+
+  useEffect(() => {
+    scheduleMeasurementUpdate();
+    window.addEventListener('resize', scheduleMeasurementUpdate);
+    return () => {
+      window.removeEventListener('resize', scheduleMeasurementUpdate);
+    };
+  }, [scheduleMeasurementUpdate]);
+
+  useEffect(
+    () => () => {
+      disconnectContainerObserver();
+      disconnectFilterObserver();
+      disconnectSampleObserver();
+      if (layoutFrameRef.current !== null) {
+        cancelAnimationFrame(layoutFrameRef.current);
+        layoutFrameRef.current = null;
+      }
+    },
+    [
+      disconnectContainerObserver,
+      disconnectFilterObserver,
+      disconnectSampleObserver,
+    ]
+  );
+
+  return {
+    itemsPerRow,
+    listHeight,
+    rowHeight,
+    setFilterContainerRef,
+    setSampleCardRef,
+    setSummaryContainerRef,
+  };
+}
+
 const ActivityCardInner: React.FC<ActivityCardProps> = ({
   period,
   summary,
@@ -126,53 +605,36 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
   activities = [],
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const handleCardClick = () => {
+  const showChart = ['month', 'week', 'year'].includes(interval);
+  const handleCardClick = useCallback(() => {
     if (interval === 'day' && activities.length > 0) {
-      setIsFlipped(!isFlipped);
+      setIsFlipped((current) => !current);
     }
-  };
-  const generateLabels = (): number[] => {
-    if (interval === 'month') {
-      const [year, month] = period.split('-').map(Number);
-      const daysInMonth = new Date(year, month, 0).getDate(); // Get the number of days in the month
-      return Array.from({ length: daysInMonth }, (_, i) => i + 1);
-    } else if (interval === 'week') {
-      return Array.from({ length: 7 }, (_, i) => i + 1);
-    } else if (interval === 'year') {
-      return Array.from({ length: 12 }, (_, i) => i + 1); // Generate months 1 to 12
+  }, [activities.length, interval]);
+
+  const data: ChartData[] = useMemo(() => {
+    if (!showChart) return [];
+    return generateLabels(interval, period).map((day) => ({
+      day,
+      distance: (dailyDistances[day - 1] || 0).toFixed(2),
+    }));
+  }, [dailyDistances, interval, period, showChart]);
+
+  const { yAxisMax, yAxisTicks } = useMemo(() => {
+    if (!showChart) {
+      return { yAxisMax: 0, yAxisTicks: [] };
     }
-    return [];
-  };
-
-  const data: ChartData[] = generateLabels().map((day) => ({
-    day,
-    distance: (dailyDistances[day - 1] || 0).toFixed(2), // Keep two decimal places
-  }));
-
-  const formatTime = (seconds: number): string => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    return `${h}h ${m}m ${s}s`;
-  };
-
-  const formatPace = (speed: number): string => {
-    if (speed === 0) return `0:00 min/${DIST_UNIT}`;
-    const pace = 60 / speed; // min/DIST_UNIT
-    const totalSeconds = Math.round(pace * 60); // Total seconds per DIST_UNIT
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds} min/${DIST_UNIT}`;
-  };
-
-  // Calculate Y-axis maximum value and ticks
-  const yAxisMax = Math.ceil(
-    Math.max(...data.map((d) => parseFloat(d.distance))) + 10
-  ); // Round up and add buffer
-  const yAxisTicks = Array.from(
-    { length: Math.ceil(yAxisMax / 5) + 1 },
-    (_, i) => i * 5
-  ); // Generate arithmetic sequence
+    const max = Math.ceil(
+      Math.max(...data.map((d) => parseFloat(d.distance))) + 10
+    );
+    return {
+      yAxisMax: max,
+      yAxisTicks: Array.from(
+        { length: Math.ceil(max / 5) + 1 },
+        (_, i) => i * 5
+      ),
+    };
+  }, [data, showChart]);
 
   return (
     <div
@@ -234,46 +696,15 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
                 </p>
               </>
             )}
-            {['month', 'week', 'year'].includes(interval) && (
+            {showChart && (
               <div className={styles.chart}>
-                <ResponsiveContainer>
-                  <BarChart
+                <Suspense fallback={null}>
+                  <ActivityChart
                     data={data}
-                    margin={{ top: 20, right: 20, left: -20, bottom: 5 }}
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="var(--color-run-row-hover-background)"
-                    />
-                    <XAxis
-                      dataKey="day"
-                      tick={{ fill: 'var(--color-run-table-thead)' }}
-                    />
-                    <YAxis
-                      label={{
-                        value: DIST_UNIT,
-                        angle: -90,
-                        position: 'insideLeft',
-                        fill: 'var(--color-run-table-thead)',
-                      }}
-                      domain={[0, yAxisMax]}
-                      ticks={yAxisTicks}
-                      tick={{ fill: 'var(--color-run-table-thead)' }}
-                    />
-                    <Tooltip
-                      formatter={(value) => `${value} ${DIST_UNIT}`}
-                      contentStyle={{
-                        backgroundColor:
-                          'var(--color-run-row-hover-background)',
-                        border:
-                          '1px solid var(--color-run-row-hover-background)',
-                        color: 'var(--color-run-table-thead)',
-                      }}
-                      labelStyle={{ color: 'var(--color-primary)' }}
-                    />
-                    <Bar dataKey="distance" fill="var(--color-primary)" />
-                  </BarChart>
-                </ResponsiveContainer>
+                    yAxisMax={yAxisMax}
+                    yAxisTicks={yAxisTicks}
+                  />
+                </Suspense>
               </div>
             )}
           </div>
@@ -283,7 +714,9 @@ const ActivityCardInner: React.FC<ActivityCardProps> = ({
         {interval === 'day' && activities.length > 0 && (
           <div className={styles.cardBack}>
             <div className={styles.routeContainer}>
-              <RoutePreview activities={activities} />
+              <Suspense fallback={null}>
+                <RoutePreview activities={activities} />
+              </Suspense>
             </div>
           </div>
         )}
@@ -328,20 +761,19 @@ const activityCardAreEqual = (
 const ActivityCard = React.memo(ActivityCardInner, activityCardAreEqual);
 
 const ActivityList: React.FC = () => {
+  const { activities: activityData } = useActivities();
   const [interval, setInterval] = useState<IntervalType>('month');
   const [sportType, setSportType] = useState<string>('all');
-  const [sportTypeOptions, setSportTypeOptions] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
 
-  // Get available years from activities
-  const availableYears = useMemo(() => {
-    const years = new Set<string>();
-    activities.forEach((activity) => {
-      const year = new Date(activity.start_date_local).getFullYear().toString();
-      years.add(year);
-    });
-    return Array.from(years).sort((a, b) => Number(b) - Number(a));
-  }, []);
+  const availableYears = useMemo(
+    () => getAvailableActivityYears(activityData),
+    [activityData]
+  );
+  const sportTypeOptions = useMemo(
+    () => getSportTypeOptions(activityData),
+    [activityData]
+  );
 
   // Keyboard navigation for year selection in Life view
   useEffect(() => {
@@ -389,32 +821,6 @@ const ActivityList: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [interval, selectedYear, availableYears]);
 
-  useEffect(() => {
-    const sportTypeSet = new Set(activities.map((activity) => activity.type));
-    if (sportTypeSet.has('Run')) {
-      sportTypeSet.delete('Run');
-      sportTypeSet.add('running');
-    }
-    if (sportTypeSet.has('Walk')) {
-      sportTypeSet.delete('Walk');
-      sportTypeSet.add('walking');
-    }
-    if (sportTypeSet.has('Ride')) {
-      sportTypeSet.delete('Ride');
-      sportTypeSet.add('cycling');
-    }
-    const uniqueSportTypes = [...sportTypeSet];
-    uniqueSportTypes.unshift('all');
-    setSportTypeOptions(uniqueSportTypes);
-  }, []);
-
-  // 添加useEffect监听interval变化
-  useEffect(() => {
-    if (interval === 'life' && sportType !== 'all') {
-      setSportType('all');
-    }
-  }, [interval, sportType]);
-
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
@@ -422,165 +828,31 @@ const ActivityList: React.FC = () => {
   };
 
   function toggleInterval(newInterval: IntervalType): void {
+    if (newInterval === 'life' && sportType !== 'all') {
+      setSportType('all');
+    }
+    if (newInterval === 'day') {
+      void loadRoutePreview();
+    }
     setInterval(newInterval);
   }
 
-  function convertTimeToSeconds(time: string): number {
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-    return hours * 3600 + minutes * 60 + seconds;
-  }
-
-  function groupActivitiesFn(
-    intervalArg: IntervalType,
-    sportTypeArg: string
-  ): ActivityGroups {
-    return (activities as Activity[])
-      .filter((activity) => {
-        if (sportTypeArg === 'all') return true;
-        if (sportTypeArg === 'running')
-          return activity.type === 'running' || activity.type === 'Run';
-        if (sportTypeArg === 'walking')
-          return activity.type === 'walking' || activity.type === 'Walk';
-        if (sportTypeArg === 'cycling')
-          return activity.type === 'cycling' || activity.type === 'Ride';
-        return activity.type === sportTypeArg;
-      })
-      .reduce((acc: ActivityGroups, activity) => {
-        const date = new Date(activity.start_date_local);
-        let key: string;
-        let index: number;
-        switch (intervalArg) {
-          case 'year':
-            key = date.getFullYear().toString();
-            index = date.getMonth();
-            break;
-          case 'month':
-            key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-            index = date.getDate() - 1;
-            break;
-          case 'week': {
-            const currentDate = new Date(date.valueOf());
-            currentDate.setDate(
-              currentDate.getDate() + 4 - (currentDate.getDay() || 7)
-            );
-            const yearStart = new Date(currentDate.getFullYear(), 0, 1);
-            const weekNum = Math.ceil(
-              ((currentDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
-            );
-            key = `${currentDate.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
-            index = (date.getDay() + 6) % 7;
-            break;
-          }
-          case 'day':
-            key = date.toLocaleDateString('zh').replaceAll('/', '-');
-            index = 0;
-            break;
-          default:
-            key = date.getFullYear().toString();
-            index = 0;
-        }
-
-        if (!acc[key])
-          acc[key] = {
-            totalDistance: 0,
-            totalTime: 0,
-            totalElevationGain: 0,
-            count: 0,
-            dailyDistances: [],
-            maxDistance: 0,
-            maxSpeed: 0,
-            location: '',
-            totalHeartRate: 0,
-            heartRateCount: 0,
-            activities: [],
-          };
-
-        const distance = activity.distance / M_TO_DIST;
-        const timeInSeconds = convertTimeToSeconds(activity.moving_time);
-        const speed = timeInSeconds > 0 ? distance / (timeInSeconds / 3600) : 0;
-
-        acc[key].totalDistance += distance;
-        acc[key].totalTime += timeInSeconds;
-
-        if (SHOW_ELEVATION_GAIN && activity.elevation_gain)
-          acc[key].totalElevationGain += activity.elevation_gain;
-
-        if (activity.average_heartrate) {
-          acc[key].totalHeartRate += activity.average_heartrate;
-          acc[key].heartRateCount += 1;
-        }
-
-        acc[key].count += 1;
-        if (intervalArg === 'day') acc[key].activities.push(activity);
-        acc[key].dailyDistances[index] =
-          (acc[key].dailyDistances[index] || 0) + distance;
-        if (distance > acc[key].maxDistance) acc[key].maxDistance = distance;
-        if (speed > acc[key].maxSpeed) acc[key].maxSpeed = speed;
-        if (intervalArg === 'day')
-          acc[key].location = activity.location_country || '';
-
-        return acc;
-      }, {} as ActivityGroups);
-  }
-
-  const activitiesByInterval = useMemo(
-    () => groupActivitiesFn(interval, sportType),
-    [interval, sportType]
-  );
-
   const dataList = useMemo(
-    () =>
-      Object.entries(activitiesByInterval)
-        .sort(([a], [b]) => {
-          if (interval === 'day') {
-            return new Date(b).getTime() - new Date(a).getTime(); // Sort by date
-          } else if (interval === 'week') {
-            const [yearA, weekA] = a.split('-W').map(Number);
-            const [yearB, weekB] = b.split('-W').map(Number);
-            return yearB - yearA || weekB - weekA; // Sort by year and week number
-          } else {
-            const [yearA, monthA = 0] = a.split('-').map(Number);
-            const [yearB, monthB = 0] = b.split('-').map(Number);
-            return yearB - yearA || monthB - monthA; // Sort by year and month
-          }
-        })
-        .map(([period, summary]) => ({ period, summary })),
-    [activitiesByInterval, interval]
+    () => getPeriodSummaries(activityData, interval, sportType),
+    [activityData, interval, sportType]
   );
 
-  const itemWidth = ITEM_WIDTH;
-  const gap = ITEM_GAP;
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const filterRef = useRef<HTMLDivElement | null>(null);
-  const [itemsPerRow, setItemsPerRow] = useState(0);
-  const [rowHeight, setRowHeight] = useState<number>(360);
-  const sampleRef = useRef<HTMLDivElement | null>(null);
-  const [listHeight, setListHeight] = useState<number>(500);
+  const {
+    itemsPerRow,
+    listHeight,
+    rowHeight,
+    setFilterContainerRef,
+    setSampleCardRef,
+    setSummaryContainerRef,
+  } = useActivityListMeasurements(ITEM_WIDTH, ITEM_GAP);
 
   // ref to the VirtualList DOM node so we can control scroll position
   const virtualListRef = useRef<HTMLDivElement | null>(null);
-
-  const calculateItemsPerRow = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const containerWidth = container.clientWidth;
-    // Calculate how many items can fit in one row (considering gaps)
-    const count = Math.floor((containerWidth + gap) / (itemWidth + gap));
-    setItemsPerRow(count);
-  }, [gap, itemWidth]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    // Calculate immediately once
-    calculateItemsPerRow();
-
-    // Use ResizeObserver to monitor container size changes
-    const resizeObserver = new ResizeObserver(calculateItemsPerRow);
-    resizeObserver.observe(container);
-
-    return () => resizeObserver.disconnect();
-  }, [calculateItemsPerRow]);
 
   // when the interval changes, scroll the virtual list to top to improve UX
   useEffect(() => {
@@ -609,71 +881,6 @@ const ActivityList: React.FC = () => {
     };
   }, [interval, sportType]);
 
-  // compute list height = viewport height - filter container height
-  useEffect(() => {
-    const updateListHeight = () => {
-      const filterH = filterRef.current?.clientHeight || 0;
-      const containerEl = containerRef.current;
-      let topOffset = 0;
-      if (containerEl) {
-        const rect = containerEl.getBoundingClientRect();
-        topOffset = Math.max(0, rect.top);
-      }
-      const base = topOffset || filterH || 0;
-      // Try to compute a dynamic bottom padding by checking the container's parent element's bottom
-      let bottomPadding = 16; // fallback
-      if (containerEl && containerEl.parentElement) {
-        try {
-          const parentRect = containerEl.parentElement.getBoundingClientRect();
-          const containerRect = containerEl.getBoundingClientRect();
-          const distanceToParentBottom = Math.max(
-            0,
-            parentRect.bottom - containerRect.bottom
-          );
-          // Use a small fraction of that distance (or clamp) to avoid huge paddings
-          bottomPadding = Math.min(
-            48,
-            Math.max(8, Math.round(distanceToParentBottom / 4))
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      const h = Math.max(100, window.innerHeight - base - bottomPadding);
-      setListHeight(h);
-    };
-
-    // initial
-    updateListHeight();
-
-    // window resize
-    window.addEventListener('resize', updateListHeight);
-
-    // observe filter size changes
-    const ro = new ResizeObserver(updateListHeight);
-    if (filterRef.current) ro.observe(filterRef.current);
-
-    return () => {
-      window.removeEventListener('resize', updateListHeight);
-      ro.disconnect();
-    };
-  }, []);
-
-  // measure representative card height using a hidden sample and ResizeObserver
-  useEffect(() => {
-    const el = sampleRef.current;
-    if (!el) return;
-    const update = () => {
-      const h = el.offsetHeight;
-      if (h && h !== rowHeight) setRowHeight(h);
-    };
-    // initial
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [dataList, rowHeight]);
-
   const calcGroup: RowGroup[] = useMemo(() => {
     if (itemsPerRow < 1) return [];
     const groupLength = Math.ceil(dataList.length / itemsPerRow);
@@ -689,13 +896,16 @@ const ActivityList: React.FC = () => {
   const rowWidth =
     itemsPerRow < 1
       ? '100%'
-      : `${itemsPerRow * itemWidth + Math.max(0, itemsPerRow - 1) * gap}px`;
+      : `${itemsPerRow * ITEM_WIDTH + Math.max(0, itemsPerRow - 1) * ITEM_GAP}px`;
 
   const loading = itemsPerRow < 1 || !rowHeight;
+  const SelectedYearSvg = selectedYear
+    ? yearSummarySvgs[`./year_summary_${selectedYear}.svg`]
+    : null;
 
   return (
     <div className={styles.activityList}>
-      <div className={styles.filterContainer} ref={filterRef}>
+      <div className={styles.filterContainer} ref={setFilterContainerRef}>
         <button className={styles.smallHomeButton} onClick={handleHomeClick}>
           {HOME_PAGE_TITLE}
         </button>
@@ -742,12 +952,9 @@ const ActivityList: React.FC = () => {
             ))}
           </div>
           <Suspense fallback={<div>Loading SVG...</div>}>
-            {selectedYear ? (
+            {SelectedYearSvg ? (
               // Show Year Summary SVG when a year is selected
-              (() => {
-                const YearSvg = getYearSummarySvg(selectedYear);
-                return <YearSvg className={styles.yearSummarySvg} />;
-              })()
+              <SelectedYearSvg className={styles.yearSummarySvg} />
             ) : (
               // Show Life SVG when no year is selected
               <>
@@ -767,7 +974,7 @@ const ActivityList: React.FC = () => {
       )}
 
       {interval !== 'life' && (
-        <div className={styles.summaryContainer} ref={containerRef}>
+        <div className={styles.summaryContainer} ref={setSummaryContainerRef}>
           {/* hidden sample card for measuring row height */}
           <div
             style={{
@@ -776,32 +983,13 @@ const ActivityList: React.FC = () => {
               pointerEvents: 'none',
               height: 'auto',
             }}
-            ref={sampleRef}
+            ref={setSampleCardRef}
           >
             {dataList[0] && (
               <ActivityCard
                 key={dataList[0].period}
                 period={dataList[0].period}
-                summary={{
-                  totalDistance: dataList[0].summary.totalDistance,
-                  averageSpeed: dataList[0].summary.totalTime
-                    ? dataList[0].summary.totalDistance /
-                      (dataList[0].summary.totalTime / 3600)
-                    : 0,
-                  totalTime: dataList[0].summary.totalTime,
-                  count: dataList[0].summary.count,
-                  maxDistance: dataList[0].summary.maxDistance,
-                  maxSpeed: dataList[0].summary.maxSpeed,
-                  location: dataList[0].summary.location,
-                  totalElevationGain: SHOW_ELEVATION_GAIN
-                    ? dataList[0].summary.totalElevationGain
-                    : undefined,
-                  averageHeartRate:
-                    dataList[0].summary.heartRateCount > 0
-                      ? dataList[0].summary.totalHeartRate /
-                        dataList[0].summary.heartRateCount
-                      : undefined,
-                }}
+                summary={toDisplaySummary(dataList[0].summary)}
                 dailyDistances={dataList[0].summary.dailyDistances}
                 interval={interval}
                 activities={
@@ -818,9 +1006,7 @@ const ActivityList: React.FC = () => {
                 // Use full viewport height (or viewport minus filter height if available) to avoid flicker
                 <div
                   style={{
-                    height: filterRef.current
-                      ? `${Math.max(100, window.innerHeight - (filterRef.current.clientHeight || 0) - 40)}px`
-                      : '100vh',
+                    height: listHeight,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -848,7 +1034,7 @@ const ActivityList: React.FC = () => {
                     <div
                       ref={virtualListRef}
                       className={styles.rowContainer}
-                      style={{ gap: `${gap}px` }}
+                      style={{ gap: `${ITEM_GAP}px` }}
                     >
                       {row.map(
                         (cardData: {
@@ -858,26 +1044,7 @@ const ActivityList: React.FC = () => {
                           <ActivityCard
                             key={cardData.period}
                             period={cardData.period}
-                            summary={{
-                              totalDistance: cardData.summary.totalDistance,
-                              averageSpeed: cardData.summary.totalTime
-                                ? cardData.summary.totalDistance /
-                                  (cardData.summary.totalTime / 3600)
-                                : 0,
-                              totalTime: cardData.summary.totalTime,
-                              count: cardData.summary.count,
-                              maxDistance: cardData.summary.maxDistance,
-                              maxSpeed: cardData.summary.maxSpeed,
-                              location: cardData.summary.location,
-                              totalElevationGain: SHOW_ELEVATION_GAIN
-                                ? cardData.summary.totalElevationGain
-                                : undefined,
-                              averageHeartRate:
-                                cardData.summary.heartRateCount > 0
-                                  ? cardData.summary.totalHeartRate /
-                                    cardData.summary.heartRateCount
-                                  : undefined,
-                            }}
+                            summary={toDisplaySummary(cardData.summary)}
                             dailyDistances={cardData.summary.dailyDistances}
                             interval={interval}
                             activities={

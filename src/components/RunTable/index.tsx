@@ -15,77 +15,93 @@ import styles from './style.module.css';
 interface IRunTableProperties {
   runs: Activity[];
   locateActivity: (_runIds: RunIds) => void;
-  setActivity: (_runs: Activity[]) => void;
   runIndex: number;
   setRunIndex: (_index: number) => void;
 }
 
 type SortFunc = (_a: Activity, _b: Activity) => number;
+type SortDirection = 'ascending' | 'descending';
+
+interface SortState {
+  direction: SortDirection;
+  key: string;
+}
 
 const RunTable = ({
   runs,
   locateActivity,
-  setActivity,
   runIndex,
   setRunIndex,
 }: IRunTableProperties) => {
-  const [sortFuncInfo, setSortFuncInfo] = useState('');
+  const [sortState, setSortState] = useState<SortState | null>(null);
 
-  // Memoize sort functions to prevent recreating them on every render
-  const sortFunctions = useMemo(() => {
-    const sortKMFunc: SortFunc = (a, b) =>
-      sortFuncInfo === DIST_UNIT
-        ? a.distance - b.distance
-        : b.distance - a.distance;
-    const sortElevationGainFunc: SortFunc = (a, b) =>
-      sortFuncInfo === 'Elev'
-        ? (a.elevation_gain ?? 0) - (b.elevation_gain ?? 0)
-        : (b.elevation_gain ?? 0) - (a.elevation_gain ?? 0);
-    const sortPaceFunc: SortFunc = (a, b) =>
-      sortFuncInfo === 'Pace'
-        ? a.average_speed - b.average_speed
-        : b.average_speed - a.average_speed;
-    const sortBPMFunc: SortFunc = (a, b) => {
-      return sortFuncInfo === 'BPM'
-        ? (a.average_heartrate ?? 0) - (b.average_heartrate ?? 0)
-        : (b.average_heartrate ?? 0) - (a.average_heartrate ?? 0);
-    };
-    const sortRunTimeFunc: SortFunc = (a, b) => {
-      const aTotalSeconds = convertMovingTime2Sec(a.moving_time);
-      const bTotalSeconds = convertMovingTime2Sec(b.moving_time);
-      return sortFuncInfo === 'Time'
-        ? aTotalSeconds - bTotalSeconds
-        : bTotalSeconds - aTotalSeconds;
-    };
-    const sortDateFuncClick =
-      sortFuncInfo === 'Date' ? sortDateFunc : sortDateFuncReverse;
+  const sortKeys = useMemo(() => {
+    const keys = [DIST_UNIT, 'Elev', 'Pace', 'BPM', 'Time', 'Date'];
+    return SHOW_ELEVATION_GAIN ? keys : keys.filter((key) => key !== 'Elev');
+  }, []);
 
-    const sortFuncMap = new Map([
-      [DIST_UNIT, sortKMFunc],
-      ['Elev', sortElevationGainFunc],
-      ['Pace', sortPaceFunc],
-      ['BPM', sortBPMFunc],
-      ['Time', sortRunTimeFunc],
-      ['Date', sortDateFuncClick],
-    ]);
+  const getSortFunction = useCallback(
+    (key: string, direction: SortDirection): SortFunc | undefined => {
+      const multiplier = direction === 'ascending' ? 1 : -1;
 
-    if (!SHOW_ELEVATION_GAIN) {
-      sortFuncMap.delete('Elev');
-    }
+      if (key === DIST_UNIT) {
+        return (a, b) => (a.distance - b.distance) * multiplier;
+      }
+      if (key === 'Elev') {
+        return (a, b) =>
+          ((a.elevation_gain ?? 0) - (b.elevation_gain ?? 0)) * multiplier;
+      }
+      if (key === 'Pace') {
+        return (a, b) => (a.average_speed - b.average_speed) * multiplier;
+      }
+      if (key === 'BPM') {
+        return (a, b) =>
+          ((a.average_heartrate ?? 0) - (b.average_heartrate ?? 0)) *
+          multiplier;
+      }
+      if (key === 'Time') {
+        return (a, b) =>
+          (convertMovingTime2Sec(a.moving_time) -
+            convertMovingTime2Sec(b.moving_time)) *
+          multiplier;
+      }
+      if (key === 'Date') {
+        return direction === 'ascending' ? sortDateFuncReverse : sortDateFunc;
+      }
 
-    return sortFuncMap;
-  }, [sortFuncInfo]);
-
-  const handleClick = useCallback<React.MouseEventHandler<HTMLElement>>(
-    (e) => {
-      const funcName = (e.target as HTMLElement).innerHTML;
-      const f = sortFunctions.get(funcName);
-
-      setRunIndex(-1);
-      setSortFuncInfo(sortFuncInfo === funcName ? '' : funcName);
-      setActivity(runs.sort(f));
+      return undefined;
     },
-    [sortFunctions, sortFuncInfo, runs, setRunIndex, setActivity]
+    []
+  );
+
+  const displayedRuns = useMemo(() => {
+    if (!sortState) return runs;
+
+    const sortFunction = getSortFunction(sortState.key, sortState.direction);
+    if (!sortFunction) return runs;
+
+    return runs.slice().sort(sortFunction);
+  }, [getSortFunction, runs, sortState]);
+
+  const runIndexById = useMemo(
+    () => new Map(runs.map((run, index) => [run.run_id, index])),
+    [runs]
+  );
+
+  const handleClick = useCallback(
+    (key: string) => {
+      setRunIndex(-1);
+      setSortState((currentState) => {
+        const initialDirection = key === 'Date' ? 'ascending' : 'descending';
+        const nextDirection =
+          currentState?.key === key && currentState.direction === 'descending'
+            ? 'ascending'
+            : initialDirection;
+
+        return { key, direction: nextDirection };
+      });
+    },
+    [setRunIndex]
   );
 
   return (
@@ -94,24 +110,34 @@ const RunTable = ({
         <thead>
           <tr>
             <th />
-            {Array.from(sortFunctions.keys()).map((k) => (
-              <th key={k} onClick={handleClick}>
+            {sortKeys.map((k) => (
+              <th
+                key={k}
+                aria-sort={
+                  sortState?.key === k ? sortState.direction : undefined
+                }
+                className={styles.sortableHeader}
+                onClick={() => handleClick(k)}
+              >
                 {k}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {runs.map((run, elementIndex) => (
-            <RunRow
-              key={run.run_id}
-              elementIndex={elementIndex}
-              locateActivity={locateActivity}
-              run={run}
-              runIndex={runIndex}
-              setRunIndex={setRunIndex}
-            />
-          ))}
+          {displayedRuns.map((run) => {
+            const sourceIndex = runIndexById.get(run.run_id) ?? -1;
+            return (
+              <RunRow
+                key={run.run_id}
+                elementIndex={sourceIndex}
+                locateActivity={locateActivity}
+                run={run}
+                runIndex={runIndex}
+                setRunIndex={setRunIndex}
+              />
+            );
+          })}
         </tbody>
       </table>
     </div>

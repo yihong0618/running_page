@@ -1,5 +1,5 @@
 import siteMetadata from '@/static/site-metadata';
 
-const useSiteMetadata = () => siteMetadata;
+const getSiteMetadata = () => siteMetadata;
 
-export default useSiteMetadata;
+export default getSiteMetadata;

@@ -360,7 +360,7 @@ const LIGHTS_ON = false;
 const SHOW_ELEVATION_GAIN = true;
 ```
 
-- To use Google Analytics, you need to modify the configuration in the `src/utils/const.ts` file.
+- To use Google Analytics, you need to modify the configuration in the `src/utils/analytics.ts` file.
 
 ```typescript
 const USE_GOOGLE_ANALYTICS = false;
