@@ -183,6 +183,85 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
+## Build your own running page (quick path)
+
+If your goal is to launch a personal page from this repo with minimal setup, follow this flow:
+
+1. **Fork this repository** to your own GitHub account.
+2. **Choose your data source** (for example: Strava, Garmin, Nike, Keep, GPX).
+3. **Add required secrets** in your fork:
+   - Go to `Settings` → `Secrets and variables` → `Actions`.
+   - Add credentials for your selected provider (for example `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN` for Strava workflows/configs).
+4. **Configure your display settings**:
+   - Edit `src/static/site-metadata.ts` for name/title/description and social links.
+   - Edit `src/utils/const.ts` for unit/map/display options.
+5. **Run once locally (recommended)**:
+   - Install dependencies and run `pnpm develop`.
+   - Verify data and UI at `http://localhost:5173/`.
+6. **Enable scheduled sync and deployment**:
+   - Keep GitHub Actions enabled in your fork (data sync workflow + build/deploy).
+   - Deploy with **Vercel** (recommended) or GitHub Pages.
+7. **Customize style/content**:
+   - Main page UI: `src/pages/index.tsx`
+   - Totals page: `src/pages/total.tsx`
+   - Global style/theme configs in `src/`.
+
+Tip: after first successful sync, your `assets`/generated data will populate and the page becomes fully personalized.
+
+### Garmin quick start (pull your own Garmin activities)
+
+I can't log in to your Garmin account from this environment, but you can pull your Garmin data in a few minutes:
+
+If you are new to coding, use this beginner-friendly walkthrough:
+
+- `BEGINNER-GARMIN-GUIDE.md`
+
+1. Generate your Garmin `secret_string` locally:
+
+   ```bash
+   python run_page/get_garmin_secret.py "${GARMIN_EMAIL}" "${GARMIN_PASSWORD}"
+   ```
+
+2. Do a local Garmin sync:
+
+   ```bash
+   python run_page/garmin_sync.py "${GARMIN_SECRET_STRING}"
+   ```
+
+3. Start your running page locally:
+
+   ```bash
+   python run_page/gen_svg.py --from-db
+   pnpm develop
+   ```
+
+4. Persist automated sync in GitHub Actions:
+   - Add `GARMIN_SECRET_STRING` in your fork's `Settings` → `Secrets and variables` → `Actions`.
+   - In `.github/workflows/run_data_sync.yml`, set `RUN_TYPE` to `garmin`.
+
+Optional one-command helper:
+
+```bash
+./scripts_garmin_quickstart.sh --email "${GARMIN_EMAIL}"
+```
+
+You can also pass `--is-cn` and `--only-run` when needed.
+
+If you only want workout data for analysis and do **not** want to run the webpage, use:
+
+```bash
+./scripts_garmin_quickstart.sh --email "${GARMIN_EMAIL}" --no-web
+```
+
+After sync, you can analyze local data directly (for example `run_page/data.db`) with your own tools/scripts.
+
+For Garmin China, use:
+
+```bash
+python run_page/get_garmin_secret.py "${GARMIN_EMAIL}" "${GARMIN_PASSWORD}" --is-cn
+python run_page/garmin_sync.py "${GARMIN_SECRET_STRING_CN}" --is-cn
+```
+
 ## Installation and testing (node >= 20 python >= 3.11)
 
 ```bash
