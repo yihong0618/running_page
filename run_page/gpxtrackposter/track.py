@@ -139,6 +139,7 @@ class Track:
         self.polylines = [[s2.LatLng.from_degrees(p[0], p[1]) for p in polyline_data]]
         self.run_id = activity.run_id
         self.type = get_normalized_sport_type(activity.type)
+        self.subtype = activity.subtype if hasattr(activity, "subtype") else None
         # Load moving_dict from database
         self.moving_dict = {
             "distance": self.length,
