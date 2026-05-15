@@ -1,48 +1,56 @@
-import {locationForRun, typeForRun} from '@/utils/utils';
-import activities from '@/static/activities.json';
+import { useMemo } from 'react'
+import type { Activity, SportFilter } from '../types'
 
-const useActivities = () => {
-  const cities: Record<string, number> = {};
-  const runPeriod: Record<string, number> = {};
-  const provinces: Set<string> = new Set();
-  const countries: Set<string> = new Set();
-  let years: Set<string> = new Set();
-  let thisYear = '';
-
-  activities.forEach((run) => {
-    const location = locationForRun(run);
-
-    const periodName = typeForRun(run);
-    if (periodName) {
-      runPeriod[periodName] = runPeriod[periodName]
-        ? runPeriod[periodName] + 1
-        : 1;
+export function useFilteredActivities(
+  activities: Activity[],
+  filter: SportFilter,
+  year: number | null
+) {
+  return useMemo(() => {
+    let filtered = activities
+    if (filter !== 'all') {
+      filtered = filtered.filter((a) => a.type === filter)
     }
-
-
-    const { city, province, country } = location;
-    // drop only one char city
-    if (city.length > 1) {
-      cities[city] = cities[city] ? cities[city] + run.distance : run.distance;
+    if (year) {
+      filtered = filtered.filter((a) => {
+        const d = new Date(a.start_date_local)
+        return d.getFullYear() === year
+      })
     }
-    if (province) provinces.add(province);
-    if (country) countries.add(country);
-    const year = run.start_date_local.slice(0, 4);
-    years.add(year);
-  });
+    return filtered
+  }, [activities, filter, year])
+}
 
-  let yearsArray = [...years].sort().reverse();
-  if (years) [thisYear] = yearsArray; // set current year as first one of years array
+export function parseMovingTime(time: string): number {
+  const parts = time.split(':').map(Number)
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2]
+  if (parts.length === 2) return parts[0] * 60 + parts[1]
+  return parts[0]
+}
 
-  return {
-    activities,
-    years: yearsArray,
-    countries: [...countries],
-    provinces: [...provinces],
-    cities,
-    runPeriod,
-    thisYear,
-  };
-};
+export function formatDistance(meters: number): string {
+  return Math.round(meters / 1000).toString()
+}
 
-export default useActivities;
+export function formatPace(speedMs: number): string {
+  if (!speedMs) return '--'
+  const paceMin = 1000 / 60 / speedMs
+  const min = Math.floor(paceMin)
+  const sec = Math.round((paceMin - min) * 60)
+  return `${min}'${sec.toString().padStart(2, '0')}"`
+}
+
+export function formatDuration(timeStr: string): string {
+  const secs = parseMovingTime(timeStr)
+  const h = Math.floor(secs / 3600)
+  const m = Math.floor((secs % 3600) / 60)
+  if (h > 0) return `${h}h ${m}m`
+  return `${m}m`
+}
+
+export function getAvailableYears(activities: Activity[]): number[] {
+  const years = new Set(
+    activities.map((a) => new Date(a.start_date_local).getFullYear())
+  )
+  return Array.from(years).sort((a, b) => b - a)
+}

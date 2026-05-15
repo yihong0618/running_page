@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-bg: #f6f8fa;
+  --color-card: #ffffff;
+  --color-border: #d0d7de;
+  --color-text: #1f2328;
+  --color-muted: #656d76;
+  --color-run: #f97316;
+  --color-ride: #3b82f6;
+  --color-all: #a855f7;
+  --color-accent: #a855f7;
+}
+
+.dark {
+  --color-bg: #0d1117;
+  --color-card: #161b22;
+  --color-border: #30363d;
+  --color-text: #e6edf3;
+  --color-muted: #8b949e;
+}
+
+[data-filter="all"] { --color-accent: #a855f7; }
+[data-filter="Run"] { --color-accent: #f97316; }
+[data-filter="Ride"] { --color-accent: #3b82f6; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}

@@ -1,34 +1,79 @@
-# [打造个人户外运动主页](http://zhaohongxuan.github.io/workouts)
+# Workout Log
 
-<img width="1484" alt="image" src="https://github.com/zhaohongxuan/workouts/assets/8613196/b9286fcd-f4c0-42c6-9561-9417096fec4c">
+A modern, responsive workout tracking dashboard built with React + TypeScript + Tailwind CSS. Visualize your running and cycling activities with interactive heatmaps, route maps, and detailed statistics.
 
-本项目基于 [running_page](https://github.com/yihong0618/running_page/blob/master/README-CN.md) , 添加了支持多种运动类型。部署可参考原项目操作步骤
+> Based on [running_page](https://github.com/yihong0618/running_page) data pipeline. Live demo: [zhaohongxuan.github.io/workouts](http://zhaohongxuan.github.io/workouts)
 
-## 新增特性
+## Features
 
-- 支持同步**Strava的跑步记录**到数字心动APP（获取上马积分，**通过注入设备信息到Garmin Connect中实现）**，设备信息通过在config.py中设置
+- **Activity Heatmap** — GitHub-style contribution heatmap showing workout frequency across years
+- **Route Map** — Mapbox-powered interactive map displaying all GPS tracks with fullscreen support
+- **Personal Best** — Track your PRs for 5K, 10K, Half Marathon, and Marathon distances
+- **Stats Dashboard** — Yearly, monthly, and weekly goals with progress bars and period comparisons
+- **Streak Tracking** — Consecutive days/weeks of activity with visual weekly calendar
+- **Activity Log** — Sortable, paginated activity table with distance filters
+- **Calendar Widget** — Monthly calendar highlighting workout days
+- **i18n** — Full Chinese/English language support with one-click toggle
+- **Dark/Light Mode** — Theme toggle with system preference detection
+- **Sport Filter** — Filter all views by All / Run / Ride
 
-## 同步数据
+## Tech Stack
 
-- 跑步数据同步请参考[running_page](https://github.com/yihong0618/running_page/blob/master/README-CN.md) 项目
-- 骑行数据同步请参考[workouts_page](https://github.com/ben-29/workouts_page)项目
+- **React 18** + TypeScript
+- **Vite** — Fast dev server and build
+- **Tailwind CSS** — Utility-first styling
+- **Recharts** — Monthly distance and speed trend charts
+- **Mapbox GL** — Interactive route visualization
+- **@mapbox/polyline** — Decode GPS polylines
 
-## 一些个性化选项
+## Getting Started
 
-### 自定义运动颜色
+```bash
+# Install dependencies
+pnpm install
 
-- 修改骑行颜色: `src/utils/const.js` 里的 `RIDE_COLOR`
+# Start dev server
+pnpm dev
 
-### 新增运动类型
+# Build for production
+pnpm build
+```
 
-- 修改 `scripts/config.py`, `TYPE_DICT` 增加类型映射关系, `MAPPING_TYPE` 里增加运动类型
-- 修改 `src/utils/const.js`, 增加类型标题，并加入到 `RUN_TITLES`
-- 修改 `src/utils/util.js` 里的 `colorFromType`, 增加 case 指定颜色; `titleForRun`  增加 case 指定类型标题
+## Project Structure
 
-- 参考这个 [commit](https://github.com/ben-29/workouts_page/commit/bfb6e9da4f72bdbdec669c42bdd10062558039cd)
----
+```
+src/
+├── App.tsx              # Main app layout
+├── i18n.ts             # Translation dictionary
+├── types.ts            # TypeScript interfaces
+├── hooks/
+│   ├── useActivities.ts   # Data filtering & formatting
+│   ├── useLocale.tsx      # i18n context & hook
+│   └── useTheme.ts       # Dark/light mode
+├── components/
+│   ├── Header.tsx         # Navigation & filters
+│   ├── StatsCards.tsx     # Goal cards & streak
+│   ├── ProfileCard.tsx    # Personal info summary
+│   ├── PersonalBest.tsx   # PR records
+│   ├── ContributionHeatmap.tsx  # Activity heatmap
+│   ├── ActivityLog.tsx    # Activity table
+│   ├── CalendarWidget.tsx # Monthly calendar
+│   ├── MonthlyChart.tsx   # Bar chart
+│   ├── TrendCharts.tsx    # Speed & distance trends
+│   └── RouteMap.tsx       # Mapbox route display
+└── static/
+    └── activities.json    # Activity data
+```
 
-# 致谢
-感谢@[yihong0618](https://github.com/yihong0618)和@[ben-29](https://github.com/ben-29)优秀的开源项目
-- [workouts_page](https://github.com/ben-29/workouts_page)
-- [running_page](https://github.com/yihong0618/running_page)
+## Data Source
+
+Activity data is synced from Strava/Garmin via the [running_page](https://github.com/yihong0618/running_page) project pipeline and stored as `activities.json`.
+
+## Acknowledgements
+
+- [running_page](https://github.com/yihong0618/running_page) — Data sync pipeline and original project inspiration
+- [yihong0618](https://github.com/yihong0618) — Creator of running_page
+
+## License
+
+MIT
