@@ -1,0 +1,45 @@
+.routePreview {
+  width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 4px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.routeSvg {
+  display: block;
+  border-radius: 8px;
+  background: var(--color-activity-card);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.routeInfo {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--color-run-table-thead);
+  font-weight: 500;
+}
+
+.noRoute {
+  padding: 20px;
+  text-align: center;
+  color: var(--color-run-table-thead);
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Make the parent activity card relative positioned to contain the absolute route preview */
+.activityCardWithRoute {
+  position: relative;
+}
+
+.activityCardWithRoute:hover .routePreview {
+  opacity: 1;
+  visibility: visible;
+}

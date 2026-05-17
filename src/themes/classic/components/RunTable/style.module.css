@@ -1,0 +1,110 @@
+@media only screen and (max-width: 768px) {
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .runTable {
+    min-width: 650px;
+    font-size: 0.8rem;
+  }
+
+  .runTable th,
+  .runTable td {
+    padding: 0.25rem !important;
+    white-space: nowrap;
+    min-width: 60px;
+  }
+
+  .runTable th:first-child,
+  .runTable td:first-child {
+    min-width: 100px;
+  }
+
+  .runTable th:last-child,
+  .runTable td:last-child {
+    min-width: 80px;
+  }
+}
+
+.runTable {
+  width: 100%;
+  margin: 2rem 0 5rem 0;
+  color: var(--color-run-table-thead);
+  background-color: var(--color-background);
+  font-family: var(--font-mono);
+  table-layout: auto;
+  :is(thead) {
+    color: var(--color-run-table-thead);
+
+    :is(th) {
+      padding: 0.5rem;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .sortableHeader {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+
+    .sortableHeader:hover {
+      color: var(--color-primary);
+    }
+
+    :is(th):first-child {
+      text-align: left;
+    }
+
+    :is(th):last-child {
+      text-align: right;
+    }
+  }
+  :is(th, td) {
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  :is(th, td):first-child {
+    text-align: left;
+  }
+
+  :is(th, td):last-child {
+    text-align: right;
+  }
+}
+
+.runRow {
+  cursor: pointer;
+  :is(td) {
+    padding: 0.5rem;
+    border: 0;
+    text-align: center; /* 默认居中 */
+  }
+
+  :is(td):first-child {
+    text-align: left;
+  }
+
+  :is(td):last-child {
+    text-align: right;
+  }
+
+  &:hover {
+    background-color: var(--color-run-row-hover-background);
+  }
+}
+
+.selected {
+  color: var(--color-primary);
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.runDate {
+  color: var(--color-run-date);
+}
