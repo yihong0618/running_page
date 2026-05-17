@@ -1,118 +1,123 @@
-import { useMemo } from 'react';
-import type { Activity } from '@/utils/utils';
-import { locationForRun, titleForRun } from '@/utils/utils';
-import activitiesUrl from '@/static/activities.json?url';
-import { COUNTRY_STANDARDIZATION } from '@/static/city';
+import { useMemo } from 'react'
+import type { Activity, SportFilter } from '../types'
 
-interface ProcessedActivities {
-  activities: Activity[];
-  years: string[];
-  countries: string[];
-  provinces: string[];
-  cities: Record<string, number>;
-  runPeriod: Record<string, number>;
-  thisYear: string;
+// Canonical province extraction — handles all 3 location_country formats,
+// only returns Chinese provinces (filters out foreign locations).
+export function extractProvince(loc: string | null): string | null {
+  if (!loc || loc === 'None') return null
+  // Format 1: Python dict string {'country':'中国','province':'河南省',...}
+  if (loc.startsWith('{')) {
+    try {
+      const d = JSON.parse(loc.replace(/'/g, '"').replace(/None/g, 'null')) as Record<string, string>
+      if (d.country === '中国' && d.province) return d.province
+    } catch { /* ignore */ }
+    return null
+  }
+  // Format 2 & 3: search for full province names first
+  const provincePatterns = [
+    '北京市', '天津市', '上海市', '重庆市',
+    '河北省', '山西省', '辽宁省', '吉林省', '黑龙江省',
+    '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省',
+    '河南省', '湖北省', '湖南省', '广东省', '海南省',
+    '四川省', '贵州省', '云南省', '陕西省', '甘肃省', '青海省',
+    '内蒙古自治区', '广西壮族自治区', '西藏自治区', '宁夏回族自治区', '新疆维吾尔自治区',
+    '香港特别行政区', '澳门特别行政区', '台湾省',
+  ]
+  for (const p of provincePatterns) {
+    if (loc.includes(p)) return p
+  }
+  // Fuzzy: short names → full names
+  const fuzzy: [string, string][] = [
+    ['上海', '上海市'], ['北京', '北京市'], ['天津', '天津市'], ['重庆', '重庆市'],
+    ['江苏', '江苏省'], ['浙江', '浙江省'], ['广东', '广东省'], ['河南', '河南省'],
+    ['四川', '四川省'], ['湖北', '湖北省'], ['湖南', '湖南省'], ['福建', '福建省'],
+    ['安徽', '安徽省'], ['山东', '山东省'], ['河北', '河北省'], ['山西', '山西省'],
+    ['云南', '云南省'], ['贵州', '贵州省'], ['陕西', '陕西省'], ['甘肃', '甘肃省'],
+    ['辽宁', '辽宁省'], ['吉林', '吉林省'], ['黑龙江', '黑龙江省'], ['海南', '海南省'],
+    ['内蒙古', '内蒙古自治区'], ['广西', '广西壮族自治区'], ['西藏', '西藏自治区'],
+    ['新疆', '新疆维吾尔自治区'], ['宁夏', '宁夏回族自治区'],
+    ['香港', '香港特别行政区'], ['澳门', '澳门特别行政区'], ['台湾', '台湾省'],
+  ]
+  for (const [key, val] of fuzzy) {
+    if (loc.includes(key)) return val
+  }
+  return null
 }
 
-const standardizeCountryName = (country: string): string => {
-  for (const [pattern, standardName] of COUNTRY_STANDARDIZATION) {
-    if (country.includes(pattern)) {
-      return standardName;
+export function useFilteredActivities(
+  activities: Activity[],
+  filter: SportFilter,
+  year: number | null
+) {
+  return useMemo(() => {
+    let filtered = activities
+    if (filter !== 'all') {
+      filtered = filtered.filter((a) => a.type === filter)
     }
-  }
-  return country;
-};
+    if (year) {
+      filtered = filtered.filter((a) => {
+        const d = new Date(a.start_date_local)
+        return d.getFullYear() === year
+      })
+    }
+    return filtered
+  }, [activities, filter, year])
+}
 
-let activityDataCache: Activity[] | null = null;
-let activityDataError: unknown = null;
-let activityDataPromise: Promise<Activity[]> | null = null;
+export function parseMovingTime(time: string): number {
+  const parts = time.split(':').map(Number)
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2]
+  if (parts.length === 2) return parts[0] * 60 + parts[1]
+  return parts[0]
+}
+
+export function formatDistance(meters: number): string {
+  return Math.round(meters / 1000).toString()
+}
+
+export function formatPace(speedMs: number): string {
+  if (!speedMs) return '--'
+  const paceMin = 1000 / 60 / speedMs
+  const min = Math.floor(paceMin)
+  const sec = Math.round((paceMin - min) * 60)
+  return `${min}'${sec.toString().padStart(2, '0')}"`
+}
+
+export function formatDuration(timeStr: string): string {
+  const secs = parseMovingTime(timeStr)
+  const h = Math.floor(secs / 3600)
+  const m = Math.floor((secs % 3600) / 60)
+  if (h > 0) return `${h}h ${m}m`
+  return `${m}m`
+}
+
+export function getAvailableYears(activities: Activity[]): number[] {
+  const years = new Set(
+    activities.map((a) => new Date(a.start_date_local).getFullYear())
+  )
+  return Array.from(years).sort((a, b) => b - a)
+}
+
+// Async data loading (fetch-based, compatible with Suspense)
+import activitiesUrl from '@/static/activities.json?url'
+
+let activityDataCache: Activity[] | null = null
+let activityDataError: unknown = null
+let activityDataPromise: Promise<Activity[]> | null = null
 
 const loadActivityData = () => {
   activityDataPromise ??= fetch(activitiesUrl)
     .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to load activities: ${response.status}`);
-      }
-      return response.json() as Promise<Activity[]>;
+      if (!response.ok) throw new Error(`Failed to load activities: ${response.status}`)
+      return response.json() as Promise<Activity[]>
     })
-    .then((activityData) => {
-      activityDataCache = activityData;
-      return activityData;
-    })
-    .catch((error: unknown) => {
-      activityDataError = error;
-      throw error;
-    });
+    .then((data) => { activityDataCache = data; return data })
+    .catch((error: unknown) => { activityDataError = error; throw error })
+  return activityDataPromise
+}
 
-  return activityDataPromise;
-};
-
-const getActivityData = () => {
-  if (activityDataError) throw activityDataError;
-  if (activityDataCache) return activityDataCache;
-  throw loadActivityData();
-};
-
-const processActivities = (activityData: Activity[]): ProcessedActivities => {
-  const cities: Record<string, number> = {};
-  const runPeriod: Record<string, number> = {};
-  const provinces: Set<string> = new Set();
-  const countries: Set<string> = new Set();
-  const years: Set<string> = new Set();
-
-  activityData.forEach((run) => {
-    const location = locationForRun(run);
-
-    const periodName = titleForRun(run);
-    if (periodName) {
-      runPeriod[periodName] = runPeriod[periodName]
-        ? runPeriod[periodName] + 1
-        : 1;
-    }
-
-    const { city, province, country } = location;
-    // drop only one char city
-    if (city.length > 1) {
-      cities[city] = cities[city] ? cities[city] + run.distance : run.distance;
-    }
-    if (province) provinces.add(province);
-    if (country) countries.add(standardizeCountryName(country));
-    const year = run.start_date_local.slice(0, 4);
-    years.add(year);
-  });
-
-  const yearsArray = [...years].sort().reverse();
-  const thisYear = yearsArray[0] || '';
-
-  return {
-    activities: activityData,
-    years: yearsArray,
-    countries: [...countries],
-    provinces: [...provinces],
-    cities,
-    runPeriod,
-    thisYear,
-  };
-};
-
-let processedActivitiesCache: {
-  activityData: Activity[];
-  processedActivities: ProcessedActivities;
-} | null = null;
-
-const getProcessedActivities = (activityData: Activity[]) => {
-  if (processedActivitiesCache?.activityData === activityData) {
-    return processedActivitiesCache.processedActivities;
-  }
-
-  const processedActivities = processActivities(activityData);
-  processedActivitiesCache = { activityData, processedActivities };
-  return processedActivities;
-};
-
-const useActivities = () => {
-  const activityData = getActivityData();
-  return useMemo(() => getProcessedActivities(activityData), [activityData]);
-};
-
-export default useActivities;
+export const getActivityData = () => {
+  if (activityDataError) throw activityDataError
+  if (activityDataCache) return activityDataCache
+  throw loadActivityData()
+}

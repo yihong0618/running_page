@@ -35,10 +35,7 @@
     "develop": "vite dev",
     "dev": "vite dev",
     "serve": "vite serve",
-    "lint": "eslint src --ext .ts,.tsx --fix",
-    "check": "prettier --check \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\" \"assets/index.tsx\" \"eslint.config.mjs\"",
-    "format": "prettier --write \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\" \"assets/index.tsx\" \"eslint.config.mjs\"",
-    "ci": "pnpm run format && pnpm run lint && pnpm run build"
+    "preview": "vite preview"
   },
   "engineStrict": true,
   "browserslist": "defaults, not ie 11",
@@ -50,21 +47,12 @@
     "url": "https://github.com/yihong0618/running_page"
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^5.7.0",
-    "@eslint/js": "^10.0.1",
+    "@modyfi/vite-plugin-yaml": "^1.1.1",
     "@tailwindcss/vite": "^4.2.4",
-    "@types/geojson": "^7946.0.16",
     "@types/mapbox__polyline": "^1.0.5",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.59.1",
-    "@typescript-eslint/parser": "^8.59.1",
-    "eslint": "^10.3.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "globals": "^17.6.0",
-    "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3"
   }
