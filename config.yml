@@ -1,0 +1,35 @@
+# Running Page 3.0 配置文件
+# 修改此文件即可完成个性化设置，无需改动源代码。
+
+# ── 地图 ──────────────────────────────────────────────────────────────────────
+
+# Mapbox public access token（https://account.mapbox.com）
+# 替换为你自己的 token
+mapbox_token: 'pk.eyJ1IjoiYmVuLTI5IiwiYSI6ImNrZ3Q4Ym9mMDBqMGYyeXFvODV2dWl6YzQifQ.gSKoWF-fMjhzU67TuDezJQ'
+
+# ── 外观 ─────────────────────────────────────────────────────────────────────
+
+# 头像 URL（支持本地路径或远程图片链接）
+avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU'
+
+# 默认语言：zh（中文）| en（英文）
+locale: zh
+
+# 默认主题：system（跟随系统）| light（浅色）| dark（深色）
+theme: dark
+
+# ── 运动目标 ──────────────────────────────────────────────────────────────────
+# unit: distance → 单位 km
+
+goals:
+  all:
+    yearly: 2000
+    monthly: 150
+    weekly: 35
+    unit: distance
+
+  Run:
+    yearly: 2000
+    monthly: 150
+    weekly: 35
+    unit: distance
