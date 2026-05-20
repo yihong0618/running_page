@@ -4,15 +4,15 @@ export function useInterval(
   callback: () => void,
   delay: number | null | undefined
 ) {
-  const savedCallback = useRef(callback);
+  const savedCallbackRef = useRef(callback);
 
   useEffect(() => {
-    savedCallback.current = callback;
+    savedCallbackRef.current = callback;
   }, [callback]);
 
   useEffect(() => {
     if (delay == null) return;
-    const id = setInterval(() => savedCallback.current(), delay);
+    const id = setInterval(() => savedCallbackRef.current(), delay);
     return () => clearInterval(id);
   }, [delay]);
 }

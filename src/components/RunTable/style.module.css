@@ -43,6 +43,16 @@
       text-align: center;
     }
 
+    .sortableHeader {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+
+    .sortableHeader:hover {
+      color: var(--color-primary);
+    }
+
     :is(th):first-child {
       text-align: left;
     }

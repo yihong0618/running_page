@@ -129,6 +129,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [Niewei Yang](https://github.com/Niewei-Yang)     | <https://neewii-worksout.vercel.app/>          | Strava      |
 | [RUN.LOG](https://github.com/bzzd2001)            | <https://run.731558.xyz:6881/>                 | Strava      |
 | [StoneRicky](https://github.com/StoneRicky)       | <https://stonericky.github.io/running_page/>   | COROS       |
+| [coutureone](https://github.com/coutureone)          | <https://run.xcouture.cc/>                     | Garmin      |
 </details>
 
 ## 它是怎么工作的
@@ -142,6 +143,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 3. React Hooks
 4. Mapbox 进行地图展示
 5. Nike、Strava、佳明（佳明中国）及 Keep 等，自动备份 GPX 数据，方便备份及上传到其它软件
+6. 支持终端界面（TUI）本地浏览运动数据
 
 > 因为数据存在 gpx 和 data.db 中，理论上支持几个软件一起，你可以把之前各类 App 的数据都同步到这里（建议本地同步，之后 Actions 选择正在用的 App）
 >
@@ -180,6 +182,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 - **[iGPSPORT迹驰](#igpsport)**
 - **[Komoot](#komoot)**
 - **[Onelap](#onelap)**
+- **[Intervals.icu](#intervalsicu)**
 
 ## 视频教程
 
@@ -201,6 +204,30 @@ pnpm develop
 ```
 
 访问 <http://localhost:5173/> 查看
+
+## TUI（终端界面）
+
+你可以在终端中使用内置的 Textual TUI 浏览运动数据。
+
+```bash
+# 使用 make
+make tui
+
+# 或直接用 uv 运行
+uv run run_page
+
+# 或指定自定义的 activities.json 路径
+uv run run_page /path/to/your/activities.json
+```
+
+TUI 中的键盘快捷键：
+
+- `1` / `2` – 切换列表和统计视图
+- `←` / `→` – 切换年份
+- `↑` / `↓` – 选择活动
+- `y` – 循环切换年份
+- `t` – 循环切换运动类型
+- `q` – 退出
 
 ## Docker
 
@@ -1067,6 +1094,48 @@ python3 run_page/komoot_sync.py 'your komoot email' 'password' --with-gpx
 ```bash
 python3 run_page/onelap_sync.py 'your onelap phone' 'password' --with-fit
 ```
+
+</details>
+
+### Intervals.icu
+
+<details>
+<summary>获取您的 <code>Intervals.icu</code> 数据</summary>
+
+<br>
+
+从 [Intervals.icu](https://intervals.icu) 同步跑步数据，下载原始 FIT/GPX 文件。
+
+1. 登录 [Intervals.icu](https://intervals.icu)，前往 **Settings** → **Developer Settings** 查看您的 **Athlete ID** 并创建 **API Key**。
+
+2. 在根目录下执行：
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key}
+```
+
+如果需要同步所有历史数据（默认为最近 6 个月）：
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --all
+```
+
+指定自定义起始日期：
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --start-date 2024-01-01
+```
+
+如果你的数据来自华为等使用 GCJ-02 坐标系的国行设备，添加 `--gcj02` 参数可修复坐标偏移（将下载的 FIT/GPX/TCX 文件中的 GCJ-02 坐标转换为 WGS-84）：
+
+```bash
+python run_page/intervals_icu_sync.py ${athlete_id} ${api_key} --gcj02
+```
+
+#### GitHub Actions
+
+1. 在 `run_data_sync.yml` 中将 `RUN_TYPE` 修改为 `intervals_icu`
+2. 在 GitHub 仓库的 Secrets 中添加 `INTERVALS_ICU_ATHLETE_ID` 和 `INTERVALS_ICU_API_KEY`
 
 </details>
 

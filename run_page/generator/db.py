@@ -106,13 +106,16 @@ def update_or_create_activity(session, run_activity):
         if not activity:
             start_point = run_activity.start_latlng
             location_country = getattr(run_activity, "location_country", "")
-            geo_language = "en" if os.getenv("VITE_IS_CHINESE") == "false" else "zh-CN"
+            
+            = "en" if os.getenv("VITE_IS_CHINESE") == "false" else "zh-CN"
             # or China for #176 to fix
             if not location_country and start_point or location_country == "China":
                 try:
                     location_country = str(
                         g.reverse(
-                            f"{start_point.lat}, {start_point.lon}", language=geo_language  # type: ignore
+                            f"{start_point.lat}, {start_point.lon}",
+                            language="geo_language",  # type: ignore
+                            timeout=15,
                         )
                     )
                 # limit (only for the first time)
@@ -121,7 +124,8 @@ def update_or_create_activity(session, run_activity):
                         location_country = str(
                             g.reverse(
                                 f"{start_point.lat}, {start_point.lon}",
-                                language=geo_language,  # type: ignore
+                                language="geo_language",  # type: ignore
+                                timeout=15,
                             )
                         )
                     except Exception:
