@@ -1,8 +1,6 @@
 // Constants
 const MAPBOX_TOKEN =
-  // For security reasons, please avoid using the default public token provided by Mapbox as much as possible.
-  // Instead, manually add a new token and apply URL restrictions.
-  // (please refer to https://github.com/yihong0618/running_page/issues/643#issuecomment-2042668580)
+  import.meta.env.VITE_MAPBOX_TOKEN ||
   'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJjbWYxdXR4YncwMTJtMm5zOTE4eTZpMGdtIn0.OnsXdwkZFztR8a5Ph_T-xg';
 const MUNICIPALITY_CITIES_ARR = [
   '北京市',
@@ -34,22 +32,14 @@ const LINE_OPACITY = 0.4;
 // styling: map height - responsive design
 // Use smaller height on mobile devices for better user experience
 const MAP_HEIGHT = window.innerWidth <= 768 ? 250 : 600;
-//set to `false` if you want to hide the road label characters
-const ROAD_LABEL_DISPLAY = true;
-// updated on 2024/11/17: privacy mode is set to true by default
-//set to `true` if you want to display only the routes without showing the map.
-const PRIVACY_MODE = false;
-// updated on 2024/11/17: lights are turned off by default
-//set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
-const LIGHTS_ON = false;
-//set to `true` if you want to show the 'Elevation Gain' column
-const SHOW_ELEVATION_GAIN = false;
-// richer title for the activity types (like garmin style)
-const RICH_TITLE = false;
-
-// IF you are outside China please make sure IS_CHINESE = false
-const IS_CHINESE = true;
-const USE_ANIMATION_FOR_GRID = false;
+const ROAD_LABEL_DISPLAY = import.meta.env.VITE_ROAD_LABEL_DISPLAY !== 'false';
+const PRIVACY_MODE = import.meta.env.VITE_PRIVACY_MODE !== 'false';
+const LIGHTS_ON = import.meta.env.VITE_LIGHTS_ON === 'true';
+const SHOW_ELEVATION_GAIN = import.meta.env.VITE_SHOW_ELEVATION_GAIN === 'true';
+const RICH_TITLE = import.meta.env.VITE_RICH_TITLE === 'true';
+const IS_CHINESE = import.meta.env.VITE_IS_CHINESE !== 'false';
+const USE_ANIMATION_FOR_GRID =
+  import.meta.env.VITE_USE_ANIMATION_FOR_GRID === 'true';
 const CHINESE_INFO_MESSAGE = (yearLength: number, year: string): string => {
   const yearStr = year === 'Total' ? '所有' : ` ${year} `;
   return `记录自己跑步 ${yearLength} 年了，下面列表展示的是${yearStr}的数据`;
@@ -226,7 +216,8 @@ export const INDOOR_COLOR = '#8899aa';
 
 // map tiles vendor, maptiler or mapbox or stadiamaps
 // if you want to use maptiler, set the access token in MAP_TILE_ACCESS_TOKEN
-export const MAP_TILE_VENDOR = 'mapcn';
+export const MAP_TILE_VENDOR = import.meta.env.VITE_MAP_TILE_VENDOR 
+|| 'mapcn';
 
 // map tiles style name, see MAP_TILE_STYLES for more details
 export const MAP_TILE_STYLE_LIGHT = 'osm-bright';
@@ -235,8 +226,8 @@ export const MAP_TILE_STYLE_DARK = 'dark-matter';
 // access token. you can apply a new one, it's free.
 // maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
 // stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 | sign up at https://client.stadiamaps.com/signup/
-// mapcn: empty
-export const MAP_TILE_ACCESS_TOKEN = '';
+export const MAP_TILE_ACCESS_TOKEN = import.meta.env.VITE_MAP_TILE_ACCESS_TOKEN 
+  || 'Gt5R0jT8tuIYxW6sNrAg';
 
 export const MAP_TILE_STYLES = {
   mapcn: {

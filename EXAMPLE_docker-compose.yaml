@@ -1,0 +1,35 @@
+services:
+  running_page:
+    container_name: running_page
+    build:
+      context: .
+      dockerfile: Dockerfile-compose
+    image: running_page:${IMAGE_TAG:-latest}
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - ./data:/root/running_page/data
+  running_page-nginx:
+    container_name: running_page-nginx
+    image: nginx:alpine
+    restart: unless-stopped
+    networks:
+      - running_page
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./data/dist:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.running.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.routers.running.entrypoints=websecure"
+      - "traefik.http.routers.running.tls=true"
+      - "traefik.http.routers.running.tls.certresolver=letencrypt"
+      - "traefik.http.services.running.loadbalancer.server.port=80"
+      - "traefik.http.routers.running.middlewares=${AUTH_PROVIDER}"
+networks:
+  running_page:
+    name: ${NETWORK:-running_page}
+    external: ${NETWORK_EXTERNAL:-false}

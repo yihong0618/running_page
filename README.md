@@ -253,7 +253,52 @@ Open your browser and visit localhost:80
 * add `--build-arg VITE_USE_IMPERIAL=true` to `docker build ...`
 * add `--units imperial` flag to each `python3 run_page/gen_svg.py ...` command in the [Dockerfile](https://github.com/yihong0618/running_page/blob/master/Dockerfile)
 
-## Local sync data
+## Docker Compose: `docker-compose.yaml`
+```bash
+git clone https://github.com/yihong0618/running_page.git --depth=1
+cp dotenv .env
+cp EXAMPLE_docker-compose.yaml docker-compose.yaml
+```
+
+If you want to see the demo, run the following:
+`docker compose build && docker compose up`
+
+http://localhost:80
+
+If you want to use your own data, edit the `.env` file with personal defaults, then run the following, specifically edit the `APP` variable ans associated credentials in the `.env` file.
+
+If you want to use existing data, copy `data.db`, `activities.json`, `imported.json`, `GPX_OUT`, `FIT_OUT`, `TCX_OUT`, `dist` from the old container to the `data` directory. Be sure the varialbe `APP` in `.env` is set to something, not empty.
+`docker compose build && docker compose up`
+
+http://hostname:<portFrom .env>
+
+Persistent data is stored in the `data` directory.
+- `data/data.db` SQLite database of activities
+- `data/activities.json` JSON of activities
+- `data/imported.json` JSON imported activities from GPX, TCX, FIT files
+- `data/GPX_OUT` GPX activity files
+- `data/FIT_OUT` FIT activity files
+- `data/TCX_OUT` TCX activity files
+- `data/dist` static files for website
+
+### Missing data, remove it from data/activities.json and rerun sync/build
+RUN_ID=1768254480000
+jq -c 'map(select(.run_id != env.RUN_ID))' data/activities.json > activities-edited.json
+mv activities-edited.json data/activities.json
+## remove it from data.db (SQLite)
+`SELECT * FROM "activities" WHERE run_id = "1768254480000"`
+
+`cat ~/bin/edit_sqlite.sh`
+
+```bash
+#!/bin/bash
+docker run -it --rm -p 8088:8080 -v $PWD/data:/data -e SQLITE_DATABASE="data.db" coleifer/sqlite-web
+```
+### remove it from imported.json
+Need to find matching GPX file
+
+### force run sync/build
+docker exec -it running_page /bin/bash -c "INTERVAL_MIN= ./build_stats.sh"
 
 ### Modifying Mapbox token
 
