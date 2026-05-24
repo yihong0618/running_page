@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { toPng } from 'html-to-image'
 import * as polyline from '@mapbox/polyline'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -144,6 +145,10 @@ export function TracksPage({ activities, onBack, onSelectActivity }: TracksPageP
   const [sportFilter, setSportFilter] = useState<SportType | null>(null)
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null)
   const [sortBy, setSortBy] = useState<'date' | 'distance'>('date')
+
+  // Export
+  const captureRef = useRef<HTMLDivElement>(null)
+  const [exporting, setExporting] = useState(false)
 
   // Year pagination
   const MAX_YEARS = 10
@@ -320,7 +325,7 @@ export function TracksPage({ activities, onBack, onSelectActivity }: TracksPageP
 
         {/* Right: track grid with year filter inside */}
         <div className="min-w-0">
-          <div className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
+          <div ref={captureRef} className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
           {/* Year pills + sport filter */}
           <div className="flex items-center gap-1.5 mb-4 pb-3 border-b border-[var(--color-border)]">
             {totalYearPages > 1 && (
@@ -358,6 +363,43 @@ export function TracksPage({ activities, onBack, onSelectActivity }: TracksPageP
                   {label}
                 </button>
               ))}
+              <span className="w-px h-3 bg-[var(--color-border)] mx-1" />
+              <button
+                onClick={async () => {
+                  if (!captureRef.current || exporting) return
+                  setExporting(true)
+                  try {
+                    const el = captureRef.current
+                    const prevOverflow = el.style.overflow
+                    el.style.overflow = 'visible'
+                    await new Promise(resolve => requestAnimationFrame(resolve))
+                    const dataUrl = await toPng(el, { pixelRatio: 2, cacheBust: true })
+                    el.style.overflow = prevOverflow
+                    const link = document.createElement('a')
+                    const label = selectedYear ?? 'all'
+                    link.download = `tracks-${label}.png`
+                    link.href = dataUrl
+                    link.click()
+                  } catch (err) {
+                    console.error('Export failed:', err)
+                  } finally {
+                    setExporting(false)
+                  }
+                }}
+                disabled={exporting}
+                className="w-6 h-6 flex items-center justify-center rounded text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-50 transition-all"
+                title={locale === 'zh' ? '导出图片' : 'Export as image'}
+              >
+                {exporting ? (
+                  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                ) : (
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
 

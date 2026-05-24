@@ -260,18 +260,16 @@ docker run -itd -p 80:80   running_page:latest
 
 ## 替换 Mapbox token
 
-> 建议有能力的同学把 `src/utils/const.ts` 文件中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
->
-> 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.ts`
+> 在 `config.yml` 中设置你自己的 [Mapbox token](https://www.mapbox.com/)：
 
-```typescript
-const MAPBOX_TOKEN =
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+```yaml
+# config.yml
+mapbox_token: 'pk.eyJ1...your-token-here'
 ```
 
-## 更改默认地图服务样式
+## 更改默认地图服务样式（经典主题）
 
-> 在使用默认的地图服务样式之外，你可以通过修改 src/utils/const.ts 文件中的以下配置项来自定义地图显示。
+> 如果使用**经典（classic）**主题，你可以通过修改经典主题的配置来自定义地图显示。Dashboard 主题默认使用 Mapbox（通过 `config.yml` 配置）。
 
 ```typescript
 const MAP_TILE_VENDOR = 'mapcn'; // 默认（免费！）
@@ -315,7 +313,7 @@ const MAP_TILE_STYLE = 'dark-v10'; // 所选供应商的样式
 const MAP_TILE_ACCESS_TOKEN = 'your_access_token_here';
 ```
 
-每个`MAP_TILE_VERNDOR`都提供了多种`MAP_TILE_STYLE`选择，配置时需保证匹配。具体的`MAP_TILE_STYLE`名称，可参考`src/utils/const.ts`文件中的定义。
+每个`MAP_TILE_VERNDOR`都提供了多种`MAP_TILE_STYLE`选择，配置时需保证匹配。具体的`MAP_TILE_STYLE`名称，可参考经典主题中的地图配置文件。
 
 当使用 **"mapbox"**、**"maptiler"** 或是 **"stadiamaps"** 时，需配置`MAP_TILE_ACCESS_TOKEN`。默认的 token 在不更改的情况下，使用时会发生配额超限的问题。
 
@@ -323,44 +321,129 @@ const MAP_TILE_ACCESS_TOKEN = 'your_access_token_here';
 - **MapTiler**: 在 https://cloud.maptiler.com/auth/widget 注册获取（免费）
 - **Stadia Maps**: 在 https://client.stadiamaps.com/signup/ 注册获取（免费）
 
-## 个性化设置
+## 主题系统 (3.0)
 
-> 在仓库目录下找到 `src/static/site-metadata.ts`，找到以下内容并修改成你自己想要的。
+Running Page 3.0 引入了可插拔的主题架构。你可以切换内置主题或创建自己的主题，无需修改源代码。
+
+### 工作原理
+
+主题位于 `src/themes/<name>/` 目录下，每个主题导出一个 React 组件。应用入口 (`src/App.tsx`) 维护一个**主题注册表**，将主题名称映射到懒加载的组件：
 
 ```typescript
-siteMetadata: {
-  siteTitle: 'Running Page', #网站标题
-  siteUrl: 'https://yihong.run', #网站域名
-  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU', #左上角 LOGO
-  description: 'Personal site and blog',
-  navLinks: [
-    {
-      name: 'Blog', #右上角导航名称
-      url: 'https://yihong.run/running', #右上角导航链接
-    },
-    {
-      name: 'About',
-      url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
-    },
-  ],
-},
+// src/App.tsx
+const themes: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
+  dashboard: lazy(() => import('./themes/dashboard')),
+  classic: lazy(() => import('./themes/classic')),
+  // 在此添加自定义主题
+}
 ```
 
-> 修改 `src/utils/const.ts` 文件中的样式：
+构建时，`config.yml` 中的 `theme_preset` 决定加载哪个主题。所有主题共享核心层 (`src/core/`)——类型、i18n 翻译、活动数据钩子和语言工具。
+
+### 内置主题
+
+#### Dashboard（默认）
+
+Dashboard 主题是为跑者设计的现代化单页布局，提供丰富的小部件：
+
+- **统计卡片** — 年度/月度/周度进度条，含连续运动追踪
+- **热力图** — GitHub 风格的活动网格，每日详情，支持导出 PNG
+- **活动日志** — 分页表格，支持距离筛选（10km+、20km+、40km+），运动类型图标
+- **路线地图** — 基于 Mapbox 的路线可视化，点击活动高亮轨迹
+- **轨迹墙** — 全页轨迹网格，智能聚类（按起终点），支持导出 PNG
+- **中国地图** — 省份级活动热力图，点击筛选
+- **个人最佳** — 自动检测 PR（5K、10K、半马、全马）
+- **日历小部件** — 月度日历，气泡显示距离
+- **深色/浅色模式** — 跟随系统或手动切换
+
+主要特性：
+- 所有数据在一个页面展示（无路由跳转）
+- 点击任意活动即可在地图和日志中查看
+- 热力图和轨迹墙支持导出为 PNG 图片
+- 响应式两栏网格布局
+
+#### Classic（经典）
+
+Classic 主题保留了原始的多页面布局，每个视图有独立路由。使用 `react-router-dom` 导航和 `react-map-gl` 地图。如果你更喜欢原始风格，可以选择这个主题。
+
+> **注意：** 经典主题作为内置选项提供。如果你从 v2.x 升级，可在 `config.yml` 中设置 `theme_preset: classic`。
+
+### 切换主题
+
+编辑 `config.yml`：
+
+```yaml
+# ── 主题预设 ──────────────────────────────────────────────────────────────────
+# dashboard (3.0，推荐) | classic (原始多页面) | 自定义
+theme_preset: dashboard
+```
+
+重新构建或重启开发服务器使更改生效。
+
+### 创建自定义主题
+
+1. 在 `src/themes/<your-theme>/` 下创建新目录，例如 `src/themes/minimal/`
+2. 创建 `index.tsx` 导出默认 React 组件
+3. 使用共享核心层获取数据和 i18n：
+
+```tsx
+// src/themes/minimal/index.tsx
+import { getActivityData } from '@/hooks/useActivities'
+import { useTheme } from '@/hooks/useTheme'
+import { useLocale } from '@/hooks/useLocale'
+import type { Activity } from '@/types'
+
+export default function Minimal() {
+  const activities = getActivityData() as Activity[]
+  const { t } = useLocale()
+  // ... 你的自定义布局
+}
+```
+
+4. 在 `src/App.tsx` 中注册你的主题：
 
 ```typescript
-// styling: 关闭虚线：设置为 `false`
-const USE_DASH_LINE = true;
-// styling: 透明度：[0, 1]
-const LINE_OPACITY = 0.4;
-// update for now 2024/11/17 the privacy mode is true
-// styling: 开启隐私模式 (不显示地图仅显示轨迹): 设置为 `true`
-// 注意：此配置仅影响页面显示，数据保护请参考下方的 "隐私保护"
-const PRIVACY_MODE = false;
-// styling: 默认关灯：设置为 `false`, 仅在隐私模式关闭时生效 (`PRIVACY_MODE` = false)
-const LIGHTS_ON = true;
-// styling: 是否显示列 ELEVATION_GAIN
-const SHOW_ELEVATION_GAIN = false;
+const themes = {
+  dashboard: lazy(() => import('./themes/dashboard')),
+  classic: lazy(() => import('./themes/classic')),
+  minimal: lazy(() => import('./themes/minimal')), // 添加这行
+}
+```
+
+5. 在 `config.yml` 中设置 `theme_preset: minimal`
+
+### 共享组件
+
+核心层提供所有主题可用的钩子和工具：
+
+| 模块 | 导出 |
+|--------|---------|
+| `@/hooks/useActivities` | `getActivityData()`、`useFilteredActivities()`、`getAvailableYears()`、`formatDistance()`、`formatPace()`、`formatDuration()`、`parseMovingTime()`、`extractProvince()` |
+| `@/hooks/useLocale` | `useLocale()` → `{ t, locale }` 用于 i18n |
+| `@/hooks/useTheme` | `useTheme()` → `{ dark, toggle }` 用于深/浅色模式 |
+| `@/types` | `Activity`、`SportFilter` 类型 |
+| `@/config` | `MAPBOX_TOKEN`、`AVATAR`、`GOALS`、`DEFAULT_LOCALE`、`THEME_PRESET` |
+
+Dashboard 主题的组件 (`src/components/`) 也可复用 —— 如需要可在自定义主题中导入。
+
+## 个性化设置 (3.0)
+
+所有个性化设置通过项目根目录的 `config.yml` 完成。直接编辑此文件即可，无需修改代码。
+
+```yaml
+# config.yml
+mapbox_token: 'your-token-here'   # https://account.mapbox.com
+avatar: 'https://...'              # 头像 URL
+locale: zh                         # zh | en
+theme: dark                        # system | light | dark
+theme_preset: dashboard            # dashboard | classic | 自定义
+
+goals:
+  Run:
+    yearly: 2000                   # 年度目标 (km)
+    monthly: 150                   # 月度目标 (km)
+    weekly: 35                     # 周度目标 (km)
+    unit: distance                 # distance (km) | time (分钟)
 ```
 
 > 隐私保护：设置下面环境变量：
@@ -1313,7 +1396,7 @@ python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --da
 5. 如果想把你的 running_page 部署在 xxx.github.io 而不是 xxx.github.io/run_page 亦或是想要添加自定义域名于 GitHub Pages，需要做三点
    - 修改你的 fork 的 running_page 仓库改名为 xxx.github.io, xxx 是你 github 的 username
    - 修改 gh-pages.yml 中的 Build 模块，删除 `${{ github.event.repository.name }}` 改为`run: PATH_PREFIX=/ pnpm build` 即可
-   - 修改 src/static/site-metadata.ts 中 `siteUrl: ''` 或是添加你的自定义域名，`siteUrl: '[your_own_domain]'`，即可
+   - 在 `config.yml` 中配置 `site_url` 或添加你的自定义域名即可
 
 </details>
 

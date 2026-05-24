@@ -26,6 +26,9 @@ dependencies:
   gcoord:
     specifier: ^1.0.7
     version: 1.0.7
+  html-to-image:
+    specifier: ^1.11.13
+    version: 1.11.13
   mapbox-gl:
     specifier: ^3.23.0
     version: 3.23.0
@@ -1526,6 +1529,10 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       lru-cache: 6.0.0
+    dev: false
+
+  /html-to-image@1.11.13:
+    resolution: {integrity: sha512-cuOPoI7WApyhBElTTb9oqsawRvZ0rHhaHwghRLlTuffoD1B2aDemlCruLeZrUIIdvG7gs9xeELEPm6PhuASqrg==}
     dev: false
 
   /immer@10.2.0:

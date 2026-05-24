@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { Activity, SportFilter } from '../types'
-import { formatDistance, formatDuration, formatPace } from '../hooks/useActivities'
+import { formatDuration, formatPace } from '../hooks/useActivities'
 import { useLocale } from '../hooks/useLocale'
 
 interface ActivityLogProps {
@@ -16,6 +16,13 @@ interface ActivityLogProps {
 const PAGE_SIZE = 16
 
 type DistanceFilter = 'all' | '10' | '20' | '40'
+
+function typeIcon(type: string): string {
+  const icons: Record<string, string> = {
+    Run: '🏃',
+  }
+  return icons[type] ?? '📌'
+}
 
 export function ActivityLog({ activities, years, year, setYear, selectedActivity, onSelectActivity, filter = 'all' }: ActivityLogProps) {
   const { t } = useLocale()
@@ -117,11 +124,11 @@ export function ActivityLog({ activities, years, year, setYear, selectedActivity
               >
                 <td className="py-3 text-[var(--color-muted)]">{a.start_date_local.slice(0, 16).replace('T', ' ')}</td>
                 <td className="py-3">
-                  <span className="text-[var(--color-muted)]">{a.type}</span>
+                  <span className="text-[var(--color-muted)]">{typeIcon(a.type)} {a.type}</span>
                 </td>
                 <td className="py-3">{a.name || t('run')}</td>
                 <td className="py-3 font-mono font-medium">
-                  {formatDistance(a.distance)}<span className="text-[var(--color-muted)] ml-1 font-normal text-xs">km</span>
+                  {(a.distance / 1000).toFixed(1)}<span className="text-[var(--color-muted)] ml-1 font-normal text-xs">km</span>
                 </td>
                 <td className="py-3 text-[var(--color-muted)]">{formatDuration(a.moving_time)}</td>
                 <td className="py-3 text-[var(--color-muted)]">{formatPace(a.average_speed)}</td>

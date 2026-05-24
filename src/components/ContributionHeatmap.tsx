@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import { toPng } from 'html-to-image'
 import type { Activity, SportFilter } from '../types'
 import { getAvailableYears, formatDistance, parseMovingTime, formatPace } from '../hooks/useActivities'
 import { useLocale } from '../hooks/useLocale'
@@ -77,6 +78,8 @@ export function ContributionHeatmap({ activities, year: defaultYear, filter, onS
   const [selectedYear, setSelectedYear] = useState<number | 'all'>(defaultYear)
   // yearWindowEnd: index into allYears of the last visible year (0-based, most-recent-first)
   const [yearWindowEnd, setYearWindowEnd] = useState(Math.min(MAX_VISIBLE_YEARS - 1, allYears.length - 1))
+  const captureRef = useRef<HTMLDivElement>(null)
+  const [exporting, setExporting] = useState(false)
 
   const isGym = false
   const isAll = filter === 'all'
@@ -205,6 +208,45 @@ export function ContributionHeatmap({ activities, year: defaultYear, filter, onS
     setYearWindowEnd(prev => Math.min(Math.max(prev + dir, MAX_VISIBLE_YEARS - 1), allYears.length - 1))
   }
 
+  const handleExport = async () => {
+    if (!captureRef.current || exporting) return
+    setExporting(true)
+    try {
+      const el = captureRef.current
+
+      // Freeze animations
+      el.classList.add('exporting')
+      const prevOverflow = el.style.overflow
+      el.style.overflow = 'visible'
+
+      // Wait a frame for styles to settle
+      await new Promise(resolve => requestAnimationFrame(resolve))
+
+      const computedBg = getComputedStyle(el).backgroundColor
+      const dataUrl = await toPng(el, {
+        backgroundColor: computedBg === 'rgba(0, 0, 0, 0)' || computedBg === 'transparent'
+          ? '#ffffff'
+          : computedBg,
+        pixelRatio: 2,
+        filter: (node) => !(node instanceof HTMLElement && node.hasAttribute('data-export-hidden')),
+        cacheBust: true,
+      })
+
+      // Restore
+      el.classList.remove('exporting')
+      el.style.overflow = prevOverflow
+
+      const link = document.createElement('a')
+      link.download = `heatmap-${selectedYear === 'all' ? 'all' : selectedYear}.png`
+      link.href = dataUrl
+      link.click()
+    } catch (err) {
+      console.error('Export failed:', err)
+    } finally {
+      setExporting(false)
+    }
+  }
+
 
   // Aggregate stats for "all" mode
   const allStats = useMemo(() => {
@@ -216,7 +258,7 @@ export function ContributionHeatmap({ activities, year: defaultYear, filter, onS
   }, [yearData, selectedYear])
 
   return (
-    <div className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-5 overflow-x-auto">
+    <div ref={captureRef} className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-5 overflow-x-auto">
       <style>{`
         @keyframes fadeSlideIn {
           from { opacity: 0; transform: translateY(8px); }
@@ -232,6 +274,13 @@ export function ContributionHeatmap({ activities, year: defaultYear, filter, onS
         }
         .heatmap-year-row {
           animation: fadeSlideIn 0.32s ease-out both;
+        }
+        .exporting,
+        .exporting *,
+        .exporting *::before,
+        .exporting *::after {
+          animation: none !important;
+          transition: none !important;
         }
       `}</style>
 
@@ -280,6 +329,27 @@ export function ContributionHeatmap({ activities, year: defaultYear, filter, onS
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
+          </button>
+
+          <span className="w-px h-3 bg-[var(--color-border)]" />
+
+          {/* Export button */}
+          <button
+            onClick={handleExport}
+            disabled={exporting}
+            data-export-hidden
+            className="w-6 h-6 flex items-center justify-center rounded text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-50 transition-all"
+            title={locale === 'zh' ? '导出图片' : 'Export as image'}
+          >
+            {exporting ? (
+              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            ) : (
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            )}
           </button>
         </div>
       </div>
