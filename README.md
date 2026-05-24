@@ -320,108 +320,18 @@ When using **"mapbox"**, **"maptiler"** or **"stadiamaps"**, you must configure 
 
 ## Theme System (3.0)
 
-Running Page 3.0 introduces a pluggable theme architecture. You can switch between built-in themes or create your own — no source code changes required.
-
-### How It Works
-
-Themes live under `src/themes/<name>/` and export a single React component. The app entry (`src/App.tsx`) maintains a **theme registry** — a map of theme names to lazily-loaded components:
-
-```typescript
-// src/App.tsx
-const themes: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
-  dashboard: lazy(() => import('./themes/dashboard')),
-  classic: lazy(() => import('./themes/classic')),
-  // Add custom themes here
-}
-```
-
-At build time, the `theme_preset` value from `config.yml` determines which theme is loaded. All themes share the same core layer (`src/core/`) — types, i18n translations, activity data hooks, and locale utilities.
-
-### Built-in Themes
-
-#### Dashboard (Default)
-
-The Dashboard theme is a modern, single-page layout designed for runners. It provides a dense, widget-rich interface:
-
-- **Stats Cards** — Yearly/monthly/weekly progress bars with streak tracking
-- **Contribution Heatmap** — GitHub-style activity grid with per-day details, exportable as PNG
-- **Activity Log** — Paginated table with distance filters (10km+, 20km+, 40km+), type icons
-- **Route Map** — Mapbox-based route visualization, click any activity to highlight its track
-- **Tracks Wall** — Full-page track grid with smart clustering by start/end point, exportable as PNG
-- **China Map** — Province-level activity heatmap with click-to-filter
-- **Personal Best** — Auto-detected PRs (5K, 10K, half marathon, marathon)
-- **Calendar Widget** — Monthly calendar with distance bubbles
-- **Dark/Light Mode** — Follows system or manually toggle
-
-Key features:
-- All data visible on one page (no routing)
-- Click any activity to see it on the map and in the log
-- Export heatmap and tracks wall as PNG images
-- Responsive two-column grid layout
-
-#### Classic
-
-The Classic theme retains the original multi-page layout with individual routes for each view. It uses `react-router-dom` for navigation and `react-map-gl` for maps (instead of bare Mapbox GL). Choose this if you prefer the original look and feel.
-
-> **Note:** The classic theme is available as a built-in option. If you're upgrading from v2.x, set `theme_preset: classic` in `config.yml`.
+Running Page 3.0 introduces a pluggable theme architecture. Built-in themes include **Dashboard** (modern single-page layout) and **Classic** (original multi-page layout).
 
 ### Switching Themes
 
-Edit `config.yml`:
+Edit `config.yml` and rebuild:
 
 ```yaml
-# ── 主题预设 ──────────────────────────────────────────────────────────────────
-# dashboard (3.0, recommended) | classic (original multi-page) | custom
-theme_preset: dashboard
+# dashboard | classic | custom
+theme_preset: classic
 ```
 
-Rebuild or restart the dev server for changes to take effect.
-
-### Creating a Custom Theme
-
-1. Create a new directory under `src/themes/<your-theme>/`, e.g. `src/themes/minimal/`
-2. Create an `index.tsx` that exports a default React component
-3. Use the shared core layer for data and i18n:
-
-```tsx
-// src/themes/minimal/index.tsx
-import { getActivityData } from '@/hooks/useActivities'
-import { useTheme } from '@/hooks/useTheme'
-import { useLocale } from '@/hooks/useLocale'
-import type { Activity } from '@/types'
-
-export default function Minimal() {
-  const activities = getActivityData() as Activity[]
-  const { t } = useLocale()
-  // ... your custom layout
-}
-```
-
-4. Register your theme in `src/App.tsx`:
-
-```typescript
-const themes = {
-  dashboard: lazy(() => import('./themes/dashboard')),
-  classic: lazy(() => import('./themes/classic')),
-  minimal: lazy(() => import('./themes/minimal')), // add this
-}
-```
-
-5. Set `theme_preset: minimal` in `config.yml`
-
-### Shared Components
-
-The core layer provides these hooks and utilities usable by all themes:
-
-| Module | Exports |
-|--------|---------|
-| `@/hooks/useActivities` | `getActivityData()`, `useFilteredActivities()`, `getAvailableYears()`, `formatDistance()`, `formatPace()`, `formatDuration()`, `parseMovingTime()`, `extractProvince()` |
-| `@/hooks/useLocale` | `useLocale()` → `{ t, locale }` for i18n |
-| `@/hooks/useTheme` | `useTheme()` → `{ dark, toggle }` for dark/light mode |
-| `@/types` | `Activity`, `SportFilter` types |
-| `@/config` | `MAPBOX_TOKEN`, `AVATAR`, `GOALS`, `DEFAULT_LOCALE`, `THEME_PRESET` |
-
-The dashboard theme's components (`src/components/`) are also reusable — import them in your custom theme if desired.
+> For detailed architecture, theme descriptions, custom theme creation, and the shared core layer API, see **[docs/theme-system.md](docs/theme-system.md)**.
 
 ## Custom your page (3.0)
 
