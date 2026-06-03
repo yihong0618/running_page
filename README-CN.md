@@ -763,6 +763,9 @@ python run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 
 <br>
 
+> [!NOTE]
+> Strava 在 2026 年 6 月更新了 Developer Program。如果你使用 Strava 作为数据源，或者先把其它平台的数据上传到 Strava 再同步，请先在 [Strava API settings dashboard](https://www.strava.com/settings/api) 检查自己的 app tier。Standard Tier 开发者需要拥有 Strava 订阅才能访问 API；已有 Standard Tier 开发者会从 2026 年 6 月 30 日开始受到影响。详情见 [Strava 官方公告](https://communityhub.strava.com/insider-journal-9/an-update-to-our-developer-program-13428)。
+
 1. 注册/登陆 [Strava](https://www.strava.com/) 账号
 2. 登陆成功后打开 [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 

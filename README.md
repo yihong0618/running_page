@@ -636,6 +636,9 @@ python run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 
 <br>
 
+> [!NOTE]
+> Strava updated its Developer Program in June 2026. If you use Strava as the data source, or upload activities to Strava before syncing, check your app tier in the [Strava API settings dashboard](https://www.strava.com/settings/api). Standard Tier developers need a Strava subscription to access the API; existing Standard Tier developers are affected from June 30, 2026. See [Strava's announcement](https://communityhub.strava.com/insider-journal-9/an-update-to-our-developer-program-13428) for details.
+
 1. Sign in/Sign up [Strava](https://www.strava.com/) account
 2. Open after successful Signin [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
 3. Create `My API Application`: Enter the following information
