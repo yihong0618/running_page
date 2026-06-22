@@ -298,6 +298,10 @@ jobs:
     if: needs.sync.result == 'success' && needs.sync.outputs.BUILD_GH_PAGES == 'true'
     name: Build and publish Github Pages
     uses: ./.github/workflows/gh-pages.yml
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
     with:
       save_data_in_github_cache: ${{needs.sync.outputs.SAVE_DATA_IN_GITHUB_CACHE == 'true'}}
       data_cache_prefix: ${{needs.sync.outputs.DATA_CACHE_PREFIX}}
