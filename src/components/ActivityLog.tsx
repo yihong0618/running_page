@@ -52,18 +52,18 @@ export function ActivityLog({ activities, years, year, setYear, selectedActivity
         setDistFilter('all')
       }
     }
-  }, [selectedActivity?.run_id])
+    // `sorted` is in deps so the page refreshes when the list changes (year/filter switch)
+    // even if the selected run_id stays the same — avoids stale closure. M6 fix.
+  }, [selectedActivity?.run_id, sorted])
 
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE)
   const pageData = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
-
-  const logTitle = filter === 'Run' ? t('activityLog') : t('activityLog')
 
   return (
     <div className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold">{logTitle}</h2>
+        <h2 className="text-lg font-bold">{t('activityLog')}</h2>
         <span className="text-sm text-[var(--color-muted)]">
           {t('showing')} {page * PAGE_SIZE + 1}-{Math.min((page + 1) * PAGE_SIZE, sorted.length)} {t('of')} {sorted.length}
         </span>
@@ -72,7 +72,7 @@ export function ActivityLog({ activities, years, year, setYear, selectedActivity
       {/* Year tabs */}
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <button
-          onClick={() => setYear(null)}
+          onClick={() => { setYear(null); setPage(0) }}
           className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${year === null ? 'bg-[var(--color-accent)] text-white' : 'bg-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-text)]'}`}
         >
           All

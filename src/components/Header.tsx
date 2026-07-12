@@ -32,17 +32,18 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
         {/* Right nav */}
         <div className="flex items-center gap-6">
           {navItems.map((item) => (
-            <span
-              key={item.label}
+            <button
+              type="button"
+              key={item.page}
               onClick={() => onNavigate(item.page)}
-              className={`text-sm cursor-pointer transition-colors ${
+              className={`text-sm cursor-pointer transition-colors bg-transparent border-0 p-0 ${
                 item.page === page
                   ? 'text-[var(--color-accent)] font-medium'
                   : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'
               }`}
             >
               {item.label}
-            </span>
+            </button>
           ))}
           <button
             onClick={toggleTheme}

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { LocaleProvider } from './hooks/useLocale'
 import { THEME_PRESET } from './config'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 // 主题注册表 — 新增主题时在此处注册，并在 src/themes/ 下创建对应文件夹
 const themes: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
@@ -15,13 +16,15 @@ const ThemeComponent = themes[THEME_PRESET] ?? themes['dashboard']
 export default function App() {
   return (
     <LocaleProvider>
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-bg, #0d1117)' }}>
-          <div style={{ color: 'var(--color-muted, #8b949e)', fontSize: '0.875rem' }}>Loading...</div>
-        </div>
-      }>
-        <ThemeComponent />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-bg, #0d1117)' }}>
+            <div style={{ color: 'var(--color-muted, #8b949e)', fontSize: '0.875rem' }}>Loading...</div>
+          </div>
+        }>
+          <ThemeComponent />
+        </Suspense>
+      </ErrorBoundary>
     </LocaleProvider>
   )
 }

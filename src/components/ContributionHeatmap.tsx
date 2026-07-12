@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { toPng } from 'html-to-image'
 import type { Activity, SportFilter } from '../types'
 import { getAvailableYears, formatDistance, parseMovingTime, formatPace } from '../hooks/useActivities'
@@ -76,6 +76,9 @@ export function ContributionHeatmap({ activities, year: defaultYear, filter, onS
   const { t, locale } = useLocale()
   const allYears = getAvailableYears(activities)
   const [selectedYear, setSelectedYear] = useState<number | 'all'>(defaultYear)
+  // Keep internal selection in sync when the parent's `year` prop changes
+  // (e.g. picking a year in StatsCards / ActivityLog). M4 fix.
+  useEffect(() => { setSelectedYear(defaultYear) }, [defaultYear])
   // yearWindowEnd: index into allYears of the last visible year (0-based, most-recent-first)
   const [yearWindowEnd, setYearWindowEnd] = useState(Math.min(MAX_VISIBLE_YEARS - 1, allYears.length - 1))
   const captureRef = useRef<HTMLDivElement>(null)
@@ -90,7 +93,11 @@ export function ContributionHeatmap({ activities, year: defaultYear, filter, onS
     const totalDist = yearActivities.reduce((s, a) => s + a.distance, 0)
     const totalTime = yearActivities.reduce((s, a) => s + parseMovingTime(a.moving_time), 0)
     const runs = yearActivities.filter((a) => a.type === 'Run')
-    const avgPace = runs.length > 0 ? runs.reduce((s, a) => s + a.average_speed, 0) / runs.length : 0
+    // Average pace as distance-weighted mean speed (totalDistance / totalTime),
+    // not an arithmetic mean of per-run speeds. M5 fix.
+    const runDistance = runs.reduce((s, a) => s + a.distance, 0)
+    const runTime = runs.reduce((s, a) => s + parseMovingTime(a.moving_time), 0)
+    const avgPace = runTime > 0 && runDistance > 0 ? runDistance / runTime : 0
 
     // Per-day totals
     const dayMap = new Map<string, number>()

@@ -121,3 +121,10 @@ export const getActivityData = () => {
   if (activityDataCache) return activityDataCache
   throw loadActivityData()
 }
+
+// Reset the module-level cache so an ErrorBoundary can retry after a fetch failure
+export function resetActivityData() {
+  activityDataCache = null
+  activityDataError = null
+  activityDataPromise = null
+}

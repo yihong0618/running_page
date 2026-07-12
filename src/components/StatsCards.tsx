@@ -46,12 +46,17 @@ export function StatsCards({ activities, allActivities, year, filter, onSelectAc
     return aDayOfYear <= dayOfYear
   })
   const lastYearDistance = lastYearActivities.reduce((s, a) => s + a.distance, 0)
-  const yearDiff = yearDistance - lastYearDistance
+  const lastYearSeconds = lastYearActivities.reduce((s, a) => s + parseMovingTime(a.moving_time), 0)
+  // Unit-aware diff: seconds in time mode, meters in distance mode
+  const yearDiff = goal.unit === 'time' ? yearSeconds - lastYearSeconds : yearDistance - lastYearDistance
 
-  // Current month stats
-  const monthActivities = activities.filter((a) => {
+  // Current month stats — always reflects the current calendar month,
+  // independent of the year selected for the yearly card (H2 fix).
+  const monthActivities = allActivities.filter((a) => {
     const d = new Date(a.start_date_local)
-    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+    if (d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth()) return false
+    if (filter !== 'all' && a.type !== filter) return false
+    return true
   })
   const monthDistance = monthActivities.reduce((s, a) => s + a.distance, 0)
   const monthCount = monthActivities.length
@@ -70,16 +75,19 @@ export function StatsCards({ activities, allActivities, year, filter, onSelectAc
     return d.getDate() <= now.getDate()
   })
   const lastMonthDistance = lastMonthActivities.reduce((s, a) => s + a.distance, 0)
-  const monthDiff = monthDistance - lastMonthDistance
+  const lastMonthSeconds = lastMonthActivities.reduce((s, a) => s + parseMovingTime(a.moving_time), 0)
+  const monthDiff = goal.unit === 'time' ? monthSeconds - lastMonthSeconds : monthDistance - lastMonthDistance
 
   // Current week stats — week starts on Monday
   const dayOfWeek = now.getDay() // 0=Sun
   const daysSinceMon = (dayOfWeek + 6) % 7 // Mon=0 … Sun=6
   const weekStart = new Date(now.getTime() - daysSinceMon * 86400000)
   weekStart.setHours(0, 0, 0, 0)
-  const weekActivities = activities.filter((a) => {
+  const weekActivities = allActivities.filter((a) => {
     const d = new Date(a.start_date_local)
-    return d >= weekStart
+    if (d < weekStart) return false
+    if (filter !== 'all' && a.type !== filter) return false
+    return true
   })
   const weekDistance = weekActivities.reduce((s, a) => s + a.distance, 0)
   const weekCount = weekActivities.length
@@ -95,7 +103,8 @@ export function StatsCards({ activities, allActivities, year, filter, onSelectAc
     return true
   })
   const lastWeekDistance = lastWeekActivities.reduce((s, a) => s + a.distance, 0)
-  const weekDiff = weekDistance - lastWeekDistance
+  const lastWeekSeconds = lastWeekActivities.reduce((s, a) => s + parseMovingTime(a.moving_time), 0)
+  const weekDiff = goal.unit === 'time' ? weekSeconds - lastWeekSeconds : weekDistance - lastWeekDistance
 
   // Use local date string to avoid UTC offset issues
   function toLocalDateStr(d: Date): string {
