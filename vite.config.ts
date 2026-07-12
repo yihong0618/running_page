@@ -44,12 +44,19 @@ export default defineConfig({
               fn: () => {
                 return {
                   element: {
-                    enter: (node: { attributes: { fill?: string; stroke?: string; class?: string } }) => {
+                    enter: (node: {
+                      attributes: {
+                        fill?: string;
+                        stroke?: string;
+                        class?: string;
+                      };
+                    }) => {
                       const fillColor = node.attributes.fill;
                       if (fillColor) {
                         const lowerCaseFill = fillColor.toLowerCase();
                         if (colorClassMapping[lowerCaseFill]) {
-                          node.attributes.class = colorClassMapping[lowerCaseFill];
+                          node.attributes.class =
+                            colorClassMapping[lowerCaseFill];
                         }
                       }
                       const strokeColor = node.attributes.stroke;
@@ -59,7 +66,8 @@ export default defineConfig({
                           const existingClass = node.attributes.class || '';
                           const newClass = colorClassMapping[lowerCaseStroke];
                           if (!existingClass.includes(newClass)) {
-                            node.attributes.class = `${existingClass} ${newClass}`.trim();
+                            node.attributes.class =
+                              `${existingClass} ${newClass}`.trim();
                           }
                         }
                       }

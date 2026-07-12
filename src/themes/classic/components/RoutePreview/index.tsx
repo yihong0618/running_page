@@ -1,7 +1,11 @@
 import React from 'react';
 import { pathForRun } from '../../utils/geoUtils';
 import type { Activity } from '../../utils/utils';
-import { NO_ROUTE_DATA, INVALID_ROUTE_DATA, INDOOR_COLOR } from '../../utils/const';
+import {
+  NO_ROUTE_DATA,
+  INVALID_ROUTE_DATA,
+  INDOOR_COLOR,
+} from '../../utils/const';
 import styles from './style.module.css';
 
 interface RoutePreviewProps {

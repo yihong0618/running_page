@@ -202,9 +202,7 @@ export const getMapTheme = (): string => {
   if (typeof window === 'undefined') return MAP_TILE_STYLE_DARK;
 
   const dataTheme = document.documentElement.getAttribute('data-theme') as
-    | 'light'
-    | 'dark'
-    | null;
+    'light' | 'dark' | null;
   const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
 
   if (dataTheme) {

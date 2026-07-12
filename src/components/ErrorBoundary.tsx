@@ -1,12 +1,12 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react'
-import { resetActivityData } from '../hooks/useActivities'
+import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { resetActivityData } from '../hooks/useActivities';
 
 interface Props {
-  children: ReactNode
+  children: ReactNode;
 }
 interface State {
-  hasError: boolean
-  message: string
+  hasError: boolean;
+  message: string;
 }
 
 /**
@@ -15,41 +15,52 @@ interface State {
  * activities.json load degrades gracefully instead of blanking the page.
  */
 export class ErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false, message: '' }
+  state: State = { hasError: false, message: '' };
 
   static getDerivedStateFromError(error: unknown): State {
-    return { hasError: true, message: error instanceof Error ? error.message : String(error) }
+    return {
+      hasError: true,
+      message: error instanceof Error ? error.message : String(error),
+    };
   }
 
   componentDidCatch(error: unknown, _info: ErrorInfo) {
-    // eslint-disable-next-line no-console
-    console.error('ErrorBoundary caught:', error)
+    console.error('ErrorBoundary caught:', error);
   }
 
   private handleRetry = () => {
-    resetActivityData()
-    this.setState({ hasError: false, message: '' })
-  }
+    resetActivityData();
+    this.setState({ hasError: false, message: '' });
+  };
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-3" style={{ backgroundColor: 'var(--color-bg, #0d1117)', color: 'var(--color-muted, #8b949e)' }}>
-          <p className="text-base font-medium" style={{ color: 'var(--color-text, #e6edf3)' }}>
+        <div
+          className="flex min-h-screen flex-col items-center justify-center gap-3"
+          style={{
+            backgroundColor: 'var(--color-bg, #0d1117)',
+            color: 'var(--color-muted, #8b949e)',
+          }}
+        >
+          <p
+            className="text-base font-medium"
+            style={{ color: 'var(--color-text, #e6edf3)' }}
+          >
             Failed to load activities
           </p>
           <p className="text-xs">{this.state.message}</p>
           <button
             type="button"
             onClick={this.handleRetry}
-            className="mt-1 px-4 py-1.5 rounded-md text-sm font-medium text-white"
+            className="mt-1 rounded-md px-4 py-1.5 text-sm font-medium text-white"
             style={{ backgroundColor: 'var(--color-accent, #a855f7)' }}
           >
             Retry
           </button>
         </div>
-      )
+      );
     }
-    return this.props.children
+    return this.props.children;
   }
 }
