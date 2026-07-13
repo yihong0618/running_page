@@ -123,7 +123,7 @@ class CircularDrawer(TracksDrawer):
             a1 = math.radians(day * df)
             a2 = math.radians((day + 1) * df)
             if date.day == 1:
-                (_, last_day) = calendar.monthrange(date.year, date.month)
+                _, last_day = calendar.monthrange(date.year, date.month)
                 a3 = math.radians((day + last_day - 1) * df)
                 sin_a1, cos_a1 = math.sin(a1), math.cos(a1)
                 sin_a3, cos_a3 = math.sin(a3), math.cos(a3)
