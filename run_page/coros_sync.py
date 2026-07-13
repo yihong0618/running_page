@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import hashlib
+import json
 import os
 import time
 
@@ -17,6 +18,7 @@ COROS_URL_DICT = {
 }
 
 TIME_OUT = httpx.Timeout(240.0, connect=360.0)
+COROS_API_RESULT_SUCCESS = "0000"
 
 
 class Coros:
@@ -25,6 +27,14 @@ class Coros:
         self.password = password
         self.headers = None
         self.req = None
+        self.user_id = None
+
+    @staticmethod
+    def _ensure_success(resp_json, context):
+        if str(resp_json.get("result")) != COROS_API_RESULT_SUCCESS:
+            raise Exception(
+                f"============Coros {context} failed: {resp_json.get('message', 'unknown error')} (result={resp_json.get('result')})==========="
+            )
 
     async def login(self):
         url = COROS_URL_DICT.get("LOGIN_URL")
@@ -47,14 +57,23 @@ class Coros:
         data = {"account": self.account, "accountType": 2, "pwd": self.password}
         async with httpx.AsyncClient(timeout=TIME_OUT) as client:
             response = await client.post(url, json=data, headers=headers)
+            response.raise_for_status()
             resp_json = response.json()
+            self._ensure_success(resp_json, "login")
+            user_id = resp_json.get("data", {}).get("userId")
             access_token = resp_json.get("data", {}).get("accessToken")
-            if not access_token:
+            if not access_token or user_id is None:
                 raise Exception(
                     "============Login failed! please check your account and password==========="
                 )
+            self.user_id = user_id
             self.headers = {
+                "content-type": "application/json",
+                "accept": "application/json, text/plain, */*",
+                "user-agent": headers["user-agent"],
                 "accesstoken": access_token,
+                "accessToken": access_token,
+                "yfheader": json.dumps({"userId": self.user_id}),
                 "cookie": f"CPL-coros-region=2; CPL-coros-token={access_token}",
             }
             self.req = httpx.AsyncClient(timeout=TIME_OUT, headers=self.headers)
@@ -65,12 +84,14 @@ class Coros:
 
     async def fetch_activity_ids(self):
         page_number = 1
-        all_activities_ids = []
+        all_activities = []
 
         while True:
             url = f"{COROS_URL_DICT.get('ACTIVITY_LIST')}&pageNumber={page_number}&size=20"
             response = await self.req.get(url)
+            response.raise_for_status()
             data = response.json()
+            self._ensure_success(data, "fetch activity list")
             activities = data.get("data", {}).get("dataList", None)
             if not activities:
                 break
@@ -78,19 +99,23 @@ class Coros:
                 label_id = activity["labelId"]
                 if label_id is None:
                     continue
-                all_activities_ids.append(label_id)
+                all_activities.append(
+                    (str(label_id), activity.get("sportType") or activity.get("mode"))
+                )
 
             page_number += 1
 
-        return all_activities_ids
+        return all_activities
 
-    async def download_activity(self, label_id):
+    async def download_activity(self, label_id, sport_type=100):
         download_folder = FIT_FOLDER
-        download_url = f"{COROS_URL_DICT.get('DOWNLOAD_URL')}?labelId={label_id}&sportType=100&fileType=4"
+        download_url = f"{COROS_URL_DICT.get('DOWNLOAD_URL')}?labelId={label_id}&sportType={sport_type}&fileType=4"
         file_url = None
         try:
             response = await self.req.post(download_url)
+            response.raise_for_status()
             resp_json = response.json()
+            self._ensure_success(resp_json, f"download metadata for {label_id}")
             file_url = resp_json.get("data", {}).get("fileUrl")
             if not file_url:
                 print(f"No file URL found for label_id {label_id}")
@@ -126,16 +151,23 @@ async def download_and_generate(account, password):
     coros = Coros(account, password)
     await coros.init()
 
-    activity_ids = await coros.fetch_activity_ids()
-    print("activity_ids: ", len(activity_ids))
+    activity_items = await coros.fetch_activity_ids()
+    print("activity_ids: ", len(activity_items))
     print("downloaded_ids: ", len(downloaded_ids))
-    to_generate_coros_ids = list(set(activity_ids) - set(downloaded_ids))
+    to_generate_coros_ids = [
+        (label_id, sport_type)
+        for label_id, sport_type in activity_items
+        if label_id not in downloaded_ids
+    ]
     print("to_generate_activity_ids: ", len(to_generate_coros_ids))
 
     start_time = time.time()
     await gather_with_concurrency(
         10,
-        [coros.download_activity(label_d) for label_d in to_generate_coros_ids],
+        [
+            coros.download_activity(label_id, sport_type or 100)
+            for label_id, sport_type in to_generate_coros_ids
+        ],
     )
     print(f"Download finished. Elapsed {time.time()-start_time} seconds")
     await coros.req.aclose()
