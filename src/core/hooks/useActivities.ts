@@ -134,7 +134,7 @@ export function formatPace(speedMs: number): string {
   const paceMin = 1000 / 60 / speedMs;
   const min = Math.floor(paceMin);
   const sec = Math.round((paceMin - min) * 60);
-  return `${min}'${sec.toString().padStart(2, '0')}"`;
+  return `${min}:${sec.toString().padStart(2, '0')}`;
 }
 
 export function formatDuration(timeStr: string): string {

@@ -260,12 +260,40 @@ docker run -itd -p 80:80   running_page:latest
 
 ## 替换 Mapbox token
 
-> 在 `config.yml` 中设置你自己的 [Mapbox token](https://www.mapbox.com/)：
+> **安全提示**: Mapbox token 已从 `src/themes/classic/utils/const.ts` 迁移到 `config.yml` 以获得更好的安全管理。
+>
+> **对于 GitHub Actions / 自动部署**:
+> 1. 进入你的仓库 **Settings → Secrets and variables → Actions**
+> 2. 创建名为 `MAPBOX_TOKEN` 的 Secret，填入你的 Mapbox token 值
+> 3. 构建过程会在 GitHub Actions 工作流执行时自动注入该 token
+> 4. **不要**在仓库中提交你的 token
+>
+> **优先级顺序**：
+> - GitHub Actions Secret (`MAPBOX_TOKEN` 环境变量) 优先级最高
+> - 如果 Secret 未设置，则回退到 `config.yml` 中的 mapbox_token
+> - 如果都未设置，则默认为空字符串
 
+设置你的 [Mapbox token](https://www.mapbox.com/) 有以下几种方式：
+
+**方式 1：GitHub Actions Secret（推荐用于 GitHub Pages）**
+```bash
+# 将 MAPBOX_TOKEN 添加到仓库 Secrets
+# config.yml 中无需改动 - 会自动使用 Secret 中的 token
+```
+
+**方式 2：本地开发编辑 config.yml**
 ```yaml
 # config.yml
 mapbox_token: 'pk.eyJ1...your-token-here'
 ```
+
+**方式 3：本地开发使用环境变量**
+```bash
+export VITE_MAPBOX_TOKEN='pk.eyJ1...your-token-here'
+pnpm develop
+```
+
+> **重要提示**: 不要使用项目维护者的 token - 查看此 [issue](https://github.com/yihong0618/running_page/issues/643) 和 [issue #1055](https://github.com/yihong0618/running_page/issues/1055) 了解安全和速率限制的考虑。
 
 ## 更改默认地图服务样式（经典主题）
 

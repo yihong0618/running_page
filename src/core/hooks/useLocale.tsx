@@ -17,7 +17,8 @@ const LocaleContext = createContext<LocaleContextValue>({
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
-    return (localStorage.getItem('locale') as Locale) || DEFAULT_LOCALE;
+    const stored = localStorage.getItem('locale');
+    return (stored as Locale) || DEFAULT_LOCALE;
   });
 
   const setLocale = useCallback((l: Locale) => {

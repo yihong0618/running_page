@@ -36,4 +36,5 @@ export const DEFAULT_GOAL: GoalConfig = GOALS.all ?? {
   unit: 'distance',
 };
 export const AVATAR: string = config.avatar ?? '';
-export const MAPBOX_TOKEN: string = config.mapbox_token ?? '';
+export const MAPBOX_TOKEN: string =
+  import.meta.env.VITE_MAPBOX_TOKEN || config.mapbox_token || '';

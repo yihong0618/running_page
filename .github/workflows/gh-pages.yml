@@ -96,6 +96,7 @@ jobs:
       - name: Build
         env:
           REPO_NAME: ${{ github.event.repository.name }}
+          VITE_MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
         run: PATH_PREFIX=/$REPO_NAME pnpm build
 
       - name: Upload artifact

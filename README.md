@@ -257,12 +257,40 @@ Open your browser and visit localhost:80
 
 ### Modifying Mapbox token
 
-> Set your [Mapbox token](https://www.mapbox.com/) in `config.yml`:
+> **Security Notice**: The Mapbox token has been migrated from `src/themes/classic/utils/const.ts` to `config.yml` for better security management.
+>
+> **For GitHub Actions / Automated Deployment**:
+> 1. Go to your repository's **Settings → Secrets and variables → Actions**
+> 2. Create a new secret named `MAPBOX_TOKEN` with your Mapbox token value
+> 3. The build process automatically injects this token during GitHub Actions workflow execution
+> 4. You should NOT commit your token to the repository
+>
+> **Priority Order**:
+> - GitHub Actions Secret (`MAPBOX_TOKEN` env var) takes priority
+> - Falls back to `config.yml` mapbox_token if secret is not set
+> - Defaults to empty string if neither is available
 
+Set your [Mapbox token](https://www.mapbox.com/) in one of these ways:
+
+**Option 1: GitHub Actions Secret (Recommended for GitHub Pages)**
+```bash
+# Add MAPBOX_TOKEN to your repository secrets
+# No changes needed to config.yml - it will use the secret automatically
+```
+
+**Option 2: Local Development with config.yml**
 ```yaml
 # config.yml
 mapbox_token: 'pk.eyJ1...your-token-here'
 ```
+
+**Option 3: Environment Variable (Local Development)**
+```bash
+export VITE_MAPBOX_TOKEN='pk.eyJ1...your-token-here'
+pnpm develop
+```
+
+> **Important**: Do not use the project maintainer's token - check this [issue](https://github.com/yihong0618/running_page/issues/643) and [issue #1055](https://github.com/yihong0618/running_page/issues/1055) for security and rate limit concerns.
 
 ## Change Default Map Tile Style (Classic Theme)
 
