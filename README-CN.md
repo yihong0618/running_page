@@ -260,18 +260,44 @@ docker run -itd -p 80:80   running_page:latest
 
 ## 替换 Mapbox token
 
-> 建议有能力的同学把 `src/utils/const.ts` 文件中的 Mapbox token 自己的 [Mapbox token](https://www.mapbox.com/)
+> **安全提示**: Mapbox token 已从 `src/themes/classic/utils/const.ts` 迁移到 `config.yml` 以获得更好的安全管理。
 >
-> 如果你是海外用户请更改 `IS_CHINESE = false` in `src/utils/const.ts`
+> **对于 GitHub Actions / 自动部署**:
+> 1. 进入你的仓库 **Settings → Secrets and variables → Actions**
+> 2. 创建名为 `MAPBOX_TOKEN` 的 Secret，填入你的 Mapbox token 值
+> 3. 构建过程会在 GitHub Actions 工作流执行时自动注入该 token
+> 4. **不要**在仓库中提交你的 token
+>
+> **优先级顺序**：
+> - GitHub Actions Secret (`MAPBOX_TOKEN` 环境变量) 优先级最高
+> - 如果 Secret 未设置，则回退到 `config.yml` 中的 mapbox_token
+> - 如果都未设置，则默认为空字符串
 
-```typescript
-const MAPBOX_TOKEN =
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+设置你的 [Mapbox token](https://www.mapbox.com/) 有以下几种方式：
+
+**方式 1：GitHub Actions Secret（推荐用于 GitHub Pages）**
+```bash
+# 将 MAPBOX_TOKEN 添加到仓库 Secrets
+# config.yml 中无需改动 - 会自动使用 Secret 中的 token
 ```
 
-## 更改默认地图服务样式
+**方式 2：本地开发编辑 config.yml**
+```yaml
+# config.yml
+mapbox_token: 'pk.eyJ1...your-token-here'
+```
 
-> 在使用默认的地图服务样式之外，你可以通过修改 src/utils/const.ts 文件中的以下配置项来自定义地图显示。
+**方式 3：本地开发使用环境变量**
+```bash
+export VITE_MAPBOX_TOKEN='pk.eyJ1...your-token-here'
+pnpm develop
+```
+
+> **重要提示**: 不要使用项目维护者的 token - 查看此 [issue](https://github.com/yihong0618/running_page/issues/643) 和 [issue #1055](https://github.com/yihong0618/running_page/issues/1055) 了解安全和速率限制的考虑。
+
+## 更改默认地图服务样式（经典主题）
+
+> 如果使用**经典（classic）**主题，你可以通过修改经典主题的配置来自定义地图显示。Dashboard 主题默认使用 Mapbox（通过 `config.yml` 配置）。
 
 ```typescript
 const MAP_TILE_VENDOR = 'mapcn'; // 默认（免费！）
@@ -315,7 +341,7 @@ const MAP_TILE_STYLE = 'dark-v10'; // 所选供应商的样式
 const MAP_TILE_ACCESS_TOKEN = 'your_access_token_here';
 ```
 
-每个`MAP_TILE_VERNDOR`都提供了多种`MAP_TILE_STYLE`选择，配置时需保证匹配。具体的`MAP_TILE_STYLE`名称，可参考`src/utils/const.ts`文件中的定义。
+每个`MAP_TILE_VERNDOR`都提供了多种`MAP_TILE_STYLE`选择，配置时需保证匹配。具体的`MAP_TILE_STYLE`名称，可参考经典主题中的地图配置文件。
 
 当使用 **"mapbox"**、**"maptiler"** 或是 **"stadiamaps"** 时，需配置`MAP_TILE_ACCESS_TOKEN`。默认的 token 在不更改的情况下，使用时会发生配额超限的问题。
 
@@ -323,44 +349,39 @@ const MAP_TILE_ACCESS_TOKEN = 'your_access_token_here';
 - **MapTiler**: 在 https://cloud.maptiler.com/auth/widget 注册获取（免费）
 - **Stadia Maps**: 在 https://client.stadiamaps.com/signup/ 注册获取（免费）
 
-## 个性化设置
+## 主题系统 (3.0)
 
-> 在仓库目录下找到 `src/static/site-metadata.ts`，找到以下内容并修改成你自己想要的。
+Running Page 3.0 引入了可插拔的主题架构。内置主题包括 **Dashboard**（现代单页布局）和 **Classic**（原始多页面布局）。
 
-```typescript
-siteMetadata: {
-  siteTitle: 'Running Page', #网站标题
-  siteUrl: 'https://yihong.run', #网站域名
-  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU', #左上角 LOGO
-  description: 'Personal site and blog',
-  navLinks: [
-    {
-      name: 'Blog', #右上角导航名称
-      url: 'https://yihong.run/running', #右上角导航链接
-    },
-    {
-      name: 'About',
-      url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
-    },
-  ],
-},
+### 切换主题
+
+编辑 `config.yml`，重新构建即可：
+
+```yaml
+# dashboard | classic | 自定义
+theme_preset: classic
 ```
 
-> 修改 `src/utils/const.ts` 文件中的样式：
+> 详细架构说明、主题介绍、自定义主题创建方法及共享核心层 API 请参阅 **[docs/theme-system.md](docs/theme-system.md)**。
 
-```typescript
-// styling: 关闭虚线：设置为 `false`
-const USE_DASH_LINE = true;
-// styling: 透明度：[0, 1]
-const LINE_OPACITY = 0.4;
-// update for now 2024/11/17 the privacy mode is true
-// styling: 开启隐私模式 (不显示地图仅显示轨迹): 设置为 `true`
-// 注意：此配置仅影响页面显示，数据保护请参考下方的 "隐私保护"
-const PRIVACY_MODE = false;
-// styling: 默认关灯：设置为 `false`, 仅在隐私模式关闭时生效 (`PRIVACY_MODE` = false)
-const LIGHTS_ON = true;
-// styling: 是否显示列 ELEVATION_GAIN
-const SHOW_ELEVATION_GAIN = false;
+## 个性化设置 (3.0)
+
+所有个性化设置通过项目根目录的 `config.yml` 完成。直接编辑此文件即可，无需修改代码。
+
+```yaml
+# config.yml
+mapbox_token: 'your-token-here'   # https://account.mapbox.com
+avatar: 'https://...'              # 头像 URL
+locale: zh                         # zh | en
+theme: dark                        # system | light | dark
+theme_preset: dashboard            # dashboard | classic | 自定义
+
+goals:
+  Run:
+    yearly: 2000                   # 年度目标 (km)
+    monthly: 150                   # 月度目标 (km)
+    weekly: 35                     # 周度目标 (km)
+    unit: distance                 # distance (km) | time (分钟)
 ```
 
 > 隐私保护：设置下面环境变量：
@@ -1316,7 +1337,7 @@ python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --da
 5. 如果想把你的 running_page 部署在 xxx.github.io 而不是 xxx.github.io/run_page 亦或是想要添加自定义域名于 GitHub Pages，需要做三点
    - 修改你的 fork 的 running_page 仓库改名为 xxx.github.io, xxx 是你 github 的 username
    - 修改 gh-pages.yml 中的 Build 模块，删除 `${{ github.event.repository.name }}` 改为`run: PATH_PREFIX=/ pnpm build` 即可
-   - 修改 src/static/site-metadata.ts 中 `siteUrl: ''` 或是添加你的自定义域名，`siteUrl: '[your_own_domain]'`，即可
+   - 在 `config.yml` 中配置 `site_url` 或添加你的自定义域名即可
 
 </details>
 

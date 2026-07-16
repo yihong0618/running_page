@@ -7,6 +7,7 @@
   "dependencies": {
     "@mapbox/mapbox-gl-language": "^1.0.1",
     "@mapbox/polyline": "^1.2.1",
+    "html-to-image": "^1.11.13",
     "@math.gl/web-mercator": "^4.1.0",
     "@svgr/plugin-svgo": "^8.1.0",
     "@vercel/analytics": "^2.0.1",
@@ -35,6 +36,7 @@
     "develop": "vite dev",
     "dev": "vite dev",
     "serve": "vite serve",
+    "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx --fix",
     "check": "prettier --check \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\" \"assets/index.tsx\" \"eslint.config.mjs\"",
     "format": "prettier --write \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\" \"assets/index.tsx\" \"eslint.config.mjs\"",
@@ -52,8 +54,8 @@
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^5.7.0",
     "@eslint/js": "^10.0.1",
+    "@modyfi/vite-plugin-yaml": "^1.1.1",
     "@tailwindcss/vite": "^4.2.4",
-    "@types/geojson": "^7946.0.16",
     "@types/mapbox__polyline": "^1.0.5",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",

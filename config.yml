@@ -1,0 +1,43 @@
+# Running Page 3.0 配置文件
+# 修改此文件即可完成个性化设置，无需改动源代码。
+
+# ── 地图 ──────────────────────────────────────────────────────────────────────
+
+# Mapbox public access token（https://account.mapbox.com）
+# Migrated from src/themes/classic/utils/const.ts
+# For security, this token is managed via GitHub Actions secret (MAPBOX_TOKEN)
+# Users should replace with their own token in GitHub Actions secrets
+# See https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions
+mapbox_token: ''
+
+# ── 外观 ─────────────────────────────────────────────────────────────────────
+
+# 头像 URL（支持本地路径或远程图片链接）
+avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU'
+
+# 默认语言：zh（中文）| en（英文）
+locale: zh
+
+# 默认主题：system（跟随系统）| light（浅色）| dark（深色）
+theme: dark
+
+# ── 主题预设 ──────────────────────────────────────────────────────────────────
+# 可选值：dashboard（3.0 Dashboard 风格）| classic（旧版多页面风格）| 自定义主题名
+# 自定义主题：在 src/themes/<name>/ 下创建主题，并在 src/App.tsx 注册后填写对应名称
+theme_preset: classic
+
+# ── 运动目标 ──────────────────────────────────────────────────────────────────
+# unit: distance → 单位 km
+
+goals:
+  all:
+    yearly: 2000
+    monthly: 150
+    weekly: 35
+    unit: distance
+
+  Run:
+    yearly: 2000
+    monthly: 150
+    weekly: 35
+    unit: distance
