@@ -118,11 +118,65 @@ export function useFilteredActivities(
   }, [activities, filter, year]);
 }
 
-export function parseMovingTime(time: string): number {
-  const parts = time.split(':').map(Number);
-  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-  if (parts.length === 2) return parts[0] * 60 + parts[1];
-  return parts[0];
+export function parseMovingTime(
+  time: string | number | undefined | null
+): number {
+  if (!time) return 0;
+
+  if (typeof time === 'number') {
+    return isNaN(time) ? 0 : time;
+  }
+
+  if (typeof time === 'string') {
+    let str = time.trim();
+    let extraDaysSeconds = 0;
+
+    // Handle "1 day, 10:44:26" strings
+    if (str.includes('day')) {
+      const dayMatch = str.match(/(\d+)\s+day/);
+      if (dayMatch) {
+        extraDaysSeconds = parseInt(dayMatch[1], 10) * 86400;
+      }
+      str = str.split(',').pop()?.trim() || str;
+    }
+
+    // Handle epoch timestamps like "1970-01-02 10:44:26.134000"
+    if (str.includes(' ')) {
+      const parts = str.split(' ');
+      const datePart = parts[0]; // e.g. "1970-01-02"
+      str = parts[1]; // e.g. "10:44:26.134000"
+
+      const dateComponents = datePart.split('-');
+      if (dateComponents.length === 3) {
+        const dayNum = parseInt(dateComponents[2], 10);
+        if (!isNaN(dayNum) && dayNum > 1) {
+          extraDaysSeconds += (dayNum - 1) * 86400;
+        }
+      }
+    }
+
+    // Strip milliseconds (.134000)
+    if (str.includes('.')) {
+      str = str.split('.')[0];
+    }
+
+    // Parse HH:MM:SS / MM:SS / SS
+    const timeParts = str.split(':').map(Number);
+    if (timeParts.some(isNaN)) return 0;
+
+    let seconds = 0;
+    if (timeParts.length === 3) {
+      seconds = timeParts[0] * 3600 + timeParts[1] * 60 + timeParts[2];
+    } else if (timeParts.length === 2) {
+      seconds = timeParts[0] * 60 + timeParts[1];
+    } else if (timeParts.length === 1) {
+      seconds = timeParts[0];
+    }
+
+    return seconds + extraDaysSeconds;
+  }
+
+  return 0;
 }
 
 export function formatDistance(meters: number): string {
