@@ -10,7 +10,7 @@ export default function ClassicTheme() {
   return (
     <HelmetProvider>
       <BrowserRouter>
-        <Suspense>
+        <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/summary" element={<Summary />} />
