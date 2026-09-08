@@ -5,7 +5,7 @@
 # Use of this source code is governed by a MIT-style
 # license that can be found in the LICENSE file.
 
-from typing import Tuple, Union
+from typing import Union
 
 
 class XY:
@@ -34,5 +34,5 @@ class XY:
     def __repr__(self):
         return f"XY: {self.x}/{self.y}"
 
-    def tuple(self) -> Tuple[float, float]:
+    def tuple(self) -> tuple[float, float]:
         return self.x, self.y

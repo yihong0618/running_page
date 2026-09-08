@@ -3,11 +3,12 @@
 # https://github.com/moruoxian/SyncOnelapToXoss.git
 # great thanks
 
-import os
-import uuid
-import hashlib
-import time
 import argparse
+import hashlib
+import os
+import time
+import uuid
+
 import requests
 from config import FIT_FOLDER
 

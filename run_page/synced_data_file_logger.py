@@ -1,6 +1,7 @@
-import os
-from config import SYNCED_FILE
 import json
+import os
+
+from config import SYNCED_FILE
 
 
 def save_synced_data_file_list(file_list: list):
@@ -17,8 +18,7 @@ def load_synced_file_list():
         with open(SYNCED_FILE, "r") as f:
             try:
                 return json.load(f)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 print(f"json load {SYNCED_FILE} \nerror {e}")
-                pass
 
     return []

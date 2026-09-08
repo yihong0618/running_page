@@ -44,7 +44,7 @@ def process_garmin_data(origin_file, use_fake_garmin_device):
             return BytesIO(origin_file_content)
 
         return do_process_garmin_data(origin_file_content, use_fake_garmin_device)
-    except Exception:
+    except Exception:  # noqa: BLE001
         print("process garmin data failed, will use origin file")
         traceback.print_exc()
         return BytesIO(origin_file.read())

@@ -3,10 +3,9 @@ import asyncio
 import os
 from datetime import datetime
 
-from tcxreader.tcxreader import TCXReader
-
 from config import TCX_FOLDER
 from garmin_sync import Garmin
+from tcxreader.tcxreader import TCXReader
 
 
 def get_to_generate_files(last_time):
@@ -48,7 +47,9 @@ async def upload_tcx_files_to_garmin(options):
             print("no garmin activity")
         else:
             after_datetime_str = last_activity[0]["startTimeGMT"]
-            after_datetime = datetime.strptime(after_datetime_str, "%Y-%m-%d %H:%M:%S")
+            after_datetime = datetime.strptime(  # noqa: DTZ007
+                after_datetime_str, "%Y-%m-%d %H:%M:%S"
+            )
             last_time = datetime.timestamp(after_datetime)
     else:
         print("Need to load all tcx files maybe take some time")

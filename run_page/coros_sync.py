@@ -6,8 +6,7 @@ import time
 
 import aiofiles
 import httpx
-
-from config import JSON_FILE, SQL_FILE, FOLDER_DICT
+from config import FOLDER_DICT, JSON_FILE, SQL_FILE
 from utils import make_activities_file
 
 COROS_URL_DICT = {
@@ -57,7 +56,7 @@ class Coros:
             resp_json = response.json()
             access_token = resp_json.get("data", {}).get("accessToken")
             if not access_token:
-                raise Exception(
+                raise Exception(  # noqa: TRY002
                     "============Login failed! please check your account and password==========="
                 )
             self.headers = {
@@ -129,7 +128,7 @@ class Coros:
             print(
                 f"Failed to download {file_url} with status code {response.status_code}: {exc}"
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             print(f"Error occurred while downloading {file_url}: {exc}")
         if file_path and os.path.exists(file_path):
             print(f"Delete the corrupted fit file: {fname}")

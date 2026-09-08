@@ -63,7 +63,7 @@ class RunningTUITest(unittest.IsolatedAsyncioTestCase):
 
         with TemporaryDirectory() as tmp:
             data_path = f"{tmp}/activities.json"
-            with open(data_path, "w") as fh:
+            with open(data_path, "w") as fh:  # noqa: ASYNC230 fmt: skip
                 json.dump(
                     [
                         _activity(1, "2024-01-01"),
@@ -109,7 +109,7 @@ class RunningTUITest(unittest.IsolatedAsyncioTestCase):
 
         with TemporaryDirectory() as tmp:
             data_path = f"{tmp}/activities.json"
-            with open(data_path, "w") as fh:
+            with open(data_path, "w") as fh:  # noqa: ASYNC230 fmt: skip
                 json.dump(
                     [
                         _activity(1, "2026-01-01"),
@@ -211,7 +211,7 @@ class RunningTUITest(unittest.IsolatedAsyncioTestCase):
 
         with TemporaryDirectory() as tmp:
             data_path = f"{tmp}/activities.json"
-            with open(data_path, "w") as fh:
+            with open(data_path, "w") as fh:  # noqa: ASYNC230 fmt: skip
                 json.dump(
                     [
                         _activity(1, "2025-01-01"),
@@ -234,7 +234,7 @@ class RunningTUITest(unittest.IsolatedAsyncioTestCase):
 
         with TemporaryDirectory() as tmp:
             data_path = f"{tmp}/activities.json"
-            with open(data_path, "w") as fh:
+            with open(data_path, "w") as fh:  # noqa: ASYNC230 fmt: skip
                 json.dump(
                     [
                         _activity(1, "2021-01-01"),
@@ -258,7 +258,7 @@ class RunningTUITest(unittest.IsolatedAsyncioTestCase):
 
         with TemporaryDirectory() as tmp:
             data_path = f"{tmp}/activities.json"
-            with open(data_path, "w") as fh:
+            with open(data_path, "w") as fh:  # noqa: ASYNC230 fmt: skip
                 json.dump(_many_activities(), fh)
 
             app = RunningTUI(data_path)
@@ -276,7 +276,7 @@ class RunningTUITest(unittest.IsolatedAsyncioTestCase):
 
         with TemporaryDirectory() as tmp:
             data_path = f"{tmp}/activities.json"
-            with open(data_path, "w") as fh:
+            with open(data_path, "w") as fh:  # noqa: ASYNC230 fmt: skip
                 json.dump(_many_activities(), fh)
 
             app = RunningTUI(data_path)
@@ -294,7 +294,7 @@ class RunningTUITest(unittest.IsolatedAsyncioTestCase):
 
         with TemporaryDirectory() as tmp:
             data_path = f"{tmp}/activities.json"
-            with open(data_path, "w") as fh:
+            with open(data_path, "w") as fh:  # noqa: ASYNC230 fmt: skip
                 json.dump(
                     [
                         _activity(1, "2024-01-01"),

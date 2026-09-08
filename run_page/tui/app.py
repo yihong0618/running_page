@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Group as RichGroup
 from rich.panel import Panel
@@ -11,9 +10,9 @@ from rich.table import Table as RichTable
 from rich.text import Text as RichText
 from textual import events
 from textual.app import App, ComposeResult
-from textual.message import Message
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual.message import Message
 from textual.reactive import reactive
 from textual.widget import Widget
 from textual.widgets import Button, DataTable, Label, Static
@@ -138,9 +137,7 @@ def _render_bar_chart(
 
     for label, value in zip(labels, values):
         filled = (
-            0
-            if max_value <= 0
-            else int(round(float(value) / float(max_value) * bar_width))
+            0 if max_value <= 0 else round(float(value) / float(max_value) * bar_width)
         )
         if value > 0:
             filled = max(1, filled)
@@ -327,8 +324,8 @@ class RouteMapWidget(Widget):
 class RunDetailPanel(Widget):
     """Metadata for the selected activity."""
 
-    activity: Optional[Activity] = reactive(None)
-    data: Optional[AggregatedData] = reactive(None)
+    activity: Activity | None = reactive(None)
+    data: AggregatedData | None = reactive(None)
 
     def _rows(self, activity: Activity) -> list[tuple[str, str]]:
         rows: list[tuple[str, str]] = [
@@ -550,7 +547,7 @@ class NavSidebar(Widget):
             super().__init__()
             self.view_name = view_name
 
-    ITEMS = [
+    ITEMS = [  # noqa: RUF012
         ("list", "1  List"),
         ("stats", "2  Stats"),
     ]
@@ -587,7 +584,7 @@ class NavSidebar(Widget):
 class StatsView(VerticalScroll):
     """Overall and per-year statistics."""
 
-    data: Optional[AggregatedData] = reactive(None)
+    data: AggregatedData | None = reactive(None)
     period_label = reactive("")
 
     def compose(self) -> ComposeResult:
@@ -596,7 +593,7 @@ class StatsView(VerticalScroll):
     def on_mount(self) -> None:
         self._refresh_body(reset_scroll=False)
 
-    def watch_data(self, _: Optional[AggregatedData]) -> None:
+    def watch_data(self, _: AggregatedData | None) -> None:
         self._refresh_body(reset_scroll=True)
 
     def watch_period_label(self, _: str) -> None:
@@ -890,7 +887,7 @@ class RunningTUI(App):
     #stats-body { height: auto; }
     """
 
-    BINDINGS = [
+    BINDINGS = [  # noqa: RUF012
         Binding("q", "quit", "Quit"),
         Binding("r", "refresh", "Refresh"),
         Binding("s", "toggle_sort", "Sort"),
@@ -942,7 +939,7 @@ class RunningTUI(App):
             self.activities = load_activities(self.data_path)
             self.data = aggregate_activities(self.activities)
             self.filtered_data = self.data
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             self.notify(f"Failed to load data: {exc}", severity="error", timeout=10)
             return
 
@@ -1117,7 +1114,7 @@ class RunningTUI(App):
             self._sync_filter_bar(default_latest_year=True)
             self._rebuild_filters()
             self.notify(f"Refreshed — {len(self.activities)} activities")
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             self.notify(f"Refresh failed: {exc}", severity="error")
 
     def action_toggle_sort(self) -> None:
