@@ -3,6 +3,8 @@ interface ISiteMetadataResult {
   siteUrl: string;
   description: string;
   logo: string;
+  repoUrl: string | undefined;
+  
   navLinks: {
     name: string;
     url: string;
