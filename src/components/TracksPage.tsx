@@ -11,7 +11,7 @@ import {
   formatPace,
 } from '../hooks/useActivities';
 import { useLocale } from '../hooks/useLocale';
-import { MAPBOX_TOKEN } from '../config';
+import { getMapStyle } from '../core/mapTiles';
 
 type SportType = 'Run';
 
@@ -104,10 +104,7 @@ function TrackMap({
   const mapReady = useRef(false);
   const activityRef = useRef(activity);
   const activitiesRef = useRef(activities);
-  const style =
-    dark !== false
-      ? 'mapbox://styles/mapbox/dark-v11'
-      : 'mapbox://styles/mapbox/light-v11';
+  const style = getMapStyle(dark !== false);
 
   // Keep the latest props in refs via an effect (not during render) so the
   // stable updateRoutes callback below can read them at event time. This is
@@ -215,7 +212,7 @@ function TrackMap({
       map.current.setStyle(style);
       return;
     }
-    mapboxgl.accessToken = MAPBOX_TOKEN;
+    mapboxgl.accessToken = 'pk.placeholder';
     mapReady.current = false;
     map.current = new mapboxgl.Map({
       container: mapContainer.current,

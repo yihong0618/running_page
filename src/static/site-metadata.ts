@@ -16,8 +16,8 @@ const getBasePath = () => {
 
 const data: ISiteMetadataResult = {
   siteTitle: 'Sports Page',
-  siteUrl: 'https://sports-page.lczhuigz.top',
-  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU',
+  siteUrl: 'https://sports-page.lczhuigz.cn',
+  logo: 'https://blog.lczhuigz.cn/images/fav-icon/fav-icon.jpg',
   description: 'Personal site and blog',
   navLinks: [
     {
@@ -26,11 +26,11 @@ const data: ISiteMetadataResult = {
     },
     {
       name: 'Blog',
-      url: 'https://blog.lczhuigz.top',
+      url: 'https://blog.lczhuigz.cn',
     },
     {
       name: 'About',
-      url: 'https://blog.lczhuigz.top/about',
+      url: 'https://blog.lczhuigz.cn/about',
     },
   ],
 };

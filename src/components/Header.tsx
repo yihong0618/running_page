@@ -1,5 +1,6 @@
 import type { Activity } from '../types';
 import { useLocale } from '../hooks/useLocale';
+import { AVATAR } from '../config';
 
 type Page = 'home' | 'tracks';
 
@@ -24,6 +25,13 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4">
         {/* Logo */}
         <div className="flex items-center gap-2">
+          {AVATAR && (
+            <img
+              src={AVATAR}
+              alt="logo"
+              className="h-8 w-8 rounded-full"
+            />
+          )}
           <span className="text-xl font-bold text-[var(--color-text)]">
             RUNNING<span className="text-[var(--color-run)]">.</span>PAGE
           </span>

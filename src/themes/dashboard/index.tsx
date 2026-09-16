@@ -1,4 +1,5 @@
 import './index.css';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { useMemo, useState } from 'react';
 import type { Activity } from '@/types';
 import {
@@ -45,6 +46,11 @@ function Dashboard() {
   }, [filtered, selectedProvince]);
 
   return (
+    <HelmetProvider>
+      <Helmet>
+        <title>Running Page</title>
+        <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}images/favicon.png`} />
+      </Helmet>
     <div className="min-h-screen bg-[var(--color-bg)]" data-filter={filter}>
       <Header
         dark={dark}
@@ -125,6 +131,7 @@ function Dashboard() {
         &copy; {new Date().getFullYear()} Running Page 3.0
       </footer>
     </div>
+    </HelmetProvider>
   );
 }
 
