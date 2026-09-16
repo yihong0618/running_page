@@ -1,6 +1,7 @@
 import type { Activity } from '../types';
 import { useLocale } from '../hooks/useLocale';
 import { AVATAR } from '../config';
+import siteMetadata from '../static/site-metadata';
 
 type Page = 'home' | 'tracks';
 
@@ -19,6 +20,10 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
     { label: t('home'), page: 'home' },
     { label: t('tracks'), page: 'tracks' },
   ];
+
+
+  // External navigation links from site-metadata.ts
+  const externalLinks = siteMetadata.navLinks;
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/70 backdrop-blur-md">
@@ -52,6 +57,17 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
             >
               {item.label}
             </button>
+          ))}
+          {externalLinks.map((link) => (
+            <a
+              key={link.url}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)]"
+            >
+              {t(link.name.toLowerCase())}
+            </a>
           ))}
           <button
             onClick={toggleTheme}
@@ -95,7 +111,7 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
             {locale === 'zh' ? 'EN' : '中'}
           </button>
           <a
-            href="https://github.com/yihong0618/running_page"
+            href={siteMetadata.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-muted)] transition-colors hover:bg-[var(--color-card)] hover:text-[var(--color-text)]"

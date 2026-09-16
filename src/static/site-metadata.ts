@@ -19,11 +19,9 @@ const data: ISiteMetadataResult = {
   siteUrl: 'https://sports-page.lczhuigz.cn',
   logo: 'https://blog.lczhuigz.cn/images/fav-icon/fav-icon.jpg',
   description: 'Personal site and blog',
+  repoUrl: 'https://github.com/lczhuigz/running_page',
+  
   navLinks: [
-    {
-      name: 'Summary',
-      url: `${getBasePath()}/summary`,
-    },
     {
       name: 'Blog',
       url: 'https://blog.lczhuigz.cn',
