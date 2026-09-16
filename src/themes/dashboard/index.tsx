@@ -2,6 +2,7 @@ import './index.css';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { useMemo, useState } from 'react';
 import type { Activity } from '@/types';
+import siteMetadata from '@/static/site-metadata';
 import {
   useFilteredActivities,
   getAvailableYears,
@@ -48,7 +49,7 @@ function Dashboard() {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Running Page</title>
+        <title>{siteMetadata.siteTitle}</title>
         <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}images/favicon.png`} />
       </Helmet>
     <div className="min-h-screen bg-[var(--color-bg)]" data-filter={filter}>
