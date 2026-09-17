@@ -21,6 +21,7 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
     { label: t('tracks'), page: 'tracks' },
   ];
 
+  const siteTitle = siteMetadata.siteTitle;
 
   // External navigation links from site-metadata.ts
   const externalLinks = siteMetadata.navLinks;
@@ -38,7 +39,15 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
             />
           )}
           <span className="text-xl font-bold text-[var(--color-text)]">
-            RUNNING<span className="text-[var(--color-run)]">.</span>PAGE
+            {siteTitle.includes('.') ? (
+              <>
+                {siteTitle.split('.')[0]}
+                <span className="text-[var(--color-run)]">.</span>
+                {siteTitle.split('.').slice(1).join('.')}
+              </>
+            ) : (
+              siteTitle
+            )}
           </span>
         </div>
 

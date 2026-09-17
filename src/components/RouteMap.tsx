@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import * as polyline from '@mapbox/polyline';
@@ -20,10 +20,10 @@ export function RouteMap({
 }: RouteMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const style = getMapStyle(dark !== false);
 
-  // Declared before the effects that reference it (react-hooks/immutability).
   function updateRoutes() {
     if (!map.current) return;
 
@@ -112,10 +112,8 @@ export function RouteMap({
     });
 
     // Fit bounds to majority of routes (ignore outliers)
-    // Use median-based approach: find the region where most routes are
     const allCoords: [number, number][] = [];
     for (const f of features) {
-      // Use first coord of each route as representative point
       if (f.geometry.coordinates.length > 0) {
         allCoords.push(f.geometry.coordinates[0] as [number, number]);
       }
@@ -162,7 +160,22 @@ export function RouteMap({
       updateRoutes();
     });
 
+    // Fix blank map: resize after initial load and observe container size changes
+    map.current.on('load', () => {
+      map.current?.resize();
+    });
+
+    // Use ResizeObserver to keep map in sync with container size
+    resizeObserverRef.current = new ResizeObserver(() => {
+      if (map.current) {
+        map.current.resize();
+      }
+    });
+    resizeObserverRef.current.observe(mapContainer.current);
+
     return () => {
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = null;
       map.current?.remove();
       map.current = null;
     };
