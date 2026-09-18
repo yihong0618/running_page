@@ -230,17 +230,21 @@ export const SWIMMING_COLOR = 'rgb(255,51,51)';
 export const INDOOR_COLOR = '#8899aa';
 
 // Map tiles vendor from config.yml: maptiler | mapbox | openfreemap
-export const MAP_TILE_VENDOR = MAP_PROVIDER === 'openfreemap' ? 'mapcn_openfreemap' : MAP_PROVIDER;
+export const MAP_TILE_VENDOR =
+  MAP_PROVIDER === 'openfreemap' ? 'mapcn_openfreemap' : MAP_PROVIDER;
 
 // map tiles style name, see MAP_TILE_STYLES for more details
-export const MAP_TILE_STYLE_LIGHT = MAP_PROVIDER === 'openfreemap' ? MAP_STYLE_LIGHT : MAP_STYLE_LIGHT;
-export const MAP_TILE_STYLE_DARK = MAP_PROVIDER === 'openfreemap' ? MAP_STYLE_DARK : MAP_STYLE_DARK;
+export const MAP_TILE_STYLE_LIGHT =
+  MAP_PROVIDER === 'openfreemap' ? MAP_STYLE_LIGHT : MAP_STYLE_LIGHT;
+export const MAP_TILE_STYLE_DARK =
+  MAP_PROVIDER === 'openfreemap' ? MAP_STYLE_DARK : MAP_STYLE_DARK;
 
 // access token. you can apply a new one, it's free.
 // maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
 // stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 | sign up at https://client.stadiamaps.com/signup/
 // mapcn: empty
-export const MAP_TILE_ACCESS_TOKEN = MAP_PROVIDER === 'maptiler' ? MAPTILER_TOKEN : MAPBOX_TOKEN;
+export const MAP_TILE_ACCESS_TOKEN =
+  MAP_PROVIDER === 'maptiler' ? MAPTILER_TOKEN : MAPBOX_TOKEN;
 
 export const MAP_TILE_STYLES = {
   mapcn: {
@@ -331,7 +335,9 @@ export const TREND_CHART_LABELS = {
   HEART_RATE: IS_CHINESE ? '心率 (bpm)' : 'Heart Rate (bpm)',
   ELEVATION: IS_CHINESE ? '爬升 (m)' : 'Elevation (m)',
   COUNT: IS_CHINESE ? '次数' : 'Count',
-  NO_DATA: IS_CHINESE ? '该筛选条件下暂无活动数据' : 'No activities for this filter',
+  NO_DATA: IS_CHINESE
+    ? '该筛选条件下暂无活动数据'
+    : 'No activities for this filter',
   MONTH: IS_CHINESE ? '月份' : 'Month',
 };
 

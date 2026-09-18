@@ -50,88 +50,92 @@ function Dashboard() {
     <HelmetProvider>
       <Helmet>
         <title>{siteMetadata.siteTitle}</title>
-        <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}images/favicon.png`} />
-      </Helmet>
-    <div className="min-h-screen bg-[var(--color-bg)]" data-filter={filter}>
-      <Header
-        dark={dark}
-        toggleTheme={toggle}
-        activities={activities}
-        page={page}
-        onNavigate={setPage}
-      />
-
-      {page === 'tracks' ? (
-        <TracksPage
-          activities={filtered}
-          filter={filter}
-          onSelectActivity={setSelectedActivity}
-          onBack={() => setPage('home')}
+        <link
+          rel="icon"
+          type="image/png"
+          href={`${import.meta.env.BASE_URL}images/favicon.png`}
         />
-      ) : (
-        <main className="mx-auto max-w-[1400px] px-6 py-6">
-          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_380px]">
-            {/* Left column */}
-            <div className="min-w-0 space-y-6 overflow-hidden">
-              <StatsCards
-                activities={filtered}
-                allActivities={activities}
-                year={year}
-                filter={filter}
-                onSelectActivity={setSelectedActivity}
-              />
-              <ContributionHeatmap
-                activities={filtered}
-                year={heatmapYear}
-                filter={filter}
-                onSelectActivity={setSelectedActivity}
-              />
-              <ActivityLog
-                activities={filtered}
-                years={years}
-                year={year}
-                setYear={setYear}
-                selectedActivity={selectedActivity}
-                onSelectActivity={setSelectedActivity}
-                filter={filter}
-              />
-            </div>
+      </Helmet>
+      <div className="min-h-screen bg-[var(--color-bg)]" data-filter={filter}>
+        <Header
+          dark={dark}
+          toggleTheme={toggle}
+          activities={activities}
+          page={page}
+          onNavigate={setPage}
+        />
 
-            {/* Right column */}
-            <div className="flex min-w-0 flex-col gap-6 overflow-hidden">
-              <ProfileCard activities={activities} filter={filter} />
-              <ChinaMap
-                activities={filtered}
-                filter={filter}
-                selectedProvince={selectedProvince}
-                onSelectProvince={(p) => {
-                  setSelectedProvince(p);
-                  setSelectedActivity(null);
-                }}
-              />
-              <RouteMap
-                activities={provinceFiltered}
-                selectedActivity={selectedActivity}
-                dark={dark}
-                onClearSelection={() => setSelectedActivity(null)}
-              />
-              <PersonalBest
-                activities={activities}
-                onSelectActivity={setSelectedActivity}
-              />
-              <CalendarWidget
-                activities={filtered}
-                onSelectActivity={setSelectedActivity}
-              />
-            </div>
-          </div>
-        </main>
-      )}
+        {page === 'tracks' ? (
+          <TracksPage
+            activities={filtered}
+            filter={filter}
+            onSelectActivity={setSelectedActivity}
+            onBack={() => setPage('home')}
+          />
+        ) : (
+          <main className="mx-auto max-w-[1400px] px-6 py-6">
+            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_380px]">
+              {/* Left column */}
+              <div className="min-w-0 space-y-6 overflow-hidden">
+                <StatsCards
+                  activities={filtered}
+                  allActivities={activities}
+                  year={year}
+                  filter={filter}
+                  onSelectActivity={setSelectedActivity}
+                />
+                <ContributionHeatmap
+                  activities={filtered}
+                  year={heatmapYear}
+                  filter={filter}
+                  onSelectActivity={setSelectedActivity}
+                />
+                <ActivityLog
+                  activities={filtered}
+                  years={years}
+                  year={year}
+                  setYear={setYear}
+                  selectedActivity={selectedActivity}
+                  onSelectActivity={setSelectedActivity}
+                  filter={filter}
+                />
+              </div>
 
-      <footer className="border-t border-[var(--color-border)] py-6 text-center text-sm text-[var(--color-muted)]">
-        &copy; {new Date().getFullYear()} Running Page 3.0
-      </footer>
-    </div>
+              {/* Right column */}
+              <div className="flex min-w-0 flex-col gap-6 overflow-hidden">
+                <ProfileCard activities={activities} filter={filter} />
+                <ChinaMap
+                  activities={filtered}
+                  filter={filter}
+                  selectedProvince={selectedProvince}
+                  onSelectProvince={(p) => {
+                    setSelectedProvince(p);
+                    setSelectedActivity(null);
+                  }}
+                />
+                <RouteMap
+                  activities={provinceFiltered}
+                  selectedActivity={selectedActivity}
+                  dark={dark}
+                  onClearSelection={() => setSelectedActivity(null)}
+                />
+                <PersonalBest
+                  activities={activities}
+                  onSelectActivity={setSelectedActivity}
+                />
+                <CalendarWidget
+                  activities={filtered}
+                  onSelectActivity={setSelectedActivity}
+                />
+              </div>
+            </div>
+          </main>
+        )}
+
+        <footer className="border-t border-[var(--color-border)] py-6 text-center text-sm text-[var(--color-muted)]">
+          &copy; {new Date().getFullYear()} Running Page 3.0
+        </footer>
+      </div>
     </HelmetProvider>
   );
 }

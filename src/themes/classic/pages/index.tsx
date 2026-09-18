@@ -254,7 +254,9 @@ const Index = () => {
       // Set runIndex for table highlighting when single run is selected
       if (runIds.length === 1) {
         const runId = runIds[0];
-        const runIdx = sportFilteredRuns.findIndex((run) => run.run_id === runId);
+        const runIdx = sportFilteredRuns.findIndex(
+          (run) => run.run_id === runId
+        );
         setRunIndex(runIdx);
       } else {
         setRunIndex(-1);
@@ -347,7 +349,9 @@ const Index = () => {
   // Animate geoData when runs change
   useEffect(() => {
     if (singleRunId === null) {
-      const frameId = requestAnimationFrame(() => startAnimation(sportFilteredRuns));
+      const frameId = requestAnimationFrame(() =>
+        startAnimation(sportFilteredRuns)
+      );
       return () => cancelAnimationFrame(frameId);
     }
   }, [sportFilteredRuns, startAnimation, singleRunId]);

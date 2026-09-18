@@ -209,7 +209,11 @@ const getActivitySport = (act: Activity): string => {
     else return ACTIVITY_TYPES.RUN_GENERIC_TITLE;
   }
   // 骑行（Keep 返回 'Ride'，Strava 也用 'Ride'）
-  else if (act.type === 'cycling' || act.type === 'Ride' || act.type === 'VirtualRide') {
+  else if (
+    act.type === 'cycling' ||
+    act.type === 'Ride' ||
+    act.type === 'VirtualRide'
+  ) {
     return ACTIVITY_TYPES.CYCLING_TITLE;
   }
   // 徒步
@@ -231,8 +235,7 @@ const getActivitySport = (act: Activity): string => {
   // 越野跑、室内跑等其他跑步类型
   else if (act.type === 'TrailRun') {
     return ACTIVITY_TYPES.RUN_TRAIL_TITLE;
-  }
-  else if (act.type === 'VirtualRun') {
+  } else if (act.type === 'VirtualRun') {
     return ACTIVITY_TYPES.RUN_TREADMILL_TITLE;
   }
   return '';
@@ -299,9 +302,16 @@ const filterTitleRuns = (run: Activity, title: string) =>
 const filterSportRuns = (run: Activity, sportType: string) => {
   if (sportType === 'all') return true;
   if (sportType === 'Run') return run.type === 'Run';
-  if (sportType === 'cycling') return run.type === 'cycling' || run.type === 'Ride' || run.type === 'VirtualRide';
-  if (sportType === 'hiking') return run.type === 'hiking' || run.type === 'Hiking';
-  if (sportType === 'walking') return run.type === 'walking' || run.type === 'Walk';
+  if (sportType === 'cycling')
+    return (
+      run.type === 'cycling' ||
+      run.type === 'Ride' ||
+      run.type === 'VirtualRide'
+    );
+  if (sportType === 'hiking')
+    return run.type === 'hiking' || run.type === 'Hiking';
+  if (sportType === 'walking')
+    return run.type === 'walking' || run.type === 'Walk';
   if (sportType === 'Swim') return run.type === 'Swim';
   return run.type === sportType;
 };

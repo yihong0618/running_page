@@ -21,8 +21,10 @@ interface IRunRowProperties {
 const getSportEmoji = (run: Activity): string => {
   const sport = getActivitySport(run);
   const type = run.type;
-  if (type === 'Run' || type === 'VirtualRun' || type === 'TrailRun') return '🏃';
-  if (type === 'cycling' || type === 'Ride' || type === 'VirtualRide') return '🚴';
+  if (type === 'Run' || type === 'VirtualRun' || type === 'TrailRun')
+    return '🏃';
+  if (type === 'cycling' || type === 'Ride' || type === 'VirtualRide')
+    return '🚴';
   if (type === 'hiking') return '🥾';
   if (type === 'walking' || type === 'Walk') return '🚶';
   if (type === 'Swim') return '🏊';
