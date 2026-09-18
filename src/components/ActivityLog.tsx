@@ -21,7 +21,7 @@ function typeIcon(type: string): string {
   const icons: Record<string, string> = {
     Run: '🏃',
   };
-  return icons[type] ?? '📌';
+  return icons[type] ?? '🏅';
 }
 
 export function ActivityLog({
@@ -66,8 +66,6 @@ export function ActivityLog({
         setDistFilter('all');
       }
     }
-    // `sorted` is in deps so the page refreshes when the list changes (year/filter switch)
-    // even if the selected run_id stays the same — avoids stale closure. M6 fix.
   }, [selectedActivity?.run_id, sorted]);
 
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
@@ -145,6 +143,7 @@ export function ActivityLog({
               <th className="pb-3 font-medium">{t('duration')}</th>
               <th className="pb-3 font-medium">{t('pace')}</th>
               <th className="pb-3 font-medium">{t('hr')}</th>
+              <th className="pb-3 font-medium">{t('elevation')}</th>
             </tr>
           </thead>
           <tbody>
@@ -185,6 +184,18 @@ export function ActivityLog({
                 </td>
                 <td className="py-3 text-[var(--color-muted)]">
                   {a.average_heartrate ? Math.round(a.average_heartrate) : '--'}
+                </td>
+                <td className="py-3 text-[var(--color-muted)]">
+                  {a.elevation_gain ? (
+                    <>
+                      <span className="font-mono">
+                        {Math.round(a.elevation_gain)}
+                      </span>
+                      <span className="ml-1 text-xs">m</span>
+                    </>
+                  ) : (
+                    '--'
+                  )}
                 </td>
               </tr>
             ))}

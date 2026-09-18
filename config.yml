@@ -1,17 +1,52 @@
 # Running Page 3.0 配置文件
 # 修改此文件即可完成个性化设置，无需改动源代码。
 
-# ── 地图 ──────────────────────────────────────────────────────────────────────
+# ── 站点信息 ─────────────────────────────────────────────────────────────────
+# 站点标题
+site_title: 'Sports Page'
+# 站点 URL
+site_url: 'https://sports-page.lczhuigz.cn'
+# 站点 Logo URL
+site_logo: 'https://blog.lczhuigz.cn/images/fav-icon/fav-icon.jpg'
+# 站点描述
+site_description: 'Personal site and blog'
+# GitHub 仓库 URL
+repo_url: 'https://github.com/lczhuigz/running_page'
 
-# Mapbox public access token（https://account.mapbox.com）
-# Migrated from src/themes/classic/utils/const.ts
-# For security, this token is managed via GitHub Actions secret (MAPBOX_TOKEN)
-# Users should replace with their own token in GitHub Actions secrets
-# See https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions
+# 导航链接
+nav_links:
+  - name: 'Blog'
+    url: 'https://blog.lczhuigz.cn'
+  - name: 'About'
+    url: 'https://blog.lczhuigz.cn/about'
+
+# ── 地图 ─────────────────────────────────────────────────────────────────────
+# 地图提供商: maptiler | mapbox | openfreemap
+map_provider: 'maptiler'
+
+# 地图样式 (根据提供商选择)
+# MapTiler 样式: dataviz-light, dataviz-dark, basic-light, basic-dark, streets-light, streets-dark, outdoor-light, outdoor-dark
+# Mapbox 样式: dark-v10, dark-v11, light-v10, light-v11, navigation-night, satellite-streets-v12
+# OpenFreeMap 样式: bright, dark
+map_style_light: 'streets-light'
+map_style_dark: 'streets-dark'
+
+# Mapbox/MapTiler 公共访问令牌 (https://account.mapbox.com 或 https://cloud.maptiler.com)
+# 为了安全，此令牌通过 GitHub Actions secret (MAPBOX_TOKEN 或 MAPTILER_TOKEN) 管理
+# 用户应在 GitHub Actions secrets 中替换为自己的令牌
+# 参见 https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions
 mapbox_token: ''
+maptiler_token: ''
+
+# ── 轨迹显示 ─────────────────────────────────────────────────────────────────
+# 是否显示轨迹起点和终点标记
+show_start_end_markers: true
+# 起点标记颜色 (蓝色小旗子)
+start_marker_color: '#3b82f6'
+# 终点标记颜色 (红色小旗子)
+end_marker_color: '#ef4444'
 
 # ── 外观 ─────────────────────────────────────────────────────────────────────
-
 # 头像 URL（支持本地路径或远程图片链接）
 avatar: 'https://blog.lczhuigz.cn/images/fav-icon/fav-icon.jpg'
 

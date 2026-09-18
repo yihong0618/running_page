@@ -1,8 +1,6 @@
 import * as mapboxPolyline from '@mapbox/polyline';
 import gcoord from 'gcoord';
 import { WebMercatorViewport } from '@math.gl/web-mercator';
-import type { FeatureCollection, LineString, Feature } from 'geojson';
-import type { GeoJsonProperties } from 'geojson';
 import type { RPGeometry } from '../static/run_countries';
 import worldGeoJsonUrl from '../static/world.zh.json?url';
 import { getMapThemeFromCurrentTheme } from '../hooks/useTheme';
@@ -24,6 +22,24 @@ import type { Activity } from './utils';
 import { locationForRun } from './utils';
 
 export type Coordinate = [number, number];
+
+type GeoJsonProperties = Record<string, unknown> | null;
+
+type LineString = {
+  type: 'LineString';
+  coordinates: Coordinate[];
+};
+
+type Feature<G, P = GeoJsonProperties> = {
+  type: 'Feature';
+  properties: P;
+  geometry: G;
+};
+
+type FeatureCollection<G> = {
+  type: 'FeatureCollection';
+  features: Feature<G>[];
+};
 
 export interface IViewState {
   longitude?: number;

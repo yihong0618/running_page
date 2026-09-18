@@ -23,8 +23,10 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
 
   const siteTitle = siteMetadata.siteTitle;
 
-  // External navigation links from site-metadata.ts
-  const externalLinks = siteMetadata.navLinks;
+  // External navigation links from site-metadata.ts (filter out Summary for dashboard)
+  const externalLinks = siteMetadata.navLinks.filter(
+    (link) => link.name.toLowerCase() !== 'summary'
+  );
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/70 backdrop-blur-md">
@@ -32,11 +34,7 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
         {/* Logo */}
         <div className="flex items-center gap-2">
           {AVATAR && (
-            <img
-              src={AVATAR}
-              alt="logo"
-              className="h-8 w-8 rounded-full"
-            />
+            <img src={AVATAR} alt="logo" className="h-8 w-8 rounded-full" />
           )}
           <span className="text-xl font-bold text-[var(--color-text)]">
             {siteTitle.includes('.') ? (
