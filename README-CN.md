@@ -195,7 +195,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## 安装及测试 (node >= 20 python >= 3.11)
+## 安装及测试 (node >= 20 python >= 3.12)
 
 ```bash
 pip3 install -r requirements.txt
@@ -634,7 +634,7 @@ python run_page/tulipsport_sync.py nLgy****RyahI
 
 - 如果你想同步 `fit` 格式，增加命令 --fit
 
-- 如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.8**
+- 如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.12**
 
 #### 获取佳明国际区的密钥
 
@@ -667,7 +667,7 @@ python run_page/garmin_sync.py xxxxxxxxxxx
 - 如果你只想同步跑步数据请增加 --only-run
 - 如果你想同步 `tcx` 格式，增加命令 --tcx
 - 如果你想同步 `fit` 格式，增加命令 --fit
-- 如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.10**
+- 如果你使用 Garmin 作为数据源建议您将代码拉取到本地获取 Garmin 国际区的密钥，注意**Python 版本必须>=3.12**
 
 #### 获取佳明 CN 的密钥
 
@@ -706,7 +706,7 @@ python run_page/garmin_sync.py xxxxxxxxxx --is-cn --only-run
 <br>
 
 - 如果你只想同步 `type running` 使用参数 --only-run
-  **The Python version must be >=3.10**
+  **The Python version must be >=3.12**
 
 #### 获取佳明 CN 的密钥
 
@@ -1337,7 +1337,7 @@ python3 run_page/auto_share_sync.py --api_key xxxxxxxxx --base_url xxxxxxxx --da
 
 5. 下滑点击 `环境变量 (高级)`，并添加一个如下的变量：
 
-   > 变量名称 = `PYTHON_VERSION`, 值 = `3.11`
+   > 变量名称 = `PYTHON_VERSION`, 值 = `3.12`
 
 6. 点击 `保存并部署`，完成部署。
 

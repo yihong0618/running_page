@@ -185,7 +185,7 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## Installation and testing (node >= 20 python >= 3.11)
+## Installation and testing (node >= 20 python >= 3.12)
 
 ```bash
 pip3 install -r requirements.txt
@@ -492,7 +492,7 @@ python run_page/fit_sync.py
 - If you only want `tcx` files add args --tcx
 - If you only want `fit` files add args --fit
 - If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-  **The Python version must be >=3.8**
+  **The Python version must be >=3.12**
 
 #### Get Garmin Secret
 
@@ -537,7 +537,7 @@ python run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 - If you only want `tcx` files add args --tcx
 - If you only want `fit` files add args --fit
 - If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-  **The Python version must be >=3.10**
+  **The Python version must be >=3.12**
 
 #### Get Garmin CN Secret
 
@@ -577,7 +577,7 @@ python run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn --only-run
 <br>
 
 - If you only want to sync `type running` add args --only-run
-  **The Python version must be >=3.10**
+  **The Python version must be >=3.12**
 
 #### Get Garmin CN Secret
 
@@ -1212,7 +1212,7 @@ For more display effects, see:
 
 5. Scroll down, click `Environment variables (advanced)`, then add a variable like the below:
 
-   > Variable name = `PYTHON_VERSION`, Value = `3.11`
+   > Variable name = `PYTHON_VERSION`, Value = `3.12`
 
 6. Click `Save and Deploy`
 
