@@ -5,6 +5,7 @@ from datetime import datetime
 from garmin_sync import Garmin
 from strava_sync import run_strava_sync
 from stravaweblib import DataFormat, WebClient
+
 from utils import make_strava_client
 
 

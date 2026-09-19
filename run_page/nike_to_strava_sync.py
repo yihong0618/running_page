@@ -6,6 +6,7 @@ import time
 from config import OUTPUT_DIR
 from nike_sync import make_new_gpxs, run
 from strava_sync import run_strava_sync
+
 from utils import get_strava_last_time, make_strava_client, upload_file_to_strava
 
 

@@ -23,6 +23,7 @@ import httpx
 from config import FOLDER_DICT, JSON_FILE, SQL_FILE
 from garmin_device_adaptor import process_garmin_data
 from lxml import etree
+
 from utils import make_activities_file
 
 # logging.basicConfig(level=logging.DEBUG)

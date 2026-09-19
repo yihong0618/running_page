@@ -2,6 +2,7 @@ import sqlalchemy
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE
 from generator.db import Activity, init_db
 from sqlalchemy import text
+
 from utils import make_activities_file
 
 

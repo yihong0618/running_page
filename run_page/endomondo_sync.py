@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import polyline
 from config import BASE_TIMEZONE, ENDOMONDO_FILE_DIR, JSON_FILE, SQL_FILE
 from generator import Generator
+
 from utils import adjust_time
 
 # TODO Same as keep_sync maybe refactor

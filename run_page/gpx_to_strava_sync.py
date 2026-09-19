@@ -6,6 +6,7 @@ import gpxpy as mod_gpxpy
 from config import GPX_FOLDER
 from strava_sync import run_strava_sync
 from stravalib.exc import ActivityUploadFailed, RateLimitTimeout
+
 from utils import get_strava_last_time, make_strava_client, upload_file_to_strava
 
 

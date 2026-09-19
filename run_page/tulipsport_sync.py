@@ -12,6 +12,7 @@ import polyline
 import requests
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
+
 from utils import adjust_time_to_utc
 
 # need to test

@@ -10,6 +10,7 @@ import gpxpy
 import requests
 from config import FOLDER_DICT, JSON_FILE, SQL_FILE
 from requests.auth import HTTPBasicAuth
+
 from utils import make_activities_file
 
 BASE_URL = "https://intervals.icu/api/v1"

@@ -7,6 +7,7 @@ from config import TCX_FOLDER
 from strava_sync import run_strava_sync
 from stravalib.exc import ActivityUploadFailed, RateLimitTimeout
 from tcxreader.tcxreader import TCXReader
+
 from utils import get_strava_last_time, make_strava_client, upload_file_to_strava
 
 

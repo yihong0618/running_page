@@ -18,6 +18,7 @@ from config import (
     run_map,
 )
 from generator import Generator
+
 from utils import adjust_time, make_activities_file
 
 # logging.basicConfig(level=logging.INFO)

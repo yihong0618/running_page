@@ -22,6 +22,7 @@ from config import (
 )
 from generator import Generator
 from tzlocal import get_localzone
+
 from utils import adjust_time
 
 TOKEN_REFRESH_URL = "https://sport.health.heytapmobi.com/open/v1/oauth/token"

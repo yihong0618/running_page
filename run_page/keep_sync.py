@@ -23,6 +23,7 @@ from config import (
 )
 from Crypto.Cipher import AES
 from generator import Generator
+
 from utils import adjust_time
 
 KEEP_SPORT_TYPES = ["running", "hiking", "cycling"]
