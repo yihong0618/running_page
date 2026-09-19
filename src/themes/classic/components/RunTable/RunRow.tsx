@@ -43,13 +43,21 @@ const RunRow = ({
       className={`${styles.runRow} ${runIndex === elementIndex ? styles.selected : ''}`}
       key={run.start_date_local}
       onClick={handleClick}
+      tabIndex={0}
+      aria-selected={runIndex === elementIndex}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleClick();
+        }
+      }}
     >
       <td>{titleForRun(run)}</td>
       <td>{distance}</td>
       {SHOW_ELEVATION_GAIN && (
         <td>{((run.elevation_gain ?? 0) * M_TO_ELEV).toFixed(1)}</td>
       )}
-      {paceParts && <td>{paceParts}</td>}
+      <td>{paceParts ?? '—'}</td>
       <td>{heartRate && heartRate.toFixed(0)}</td>
       <td>{runTime}</td>
       <td className={styles.runDate}>{run.start_date_local}</td>

@@ -54,7 +54,10 @@ export class ErrorBoundary extends Component<Props, State> {
             type="button"
             onClick={this.handleRetry}
             className="mt-1 rounded-md px-4 py-1.5 text-sm font-medium text-white"
-            style={{ backgroundColor: 'var(--color-accent, #a855f7)' }}
+            style={{
+              backgroundColor: 'var(--color-accent, #0c4a6e)',
+              color: 'var(--color-on-accent, #ffffff)',
+            }}
           >
             Retry
           </button>

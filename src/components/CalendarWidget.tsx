@@ -5,195 +5,190 @@ import { useLocale } from '../hooks/useLocale';
 
 interface CalendarWidgetProps {
   activities: Activity[];
+  selectedActivity?: Activity | null;
   onSelectActivity: (activity: Activity | null) => void;
 }
 
 export function CalendarWidget({
   activities,
+  selectedActivity,
   onSelectActivity,
 }: CalendarWidgetProps) {
-  const { t } = useLocale();
-  const [now] = useState(() => new Date());
-  const [viewYear, setViewYear] = useState(now.getFullYear());
-  const [viewMonth, setViewMonth] = useState(now.getMonth());
-  const [hoveredDay, setHoveredDay] = useState<number | null>(null);
-
-  const { days, monthDistance, monthCount } = useMemo(() => {
-    const firstDaySun = new Date(viewYear, viewMonth, 1).getDay(); // 0=Sun
-    const firstDay = (firstDaySun + 6) % 7; // convert to Mon=0
-    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-
-    const dayActivities = new Map<number, Activity[]>();
-    for (const a of activities) {
-      const d = new Date(a.start_date_local);
-      if (d.getFullYear() === viewYear && d.getMonth() === viewMonth) {
-        const day = d.getDate();
-        const arr = dayActivities.get(day) || [];
-        arr.push(a);
-        dayActivities.set(day, arr);
+  const { locale } = useLocale();
+  const zh = locale === 'zh';
+  const [today] = useState(() => new Date());
+  const latest = useMemo(
+    () =>
+      activities.reduce(
+        (last, a) => (a.start_date_local > last ? a.start_date_local : last),
+        ''
+      ),
+    [activities]
+  );
+  const initial = selectedActivity?.start_date_local || latest;
+  const [month, setMonth] = useState(() => {
+    const date = initial ? new Date(initial) : today;
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+  });
+  const [day, setDay] = useState<number | null>(() =>
+    selectedActivity
+      ? new Date(selectedActivity.start_date_local).getDate()
+      : null
+  );
+  const [previousSelection, setPreviousSelection] = useState(
+    selectedActivity?.run_id
+  );
+  if (previousSelection !== selectedActivity?.run_id) {
+    setPreviousSelection(selectedActivity?.run_id);
+    if (selectedActivity) {
+      const date = new Date(selectedActivity.start_date_local);
+      setMonth(new Date(date.getFullYear(), date.getMonth(), 1));
+      setDay(date.getDate());
+    }
+  }
+  const year = month.getFullYear();
+  const monthIndex = month.getMonth();
+  const byDay = useMemo(() => {
+    const result = new Map<number, Activity[]>();
+    for (const activity of activities) {
+      const date = new Date(activity.start_date_local);
+      if (date.getFullYear() === year && date.getMonth() === monthIndex) {
+        const list = result.get(date.getDate()) ?? [];
+        list.push(activity);
+        result.set(date.getDate(), list);
       }
     }
-
-    let totalDist = 0;
-    let totalCount = 0;
-    for (const acts of dayActivities.values()) {
-      totalCount += acts.length;
-      totalDist += acts.reduce((s, a) => s + a.distance, 0);
-    }
-
-    const days: {
-      key: string;
-      day: number;
-      activities: Activity[];
-      distance: number;
-    }[] = [];
-    for (let i = 0; i < firstDay; i++) {
-      days.push({ key: `padding-${i}`, day: 0, activities: [], distance: 0 });
-    }
-    for (let d = 1; d <= daysInMonth; d++) {
-      const acts = dayActivities.get(d) || [];
-      const dist = acts.reduce((s, a) => s + a.distance, 0);
-      days.push({
-        key: `${viewYear}-${viewMonth}-${d}`,
-        day: d,
-        activities: acts,
-        distance: dist,
-      });
-    }
-
-    return { days, monthDistance: totalDist, monthCount: totalCount };
-  }, [activities, viewYear, viewMonth]);
-
-  const prevMonth = () => {
-    if (viewMonth === 0) {
-      setViewYear(viewYear - 1);
-      setViewMonth(11);
-    } else setViewMonth(viewMonth - 1);
+    for (const list of result.values())
+      list.sort((a, b) => a.start_date_local.localeCompare(b.start_date_local));
+    return result;
+  }, [activities, year, monthIndex]);
+  const monthActivities = [...byDay.values()].flat();
+  const distance = monthActivities.reduce((sum, a) => sum + a.distance, 0);
+  const offset = (month.getDay() + 6) % 7;
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const dayActivities = day === null ? [] : (byDay.get(day) ?? []);
+  const moveMonth = (delta: number) => {
+    setMonth(new Date(year, monthIndex + delta, 1));
+    setDay(null);
   };
-  const nextMonth = () => {
-    if (viewMonth === 11) {
-      setViewYear(viewYear + 1);
-      setViewMonth(0);
-    } else setViewMonth(viewMonth + 1);
+  const goToDate = (date: Date) => {
+    setMonth(new Date(date.getFullYear(), date.getMonth(), 1));
+    setDay(null);
   };
-
-  // 4 tiers: returns px size of circle
-  const getCircleSize = (dist: number): number => {
-    if (!dist) return 0;
-    const km = dist / 1000;
-    if (km < 5) return 20;
-    if (km < 10) return 26;
-    if (km < 20) return 32;
-    return 38;
-  };
-
-  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const monthStr = `${String(viewMonth + 1).padStart(2, '0')}/${viewYear}`;
-
+  const monthLabel = month.toLocaleDateString(zh ? 'zh-CN' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+  });
   return (
-    <div className="w-full min-w-0 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-4">
-      {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <span className="text-lg font-bold">{monthStr}</span>
-          <span className="ml-3 text-sm text-[var(--color-muted)]">
-            {formatDistance(monthDistance)} km
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
+    <section
+      aria-label={zh ? '活动日历' : 'Activity calendar'}
+      className="w-full min-w-0 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-4"
+    >
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-base font-semibold">{monthLabel}</h2>
+        <div className="flex items-center gap-1">
           <button
-            onClick={prevMonth}
-            className="px-1 text-[var(--color-muted)] hover:text-[var(--color-text)]"
+            className="rounded px-2 text-sm"
+            onClick={() => moveMonth(-1)}
+            aria-label={zh ? '上个月' : 'Previous month'}
           >
             ←
           </button>
           <button
-            onClick={nextMonth}
-            className="px-1 text-[var(--color-muted)] hover:text-[var(--color-text)]"
+            className="rounded px-2 text-sm"
+            onClick={() => moveMonth(1)}
+            aria-label={zh ? '下个月' : 'Next month'}
           >
             →
           </button>
         </div>
       </div>
-
-      {/* Day headers */}
-      <div className="mb-1 grid grid-cols-7 gap-1">
-        {dayNames.map((d) => (
-          <div
-            key={d}
-            className="py-1 text-center text-xs text-[var(--color-muted)]"
+      <div className="mb-3 flex items-center gap-2 text-xs text-[var(--color-muted)]">
+        <span className="mr-auto">
+          {monthActivities.length} {zh ? '次活动' : 'activities'} ·{' '}
+          {formatDistance(distance)} km
+        </span>
+        <button
+          className="rounded px-2 hover:bg-[var(--color-bg)]"
+          onClick={() => goToDate(today)}
+        >
+          {zh ? '本月' : 'This month'}
+        </button>
+        {latest && (
+          <button
+            className="rounded px-2 hover:bg-[var(--color-bg)]"
+            onClick={() => goToDate(new Date(latest))}
           >
-            {d[0]}
-          </div>
+            {zh ? '最近活动' : 'Latest'}
+          </button>
+        )}
+      </div>
+      <div className="mb-1 grid grid-cols-7 text-center text-xs text-[var(--color-muted)]">
+        {(zh
+          ? ['一', '二', '三', '四', '五', '六', '日']
+          : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        ).map((label) => (
+          <span key={label}>{label}</span>
         ))}
       </div>
-
-      {/* Calendar grid — fixed height so 5-row and 6-row months are identical */}
-      <div
-        className="grid grid-cols-7 gap-0.5"
-        style={{ height: '240px', gridAutoRows: '1fr' }}
-      >
-        {days.map((d, i) => {
-          const circleSize = getCircleSize(d.distance);
-          const isHovered = hoveredDay === i && d.distance > 0;
+      <div className="grid grid-cols-7 gap-1">
+        {Array.from({ length: 42 }, (_, i) => {
+          const number = i - offset + 1;
+          if (number < 1 || number > daysInMonth)
+            return <span key={i} className="h-9" />;
+          const list = byDay.get(number) ?? [];
+          const km = list.reduce((sum, a) => sum + a.distance, 0) / 1000;
           return (
-            <div
-              key={d.key}
+            <button
+              key={i}
+              type="button"
+              disabled={!list.length}
+              aria-pressed={day === number}
+              aria-label={`${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(number).padStart(2, '0')} · ${list.length} ${zh ? '次活动' : 'activities'} · ${km.toFixed(1)} km`}
+              className={`calendar-day relative flex h-9 flex-col items-center justify-center rounded-md text-xs ${list.length ? 'bg-[var(--color-accent)]/15 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/30' : 'text-[var(--color-muted)]'} ${day === number ? 'ring-2 ring-[var(--color-accent)]' : ''}`}
               onClick={() => {
-                if (d.activities.length > 0) onSelectActivity(d.activities[0]);
+                setDay(number);
+                if (list.length === 1) onSelectActivity(list[0]);
               }}
-              onMouseEnter={() => d.distance > 0 && setHoveredDay(i)}
-              onMouseLeave={() => setHoveredDay(null)}
-              className={`relative flex items-center justify-center ${
-                d.day === 0
-                  ? ''
-                  : d.activities.length > 0
-                    ? 'cursor-pointer'
-                    : ''
-              }`}
             >
-              {d.day > 0 && (
-                <>
-                  {/* Sized circle */}
-                  {circleSize > 0 && (
-                    <div
-                      className="absolute rounded-full bg-[var(--color-accent)]/25 transition-all duration-200"
-                      style={{
-                        width: `${circleSize}px`,
-                        height: `${circleSize}px`,
-                      }}
-                    />
-                  )}
-                  {/* Label: show km by default, show date on hover */}
-                  <span
-                    className={`relative text-[10px] leading-none font-medium transition-all ${
-                      isHovered
-                        ? 'text-[var(--color-text)]'
-                        : d.activities.length > 0
-                          ? 'text-[var(--color-accent)]'
-                          : 'text-[var(--color-muted)]'
-                    }`}
-                  >
-                    {isHovered
-                      ? d.day
-                      : d.activities.length > 0
-                        ? `${(d.distance / 1000).toFixed(0)}k`
-                        : d.day}
-                  </span>
-                </>
+              <span>{number}</span>
+              {list.length > 0 && (
+                <span className="text-[9px] leading-tight">
+                  {km.toFixed(1)}k
+                </span>
               )}
-            </div>
+            </button>
           );
         })}
       </div>
-
-      {/* Summary */}
-      <div className="mt-3 flex items-center justify-between border-t border-[var(--color-border)] pt-3 text-xs text-[var(--color-muted)]">
-        <span>
-          {monthCount} {t('calendarActivities')}
-        </span>
-        <span>{formatDistance(monthDistance)} km</span>
-      </div>
-    </div>
+      {day !== null && dayActivities.length > 0 && (
+        <div className="mt-3 space-y-1 border-t border-[var(--color-border)] pt-3">
+          <p className="mb-2 text-xs text-[var(--color-muted)]">
+            {monthIndex + 1}/{day} ·{' '}
+            {zh ? '选择活动查看路线' : 'Select an activity to view its route'}
+          </p>
+          {dayActivities.map((activity) => (
+            <button
+              key={activity.run_id}
+              aria-pressed={selectedActivity?.run_id === activity.run_id}
+              className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-left text-xs hover:bg-[var(--color-bg)] aria-pressed:bg-[var(--color-accent)]/10"
+              onClick={() => onSelectActivity(activity)}
+            >
+              <span className="min-w-0 truncate">
+                {activity.start_date_local.slice(11, 16)} · {activity.name}
+              </span>
+              <span className="shrink-0 font-mono">
+                {(activity.distance / 1000).toFixed(1)} km
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+      {!monthActivities.length && (
+        <p className="mt-3 text-center text-xs text-[var(--color-muted)]">
+          {zh ? '本月没有活动' : 'No activities this month'}
+        </p>
+      )}
+    </section>
   );
 }

@@ -17,7 +17,7 @@
 
 @media only screen and (max-width: 768px) {
   .buttons {
-    padding-right: 10px;
+    padding-right: 48px;
     flex-wrap: wrap;
   }
 }
@@ -46,7 +46,10 @@
 
 .runTitle {
   height: 29px;
-  width: 710px;
+  max-width: calc(100% - 170px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   position: absolute;
   bottom: 0px;
   left: 120px;
@@ -56,10 +59,11 @@
 
 @media only screen and (max-width: 768px) {
   .runTitle {
+    max-width: calc(100% - 60px);
     width: calc(100% - 40px);
     left: 20px;
     font-size: 0.8rem;
-    bottom: 5px;
+    bottom: 35px;
   }
 }
 

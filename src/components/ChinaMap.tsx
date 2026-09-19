@@ -101,7 +101,11 @@ export function ChinaMap({
   }
 
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-5">
+    <div
+      role="region"
+      aria-label={locale === 'zh' ? '足迹地图' : 'Footprint map'}
+      className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-5"
+    >
       {/* Header */}
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-base font-semibold">
@@ -146,6 +150,10 @@ export function ChinaMap({
       <div className="relative" style={{ aspectRatio: `${SVG_W} / ${SVG_H}` }}>
         <svg
           key={filter}
+          role="group"
+          aria-label={
+            locale === 'zh' ? '按省份筛选路线' : 'Filter routes by province'
+          }
           viewBox={`0 0 ${SVG_W} ${SVG_H}`}
           preserveAspectRatio="xMidYMid meet"
           width="100%"
@@ -185,9 +193,23 @@ export function ChinaMap({
                 fill={fill}
                 stroke="var(--color-bg)"
                 strokeWidth="0.5"
-                className={`transition-all duration-150 ${visited ? 'cursor-pointer' : 'cursor-default'}`}
+                className={`transition-all duration-150 ${visited ? 'cursor-pointer focus:outline-2 focus:outline-[var(--color-accent)]' : 'cursor-default'}`}
                 onMouseEnter={() => setHoveredProvince(name)}
                 onMouseLeave={() => setHoveredProvince(null)}
+                role={visited && onSelectProvince ? 'button' : undefined}
+                tabIndex={visited && onSelectProvince ? 0 : undefined}
+                aria-label={`${name} · ${count} ${locale === 'zh' ? '次活动' : 'activities'}`}
+                aria-pressed={
+                  visited && onSelectProvince ? isSelected : undefined
+                }
+                onFocus={() => setHoveredProvince(name)}
+                onBlur={() => setHoveredProvince(null)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    handleClick(name);
+                  }
+                }}
                 onClick={() => handleClick(name)}
               />
             );

@@ -94,8 +94,10 @@ const RunTable = ({
       setSortState((currentState) => {
         const initialDirection = key === 'Date' ? 'ascending' : 'descending';
         const nextDirection =
-          currentState?.key === key && currentState.direction === 'descending'
-            ? 'ascending'
+          currentState?.key === key
+            ? currentState.direction === 'descending'
+              ? 'ascending'
+              : 'descending'
             : initialDirection;
 
         return { key, direction: nextDirection };
@@ -117,9 +119,10 @@ const RunTable = ({
                   sortState?.key === k ? sortState.direction : undefined
                 }
                 className={styles.sortableHeader}
-                onClick={() => handleClick(k)}
               >
-                {k}
+                <button type="button" onClick={() => handleClick(k)}>
+                  {k}
+                </button>
               </th>
             ))}
           </tr>

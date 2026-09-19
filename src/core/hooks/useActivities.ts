@@ -185,9 +185,9 @@ export function formatDistance(meters: number): string {
 
 export function formatPace(speedMs: number): string {
   if (!speedMs) return '--';
-  const paceMin = 1000 / 60 / speedMs;
-  const min = Math.floor(paceMin);
-  const sec = Math.round((paceMin - min) * 60);
+  const totalSeconds = Math.round(1000 / speedMs);
+  const min = Math.floor(totalSeconds / 60);
+  const sec = totalSeconds % 60;
   return `${min}:${sec.toString().padStart(2, '0')}`;
 }
 

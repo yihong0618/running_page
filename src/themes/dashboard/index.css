@@ -3,29 +3,33 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-bg: #f6f8fa;
+  --color-bg: #f5f5f5;
   --color-card: #ffffff;
-  --color-border: #d0d7de;
+  --color-border: #d4d4d4;
   --color-text: #1f2328;
-  --color-muted: #656d76;
+  --color-muted: #626262;
   --color-run: #f97316;
-  --color-all: #a855f7;
-  --color-accent: #a855f7;
+  --color-on-accent: #ffffff;
+  --color-all: #0c4a6e;
+  --color-accent: var(--color-all);
 }
 
 .dark {
-  --color-bg: #0d1117;
-  --color-card: #161b22;
-  --color-border: #30363d;
-  --color-text: #e6edf3;
-  --color-muted: #8b949e;
+  --color-all: #ceff00;
+  --color-on-accent: #171717;
+  --color-bg: #171717;
+  --color-card: #202020;
+  --color-border: #383838;
+  --color-text: #ededed;
+  --color-muted: #a3a3a3;
 }
 
 [data-filter='all'] {
-  --color-accent: #a855f7;
+  --color-accent: var(--color-all);
 }
 [data-filter='Run'] {
   --color-accent: #f97316;
+  --color-on-accent: #171717;
 }
 
 body {
@@ -36,4 +40,75 @@ body {
   transition:
     background-color 0.3s,
     color 0.3s;
+}
+
+/* Keep dashboard controls usable without changing the classic theme. */
+.dashboard button {
+  cursor: pointer;
+}
+.dashboard button:disabled {
+  cursor: default;
+}
+.dashboard button:not(.heatmap-day):not(.calendar-day):not(.track-thumb) {
+  min-height: 32px;
+}
+.dashboard button:focus-visible,
+.dashboard [tabindex]:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+.dashboard th,
+.dashboard td {
+  padding-right: 12px;
+}
+.dashboard button {
+  touch-action: manipulation;
+}
+.dashboard header button {
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard *,
+  .dashboard *::before,
+  .dashboard *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.dashboard .exporting *,
+.dashboard .exporting *::before,
+.dashboard .exporting *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.dashboard .exporting .track-thumb svg {
+  opacity: 1;
+}
+
+.dashboard .exporting button {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.dashboard .heatmap-card,
+.dashboard .activity-log-card {
+  container-type: inline-size;
+}
+.heatmap-scroll-hint,
+.table-scroll-hint {
+  display: none;
+}
+@container (max-width: 840px) {
+  .heatmap-scroll-hint {
+    display: block;
+  }
+}
+@container (max-width: 640px) {
+  .table-scroll-hint {
+    display: block;
+  }
+}
+.dashboard button:not(.heatmap-day):not(.calendar-day):not(.track-thumb) {
+  min-width: 32px;
 }

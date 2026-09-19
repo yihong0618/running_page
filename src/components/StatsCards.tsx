@@ -323,7 +323,7 @@ export function StatsCards({
   });
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_1fr_1fr_1.6fr]">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-[1fr_1fr_1fr_1.6fr]">
       {/* Yearly Goal */}
       <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-5 transition-all duration-300 hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/5 hover:shadow-[var(--color-accent)]/5 hover:shadow-lg">
         <p className="mb-2 flex items-center gap-1.5 text-xs tracking-wider text-[var(--color-muted)] uppercase">
@@ -582,6 +582,22 @@ export function StatsCards({
               return (
                 <div
                   key={wd.key}
+                  role={wd.hasActivity ? 'button' : undefined}
+                  tabIndex={wd.hasActivity ? 0 : undefined}
+                  aria-label={
+                    wd.hasActivity
+                      ? `${wd.key} · ${wd.acts.length} ${t('calendarActivities')}`
+                      : undefined
+                  }
+                  onKeyDown={(event) => {
+                    if (
+                      wd.acts.length &&
+                      (event.key === 'Enter' || event.key === ' ')
+                    ) {
+                      event.preventDefault();
+                      onSelectActivity(wd.acts[0]);
+                    }
+                  }}
                   className={`flex flex-col items-center gap-0.5 ${wd.hasActivity ? 'cursor-pointer' : ''}`}
                   onClick={() => {
                     if (wd.acts.length > 0) onSelectActivity(wd.acts[0]);
