@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # some code from https://github.com/fieryd/PKURunningHelper great thanks
 import argparse
 import ast

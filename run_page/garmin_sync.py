@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Python 3 API wrapper for Garmin Connect to get your statistics.
 Copy most code from https://github.com/cyberjunky/python-garminconnect
