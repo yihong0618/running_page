@@ -195,6 +195,32 @@ pnpm develop
 
 Open your browser and visit <http://localhost:5173/>
 
+## Strava Web Sync
+
+> For when your Strava API application is `inactive` (all OAuth2 requests return 403), you can sync activities through Strava's web endpoints instead.
+
+```bash
+# Sync locally (last 7 days by default)
+python run_page/strava_web_sync.py <JWT> --days 7
+
+# Runs only
+python run_page/strava_web_sync.py <JWT> --days 7 --only-run
+```
+
+**Getting the JWT:**
+
+1. Log in to [strava.com](https://www.strava.com) in your browser
+2. DevTools (F12) → Application → Cookies → `https://www.strava.com`
+3. Copy the value of `strava_remember_token` (a long `eyJ...` JWT)
+
+**CI setup:**
+
+- Set `RUN_TYPE` to `strava_web` in the workflow
+- Add GitHub Secret `STRAVA_JWT` (the JWT value)
+- Optional Variable `STRAVA_WEB_DAYS` (default: 7)
+
+> ⚠️ The JWT expires in ~30 days. Refresh `STRAVA_JWT` by re-copying it from the browser when it does.
+
 ## TUI (Terminal UI)
 
 You can browse your activities in the terminal using the built-in Textual TUI.

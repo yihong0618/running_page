@@ -205,6 +205,32 @@ pnpm develop
 
 访问 <http://localhost:5173/> 查看
 
+## Strava 网页同步（Web 同步）
+
+> 当 Strava API 应用处于 `inactive` 状态（OAuth2 请求全部返回 403）时，可以用网页端接口同步数据。
+
+```bash
+# 本地同步（拉最近 7 天）
+python run_page/strava_web_sync.py <JWT> --days 7
+
+# 只同步跑步
+python run_page/strava_web_sync.py <JWT> --days 7 --only-run
+```
+
+**JWT 获取方式**：
+
+1. 浏览器登录 [strava.com](https://www.strava.com)
+2. F12 打开开发者工具 → Application → Cookies → `https://www.strava.com`
+3. 复制 `strava_remember_token` 的 Value（一长串 `eyJ...` 的 JWT）
+
+**CI 接入**：
+
+- 在 workflow 的 `RUN_TYPE` 中选择 `strava_web`
+- 配置 GitHub Secret：`STRAVA_JWT`（JWT 值）
+- 可选 Variable：`STRAVA_WEB_DAYS`（默认 7）
+
+> ⚠️ JWT 约 30 天过期，过期后需重新从浏览器复制更新 `STRAVA_JWT`。
+
 ## TUI（终端界面）
 
 你可以在终端中使用内置的 Textual TUI 浏览运动数据。
