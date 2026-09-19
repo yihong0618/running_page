@@ -1,7 +1,7 @@
+import argparse
 import calendar
 import datetime
 import locale
-import argparse
 
 import svgwrite
 
@@ -109,7 +109,7 @@ class GithubDrawer(TracksDrawer):
                     ]
                 ]
                 # support windows or others doesn't support locale Name, by Hard code
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 print(str(e))
                 month_names = [
                     "Jan",
@@ -196,16 +196,18 @@ class GithubDrawer(TracksDrawer):
                     dr.add(rect)
                     # Add diagonal stripe overlay for indoor days
                     day_key = date_title.split(" ")[0]
-                    if day_key in self.poster.tracks_by_date:
-                        if self._has_indoor_track(self.poster.tracks_by_date[day_key]):
-                            dr.add(
-                                dr.rect(
-                                    (rect_x, rect_y),
-                                    dom,
-                                    fill="url(#indoor-stripe)",
-                                    style="pointer-events: none;",
-                                )
+                    if (
+                        day_key in self.poster.tracks_by_date
+                        and self._has_indoor_track(self.poster.tracks_by_date[day_key])
+                    ):
+                        dr.add(
+                            dr.rect(
+                                (rect_x, rect_y),
+                                dom,
+                                fill="url(#indoor-stripe)",
+                                style="pointer-events: none;",
                             )
+                        )
                     github_rect_day += datetime.timedelta(1)
                 rect_x += 3.5
             offset.y += 3.5 * 9 + year_size + 1.0

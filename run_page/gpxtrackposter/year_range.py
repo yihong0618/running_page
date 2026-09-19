@@ -7,7 +7,6 @@
 
 import datetime
 import re
-from typing import Optional
 
 
 class YearRange:
@@ -28,7 +27,7 @@ class YearRange:
         """Inits YearRange with empty bounds -- to be built after init"""
         self.from_year = None
         self.to_year = None
-        self.years_dict = dict()
+        self.years_dict = {}
 
     def parse(self, s: str) -> bool:
         """Parse a plaintext range of years into a pair of years
@@ -82,7 +81,7 @@ class YearRange:
             return True
         return self.from_year <= t.year <= self.to_year
 
-    def count(self) -> Optional[int]:
+    def count(self) -> int | None:
         """Return number of years contained in the current range"""
         if self.from_year is None:
             return None

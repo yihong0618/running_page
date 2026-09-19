@@ -1,11 +1,12 @@
+import argparse
 import os
 import sys
-import argparse
+
 import requests
 from config import (
+    FIT_FOLDER,
     GPX_FOLDER,
     TCX_FOLDER,
-    FIT_FOLDER,
 )
 
 BASE_URL = "https://prod.zh.igpsport.com/service/"
@@ -26,7 +27,7 @@ class IGPSPORT:
 
     def login(self):
         if not self.username or not self.password:
-            raise Exception("username or password is empty")
+            raise Exception("username or password is empty")  # noqa: TRY002
         req = {
             "appId": "igpsport-web",
             "username": self.username,
@@ -34,17 +35,17 @@ class IGPSPORT:
         }
         rsp = self.session.post(LOGIN_URL, json=req)
         if not rsp.ok:
-            raise Exception(rsp.reason)
+            raise Exception(rsp.reason)  # noqa: TRY002
         ret = rsp.json()
         access_token = ret.get("data", {}).get("access_token", "")
         if not access_token:
-            raise Exception("AccessToken nil")
+            raise Exception("AccessToken nil")  # noqa: TRY002
         self.token = access_token
         self.session.headers.update({"Authorization": "Bearer " + access_token})
 
     def get_activity_list(self, page_no, ext):
         if page_no < 1:
-            raise Exception("pageNo must be greater than 0")
+            raise Exception("pageNo must be greater than 0")  # noqa: TRY002
         params = {"pageNo": str(page_no), "pageSize": "20", "sort": "1"}
         if ext == "fit":
             params["reqType"] = "0"
@@ -56,21 +57,21 @@ class IGPSPORT:
             params["reqType"] = "2"
         rsp = self.session.get(QUERY_URL, params=params)
         if not rsp.ok:
-            raise Exception(rsp.reason)
+            raise Exception(rsp.reason)  # noqa: TRY002
         return rsp.json()
 
     def get_activity_download_url(self, ride_id):
         if not ride_id:
-            raise Exception("rideId is empty")
+            raise Exception("rideId is empty")  # noqa: TRY002
         rsp = self.session.get(DOWNLOAD_URL + str(ride_id))
         if not rsp.ok:
-            raise Exception(rsp.reason)
+            raise Exception(rsp.reason)  # noqa: TRY002
         ret = rsp.json()
         return ret.get("data", "")
 
     def download_file(self, url, file_name, ext):
         if not url or not file_name:
-            raise Exception("url or fileName is empty")
+            raise Exception("url or fileName is empty")  # noqa: TRY002
         print("downloading igpsport", file_name, ext)
         folder = TCX_FOLDER
         if ext == "fit":
@@ -85,7 +86,7 @@ class IGPSPORT:
         file_path = os.path.join(folder, f"{file_name}.{ext}")
         rsp = requests.get(url)
         if not rsp.ok:
-            raise Exception(rsp.reason)
+            raise Exception(rsp.reason)  # noqa: TRY002
         with open(file_path, "wb") as f:
             f.write(rsp.content)
 
@@ -140,12 +141,12 @@ if __name__ == "__main__":
     if args.with_fit:
         try:
             igpsport.download_type("fit")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             errs.append(f"fit: {e}")
     if args.with_gpx:
         try:
             igpsport.download_type("gpx")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             errs.append(f"gpx: {e}")
     if args.with_tcx:
         print("type empty or tcx unsupportted yet")

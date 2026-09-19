@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import json
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Callable, Optional
 
 # ── constants matching web UI ──────────────────────────────
 
@@ -52,13 +52,13 @@ class Activity:
     distance: float  # metres
     moving_time: str  # "HH:MM:SS" or "X days, HH:MM:SS"
     type: str
-    subtype: Optional[str]
+    subtype: str | None
     start_date: str  # UTC
     start_date_local: str  # "YYYY-MM-DD HH:MM:SS"
-    location_country: Optional[str]
-    summary_polyline: Optional[str]
-    average_heartrate: Optional[float]
-    elevation_gain: Optional[float]
+    location_country: str | None
+    summary_polyline: str | None
+    average_heartrate: float | None
+    elevation_gain: float | None
     average_speed: float  # m/s
     streak: int
 
@@ -134,7 +134,7 @@ class Activity:
         return 0
 
     @property
-    def pace_min_km(self) -> Optional[str]:
+    def pace_min_km(self) -> str | None:
         if self.distance <= 0:
             return None
         secs = self.moving_seconds
@@ -144,7 +144,7 @@ class Activity:
         return f"{int(pace // 60)}:{int(pace % 60):02d}"
 
     @property
-    def pace_seconds_per_km(self) -> Optional[float]:
+    def pace_seconds_per_km(self) -> float | None:
         if self.distance <= 0:
             return None
         secs = self.moving_seconds
@@ -163,7 +163,7 @@ class Activity:
         # Chinese address: city is typically 3rd from end
         # e.g. "..., 沈阳市, 辽宁省, 110142, 中国"
         for p in reversed(parts):
-            if p.endswith("市") or p.endswith("县"):
+            if p.endswith(("市", "县")):
                 return p
         if len(parts) >= 3:
             return parts[-3]
@@ -176,7 +176,7 @@ class Activity:
             return ""
         parts = [p.strip() for p in loc.split(",")]
         for p in reversed(parts):
-            if p.endswith("省") or p.endswith("自治区") or p.endswith("特别行政区"):
+            if p.endswith(("省", "自治区", "特别行政区")):
                 return p
         if len(parts) >= 2:
             return parts[-2]
@@ -201,7 +201,7 @@ class Activity:
     # ── race classification ────────────────────────────────
 
     @property
-    def race_label(self) -> Optional[str]:
+    def race_label(self) -> str | None:
         km = self.distance_km
         if km >= FULL_MARATHON:
             return "全程马拉松"
@@ -275,20 +275,20 @@ class YearStats:
     daily_distances: dict[str, float] = field(default_factory=dict)
 
     @property
-    def avg_pace(self) -> Optional[str]:
+    def avg_pace(self) -> str | None:
         if self.total_distance <= 0 or self.total_time_sec <= 0:
             return None
         pace_sec = self.total_time_sec / self.total_distance
         return f"{int(pace_sec // 60)}:{int(pace_sec % 60):02d}"
 
     @property
-    def avg_heart_rate(self) -> Optional[float]:
+    def avg_heart_rate(self) -> float | None:
         if self.heart_rate_count <= 0:
             return None
         return self.heart_rate_sum / self.heart_rate_count
 
     @property
-    def avg_speed_kmh(self) -> Optional[float]:
+    def avg_speed_kmh(self) -> float | None:
         if self.total_time_sec <= 0:
             return None
         return self.total_distance / (self.total_time_sec / 3600)
@@ -336,18 +336,18 @@ class AggregatedData:
     type_distances: dict[str, float]
 
     # date range
-    first_date: Optional[str]
-    last_date: Optional[str]
+    first_date: str | None
+    last_date: str | None
 
     @property
-    def overall_avg_pace(self) -> Optional[str]:
+    def overall_avg_pace(self) -> str | None:
         if self.total_distance <= 0 or self.total_time_sec <= 0:
             return None
         pace_sec = self.total_time_sec / self.total_distance
         return f"{int(pace_sec // 60)}:{int(pace_sec % 60):02d}"
 
     @property
-    def overall_avg_hr(self) -> Optional[float]:
+    def overall_avg_hr(self) -> float | None:
         if self.total_heart_rate_count <= 0:
             return None
         return self.total_heart_rate_sum / self.total_heart_rate_count
@@ -394,8 +394,8 @@ def aggregate_activities(activities: list[Activity]) -> AggregatedData:
     total_hr_cnt = 0
     total_max_dist = 0.0
     total_max_speed = 0.0
-    first_date_val: Optional[str] = None
-    last_date_val: Optional[str] = None
+    first_date_val: str | None = None
+    last_date_val: str | None = None
 
     for a in activities:
         y = a.year
@@ -416,13 +416,10 @@ def aggregate_activities(activities: list[Activity]) -> AggregatedData:
         if a.average_heartrate:
             ys.heart_rate_sum += a.average_heartrate
             ys.heart_rate_count += 1
-        if d_km > ys.max_distance:
-            ys.max_distance = d_km
+        ys.max_distance = max(ys.max_distance, d_km)
         speed_kmh = a.average_speed * 3.6
-        if speed_kmh > ys.max_speed:
-            ys.max_speed = speed_kmh
-        if a.streak > ys.streak:
-            ys.streak = a.streak
+        ys.max_speed = max(ys.max_speed, speed_kmh)
+        ys.streak = max(ys.streak, a.streak)
         ys.daily_distances[a.date_local] = (
             ys.daily_distances.get(a.date_local, 0) + d_km
         )
@@ -460,10 +457,8 @@ def aggregate_activities(activities: list[Activity]) -> AggregatedData:
         if a.average_heartrate:
             total_hr_sum += a.average_heartrate
             total_hr_cnt += 1
-        if d_km > total_max_dist:
-            total_max_dist = d_km
-        if speed_kmh > total_max_speed:
-            total_max_speed = speed_kmh
+        total_max_dist = max(total_max_dist, d_km)
+        total_max_speed = max(total_max_speed, speed_kmh)
 
         # date range
         dl = a.date_local
@@ -511,7 +506,7 @@ class ContributionGrid:
     """Data for rendering a GitHub-style contribution grid."""
 
     year: str
-    weeks: list[list[Optional[GridCell]]]  # 7 rows x N cols
+    weeks: list[list[GridCell | None]]  # 7 rows x N cols
     month_labels: list[tuple[int, int, str]]  # (col_index, span, name)
 
     @property
@@ -541,7 +536,7 @@ def build_contribution_grid(activities: list[Activity], year: str) -> Contributi
     grid_start = start - timedelta(days=start_weekday)
 
     # Build the grid
-    weeks: list[list[Optional[GridCell]]] = [[None] * 7 for _ in range(53)]
+    weeks: list[list[GridCell | None]] = [[None] * 7 for _ in range(53)]
     current = grid_start
     max_dist = max(daily.values()) if daily else 1
 

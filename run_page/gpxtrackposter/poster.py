@@ -69,7 +69,6 @@ class Poster:
             except locale.Error as e:
                 print(f'Cannot set locale to "{language}": {e}')
                 language = None
-                pass
 
         # Fall-back to NullTranslations, if the specified language translation cannot be found.
         if language:
@@ -100,8 +99,8 @@ class Poster:
             else:
                 self.tracks_by_date[text_date] = [track]
             self.length_range.extend(track.length)
-        for tracks in self.tracks_by_date.values():
-            length = sum([t.length for t in tracks])
+        for date_tracks in self.tracks_by_date.values():
+            length = sum([t.length for t in date_tracks])
             self.length_range_by_date.extend(length)
 
     def draw(self, drawer, output):
@@ -111,16 +110,14 @@ class Poster:
         width = self.width
         if self.drawer_type == "plain":
             height = height - 100
-        if self.drawer_type == "year_summary":
-            # Year summary has its own layout, use full size
-            height = height
+        # Year summary has its own layout, use full size (no height adjustment)
         d = svgwrite.Drawing(output, (f"{width}mm", f"{height}mm"))
         d.viewbox(0, 0, self.width, height)
         d.add(d.rect((0, 0), (width, height), fill=self.colors["background"]))
         if self.drawer_type == "year_summary":
             # Year summary drawer handles its own layout
             self.__draw_tracks(d, XY(width - 10, height - 10), XY(5, 5))
-        elif not self.drawer_type == "plain":
+        elif self.drawer_type != "plain":
             self.__draw_header(d)
             self.__draw_footer(d)
             self.__draw_tracks(d, XY(width - 20, height - 30 - 30), XY(10, 30))

@@ -8,7 +8,6 @@ from config import GPX_FOLDER, OUTPUT_DIR
 from keep_sync import KEEP_SPORT_TYPES, get_all_keep_tracks
 from strava_sync import run_strava_sync
 from stravalib.exc import ActivityUploadFailed, RateLimitTimeout
-
 from utils import make_strava_client, upload_file_to_strava
 
 """
@@ -25,8 +24,8 @@ KEEP2STRAVA_BK_PATH = os.path.join(OUTPUT_DIR, "keep2strava.json")
 
 def run_keep_sync(email, password, keep_sports_data_api, with_download_gpx=False):
     if not os.path.exists(KEEP2STRAVA_BK_PATH):
-        file = open(KEEP2STRAVA_BK_PATH, "w")
-        file.close()
+        with open(KEEP2STRAVA_BK_PATH, "w"):
+            pass
         content = []
     else:
         with open(KEEP2STRAVA_BK_PATH) as f:
@@ -101,7 +100,7 @@ if __name__ == "__main__":
                 upload_file_to_strava(client, track.gpx_file_path, "gpx", False)
                 uploaded_file_paths.append(track)
             except ActivityUploadFailed as e:
-                print(f"Upload failed error {str(e)}")
+                print(f"Upload failed error {e!s}")
             # spider rule
             time.sleep(1)
         else:
@@ -114,19 +113,19 @@ if __name__ == "__main__":
     with open(KEEP2STRAVA_BK_PATH, "r") as f:
         try:
             content = json.loads(f.read())
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Error reading JSON file {KEEP2STRAVA_BK_PATH}: {e}")
             content = []
 
     # Extend and Save the successfully uploaded log to the backup file.
     content.extend(
         [
-            dict(
-                run_id=track.id,
-                name=track.name,
-                type=track.type,
-                gpx_file_path=track.gpx_file_path,
-            )
+            {
+                "run_id": track.id,
+                "name": track.name,
+                "type": track.type,
+                "gpx_file_path": track.gpx_file_path,
+            }
             for track in uploaded_file_paths
         ]
     )

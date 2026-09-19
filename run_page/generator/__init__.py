@@ -7,14 +7,16 @@ import arrow
 import polyline as polyline_codec
 import stravalib
 from gpxtrackposter import track_loader
-from sqlalchemy import func
-
 from polyline_processor import filter_out
+from sqlalchemy import func
 from synced_data_file_logger import save_synced_data_file_list
 
 from .db import Activity, init_db, update_or_create_activity
 
-IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
+IGNORE_BEFORE_SAVING = os.getenv(
+    "IGNORE_BEFORE_SAVING",
+    False,  # noqa: PLW1508
+)
 
 
 # Bounding box spread threshold (degrees) for indoor activity detection.
@@ -158,7 +160,7 @@ class Generator:
 
         print("Start syncing")
         if force:
-            filters = {"before": datetime.datetime.now(datetime.timezone.utc)}
+            filters = {"before": datetime.datetime.now(datetime.UTC)}
         else:
             last_activity = self.session.query(func.max(Activity.start_date)).scalar()
             if last_activity:
@@ -166,16 +168,15 @@ class Generator:
                 last_activity_date = last_activity_date.shift(days=-7)
                 filters = {"after": last_activity_date.datetime}
             else:
-                filters = {"before": datetime.datetime.now(datetime.timezone.utc)}
+                filters = {"before": datetime.datetime.now(datetime.UTC)}
 
         for activity in self.client.get_activities(**filters):
             if self.only_run and activity.type != "Run":
                 continue
-            if IGNORE_BEFORE_SAVING:
-                if activity.map and activity.map.summary_polyline:
-                    activity.map.summary_polyline = filter_out(
-                        activity.map.summary_polyline
-                    )
+            if IGNORE_BEFORE_SAVING and activity.map and activity.map.summary_polyline:
+                activity.map.summary_polyline = filter_out(
+                    activity.map.summary_polyline
+                )
             #  strava use total_elevation_gain as elevation_gain
             activity.elevation_gain = activity.total_elevation_gain
             activity.subtype = activity.type
@@ -187,7 +188,7 @@ class Generator:
             sys.stdout.flush()
         self.session.commit()
 
-    def sync_from_data_dir(self, data_dir, file_suffix="gpx", activity_title_dict={}):
+    def sync_from_data_dir(self, data_dir, file_suffix="gpx", activity_title_dict=None):
         loader = track_loader.TrackLoader()
         tracks = loader.load_tracks(
             data_dir, file_suffix=file_suffix, activity_title_dict=activity_title_dict
@@ -245,7 +246,7 @@ class Generator:
         last_date = None
         for activity in activities:
             # Determine running streak.
-            date = datetime.datetime.strptime(
+            date = datetime.datetime.strptime(  # noqa: DTZ007
                 activity.start_date_local, "%Y-%m-%d %H:%M:%S"  # type: ignore
             ).date()
             if last_date is None:
@@ -320,7 +321,7 @@ class Generator:
                     coords = polyline_codec.decode(poly)
                     if len(coords) < 2:
                         coords = None
-                except Exception:
+                except Exception:  # noqa: BLE001
                     coords = None
 
             # Strategy 2: no GPS data but has distance → indoor
@@ -370,9 +371,9 @@ class Generator:
         try:
             activities = self.session.query(Activity).all()
             return [str(a.run_id) for a in activities]
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # pass the error
-            print(f"something wrong with {str(e)}")
+            print(f"something wrong with {e!s}")
             return []
 
     def get_old_tracks_dates(self):
@@ -383,7 +384,7 @@ class Generator:
                 .all()
             )
             return [str(a.start_date_local) for a in activities]
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # pass the error
-            print(f"something wrong with {str(e)}")
+            print(f"something wrong with {e!s}")
             return []

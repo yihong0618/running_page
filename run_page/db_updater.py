@@ -1,8 +1,7 @@
-from generator.db import init_db, Activity
-from config import SQL_FILE
 import sqlalchemy
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE
+from generator.db import Activity, init_db
 from sqlalchemy import text
-from config import GPX_FOLDER, JSON_FILE
 from utils import make_activities_file
 
 

@@ -4,7 +4,6 @@ Only the gpx files in GPX_OUT sync
 """
 
 from config import JSON_FILE, SQL_FILE, TCX_FOLDER
-
 from utils import make_activities_file
 
 if __name__ == "__main__":

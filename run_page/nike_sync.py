@@ -4,7 +4,7 @@ import logging
 import os.path
 import time
 from collections import namedtuple
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from xml.etree import ElementTree
 
 import gpxpy.gpx
@@ -40,7 +40,7 @@ class Nike:
             return self.request(
                 f"activities/before_id/v3/{activity_id}?limit=30&types=run%2Cjogging&include_deleted=false"
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Error getting activities before id {activity_id}: {e}")
             time.sleep(3)
             return self.request(
@@ -50,7 +50,7 @@ class Nike:
     def get_activity(self, activity_id):
         try:
             return self.request(f"activity/{activity_id}?metrics=ALL")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(f"Error getting activity {activity_id}: {e}, retrying...")
             time.sleep(3)
             return self.request(f"activity/{activity_id}?metrics=ALL")
@@ -129,7 +129,7 @@ def get_last_before_id():
         logger.info(f"Last update from {data['id']}")
         return data["id"]
     # easy solution when error happens no last id
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Error getting last before id: {e}")
         return None
 
@@ -156,7 +156,7 @@ def get_to_generate_files():
             last_time = max(timestamps)
         else:
             last_time = 0
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Error getting last time: {e}")
         last_time = 0
     return [
@@ -210,16 +210,16 @@ def generate_gpx(title, latitude_data, longitude_data, elevation_data, heart_rat
 
     for lat, lon in zip(latitude_data, longitude_data):
         if lat["start_epoch_ms"] != lon["start_epoch_ms"]:
-            raise Exception("\tThe latitude and longitude data is out of order")
+            raise Exception(  # noqa: TRY002
+                "\tThe latitude and longitude data is out of order"
+            )
 
         points_dict_list.append(
             {
                 "latitude": lat["value"],
                 "longitude": lon["value"],
                 "start_time": lat["start_epoch_ms"],
-                "time": datetime.fromtimestamp(
-                    lat["start_epoch_ms"] / 1000, tz=timezone.utc
-                ),
+                "time": datetime.fromtimestamp(lat["start_epoch_ms"] / 1000, tz=UTC),
             }
         )
 
@@ -322,11 +322,9 @@ def parse_no_gpx_data(activity):
     elapsed_time = timedelta(seconds=int(activity["active_duration_ms"] / 1000))
 
     nike_id = activity["end_epoch_ms"]
-    start_date = datetime.fromtimestamp(
-        activity["start_epoch_ms"] / 1000, tz=timezone.utc
-    )
+    start_date = datetime.fromtimestamp(activity["start_epoch_ms"] / 1000, tz=UTC)
     start_date_local = adjust_time(start_date, BASE_TIMEZONE)
-    end_date = datetime.fromtimestamp(activity["end_epoch_ms"] / 1000, tz=timezone.utc)
+    end_date = datetime.fromtimestamp(activity["end_epoch_ms"] / 1000, tz=UTC)
     end_date_local = adjust_time(end_date, BASE_TIMEZONE)
     d = {
         "id": int(nike_id),
@@ -364,7 +362,7 @@ def make_new_gpxs(files):
         with open(file, "r") as f:
             try:
                 json_data = json.loads(f.read())
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 print(f"Error reading JSON file {file}: {e}")
                 continue
         # ALL save name using utc if you want local please offset
@@ -379,7 +377,7 @@ def make_new_gpxs(files):
                 if track:
                     tracks_list.append(track)
             # just ignore some unexpected run
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 print(str(e))
                 continue
     if tracks_list:

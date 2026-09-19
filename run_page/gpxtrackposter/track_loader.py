@@ -14,17 +14,16 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import concurrent.futures
 
 from generator.db import Activity, init_db
+from synced_data_file_logger import load_synced_file_list
 
 from .exceptions import ParameterError, TrackLoadError
 from .track import Track
 from .year_range import YearRange
 
-from synced_data_file_logger import load_synced_file_list
-
 log = logging.getLogger(__name__)
 
 
-def load_gpx_file(file_name, activity_title_dict={}):
+def load_gpx_file(file_name, activity_title_dict=None):
     """Load an individual GPX file as a track by using Track.load_gpx()"""
     t = Track()
     t.load_gpx(file_name)
@@ -34,7 +33,7 @@ def load_gpx_file(file_name, activity_title_dict={}):
     return t
 
 
-def load_tcx_file(file_name, activity_title_dict={}):
+def load_tcx_file(file_name, activity_title_dict=None):
     """Load an individual TCX file as a track by using Track.load_tcx()"""
     t = Track()
     t.load_tcx(file_name)
@@ -44,7 +43,7 @@ def load_tcx_file(file_name, activity_title_dict={}):
     return t
 
 
-def load_fit_file(file_name, activity_title_dict={}):
+def load_fit_file(file_name, activity_title_dict=None):
     """Load an individual FIT file as a track by using Track.load_fit()"""
     t = Track()
     t.load_fit(file_name)
@@ -75,7 +74,7 @@ class TrackLoader:
             "fit": load_fit_file,
         }
 
-    def load_tracks(self, data_dir, file_suffix="gpx", activity_title_dict={}):
+    def load_tracks(self, data_dir, file_suffix="gpx", activity_title_dict=None):
         """Load tracks data_dir and return as a List of tracks"""
         file_names = [x for x in self._list_data_files(data_dir, file_suffix)]
         print(f"{file_suffix.upper()} files: {len(file_names)}")
@@ -133,7 +132,9 @@ class TrackLoader:
         return filtered_tracks
 
     @staticmethod
-    def _load_data_tracks(file_names, load_func=load_gpx_file, activity_title_dict={}):
+    def _load_data_tracks(
+        file_names, load_func=load_gpx_file, activity_title_dict=None
+    ):
         """
         TODO refactor with _load_tcx_tracks
         """

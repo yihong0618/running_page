@@ -1,11 +1,12 @@
 import argparse
-from openai import OpenAI
-from config import SQL_FILE, PNG_FOLDER
-from generator import Generator
-import polyline
 import base64
 import os
+
 import cairosvg  # 替换 svglib.svglib 和 reportlab.graphics
+import polyline
+from config import PNG_FOLDER, SQL_FILE
+from generator import Generator
+from openai import OpenAI
 
 SVG_WIDTH = 800
 SVG_HEIGHT = 600
@@ -51,7 +52,7 @@ def generate_share_image(distance, pace, time, date, client):
             temperature=0.8,
         )
         enhanced_prompt = chat_response.choices[0].message.content.strip()
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Error enhancing prompt: {e}")
         enhanced_prompt = base_prompt
     prompt = enhanced_prompt + PLUS_PROMPT.format(
@@ -62,12 +63,13 @@ def generate_share_image(distance, pace, time, date, client):
     )
 
     try:
-        result = client.images.edit(
-            model="gpt-image-1",
-            prompt=prompt,
-            image=[open("route.png", "rb")],
-            n=1,
-        )
+        with open("route.png", "rb") as route_file:
+            result = client.images.edit(
+                model="gpt-image-1",
+                prompt=prompt,
+                image=[route_file],
+                n=1,
+            )
 
         image_base64 = result.data[0].b64_json
         image_bytes = base64.b64decode(image_base64)
@@ -80,7 +82,7 @@ def generate_share_image(distance, pace, time, date, client):
             f.write(image_bytes)
 
         print(f"Share image saved to {output_path}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Error generating share image: {e}")
 
 
@@ -97,7 +99,7 @@ def generate_route_svg(
     """
     try:
         points = polyline.decode(polyline_str)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Error decoding polyline: {e}")
         return
 
@@ -154,13 +156,13 @@ def generate_route_svg(
                 cairosvg.svg2png(url=svg_filename, write_to=png_filename)
                 os.remove(svg_filename)
                 print(f"Route map generated: {png_filename}")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 print(f"Error during PNG conversion: {e}")
         else:
             print(f"Route map generated: {svg_filename}")
-    except IOError as e:
+    except OSError as e:
         print(f"Error writing file: {e}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Error during conversion: {e}")
 
 
@@ -185,7 +187,7 @@ def run_auto_sync(client, format="svg", date=None):
     else:
         activity = activities_list[-1]
 
-    if "summary_polyline" in activity and activity["summary_polyline"]:
+    if activity.get("summary_polyline"):
         generate_route_svg(activity["summary_polyline"], format=format)
 
         distance = round(activity.get("distance", 0) / 1000, 2)

@@ -8,9 +8,8 @@ from datetime import datetime
 import eviltransform
 import gpxpy
 import requests
+from config import FOLDER_DICT, JSON_FILE, SQL_FILE
 from requests.auth import HTTPBasicAuth
-
-from config import JSON_FILE, SQL_FILE, FOLDER_DICT
 from utils import make_activities_file
 
 BASE_URL = "https://intervals.icu/api/v1"
@@ -52,7 +51,7 @@ class IntervalsICU:
                 f.write(content)
 
             return output_path
-        except Exception:
+        except Exception:  # noqa: BLE001
             return None
 
 
@@ -81,7 +80,7 @@ def correct_gpx_gcj02(file_path):
             f.write(gpx.to_xml())
 
         print(f"  GCJ-02 → WGS-84: corrected {count} points in {file_path}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"  Warning: Failed to correct GCJ-02 coordinates in {file_path}: {e}")
 
 
@@ -109,7 +108,7 @@ def correct_tcx_gcj02(file_path):
 
         tree.write(file_path, xml_declaration=True, encoding="UTF-8")
         print(f"  GCJ-02 → WGS-84: corrected {count} positions in {file_path}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"  Warning: Failed to correct GCJ-02 coordinates in {file_path}: {e}")
 
 
@@ -123,18 +122,19 @@ def correct_fit_gcj02(file_path):
         count = 0
         for record in fit.records:
             msg = record.message
-            if isinstance(msg, RecordMessage):
-                if msg.position_lat is not None and msg.position_long is not None:
-                    wgs_lat, wgs_lng = eviltransform.gcj2wgs_exact(
-                        msg.position_lat, msg.position_long
-                    )
-                    msg.position_lat = wgs_lat
-                    msg.position_long = wgs_lng
-                    count += 1
+            if isinstance(msg, RecordMessage) and (
+                msg.position_lat is not None and msg.position_long is not None
+            ):
+                wgs_lat, wgs_lng = eviltransform.gcj2wgs_exact(
+                    msg.position_lat, msg.position_long
+                )
+                msg.position_lat = wgs_lat
+                msg.position_long = wgs_lng
+                count += 1
         fit.crc = None  # Reset CRC so it recalculates on write
         fit.to_file(file_path)
         print(f"  GCJ-02 → WGS-84: corrected {count} records in {file_path}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"  Warning: Failed to correct GCJ-02 coordinates in {file_path}: {e}")
 
 
@@ -172,7 +172,7 @@ def run():
     )
     options = parser.parse_args()
 
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now().strftime("%Y-%m-%d")  # noqa: DTZ005
     client = IntervalsICU(options.athlete_id, options.api_key)
     activities = client.get_activities(oldest=options.start_date, newest=today)
 
@@ -226,7 +226,7 @@ def run():
                 print(
                     f"Warning: Failed to download activity {activity_id}: unknown error"
                 )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Warning: Failed to download activity {activity_id}: {e}")
 
         time.sleep(1)

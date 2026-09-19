@@ -10,9 +10,11 @@ def run_strava_sync(
     client_id,
     client_secret,
     refresh_token,
-    sync_types: list = [],
+    sync_types: list | None = None,
     only_run=False,
 ):
+    if sync_types is None:
+        sync_types = []
     generator = Generator(SQL_FILE)
     generator.set_strava_config(client_id, client_secret, refresh_token)
     # judge sync types is only running or not

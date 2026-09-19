@@ -1,12 +1,13 @@
 import asyncio
-from textual.app import App
-from textual.containers import Horizontal, Vertical
-from textual.widget import Widget
-from textual.reactive import reactive
-from textual.widgets import Static, Header, Footer, DataTable, Button
+
 from rich.console import Group as RichGroup
 from rich.table import Table as RichTable
 from rich.text import Text as RichText
+from textual.app import App
+from textual.containers import Horizontal, Vertical
+from textual.reactive import reactive
+from textual.widget import Widget
+from textual.widgets import Button, DataTable, Footer, Header, Static
 
 
 class StatsView(Widget):
