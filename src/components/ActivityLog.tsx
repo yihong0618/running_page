@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import type { Activity, SportFilter } from '../types';
 import { formatDuration, formatPace } from '../hooks/useActivities';
 import { useLocale } from '../hooks/useLocale';
@@ -31,44 +31,48 @@ export function ActivityLog({
   setYear,
   selectedActivity,
   onSelectActivity,
-  filter = 'all',
 }: ActivityLogProps) {
   const { t } = useLocale();
   const [page, setPage] = useState(0);
   const [distFilter, setDistFilter] = useState<DistanceFilter>('all');
 
-  const distFiltered = activities.filter((a) => {
-    const km = a.distance / 1000;
-    switch (distFilter) {
-      case '10':
-        return km >= 10 && km < 20;
-      case '20':
-        return km >= 20 && km < 40;
-      case '40':
-        return km >= 40;
-      default:
-        return true;
-    }
-  });
-
-  const sorted = [...distFiltered].sort(
-    (a, b) =>
-      new Date(b.start_date_local).getTime() -
-      new Date(a.start_date_local).getTime()
-  );
-
-  useEffect(() => {
-    if (selectedActivity) {
-      const idx = sorted.findIndex((a) => a.run_id === selectedActivity.run_id);
-      if (idx >= 0) {
-        setPage(Math.floor(idx / PAGE_SIZE));
-      } else {
-        setDistFilter('all');
+  const sorted = useMemo(() => {
+    const filtered = activities.filter((a) => {
+      const km = a.distance / 1000;
+      switch (distFilter) {
+        case '10':
+          return km >= 10 && km < 20;
+        case '20':
+          return km >= 20 && km < 40;
+        case '40':
+          return km >= 40;
+        default:
+          return true;
       }
+    });
+    return filtered.sort(
+      (a, b) =>
+        new Date(b.start_date_local).getTime() -
+        new Date(a.start_date_local).getTime()
+    );
+  }, [activities, distFilter]);
+  const selectedId = selectedActivity?.run_id;
+  const [previousSelection, setPreviousSelection] = useState(selectedId);
+  const [previousSorted, setPreviousSorted] = useState(sorted);
+  if (previousSelection !== selectedId || previousSorted !== sorted) {
+    setPreviousSelection(selectedId);
+    setPreviousSorted(sorted);
+    const idx = sorted.findIndex((a) => a.run_id === selectedId);
+    if (idx >= 0) {
+      setPage(Math.floor(idx / PAGE_SIZE));
+    } else if (selectedId != null && distFilter !== 'all') {
+      setDistFilter('all');
+    } else {
+      setPage(
+        Math.min(page, Math.max(0, Math.ceil(sorted.length / PAGE_SIZE) - 1))
+      );
     }
-    // `sorted` is in deps so the page refreshes when the list changes (year/filter switch)
-    // even if the selected run_id stays the same — avoids stale closure. M6 fix.
-  }, [selectedActivity?.run_id, sorted]);
+  }
 
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
   const pageData = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);

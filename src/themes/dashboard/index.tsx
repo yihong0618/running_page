@@ -32,9 +32,10 @@ function Dashboard() {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [page, setPage] = useState<Page>('home');
 
+  const [currentYear] = useState(() => new Date().getFullYear());
   const years = getAvailableYears(activities);
   const filtered = useFilteredActivities(activities, filter, year);
-  const heatmapYear = year ?? years[0] ?? new Date().getFullYear();
+  const heatmapYear = year ?? years[0] ?? currentYear;
 
   // Activities filtered to the selected province (for RouteMap)
   const provinceFiltered = useMemo(() => {
@@ -122,7 +123,7 @@ function Dashboard() {
       )}
 
       <footer className="border-t border-[var(--color-border)] py-6 text-center text-sm text-[var(--color-muted)]">
-        &copy; {new Date().getFullYear()} Running Page 3.0
+        &copy; {currentYear} Running Page 3.0
       </footer>
     </div>
   );

@@ -13,7 +13,7 @@ export function CalendarWidget({
   onSelectActivity,
 }: CalendarWidgetProps) {
   const { t } = useLocale();
-  const now = new Date();
+  const [now] = useState(() => new Date());
   const [viewYear, setViewYear] = useState(now.getFullYear());
   const [viewMonth, setViewMonth] = useState(now.getMonth());
   const [hoveredDay, setHoveredDay] = useState<number | null>(null);
@@ -41,15 +41,24 @@ export function CalendarWidget({
       totalDist += acts.reduce((s, a) => s + a.distance, 0);
     }
 
-    const days: { day: number; activities: Activity[]; distance: number }[] =
-      [];
+    const days: {
+      key: string;
+      day: number;
+      activities: Activity[];
+      distance: number;
+    }[] = [];
     for (let i = 0; i < firstDay; i++) {
-      days.push({ day: 0, activities: [], distance: 0 });
+      days.push({ key: `padding-${i}`, day: 0, activities: [], distance: 0 });
     }
     for (let d = 1; d <= daysInMonth; d++) {
       const acts = dayActivities.get(d) || [];
       const dist = acts.reduce((s, a) => s + a.distance, 0);
-      days.push({ day: d, activities: acts, distance: dist });
+      days.push({
+        key: `${viewYear}-${viewMonth}-${d}`,
+        day: d,
+        activities: acts,
+        distance: dist,
+      });
     }
 
     return { days, monthDistance: totalDist, monthCount: totalCount };
@@ -78,7 +87,7 @@ export function CalendarWidget({
     return 38;
   };
 
-  const dayNames = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const monthStr = `${String(viewMonth + 1).padStart(2, '0')}/${viewYear}`;
 
   return (
@@ -109,12 +118,12 @@ export function CalendarWidget({
 
       {/* Day headers */}
       <div className="mb-1 grid grid-cols-7 gap-1">
-        {dayNames.map((d, i) => (
+        {dayNames.map((d) => (
           <div
-            key={i}
+            key={d}
             className="py-1 text-center text-xs text-[var(--color-muted)]"
           >
-            {d}
+            {d[0]}
           </div>
         ))}
       </div>
@@ -129,7 +138,7 @@ export function CalendarWidget({
           const isHovered = hoveredDay === i && d.distance > 0;
           return (
             <div
-              key={i}
+              key={d.key}
               onClick={() => {
                 if (d.activities.length > 0) onSelectActivity(d.activities[0]);
               }}

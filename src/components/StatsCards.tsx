@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Activity, SportFilter } from '../types';
 import { formatDistance, parseMovingTime } from '../hooks/useActivities';
 import { useLocale } from '../hooks/useLocale';
@@ -29,7 +30,7 @@ export function StatsCards({
   const weekGoalMins = goal.unit === 'time' ? goal.weekly : 0;
 
   // Current year stats (for yearly goal)
-  const now = new Date();
+  const [now] = useState(() => new Date());
   const currentYear = year ?? now.getFullYear();
   const yearActivities = activities.filter((a) => {
     const d = new Date(a.start_date_local);
@@ -291,6 +292,36 @@ export function StatsCards({
 
   const unit = filter === 'Run' ? t('runs') : t('activities');
 
+  const todayIdx = (now.getDay() + 6) % 7; // Mon=0 … Sun=6
+  const visualWeekStart = new Date(now.getTime() - todayIdx * 86400000);
+  const weekLabels =
+    locale === 'zh'
+      ? ['一', '二', '三', '四', '五', '六', '日']
+      : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+  function dayColor(acts: Activity[]): string {
+    if (acts.length === 0) return '';
+    const sorted = [...acts].sort((a, b) => b.distance - a.distance);
+    const type = sorted[0].type;
+    if (type === 'Run') return '#f97316';
+    return 'var(--color-text)';
+  }
+
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(visualWeekStart.getTime() + i * 86400000);
+    const key = toLocalDateStr(date);
+    const dayActs = activities.filter(
+      (a) => a.start_date_local.slice(0, 10) === key
+    );
+    return {
+      key,
+      day: date.getDate(),
+      hasActivity: dayActs.length > 0,
+      isToday: i === todayIdx,
+      acts: dayActs,
+    };
+  });
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_1fr_1fr_1.6fr]">
       {/* Yearly Goal */}
@@ -524,91 +555,60 @@ export function StatsCards({
         </div>
 
         {/* Week days visual */}
-        {(() => {
-          const todayIdx = (now.getDay() + 6) % 7; // Mon=0 … Sun=6
-          const weekStart = new Date(now.getTime() - todayIdx * 86400000);
-          const weekLabels =
-            locale === 'zh'
-              ? ['一', '二', '三', '四', '五', '六', '日']
-              : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-          function dayColor(acts: Activity[]): string {
-            if (acts.length === 0) return '';
-            const sorted = [...acts].sort((a, b) => b.distance - a.distance);
-            const type = sorted[0].type;
-            if (type === 'Run') return '#f97316';
-            return 'var(--color-text)';
-          }
-
-          const weekDays = Array.from({ length: 7 }, (_, i) => {
-            const date = new Date(weekStart.getTime() + i * 86400000);
-            const key = toLocalDateStr(date);
-            const dayActs = activities.filter(
-              (a) => a.start_date_local.slice(0, 10) === key
-            );
-            return {
-              day: date.getDate(),
-              hasActivity: dayActs.length > 0,
-              isToday: i === todayIdx,
-              acts: dayActs,
-            };
-          });
-          return (
-            <div className="mt-3 flex items-center gap-2">
-              <div className="flex shrink-0 flex-col items-center gap-0">
-                <div className="relative h-9 w-9">
-                  <svg
-                    className="h-9 w-9 text-[#f97316]"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 23c-3.866 0-7-3.134-7-7 0-2.468 1.5-5.093 3.03-6.97.44-.54 1.47-.36 1.64.3.17.66.54 1.44 1.13 2.07.26-.94.76-2.06 1.57-3.04.81-.98 1.49-2.09 1.78-3.36.12-.53.71-.78 1.15-.46C17.09 6.46 19 9.58 19 13.5c0 5.247-3.134 9.5-7 9.5z" />
-                  </svg>
-                  <span className="absolute right-0 bottom-[18%] left-0 flex items-center justify-center text-[9px] leading-none font-bold text-white">
-                    {currentWeekStreak}
-                  </span>
-                </div>
-                <span className="-mt-0.5 text-[11px] font-medium text-[var(--color-muted)]">
-                  {t('weeks')}
-                </span>
-              </div>
-              <div className="flex flex-1 items-center gap-1.5">
-                {weekDays.map((wd, i) => {
-                  const isPast =
-                    new Date(weekStart.getTime() + i * 86400000) <= now;
-                  const color = dayColor(wd.acts);
-                  return (
-                    <div
-                      key={i}
-                      className={`flex flex-col items-center gap-0.5 ${wd.hasActivity ? 'cursor-pointer' : ''}`}
-                      onClick={() => {
-                        if (wd.acts.length > 0) onSelectActivity(wd.acts[0]);
-                      }}
-                    >
-                      <span className="text-[9px] text-[var(--color-muted)]">
-                        {weekLabels[i]}
-                      </span>
-                      <div
-                        className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium transition-opacity ${
-                          wd.hasActivity
-                            ? 'text-white hover:opacity-70'
-                            : wd.isToday
-                              ? 'text-[var(--color-text)] ring-1 ring-[var(--color-text)]'
-                              : isPast
-                                ? 'bg-[var(--color-border)] text-[var(--color-muted)]'
-                                : 'text-[var(--color-muted)]'
-                        }`}
-                        style={wd.hasActivity ? { backgroundColor: color } : {}}
-                      >
-                        {wd.day}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+        <div className="mt-3 flex items-center gap-2">
+          <div className="flex shrink-0 flex-col items-center gap-0">
+            <div className="relative h-9 w-9">
+              <svg
+                className="h-9 w-9 text-[#f97316]"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 23c-3.866 0-7-3.134-7-7 0-2.468 1.5-5.093 3.03-6.97.44-.54 1.47-.36 1.64.3.17.66.54 1.44 1.13 2.07.26-.94.76-2.06 1.57-3.04.81-.98 1.49-2.09 1.78-3.36.12-.53.71-.78 1.15-.46C17.09 6.46 19 9.58 19 13.5c0 5.247-3.134 9.5-7 9.5z" />
+              </svg>
+              <span className="absolute right-0 bottom-[18%] left-0 flex items-center justify-center text-[9px] leading-none font-bold text-white">
+                {currentWeekStreak}
+              </span>
             </div>
-          );
-        })()}
+            <span className="-mt-0.5 text-[11px] font-medium text-[var(--color-muted)]">
+              {t('weeks')}
+            </span>
+          </div>
+          <div className="flex flex-1 items-center gap-1.5">
+            {weekDays.map((wd, i) => {
+              const isPast =
+                new Date(visualWeekStart.getTime() + i * 86400000) <= now;
+              const color = dayColor(wd.acts);
+              return (
+                <div
+                  key={wd.key}
+                  className={`flex flex-col items-center gap-0.5 ${wd.hasActivity ? 'cursor-pointer' : ''}`}
+                  onClick={() => {
+                    if (wd.acts.length > 0) onSelectActivity(wd.acts[0]);
+                  }}
+                >
+                  <span className="text-[9px] text-[var(--color-muted)]">
+                    {weekLabels[i]}
+                  </span>
+                  <div
+                    className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium transition-opacity ${
+                      wd.hasActivity
+                        ? 'text-white hover:opacity-70'
+                        : wd.isToday
+                          ? 'text-[var(--color-text)] ring-1 ring-[var(--color-text)]'
+                          : isPast
+                            ? 'bg-[var(--color-border)] text-[var(--color-muted)]'
+                            : 'text-[var(--color-muted)]'
+                    }`}
+                    style={wd.hasActivity ? { backgroundColor: color } : {}}
+                  >
+                    {wd.day}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="mt-3 flex items-center gap-2 text-sm text-[var(--color-muted)]">
           <svg

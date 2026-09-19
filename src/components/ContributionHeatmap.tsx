@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
 import type { Activity, SportFilter } from '../types';
 import {
@@ -10,6 +10,7 @@ import {
 import { useLocale } from '../hooks/useLocale';
 
 const MAX_VISIBLE_YEARS = 10;
+const weekdayIds = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 interface HeatmapProps {
   activities: Activity[];
@@ -79,6 +80,125 @@ function dominantDisplayType(
   return toDisplayType(sorted[0].type);
 }
 
+function buildYearGrid(
+  yr: number,
+  acts: Activity[],
+  isGym: boolean,
+  isAll: boolean
+) {
+  const yearActivities = acts.filter(
+    (a) => new Date(a.start_date_local).getFullYear() === yr
+  );
+
+  const totalDist = yearActivities.reduce((s, a) => s + a.distance, 0);
+  const totalTime = yearActivities.reduce(
+    (s, a) => s + parseMovingTime(a.moving_time),
+    0
+  );
+  const runs = yearActivities.filter((a) => a.type === 'Run');
+  // Average pace as distance-weighted mean speed (totalDistance / totalTime),
+  // not an arithmetic mean of per-run speeds. M5 fix.
+  const runDistance = runs.reduce((s, a) => s + a.distance, 0);
+  const runTime = runs.reduce((s, a) => s + parseMovingTime(a.moving_time), 0);
+  const avgPace = runTime > 0 && runDistance > 0 ? runDistance / runTime : 0;
+
+  // Per-day totals
+  const dayMap = new Map<string, number>();
+  const dayTimeMap = new Map<string, number>(); // date → total seconds (for Training)
+  const dayActivitiesMap = new Map<string, Activity[]>();
+  for (const a of yearActivities) {
+    const day = a.start_date_local.slice(0, 10);
+    dayMap.set(
+      day,
+      (dayMap.get(day) || 0) + (isGym ? 1 : a.distance > 0 ? a.distance : 1)
+    );
+    dayTimeMap.set(
+      day,
+      (dayTimeMap.get(day) || 0) + parseMovingTime(a.moving_time)
+    );
+    const arr = dayActivitiesMap.get(day) || [];
+    arr.push(a);
+    dayActivitiesMap.set(day, arr);
+  }
+
+  // Per-type max (for "all" mode per-type intensity)
+  // Training uses time (seconds), others use distance
+  const typeMaxMap: Record<string, number> = {
+    Run: 1,
+    Ride: 1,
+    Hike: 1,
+    Training: 1,
+  };
+  if (isAll) {
+    dayActivitiesMap.forEach((dayActs, day) => {
+      const domType = dominantDisplayType(dayActs);
+      const value =
+        domType === 'Training'
+          ? dayTimeMap.get(day) || 0
+          : dayActs.reduce((s, a) => s + (a.distance > 0 ? a.distance : 0), 0);
+      if (value > typeMaxMap[domType]) typeMaxMap[domType] = value;
+    });
+  }
+
+  const maxVal = Math.max(...dayMap.values(), 1);
+
+  const startDate = new Date(yr, 0, 1);
+  const startDay = startDate.getDay();
+  const grid: {
+    date: string;
+    distance: number;
+    timeSecs: number;
+    activities: Activity[];
+    domType: string;
+    typeRatio: number;
+  }[][] = [];
+  const monthPositions: { label: string; weekIdx: number }[] = [];
+  let currentMonth = -1;
+  const totalDays =
+    Math.round(
+      (new Date(yr, 11, 31).getTime() - startDate.getTime()) / 86400000
+    ) + 1;
+
+  for (let d = 0; d < totalDays; d++) {
+    const date = new Date(yr, 0, 1 + d);
+    const weekIdx = Math.floor((d + startDay) / 7);
+    while (grid.length <= weekIdx) grid.push([]);
+    const key = `${yr}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    const dayActs = dayActivitiesMap.get(key) || [];
+    const dist = dayMap.get(key) || 0;
+    const domType = dominantDisplayType(dayActs);
+    const typeValue =
+      domType === 'Training'
+        ? dayTimeMap.get(key) || 0
+        : dayActs.reduce((s, a) => s + (a.distance > 0 ? a.distance : 0), 0);
+    const typeRatio = typeValue / (typeMaxMap[domType] ?? 1);
+    grid[weekIdx].push({
+      date: key,
+      distance: dist,
+      timeSecs: dayTimeMap.get(key) || 0,
+      activities: dayActs,
+      domType,
+      typeRatio,
+    });
+    if (date.getMonth() !== currentMonth) {
+      currentMonth = date.getMonth();
+      monthPositions.push({ label: `${currentMonth + 1}`, weekIdx });
+    }
+  }
+
+  return {
+    grid,
+    max: maxVal,
+    monthPositions,
+    stats: {
+      count: yearActivities.length,
+      distance: totalDist,
+      time: totalTime,
+      pace: avgPace,
+    },
+  };
+}
+
 export function ContributionHeatmap({
   activities,
   year: defaultYear,
@@ -86,13 +206,13 @@ export function ContributionHeatmap({
   onSelectActivity,
 }: HeatmapProps) {
   const { t, locale } = useLocale();
-  const allYears = getAvailableYears(activities);
+  const allYears = useMemo(() => getAvailableYears(activities), [activities]);
   const [selectedYear, setSelectedYear] = useState<number | 'all'>(defaultYear);
-  // Keep internal selection in sync when the parent's `year` prop changes
-  // (e.g. picking a year in StatsCards / ActivityLog). M4 fix.
-  useEffect(() => {
+  const [previousDefaultYear, setPreviousDefaultYear] = useState(defaultYear);
+  if (previousDefaultYear !== defaultYear) {
+    setPreviousDefaultYear(defaultYear);
     setSelectedYear(defaultYear);
-  }, [defaultYear]);
+  }
   // yearWindowEnd: index into allYears of the last visible year (0-based, most-recent-first)
   const [yearWindowEnd, setYearWindowEnd] = useState(
     Math.min(MAX_VISIBLE_YEARS - 1, allYears.length - 1)
@@ -103,135 +223,20 @@ export function ContributionHeatmap({
   const isGym = false;
   const isAll = filter === 'all';
 
-  function buildYearGrid(yr: number, acts: Activity[]) {
-    const yearActivities = acts.filter(
-      (a) => new Date(a.start_date_local).getFullYear() === yr
-    );
-
-    const totalDist = yearActivities.reduce((s, a) => s + a.distance, 0);
-    const totalTime = yearActivities.reduce(
-      (s, a) => s + parseMovingTime(a.moving_time),
-      0
-    );
-    const runs = yearActivities.filter((a) => a.type === 'Run');
-    // Average pace as distance-weighted mean speed (totalDistance / totalTime),
-    // not an arithmetic mean of per-run speeds. M5 fix.
-    const runDistance = runs.reduce((s, a) => s + a.distance, 0);
-    const runTime = runs.reduce(
-      (s, a) => s + parseMovingTime(a.moving_time),
-      0
-    );
-    const avgPace = runTime > 0 && runDistance > 0 ? runDistance / runTime : 0;
-
-    // Per-day totals
-    const dayMap = new Map<string, number>();
-    const dayTimeMap = new Map<string, number>(); // date → total seconds (for Training)
-    const dayActivitiesMap = new Map<string, Activity[]>();
-    for (const a of yearActivities) {
-      const day = a.start_date_local.slice(0, 10);
-      dayMap.set(
-        day,
-        (dayMap.get(day) || 0) + (isGym ? 1 : a.distance > 0 ? a.distance : 1)
-      );
-      dayTimeMap.set(
-        day,
-        (dayTimeMap.get(day) || 0) + parseMovingTime(a.moving_time)
-      );
-      const arr = dayActivitiesMap.get(day) || [];
-      arr.push(a);
-      dayActivitiesMap.set(day, arr);
-    }
-
-    // Per-type max (for "all" mode per-type intensity)
-    // Training uses time (seconds), others use distance
-    const typeMaxMap: Record<string, number> = {
-      Run: 1,
-      Ride: 1,
-      Hike: 1,
-      Training: 1,
-    };
-    if (isAll) {
-      dayActivitiesMap.forEach((dayActs, day) => {
-        const domType = dominantDisplayType(dayActs);
-        const value =
-          domType === 'Training'
-            ? dayTimeMap.get(day) || 0
-            : dayActs.reduce(
-                (s, a) => s + (a.distance > 0 ? a.distance : 0),
-                0
-              );
-        if (value > typeMaxMap[domType]) typeMaxMap[domType] = value;
-      });
-    }
-
-    const maxVal = Math.max(...dayMap.values(), 1);
-
-    const startDate = new Date(yr, 0, 1);
-    const startDay = startDate.getDay();
-    const grid: {
-      date: string;
-      distance: number;
-      timeSecs: number;
-      activities: Activity[];
-      domType: string;
-      typeRatio: number;
-    }[][] = [];
-    const monthPositions: { label: string; weekIdx: number }[] = [];
-    let currentMonth = -1;
-    const totalDays =
-      Math.round(
-        (new Date(yr, 11, 31).getTime() - startDate.getTime()) / 86400000
-      ) + 1;
-
-    for (let d = 0; d < totalDays; d++) {
-      const date = new Date(yr, 0, 1 + d);
-      const weekIdx = Math.floor((d + startDay) / 7);
-      while (grid.length <= weekIdx) grid.push([]);
-      const key = `${yr}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-      const dayActs = dayActivitiesMap.get(key) || [];
-      const dist = dayMap.get(key) || 0;
-      const domType = dominantDisplayType(dayActs);
-      const typeValue =
-        domType === 'Training'
-          ? dayTimeMap.get(key) || 0
-          : dayActs.reduce((s, a) => s + (a.distance > 0 ? a.distance : 0), 0);
-      const typeRatio = typeValue / (typeMaxMap[domType] ?? 1);
-      grid[weekIdx].push({
-        date: key,
-        distance: dist,
-        timeSecs: dayTimeMap.get(key) || 0,
-        activities: dayActs,
-        domType,
-        typeRatio,
-      });
-      if (date.getMonth() !== currentMonth) {
-        currentMonth = date.getMonth();
-        monthPositions.push({ label: `${currentMonth + 1}`, weekIdx });
-      }
-    }
-
-    return {
-      grid,
-      max: maxVal,
-      monthPositions,
-      stats: {
-        count: yearActivities.length,
-        distance: totalDist,
-        time: totalTime,
-        pace: avgPace,
-      },
-    };
-  }
-
   const yearData = useMemo(() => {
     if (selectedYear === 'all') {
       return allYears.map((yr) => ({
         year: yr,
-        ...buildYearGrid(yr, activities),
+        ...buildYearGrid(yr, activities, isGym, isAll),
       }));
     }
-    return [{ year: selectedYear, ...buildYearGrid(selectedYear, activities) }];
-  }, [activities, selectedYear, filter]);
+    return [
+      {
+        year: selectedYear,
+        ...buildYearGrid(selectedYear, activities, isGym, isAll),
+      },
+    ];
+  }, [activities, selectedYear, allYears, isGym, isAll]);
 
   const dayLabels =
     locale === 'zh'
@@ -529,7 +534,7 @@ export function ContributionHeatmap({
                 const span = nextStart - m.weekIdx;
                 return (
                   <div
-                    key={i}
+                    key={m.label}
                     className="text-xs text-[var(--color-muted)]"
                     style={{
                       width: `${span * 14}px`,
@@ -560,16 +565,16 @@ export function ContributionHeatmap({
               <div className="mr-1 flex flex-col gap-[3px]">
                 {dayLabels.map((d, i) => (
                   <div
-                    key={i}
+                    key={weekdayIds[i]}
                     className="flex h-3 w-3 items-center justify-center text-[10px] text-[var(--color-muted)]"
                   >
                     {d}
                   </div>
                 ))}
               </div>
-              {grid.map((week, wi) => (
-                <div key={wi} className="flex flex-col gap-[3px]">
-                  {week.map((day, di) => {
+              {grid.map((week) => (
+                <div key={week[0].date} className="flex flex-col gap-[3px]">
+                  {week.map((day) => {
                     const bgColor =
                       day.distance === 0
                         ? 'var(--color-border)'
@@ -586,7 +591,7 @@ export function ContributionHeatmap({
                             : `${day.date}: ${(day.activities.reduce((s, a) => s + a.distance, 0) / 1000).toFixed(1)} km`;
                     return (
                       <div
-                        key={di}
+                        key={day.date}
                         className="h-3 w-3 cursor-pointer rounded-sm transition-colors hover:ring-1 hover:ring-[var(--color-muted)]"
                         style={{ backgroundColor: bgColor }}
                         title={titleText}
@@ -613,9 +618,9 @@ export function ContributionHeatmap({
               className="flex items-center gap-1.5 text-[11px] text-[var(--color-muted)]"
             >
               <span className="flex gap-[2px]">
-                {TYPE_PALETTES[tp].map((c, i) => (
+                {TYPE_PALETTES[tp].map((c) => (
                   <span
-                    key={i}
+                    key={c}
                     className="inline-block h-2.5 w-2.5 rounded-sm"
                     style={{ backgroundColor: c }}
                   />
@@ -629,9 +634,9 @@ export function ContributionHeatmap({
             <span className="text-xs text-[var(--color-muted)]">
               {t('less')}
             </span>
-            {[0.1, 0.35, 0.6, 0.82, 1].map((ratio, i) => (
+            {[0.1, 0.35, 0.6, 0.82, 1].map((ratio) => (
               <div
-                key={i}
+                key={ratio}
                 className="h-3 w-3 rounded-sm"
                 style={{
                   backgroundColor: getColor(

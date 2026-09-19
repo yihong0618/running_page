@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
 import * as polyline from '@mapbox/polyline';
 import mapboxgl from 'mapbox-gl';
@@ -14,6 +14,10 @@ import { useLocale } from '../hooks/useLocale';
 import { MAPBOX_TOKEN } from '../config';
 
 type SportType = 'Run';
+const trackPlaceholders = Array.from({ length: 40 }, (_, id) => ({
+  id,
+  delay: id * 20,
+}));
 
 interface TracksPageProps {
   activities: Activity[];
@@ -99,9 +103,9 @@ function TrackMap({
   activities: Activity[];
   dark?: boolean;
 }) {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const mapReady = useRef(false);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const mapReadyRef = useRef(false);
   const activityRef = useRef(activity);
   const activitiesRef = useRef(activities);
   const style =
@@ -119,9 +123,9 @@ function TrackMap({
   });
 
   // Stable callback ref — always reads latest data from refs
-  const updateRoutes = useRef(() => {
-    const m = map.current;
-    if (!m || !mapReady.current) return;
+  const updateRoutesRef = useRef(() => {
+    const m = mapRef.current;
+    if (!m || !mapReadyRef.current) return;
     const act = activityRef.current;
     const acts = activitiesRef.current;
     ['selected', 'all-routes'].forEach((id) => {
@@ -210,37 +214,37 @@ function TrackMap({
 
   // Init map once
   useEffect(() => {
-    if (!mapContainer.current) return;
-    if (map.current) {
-      map.current.setStyle(style);
+    if (!mapContainerRef.current) return;
+    if (mapRef.current) {
+      mapRef.current.setStyle(style);
       return;
     }
     mapboxgl.accessToken = MAPBOX_TOKEN;
-    mapReady.current = false;
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
+    mapReadyRef.current = false;
+    mapRef.current = new mapboxgl.Map({
+      container: mapContainerRef.current,
       style,
       center: [108, 35],
       zoom: 3,
     });
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    map.current.on('style.load', () => {
-      mapReady.current = true;
-      updateRoutes.current();
+    mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    mapRef.current.on('style.load', () => {
+      mapReadyRef.current = true;
+      updateRoutesRef.current();
     });
     return () => {
-      map.current?.remove();
-      map.current = null;
-      mapReady.current = false;
+      mapRef.current?.remove();
+      mapRef.current = null;
+      mapReadyRef.current = false;
     };
-  }, [dark]);
+  }, [style]);
 
   // Re-render routes when selection or data changes
   useEffect(() => {
-    if (mapReady.current) updateRoutes.current();
+    if (mapReadyRef.current) updateRoutesRef.current();
   }, [activity, activities]);
 
-  return <div ref={mapContainer} className="h-full w-full" />;
+  return <div ref={mapContainerRef} className="h-full w-full" />;
 }
 
 function getColor(a: Activity): string {
@@ -282,18 +286,24 @@ export function TracksPage({
   const hasSport = (t: SportType) => activities.some((a) => a.type === t);
 
   // Filtered base (year + sport)
-  const base = activities.filter((a) => {
-    if (
-      selectedYear !== null &&
-      new Date(a.start_date_local).getFullYear() !== selectedYear
-    )
-      return false;
-    if (sportFilter !== null && a.type !== sportFilter) return false;
-    return true;
-  });
+  const base = useMemo(
+    () =>
+      activities.filter((a) => {
+        if (
+          selectedYear !== null &&
+          new Date(a.start_date_local).getFullYear() !== selectedYear
+        )
+          return false;
+        if (sportFilter !== null && a.type !== sportFilter) return false;
+        return true;
+      }),
+    [activities, selectedYear, sportFilter]
+  );
 
-  const withPolyline = base.filter(
-    (a) => a.summary_polyline && a.summary_polyline.length > 20
+  const withPolyline = useMemo(
+    () =>
+      base.filter((a) => a.summary_polyline && a.summary_polyline.length > 20),
+    [base]
   );
 
   // Stats for left panel
@@ -311,10 +321,10 @@ export function TracksPage({
   // Cluster tracks — defer heavy work
   type Cluster = { representative: Activity; count: number; color: string };
   const [clusteredTracks, setClusteredTracks] = useState<Cluster[]>([]);
-  const [clustering, setClustering] = useState(true);
+  const [clusteredInput, setClusteredInput] = useState<Activity[] | null>(null);
+  const clustering = clusteredInput !== withPolyline;
 
   useEffect(() => {
-    setClustering(true);
     const id = setTimeout(() => {
       const acts = [...withPolyline].sort(
         (a, b) =>
@@ -369,15 +379,20 @@ export function TracksPage({
         });
       }
       setClusteredTracks(clusters);
-      setClustering(false);
+      setClusteredInput(withPolyline);
     }, 0);
     return () => clearTimeout(id);
-  }, [withPolyline.length, selectedYear, sportFilter]);
+  }, [withPolyline]);
 
   const handleSelectTrack = (a: Activity) => {
     setSelectedActivity((prev) => (prev?.run_id === a.run_id ? null : a));
     onSelectActivity?.(a);
   };
+
+  const selectedSeconds = selectedActivity
+    ? parseMovingTime(selectedActivity.moving_time)
+    : 0;
+  const selectedDurationLabel = `${Math.floor(selectedSeconds / 3600) ? Math.floor(selectedSeconds / 3600) + 'h ' : ''}${Math.floor((selectedSeconds % 3600) / 60)}m`;
 
   const allSportTabs: { label: string; value: SportType; color: string }[] = [
     { label: locale === 'zh' ? '跑步' : 'Run', value: 'Run', color: '#f97316' },
@@ -517,10 +532,7 @@ export function TracksPage({
                     {locale === 'zh' ? '时间' : 'Time'}
                   </p>
                   <p className="font-mono text-base leading-tight font-bold">
-                    {(() => {
-                      const s = parseMovingTime(selectedActivity.moving_time);
-                      return `${Math.floor(s / 3600) ? Math.floor(s / 3600) + 'h ' : ''}${Math.floor((s % 3600) / 60)}m`;
-                    })()}
+                    {selectedDurationLabel}
                   </p>
                 </div>
                 {selectedActivity.average_speed > 0 && (
@@ -717,11 +729,11 @@ export function TracksPage({
 
             {clustering ? (
               <div className="flex flex-wrap gap-1">
-                {Array.from({ length: 40 }).map((_, i) => (
+                {trackPlaceholders.map((placeholder) => (
                   <div
-                    key={i}
+                    key={placeholder.id}
                     className="h-[80px] w-[80px] animate-pulse rounded bg-[var(--color-border)]"
-                    style={{ animationDelay: `${i * 20}ms` }}
+                    style={{ animationDelay: `${placeholder.delay}ms` }}
                   />
                 ))}
               </div>

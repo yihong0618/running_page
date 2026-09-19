@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, use, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { messages, type Locale } from '../i18n';
 import { DEFAULT_LOCALE } from '../config';
@@ -16,13 +16,13 @@ const LocaleContext = createContext<LocaleContextValue>({
 });
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
+  const [locale, setLocale] = useState<Locale>(() => {
     const stored = localStorage.getItem('locale');
     return (stored as Locale) || DEFAULT_LOCALE;
   });
 
-  const setLocale = useCallback((l: Locale) => {
-    setLocaleState(l);
+  const updateLocale = useCallback((l: Locale) => {
+    setLocale(l);
     localStorage.setItem('locale', l);
   }, []);
 
@@ -34,12 +34,12 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, t }}>
+    <LocaleContext value={{ locale, setLocale: updateLocale, t }}>
       {children}
-    </LocaleContext.Provider>
+    </LocaleContext>
   );
 }
 
 export function useLocale() {
-  return useContext(LocaleContext);
+  return use(LocaleContext);
 }

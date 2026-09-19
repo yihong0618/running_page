@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import * as polyline from '@mapbox/polyline';
@@ -18,8 +18,8 @@ export function RouteMap({
   dark,
   onClearSelection,
 }: RouteMapProps) {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
 
   const style =
     dark !== false
@@ -27,14 +27,17 @@ export function RouteMap({
       : 'mapbox://styles/mapbox/light-v11';
 
   // Declared before the effects that reference it (react-hooks/immutability).
-  function updateRoutes() {
-    if (!map.current) return;
+  const updateRoutes = useCallback(() => {
+    if (!mapRef.current) return;
 
     // Remove existing source/layer
-    if (map.current.getLayer('routes')) map.current.removeLayer('routes');
-    if (map.current.getSource('routes')) map.current.removeSource('routes');
-    if (map.current.getLayer('selected')) map.current.removeLayer('selected');
-    if (map.current.getSource('selected')) map.current.removeSource('selected');
+    if (mapRef.current.getLayer('routes')) mapRef.current.removeLayer('routes');
+    if (mapRef.current.getSource('routes'))
+      mapRef.current.removeSource('routes');
+    if (mapRef.current.getLayer('selected'))
+      mapRef.current.removeLayer('selected');
+    if (mapRef.current.getSource('selected'))
+      mapRef.current.removeSource('selected');
 
     // If a single activity is selected, show only that route highlighted
     if (selectedActivity?.summary_polyline) {
@@ -42,7 +45,7 @@ export function RouteMap({
         .decode(selectedActivity.summary_polyline)
         .map(([lat, lng]) => [lng, lat]);
 
-      map.current.addSource('selected', {
+      mapRef.current.addSource('selected', {
         type: 'geojson',
         data: {
           type: 'Feature',
@@ -51,7 +54,7 @@ export function RouteMap({
         },
       });
 
-      map.current.addLayer({
+      mapRef.current.addLayer({
         id: 'selected',
         type: 'line',
         source: 'selected',
@@ -64,7 +67,7 @@ export function RouteMap({
 
       const bounds = new mapboxgl.LngLatBounds();
       for (const c of coords) bounds.extend(c as [number, number]);
-      map.current.fitBounds(bounds, { padding: 50, maxZoom: 14 });
+      mapRef.current.fitBounds(bounds, { padding: 50, maxZoom: 14 });
       return;
     }
 
@@ -87,7 +90,7 @@ export function RouteMap({
 
     if (features.length === 0) return;
 
-    map.current.addSource('routes', {
+    mapRef.current.addSource('routes', {
       type: 'geojson',
       data: {
         type: 'FeatureCollection',
@@ -95,7 +98,7 @@ export function RouteMap({
       },
     });
 
-    map.current.addLayer({
+    mapRef.current.addLayer({
       id: 'routes',
       type: 'line',
       source: 'routes',
@@ -138,45 +141,43 @@ export function RouteMap({
       [lngs[lngs.length - 1 - trimCount], lats[lats.length - 1 - trimCount]]
     );
 
-    map.current.fitBounds(bounds, { padding: 30, maxZoom: 13 });
-  }
+    mapRef.current.fitBounds(bounds, { padding: 30, maxZoom: 13 });
+  }, [activities, selectedActivity]);
 
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (!mapContainerRef.current) return;
 
-    if (map.current) {
-      map.current.setStyle(style);
+    if (mapRef.current) {
+      mapRef.current.setStyle(style);
       return;
     }
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
+    mapRef.current = new mapboxgl.Map({
+      container: mapContainerRef.current,
       style,
       center: [121.4, 31.2],
       zoom: 10,
     });
 
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    map.current.addControl(new mapboxgl.FullscreenControl(), 'top-right');
-
-    map.current.on('style.load', () => {
-      updateRoutes();
-    });
+    mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    mapRef.current.addControl(new mapboxgl.FullscreenControl(), 'top-right');
 
     return () => {
-      map.current?.remove();
-      map.current = null;
+      mapRef.current?.remove();
+      mapRef.current = null;
     };
-  }, [dark]);
+  }, [style]);
 
   useEffect(() => {
-    if (map.current?.isStyleLoaded()) {
-      updateRoutes();
-    } else {
-      map.current?.once('style.load', () => updateRoutes());
-    }
-  }, [activities, selectedActivity]);
+    const instance = mapRef.current;
+    if (!instance) return;
+    instance.on('style.load', updateRoutes);
+    if (instance.isStyleLoaded()) updateRoutes();
+    return () => {
+      instance.off('style.load', updateRoutes);
+    };
+  }, [style, updateRoutes]);
 
   return (
     <div className="relative h-[280px] overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-card)]">
@@ -201,7 +202,7 @@ export function RouteMap({
           Overview
         </button>
       )}
-      <div ref={mapContainer} className="h-full w-full" />
+      <div ref={mapContainerRef} className="h-full w-full" />
     </div>
   );
 }
