@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Activity } from '../types';
 import { useLocale } from '../hooks/useLocale';
 import { parseMovingTime } from '../hooks/useActivities';
@@ -23,7 +24,7 @@ const DISTANCES = [
   { key: 'Marathon', min: 41, max: 44 },
 ];
 
-export function PersonalBest({
+export const PersonalBest = memo(function PersonalBest({
   activities,
   onSelectActivity,
 }: PersonalBestProps) {
@@ -116,4 +117,4 @@ export function PersonalBest({
       </div>
     </div>
   );
-}
+});

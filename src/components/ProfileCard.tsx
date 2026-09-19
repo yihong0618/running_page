@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Activity, SportFilter } from '../types';
 import { useLocale } from '../hooks/useLocale';
 import {
@@ -12,7 +13,10 @@ interface ProfileCardProps {
   filter?: SportFilter;
 }
 
-export function ProfileCard({ activities, filter = 'all' }: ProfileCardProps) {
+export const ProfileCard = memo(function ProfileCard({
+  activities,
+  filter = 'all',
+}: ProfileCardProps) {
   const { t, locale } = useLocale();
 
   // Filter activities by sport type for distance/count/time
@@ -235,4 +239,4 @@ export function ProfileCard({ activities, filter = 'all' }: ProfileCardProps) {
       )}
     </div>
   );
-}
+});

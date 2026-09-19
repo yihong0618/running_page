@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import type { Activity, SportFilter } from '../types';
 import { useLocale } from '../hooks/useLocale';
 import { extractProvince } from '../hooks/useActivities';
@@ -57,7 +57,7 @@ function featureToPath(feature: GeoFeature, w: number, h: number): string {
     .join(' ');
 }
 
-export function ChinaMap({
+export const ChinaMap = memo(function ChinaMap({
   activities,
   filter,
   onSelectProvince,
@@ -76,6 +76,15 @@ export function ChinaMap({
       setFeatures((mod.default as { features: GeoFeature[] }).features);
     });
   }, []);
+
+  const paths = useMemo(
+    () =>
+      features.map((feature) => ({
+        ...feature.properties,
+        path: featureToPath(feature, SVG_W, SVG_H),
+      })),
+    [features]
+  );
 
   // Build province → activity count map
   const provinceCount = useMemo(() => {
@@ -160,8 +169,8 @@ export function ChinaMap({
           height="100%"
           style={{ display: 'block', position: 'absolute', inset: 0 }}
         >
-          {features.map((feature) => {
-            const name = feature.properties.name;
+          {paths.map((feature) => {
+            const name = feature.name;
             const count = provinceCount.get(name) ?? 0;
             const visited = count > 0;
             const isHovered = hoveredProvince === name;
@@ -188,8 +197,8 @@ export function ChinaMap({
 
             return (
               <path
-                key={feature.properties.adcode}
-                d={featureToPath(feature, SVG_W, SVG_H)}
+                key={feature.adcode}
+                d={feature.path}
                 fill={fill}
                 stroke="var(--color-bg)"
                 strokeWidth="0.5"
@@ -239,4 +248,4 @@ export function ChinaMap({
       </div>
     </div>
   );
-}
+});

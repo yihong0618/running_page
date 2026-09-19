@@ -1,7 +1,6 @@
-import { toPng } from 'html-to-image';
-
 /** Capture the full card, and restore live layout even if rendering fails. */
 export async function exportCard(element: HTMLElement, filename: string) {
+  const { toPng } = await import('html-to-image');
   const previous = {
     overflow: element.style.overflow,
     width: element.style.width,

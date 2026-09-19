@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { memo, useMemo, useRef, useState } from 'react';
 import { exportCard } from '../utils/exportCard';
 import type { Activity, SportFilter } from '../types';
 import {
@@ -199,7 +199,7 @@ function buildYearGrid(
   };
 }
 
-export function ContributionHeatmap({
+export const ContributionHeatmap = memo(function ContributionHeatmap({
   activities,
   year: defaultYear,
   filter,
@@ -941,4 +941,4 @@ export function ContributionHeatmap({
       )}
     </div>
   );
-}
+});

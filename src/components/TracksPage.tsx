@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { exportCard } from '../utils/exportCard';
 import { RouteMap } from './RouteMap';
 import * as polyline from '@mapbox/polyline';
@@ -52,7 +52,7 @@ function renderTrackSVG(summaryPolyline: string, size = 80): string {
   }
 }
 
-function TrackThumb({
+const TrackThumb = memo(function TrackThumb({
   activity,
   color,
   selected,
@@ -61,12 +61,16 @@ function TrackThumb({
   activity: Activity;
   color: string;
   selected: boolean;
-  onClick: () => void;
+  onClick: (activity: Activity) => void;
 }) {
   const size = 80;
-  const points = activity.summary_polyline
-    ? renderTrackSVG(activity.summary_polyline, size)
-    : '';
+  const points = useMemo(
+    () =>
+      activity.summary_polyline
+        ? renderTrackSVG(activity.summary_polyline, size)
+        : '',
+    [activity.summary_polyline]
+  );
   if (!points) return null;
   return (
     <button
@@ -74,7 +78,7 @@ function TrackThumb({
       aria-pressed={selected}
       aria-label={`${activity.start_date_local.slice(0, 16)} · ${activity.name} · ${(activity.distance / 1000).toFixed(1)} km`}
       className={`track-thumb group relative cursor-pointer rounded transition-all ${selected ? 'ring-2 ring-[var(--color-accent)] ring-offset-1 ring-offset-[var(--color-bg)]' : ''}`}
-      onClick={onClick}
+      onClick={() => onClick(activity)}
       title={`${activity.name} — ${(activity.distance / 1000).toFixed(1)} km`}
     >
       <svg
@@ -94,7 +98,7 @@ function TrackThumb({
       </svg>
     </button>
   );
-}
+});
 
 function getColor(a: Activity): string {
   if (a.type === 'Run') {
@@ -111,7 +115,7 @@ export function TracksPage({
   onSelectActivity,
 }: TracksPageProps) {
   const { locale } = useLocale();
-  const allYears = getAvailableYears(activities);
+  const allYears = useMemo(() => getAvailableYears(activities), [activities]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [sportFilter, setSportFilter] = useState<SportType | null>(null);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
@@ -159,17 +163,21 @@ export function TracksPage({
     [base]
   );
 
-  // Stats for left panel
-  const totalDist = base.reduce((s, a) => s + a.distance, 0);
-  const totalTime = base.reduce(
-    (s, a) => s + parseMovingTime(a.moving_time),
-    0
-  );
-  const runs = base.filter((a) => a.type === 'Run' && a.average_speed > 0);
-  const avgPace =
-    runs.length > 0
-      ? runs.reduce((s, a) => s + a.average_speed, 0) / runs.length
-      : 0;
+  const { totalDist, totalTime, avgPace } = useMemo(() => {
+    let totalDist = 0,
+      totalTime = 0,
+      speed = 0,
+      runs = 0;
+    for (const activity of base) {
+      totalDist += activity.distance;
+      totalTime += parseMovingTime(activity.moving_time);
+      if (activity.type === 'Run' && activity.average_speed > 0) {
+        speed += activity.average_speed;
+        runs++;
+      }
+    }
+    return { totalDist, totalTime, avgPace: runs ? speed / runs : 0 };
+  }, [base]);
 
   // Cluster tracks — defer heavy work
   type Cluster = { representative: Activity; count: number; color: string };
@@ -178,81 +186,73 @@ export function TracksPage({
   const clustering = clusteredInput !== withPolyline;
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      const acts = [...withPolyline].sort(
-        (a, b) =>
-          new Date(b.start_date_local).getTime() -
-          new Date(a.start_date_local).getTime()
-      );
-      type Decoded = {
-        start: [number, number];
-        end: [number, number];
-        distBucket: number;
-      };
-      const decoded: (Decoded | null)[] = acts.map((a) => {
-        try {
-          const coords = polyline.decode(a.summary_polyline!);
-          if (coords.length < 2) return null;
-          return {
-            start: coords[0] as [number, number],
-            end: coords[coords.length - 1] as [number, number],
-            distBucket: Math.round(a.distance / 2000),
-          };
-        } catch {
-          return null;
-        }
-      });
-      const clusters: Cluster[] = [];
-      const used = new Set<number>();
-      for (let i = 0; i < acts.length; i++) {
-        if (used.has(i)) continue;
-        const di = decoded[i];
-        if (!di) continue;
-        let count = 1;
-        for (let j = i + 1; j < acts.length; j++) {
-          if (used.has(j)) continue;
-          const dj = decoded[j];
-          if (!dj || di.distBucket !== dj.distBucket) continue;
-          const startClose =
-            Math.abs(di.start[0] - dj.start[0]) < 0.005 &&
-            Math.abs(di.start[1] - dj.start[1]) < 0.005;
-          const endClose =
-            Math.abs(di.end[0] - dj.end[0]) < 0.005 &&
-            Math.abs(di.end[1] - dj.end[1]) < 0.005;
-          if (startClose && endClose) {
-            used.add(j);
-            count++;
-          }
-        }
-        used.add(i);
-        clusters.push({
-          representative: acts[i],
+    const worker = new Worker(
+      new URL('../workers/clusterTracks.worker.ts', import.meta.url),
+      { type: 'module' }
+    );
+    worker.onmessage = ({
+      data,
+    }: MessageEvent<{ index: number; count: number }[]>) => {
+      setClusteredTracks(
+        data.map(({ index, count }) => ({
+          representative: withPolyline[index],
           count,
-          color: getColor(acts[i]),
-        });
-      }
-      setClusteredTracks(clusters);
+          color: getColor(withPolyline[index]),
+        }))
+      );
       setClusteredInput(withPolyline);
-    }, 0);
-    return () => clearTimeout(id);
+    };
+    // If workers are unavailable, keep every route usable instead of an endless spinner.
+    worker.onerror = () => {
+      setClusteredTracks(
+        withPolyline.map((representative) => ({
+          representative,
+          count: 1,
+          color: getColor(representative),
+        }))
+      );
+      setClusteredInput(withPolyline);
+    };
+    worker.postMessage(
+      withPolyline.map(({ summary_polyline, start_date_local, distance }) => ({
+        summary_polyline,
+        start_date_local,
+        distance,
+      }))
+    );
+    return () => worker.terminate();
   }, [withPolyline]);
 
-  const handleSelectTrack = (a: Activity) => {
-    const next = selectedActivity?.run_id === a.run_id ? null : a;
-    setSelectedActivity(next);
-    onSelectActivity?.(next);
-    if (next && window.matchMedia('(max-width: 1023px)').matches) {
-      requestAnimationFrame(() =>
-        previewRef.current?.scrollIntoView({
-          block: 'start',
-          behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
-            .matches
-            ? 'instant'
-            : 'smooth',
-        })
-      );
-    }
-  };
+  const sortedTracks = useMemo(
+    () =>
+      [...clusteredTracks].sort((a, b) =>
+        sortBy === 'distance'
+          ? b.representative.distance - a.representative.distance
+          : new Date(b.representative.start_date_local).getTime() -
+            new Date(a.representative.start_date_local).getTime()
+      ),
+    [clusteredTracks, sortBy]
+  );
+
+  const handleSelectTrack = useCallback(
+    (a: Activity) => {
+      const next = selectedActivity?.run_id === a.run_id ? null : a;
+      setSelectedActivity(next);
+      onSelectActivity?.(next);
+      if (next && window.matchMedia('(max-width: 1023px)').matches) {
+        requestAnimationFrame(() =>
+          previewRef.current?.scrollIntoView({
+            block: 'start',
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
+              .matches
+              ? 'instant'
+              : 'smooth',
+          })
+        );
+      }
+    },
+    [selectedActivity, onSelectActivity]
+  );
 
   const selectedSeconds = selectedActivity
     ? parseMovingTime(selectedActivity.moving_time)
@@ -659,28 +659,21 @@ export function TracksPage({
               </p>
             ) : (
               <div className="flex flex-wrap gap-1">
-                {[...clusteredTracks]
-                  .sort((a, b) =>
-                    sortBy === 'distance'
-                      ? b.representative.distance - a.representative.distance
-                      : new Date(b.representative.start_date_local).getTime() -
-                        new Date(a.representative.start_date_local).getTime()
-                  )
-                  .map(({ representative: a, count, color }) => (
-                    <div key={a.run_id} className="relative">
-                      <TrackThumb
-                        activity={a}
-                        color={color}
-                        selected={selectedActivity?.run_id === a.run_id}
-                        onClick={() => handleSelectTrack(a)}
-                      />
-                      {count > 1 && (
-                        <span className="pointer-events-none absolute right-1 bottom-1 rounded bg-[var(--color-bg)]/80 px-1 py-0.5 text-[9px] leading-none font-bold text-[var(--color-muted)]">
-                          ×{count}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+                {sortedTracks.map(({ representative: a, count, color }) => (
+                  <div key={a.run_id} className="track-cell relative">
+                    <TrackThumb
+                      activity={a}
+                      color={color}
+                      selected={selectedActivity?.run_id === a.run_id}
+                      onClick={handleSelectTrack}
+                    />
+                    {count > 1 && (
+                      <span className="pointer-events-none absolute right-1 bottom-1 rounded bg-[var(--color-bg)]/80 px-1 py-0.5 text-[9px] leading-none font-bold text-[var(--color-muted)]">
+                        ×{count}
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
 

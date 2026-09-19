@@ -112,3 +112,12 @@ body {
 .dashboard button:not(.heatmap-day):not(.calendar-day):not(.track-thumb) {
   min-width: 32px;
 }
+
+/* Skip offscreen SVG paint/layout, but include every route in image exports. */
+.dashboard .track-cell {
+  content-visibility: auto;
+  contain-intrinsic-size: 80px 80px;
+}
+.dashboard .exporting .track-cell {
+  content-visibility: visible;
+}

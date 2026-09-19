@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import type { Activity, SportFilter } from '../types';
 import { formatDistance, parseMovingTime } from '../hooks/useActivities';
 import { useLocale } from '../hooks/useLocale';
@@ -12,7 +12,7 @@ interface StatsCardsProps {
   onSelectActivity: (a: Activity) => void;
 }
 
-export function StatsCards({
+export const StatsCards = memo(function StatsCards({
   activities,
   allActivities,
   year,
@@ -646,4 +646,4 @@ export function StatsCards({
       </div>
     </div>
   );
-}
+});
