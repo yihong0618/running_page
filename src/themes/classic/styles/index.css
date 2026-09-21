@@ -112,9 +112,6 @@
   body {
     background-color: var(--color-background);
     color: var(--color-brand);
-    transition:
-      background-color 0.1s ease,
-      color 0.1s ease;
     font-family: var(--font-sans);
   }
 }

@@ -37,9 +37,6 @@ body {
   color: var(--color-text);
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
 }
 
 /* Keep dashboard controls usable without changing the classic theme. */

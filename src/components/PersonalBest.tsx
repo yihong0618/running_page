@@ -73,7 +73,7 @@ export const PersonalBest = memo(function PersonalBest({
   if (!hasBests) return null;
 
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] px-4 py-3 transition-all duration-300 hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/5 hover:shadow-[var(--color-accent)]/5 hover:shadow-lg">
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] px-4 py-3 hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/5 hover:shadow-[var(--color-accent)]/5 hover:shadow-lg">
       <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold">
         <svg
           className="h-4 w-4 text-[var(--color-accent)]"
