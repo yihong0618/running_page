@@ -17,7 +17,7 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
   const navItems: { label: string; page: Page }[] = [
     { label: t('home'), page: 'home' },
     { label: t('tracks'), page: 'tracks' },
-    { label: 'Summary', page: 'summary' },
+    { label: t('summary'), page: 'summary' },
   ];
 
   return (
