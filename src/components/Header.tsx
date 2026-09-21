@@ -17,18 +17,22 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
   const navItems: { label: string; page: Page }[] = [
     { label: t('home'), page: 'home' },
     { label: t('tracks'), page: 'tracks' },
-    { label: 'Summary', page: 'summary' },
+    { label: t('summary'), page: 'summary' },
   ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-bold text-[var(--color-text)]">
-            RUNNING<span className="text-[var(--color-run)]">.</span>PAGE
-          </span>
-        </div>
+        {/* Logo → home */}
+        <button
+          type="button"
+          onClick={() => onNavigate('home')}
+          aria-label={locale === 'zh' ? '回到首页' : 'Go to home'}
+          title={locale === 'zh' ? '回到首页' : 'Go to home'}
+          className="cursor-pointer border-0 bg-transparent p-0 text-xl font-bold text-[var(--color-text)]"
+        >
+          RUNNING<span className="text-[var(--color-run)]">.</span>PAGE
+        </button>
 
         {/* Right nav */}
         <div className="flex flex-wrap items-center gap-3 sm:gap-6">

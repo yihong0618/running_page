@@ -15,8 +15,43 @@
             window.history.pushState(null, '', redirect);
           }
         }
+
+        // Apply theme before first paint (mirrors src/core/theme.tsx).
+        try {
+          var theme = localStorage.getItem('theme') || 'dark';
+          if (theme !== 'light' && theme !== 'dark') {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+          }
+          var root = document.documentElement;
+          root.classList.remove('light', 'dark');
+          root.classList.add(theme);
+          root.setAttribute('data-theme', theme);
+          root.style.colorScheme = theme;
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
       })();
     </script>
+    <style>
+      :root {
+        --boot-bg: #171717;
+      }
+      html.light,
+      html[data-theme='light'] {
+        --boot-bg: #f5f5f5;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--boot-bg);
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+    </style>
     <link rel="icon" type="image/png" href="%BASE_URL%/images/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Running Page</title>

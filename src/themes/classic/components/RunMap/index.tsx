@@ -45,7 +45,7 @@ import type { FeatureCollection } from 'geojson';
 import type { RPGeometry } from '../../static/run_countries';
 import './mapbox.css';
 import LightsControl from './LightsControl';
-import { useMapTheme, useThemeChangeCounter } from '../../hooks/useTheme';
+import { getMapThemeFromCurrentTheme, useTheme } from '../../hooks/useTheme';
 
 const KEEP_WHEN_LIGHTS_OFF = ['runs2', 'runs2-indoor', 'animated-run'];
 
@@ -82,12 +82,8 @@ const RunMap = ({
   const isLoadingMapDataRef = useRef(false);
   const [mapError, setMapError] = useState<string | null>(null);
 
-  // Use the map theme hook to get the current map theme
-  const currentMapTheme = useMapTheme();
-  // Listen for theme changes to update single run color
-  useThemeChangeCounter();
-
-  // Get theme-aware single run color that updates when theme changes
+  const { theme } = useTheme();
+  const currentMapTheme = getMapThemeFromCurrentTheme(theme);
   const singleRunColor = getRuntimeSingleRunColor();
 
   // Generate map style based on current theme

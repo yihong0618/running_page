@@ -194,7 +194,7 @@ export function SummaryPage({
   activities: Activity[];
   onSelectActivity: (a: Activity) => void;
 }) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const zh = locale === 'zh';
   const [period, setPeriod] = useState<SummaryPeriod>('month');
   const [sport, setSport] = useState('all');
@@ -234,7 +234,7 @@ export function SummaryPage({
     <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Summary</h1>
+          <h1 className="text-2xl font-semibold">{t('summary')}</h1>
           <p className="mt-2 text-sm text-[var(--color-muted)]">
             {zh
               ? '按时间回看每一段运动历程。'

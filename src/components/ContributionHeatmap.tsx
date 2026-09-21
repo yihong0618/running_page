@@ -385,7 +385,7 @@ export const ContributionHeatmap = memo(function ContributionHeatmap({
           <button
             aria-pressed={selectedYear === 'all'}
             onClick={() => handleSelectYear('all')}
-            className={`rounded px-2.5 py-1 text-xs font-medium transition-all ${
+            className={`rounded px-2.5 py-1 text-xs font-medium ${
               selectedYear === 'all'
                 ? 'bg-[var(--color-accent)] text-[var(--color-on-accent)]'
                 : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'
@@ -426,7 +426,7 @@ export const ContributionHeatmap = memo(function ContributionHeatmap({
               key={y}
               aria-pressed={selectedYear === y}
               onClick={() => handleSelectYear(y)}
-              className={`rounded px-2.5 py-1 text-xs font-medium transition-all ${
+              className={`rounded px-2.5 py-1 text-xs font-medium ${
                 selectedYear === y
                   ? 'bg-[var(--color-accent)] text-[var(--color-on-accent)]'
                   : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'

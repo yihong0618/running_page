@@ -34,7 +34,7 @@ import {
   getBoundsForGeoData,
   type IViewState,
 } from '../utils/geoUtils';
-import { useTheme, useThemeChangeCounter } from '../hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 
 const HASH_RUN_CHANGE_EVENT = 'running-page-hash-run-change';
 
@@ -84,7 +84,7 @@ const useRunHashId = () =>
 const Index = () => {
   const { siteTitle, siteUrl } = getSiteMetadata();
   const { activities, thisYear } = useActivities();
-  const themeChangeCounter = useThemeChangeCounter();
+  const { theme } = useTheme();
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [title, setTitle] = useState('');
@@ -117,9 +117,9 @@ const Index = () => {
   }, [activities, currentFilter.item, currentFilter.func]);
 
   const geoData = useMemo(() => {
-    void themeChangeCounter;
+    void theme;
     return geoJsonForRuns(runs);
-  }, [runs, themeChangeCounter]);
+  }, [runs, theme]);
 
   // for auto zoom
   const bounds = useMemo(() => {
@@ -402,8 +402,6 @@ const Index = () => {
       svgStat && svgStat.removeEventListener('click', handleClick);
     };
   }, [year, locateActivity, runs, thisYear]);
-
-  const { theme } = useTheme();
 
   return (
     <Layout>
