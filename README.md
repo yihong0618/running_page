@@ -434,16 +434,15 @@ You can using `Google map` [Interactive Polyline Encoder Utility](https://develo
 
 ### Indoor routes
 
-By default, indoor activities and activities with missing GPS reuse the nearest
-previous outdoor route for visualization. To keep their original route and location
-data instead, set `GENERATE_INDOOR_ROUTES=false` in the environment of the data sync
-command (or in the sync job's `env` section in GitHub Actions). `0` and `no` also
-disable this behavior; values are case-insensitive. Unset the variable or set it to
-`true` to keep the current behavior.
+Activities without GPS keep their original route, subtype and location data.
+When selected on the dashboard or classic map, they display the most recent
+earlier activity with a usable GPS route and a notice identifying that route.
+If no earlier mapped activity exists, no substitute route is shown. This fallback
+is only for display; it does not change activity distances, exports or the database.
+Configured privacy filters still apply to exported routes.
 
-This stops generating substitute routes. It does not erase routes already saved in
-`run_page/data.db`; reimport the original activity data with this setting disabled
-if you need to replace previously generated routes.
+Previously generated routes already stored in `run_page/data.db` cannot reliably be
+distinguished from source routes. Reimport the original activity data to replace them.
 
 ## Download your running data
 
