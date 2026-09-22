@@ -9,7 +9,7 @@ import {
 import { Analytics } from '@vercel/analytics/react';
 import { Helmet } from 'react-helmet-async';
 import Layout from '../components/Layout';
-import { routeForActivity } from '../../../core/routeFallback';
+import { hasRoute, routeForActivity } from '../../../core/routeFallback';
 import LocationStat from '../components/LocationStat';
 import RunMap from '../components/RunMap';
 import RunTable from '../components/RunTable';
@@ -271,7 +271,9 @@ const Index = () => {
         selectedRuns.length === 1
           ? routeForActivity(lastRun, activities)
           : null;
-      setFallbackActivity(displayRun !== lastRun ? displayRun : null);
+      setFallbackActivity(
+        selectedRuns.length === 1 && !hasRoute(lastRun) ? displayRun : null
+      );
       const selectedGeoData = geoJsonForRuns(
         selectedRuns.length === 1
           ? displayRun

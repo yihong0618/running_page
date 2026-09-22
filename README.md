@@ -441,6 +441,10 @@ If no earlier mapped activity exists, no substitute route is shown. This fallbac
 is only for display; it does not change activity distances, exports or the database.
 Configured privacy filters still apply to exported routes.
 
+For SVG posters generated from the database, the grid layout omits activities
+whose stored route is empty or NULL. Other layouts retain their dates and distances
+in activity totals; they do not borrow the frontend's substitute route.
+
 Previously generated routes already stored in `run_page/data.db` cannot reliably be
 distinguished from source routes. Reimport the original activity data to replace them.
 

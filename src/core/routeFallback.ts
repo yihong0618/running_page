@@ -1,11 +1,25 @@
 import polyline from '@mapbox/polyline';
 
 type MappedActivity = {
-  start_date: string;
+  start_date_local: string;
   summary_polyline?: string | null;
 };
 
-const hasRoute = (activity: MappedActivity): boolean => {
+const routeCache = new WeakMap<
+  MappedActivity,
+  { polyline: MappedActivity['summary_polyline']; valid: boolean }
+>();
+
+export const hasRoute = (activity: MappedActivity): boolean => {
+  const cached = routeCache.get(activity);
+  if (cached && cached.polyline === activity.summary_polyline)
+    return cached.valid;
+  const valid = validateRoute(activity);
+  routeCache.set(activity, { polyline: activity.summary_polyline, valid });
+  return valid;
+};
+
+const validateRoute = (activity: MappedActivity): boolean => {
   if (!activity.summary_polyline) return false;
   try {
     const points = polyline.decode(activity.summary_polyline);
@@ -30,14 +44,18 @@ export function routeForActivity<T extends MappedActivity>(
   activities: readonly T[]
 ): T | null {
   if (hasRoute(selected)) return selected;
-  const selectedTime = Date.parse(selected.start_date.replace(' ', 'T'));
   let latest: T | null = null;
-  let latestTime = -Infinity;
+  let latestLocal = '';
   for (const activity of activities) {
-    const time = Date.parse(activity.start_date.replace(' ', 'T'));
-    if (time < selectedTime && time > latestTime && hasRoute(activity)) {
+    // The generator exports zero-padded local timestamps in this same order.
+    const local = activity.start_date_local;
+    if (
+      local < selected.start_date_local &&
+      local > latestLocal &&
+      hasRoute(activity)
+    ) {
       latest = activity;
-      latestTime = time;
+      latestLocal = local;
     }
   }
   return latest;

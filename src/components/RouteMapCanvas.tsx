@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import * as polyline from '@mapbox/polyline';
 import type { Activity } from '../types';
-import { routeForActivity } from '../core/routeFallback';
+import { hasRoute, routeForActivity } from '../core/routeFallback';
 import { MAPBOX_TOKEN } from '../config';
 import { useLocale } from '../hooks/useLocale';
 import './RouteMap.css';
@@ -58,7 +58,7 @@ export function RouteMapCanvas({
     [selectedActivity, allActivities]
   );
   const fallbackActivity =
-    displayActivity !== selectedActivity ? displayActivity : null;
+    selectedActivity && !hasRoute(selectedActivity) ? displayActivity : null;
 
   const routes = useMemo(() => {
     const items = selectedActivity
