@@ -298,6 +298,12 @@ class Generator:
         """
         if not activity_list:
             return activity_list
+        if os.getenv("GENERATE_INDOOR_ROUTES", "true").strip().lower() in {
+            "false",
+            "0",
+            "no",
+        }:
+            return activity_list
 
         INDOOR_SUBTYPES = {
             "treadmill",  # Garmin FIT sub_sport

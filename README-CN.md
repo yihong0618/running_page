@@ -429,6 +429,17 @@ IGNORE_BEFORE_SAVING = 1
 > 你可以使用`
 Google Maps` 的 [互动式多段线编码器实用程序](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
 
+### 室内运动路线
+
+默认情况下，室内运动和缺少 GPS 的活动会使用最近一次室外活动的路线进行可视化。
+如果希望保留活动原有的路线和位置信息，请在数据同步命令的环境中设置
+`GENERATE_INDOOR_ROUTES=false`（使用 GitHub Actions 时，在同步任务的 `env`
+中设置）。`0` 和 `no` 也可以关闭此行为，值不区分大小写。不设置该变量或设为
+`true` 则保持现有行为。
+
+此设置会停止生成替代路线，但不会删除已经保存到 `run_page/data.db` 的路线。
+如需替换此前生成的路线，请关闭此设置后重新导入原始活动数据。
+
 ## 下载数据到本地
 
 > 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据到本地，别忘了在 total 页面生成可视化 SVG

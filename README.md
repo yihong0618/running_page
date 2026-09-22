@@ -432,6 +432,19 @@ IGNORE_BEFORE_SAVING =
 
 You can using `Google map` [Interactive Polyline Encoder Utility](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
 
+### Indoor routes
+
+By default, indoor activities and activities with missing GPS reuse the nearest
+previous outdoor route for visualization. To keep their original route and location
+data instead, set `GENERATE_INDOOR_ROUTES=false` in the environment of the data sync
+command (or in the sync job's `env` section in GitHub Actions). `0` and `no` also
+disable this behavior; values are case-insensitive. Unset the variable or set it to
+`true` to keep the current behavior.
+
+This stops generating substitute routes. It does not erase routes already saved in
+`run_page/data.db`; reimport the original activity data with this setting disabled
+if you need to replace previously generated routes.
+
 ## Download your running data
 
 > Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
