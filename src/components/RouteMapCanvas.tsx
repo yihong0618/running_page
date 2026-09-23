@@ -3,12 +3,14 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import * as polyline from '@mapbox/polyline';
 import type { Activity } from '../types';
+import { hasRoute, routeForActivity } from '../core/routeFallback';
 import { MAPBOX_TOKEN } from '../config';
 import { useLocale } from '../hooks/useLocale';
 import './RouteMap.css';
 
 export interface RouteMapProps {
   activities: Activity[];
+  allActivities?: Activity[];
   selectedActivity?: Activity | null;
   dark?: boolean;
   onClearSelection?: () => void;
@@ -25,6 +27,7 @@ const routeCache = new WeakMap<
 
 export function RouteMapCanvas({
   activities,
+  allActivities = activities,
   selectedActivity,
   dark,
   onClearSelection,
@@ -47,8 +50,22 @@ export function RouteMapCanvas({
       ? `mapbox://styles/mapbox/${dark === false ? 'light' : 'dark'}-v11`
       : `https://basemaps.cartocdn.com/gl/${dark === false ? 'positron' : 'dark-matter'}-gl-style/style.json`;
 
+  const displayActivity = useMemo(
+    () =>
+      selectedActivity
+        ? routeForActivity(selectedActivity, allActivities)
+        : null,
+    [selectedActivity, allActivities]
+  );
+  const fallbackActivity =
+    selectedActivity && !hasRoute(selectedActivity) ? displayActivity : null;
+
   const routes = useMemo(() => {
-    const items = selectedActivity ? [selectedActivity] : activities;
+    const items = selectedActivity
+      ? displayActivity
+        ? [displayActivity]
+        : []
+      : activities;
     return items.flatMap((activity) => {
       const cached = routeCache.get(activity);
       if (cached) return cached;
@@ -78,7 +95,7 @@ export function RouteMapCanvas({
         return [];
       }
     });
-  }, [activities, selectedActivity]);
+  }, [activities, selectedActivity, displayActivity]);
 
   const routeBounds = useMemo(() => {
     const bounds = new mapboxgl.LngLatBounds();
@@ -291,6 +308,16 @@ export function RouteMapCanvas({
           </button>
         </div>
       </div>
+      {fallbackActivity && (
+        <p
+          role="status"
+          className="px-4 pb-2 text-xs text-[var(--color-muted)]"
+        >
+          {zh
+            ? `此活动没有可用的 GPS 轨迹，现显示之前最近一次有轨迹的活动：${fallbackActivity.name}（${fallbackActivity.start_date_local}）。`
+            : `This activity has no usable GPS route. Showing the most recent earlier mapped activity: ${fallbackActivity.name} (${fallbackActivity.start_date_local}).`}
+        </p>
+      )}
       <div className="route-map-body">
         <div ref={containerRef} className="h-full w-full" />
         {!routes.length && (

@@ -9,6 +9,7 @@ import {
 import { Analytics } from '@vercel/analytics/react';
 import { Helmet } from 'react-helmet-async';
 import Layout from '../components/Layout';
+import { hasRoute, routeForActivity } from '../../../core/routeFallback';
 import LocationStat from '../components/LocationStat';
 import RunMap from '../components/RunMap';
 import RunTable from '../components/RunTable';
@@ -88,6 +89,9 @@ const Index = () => {
   const [year, setYear] = useState(thisYear);
   const [runIndex, setRunIndex] = useState(-1);
   const [title, setTitle] = useState('');
+  const [fallbackActivity, setFallbackActivity] = useState<Activity | null>(
+    null
+  );
   // Animation states for replacing intervalIdRef
   const [isAnimating, setIsAnimating] = useState(false);
   const [currentAnimationIndex, setCurrentAnimationIndex] = useState(0);
@@ -186,6 +190,7 @@ const Index = () => {
       }
       setCurrentFilter({ item, func });
       setRunIndex(-1);
+      setFallbackActivity(null);
       setTitle(`${item} ${name} Running Heatmap`);
       // Reset single run state when changing filters
       clearRunHash();
@@ -262,7 +267,20 @@ const Index = () => {
       }
 
       // Create geoData for selected runs and calculate new bounds
-      const selectedGeoData = geoJsonForRuns(selectedRuns);
+      const displayRun =
+        selectedRuns.length === 1
+          ? routeForActivity(lastRun, activities)
+          : null;
+      setFallbackActivity(
+        selectedRuns.length === 1 && !hasRoute(lastRun) ? displayRun : null
+      );
+      const selectedGeoData = geoJsonForRuns(
+        selectedRuns.length === 1
+          ? displayRun
+            ? [displayRun]
+            : []
+          : selectedRuns
+      );
       const selectedBounds = getBoundsForGeoData(selectedGeoData);
 
       // Stop any existing animation
@@ -283,7 +301,7 @@ const Index = () => {
       setTitle(titleForShow(lastRun));
       scrollToMap();
     },
-    [runs]
+    [runs, activities]
   );
 
   // Auto locate activity when singleRunId is set and activities are loaded
@@ -423,6 +441,13 @@ const Index = () => {
         )}
       </div>
       <div className="w-full lg:w-2/3" id="map-container">
+        {fallbackActivity && (
+          <p role="status" className="p-2 text-sm">
+            {IS_CHINESE
+              ? `此活动没有可用的 GPS 轨迹，现显示之前最近一次有轨迹的活动：${fallbackActivity.name}（${fallbackActivity.start_date_local}）。`
+              : `This activity has no usable GPS route. Showing the most recent earlier mapped activity: ${fallbackActivity.name} (${fallbackActivity.start_date_local}).`}
+          </p>
+        )}
         <RunMap
           title={title}
           viewState={viewState}

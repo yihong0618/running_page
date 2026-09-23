@@ -456,6 +456,7 @@ export function TracksPage({
 
           <RouteMap
             activities={withPolyline}
+            allActivities={activities}
             selectedActivity={selectedActivity}
             dark={dark}
             onClearSelection={() => {

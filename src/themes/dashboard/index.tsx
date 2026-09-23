@@ -211,6 +211,7 @@ function Dashboard() {
                 <div ref={routeSectionRef} className="scroll-mt-28">
                   <RouteMap
                     activities={provinceFiltered}
+                    allActivities={activities}
                     selectedActivity={selectedActivity}
                     dark={dark}
                     onClearSelection={() => setSelectedActivity(null)}

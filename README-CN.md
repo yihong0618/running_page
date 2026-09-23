@@ -429,6 +429,19 @@ IGNORE_BEFORE_SAVING = 1
 > 你可以使用`
 Google Maps` 的 [互动式多段线编码器实用程序](https://developers.google.com/maps/documentation/utilities/polylineutility)，来制作你的 `IGNORE_POLYLINE`。如果你在中国，请使用卫星图制作，避免火星坐标漂移。
 
+### 室内运动路线
+
+缺少 GPS 的活动会保留原有的路线、活动子类型和位置信息。
+在仪表盘或经典地图中选中此类活动时，地图会显示该活动之前最近一次具有有效 GPS
+轨迹的活动，并提示所显示路线的来源。如果此前没有有效轨迹，则不显示替代路线。
+此回退仅用于展示，不会改变活动距离、导出数据或数据库。配置的隐私过滤仍然会应用于导出路线。
+
+从数据库生成 SVG 海报时，网格布局会跳过所存路线为空字符串或 NULL 的活动。
+其他布局仍将这些活动的日期和距离计入统计，不会使用前端的替代路线。
+
+已存入 `run_page/data.db` 的生成路线无法可靠地与原始路线区分。
+如需替换这些路线，请重新导入原始活动数据。
+
 ## 下载数据到本地
 
 > 下载您的 Nike Run Club/Strava/Garmin/Garmin-cn/Keep 数据到本地，别忘了在 total 页面生成可视化 SVG

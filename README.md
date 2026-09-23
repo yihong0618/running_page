@@ -432,6 +432,22 @@ IGNORE_BEFORE_SAVING =
 
 You can using `Google map` [Interactive Polyline Encoder Utility](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
 
+### Indoor routes
+
+Activities without GPS keep their original route, subtype and location data.
+When selected on the dashboard or classic map, they display the most recent
+earlier activity with a usable GPS route and a notice identifying that route.
+If no earlier mapped activity exists, no substitute route is shown. This fallback
+is only for display; it does not change activity distances, exports or the database.
+Configured privacy filters still apply to exported routes.
+
+For SVG posters generated from the database, the grid layout omits activities
+whose stored route is empty or NULL. Other layouts retain their dates and distances
+in activity totals; they do not borrow the frontend's substitute route.
+
+Previously generated routes already stored in `run_page/data.db` cannot reliably be
+distinguished from source routes. Reimport the original activity data to replace them.
+
 ## Download your running data
 
 > Download your running data and do not forget to [generate svg in `total` page](#total-data-analysis)
