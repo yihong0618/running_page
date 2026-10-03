@@ -1,0 +1,37 @@
+[Unit]
+Description=Treadmill (BLE FTMS) -> Garmin Connect CN bridge
+Wants=bluetooth.service network-online.target
+After=bluetooth.service network-online.target
+
+[Service]
+Type=simple
+User=treadmill
+Group=treadmill
+# 访问 BlueZ (D-Bus) 需要 bluetooth 组
+SupplementaryGroups=bluetooth
+WorkingDirectory=/opt/treadmill2garmin
+EnvironmentFile=/etc/treadmill2garmin.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/treadmill2garmin/.venv/bin/python /opt/treadmill2garmin/treadmill2garmin.py run
+
+# 崩溃/蓝牙适配器掉线 → 自动拉起; 异常之间留 5 秒间隔避免狂刷
+Restart=always
+RestartSec=5
+# 收到 SIGTERM 后给足时间结束当前会话并做最后一次上传
+TimeoutStopSec=60
+
+# 数据目录 /var/lib/treadmill2garmin (权限 0700, 归 treadmill 用户)
+StateDirectory=treadmill2garmin
+StateDirectoryMode=0700
+
+# 加固: 只给它需要的权限
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target
