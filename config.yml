@@ -13,13 +13,13 @@ mapbox_token: ''
 # ── 外观 ─────────────────────────────────────────────────────────────────────
 
 # 头像 URL（支持本地路径或远程图片链接）
-avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU'
+avatar: 'https://github.com/geekyouth.png'
 
 # 默认语言：zh（中文）| en（英文）
 locale: zh
 
 # 默认主题：system（跟随系统）| light（浅色）| dark（深色）
-theme: dark
+theme: light
 
 # ── 主题预设 ──────────────────────────────────────────────────────────────────
 # 可选值：dashboard（3.0 Dashboard 风格）| classic（旧版多页面风格）| 自定义主题名
@@ -31,13 +31,13 @@ theme_preset: dashboard
 
 goals:
   all:
-    yearly: 2000
-    monthly: 150
-    weekly: 35
+    yearly: 2080
+    monthly: 175
+    weekly: 40
     unit: distance
 
   Run:
-    yearly: 2000
-    monthly: 150
-    weekly: 35
+    yearly: 2080
+    monthly: 175
+    weekly: 40
     unit: distance
