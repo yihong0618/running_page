@@ -111,7 +111,7 @@ export function Header({ dark, toggleTheme, page, onNavigate }: HeaderProps) {
             {locale === 'zh' ? 'EN' : '中'}
           </button>
           <a
-            href="https://github.com/yihong0618/running_page"
+            href="https://github.com/geekyouth/running_page"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-muted)] transition-colors hover:bg-[var(--color-card)] hover:text-[var(--color-text)]"
