@@ -8,7 +8,7 @@
 # For security, this token is managed via GitHub Actions secret (MAPBOX_TOKEN)
 # Users should replace with their own token in GitHub Actions secrets
 # See https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions
-mapbox_token: ''
+mapbox_token: 'pk.eyJ1IjoiZ2Vla3lvdXRoIiwiYSI6ImNtdXNmbGpxazB1aHYyeHE0YWt2cTlrMjMifQ.UhSEA_90Xd5aGFTZEcTjgA'
 
 # ── 外观 ─────────────────────────────────────────────────────────────────────
 
