@@ -10,6 +10,8 @@ import {
 import { useLocale } from '../hooks/useLocale';
 
 const MAX_VISIBLE_YEARS = 10;
+// One week column: h-3/w-3 cell (12px) + gap-[3px]
+const HEATMAP_WEEK_WIDTH = 15;
 const weekdayIds = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 interface HeatmapProps {
@@ -534,17 +536,18 @@ export const ContributionHeatmap = memo(function ContributionHeatmap({
                 </span>
               </div>
             )}
-            <div className="ml-5 flex">
-              {monthPositions.map((m, i) => {
-                const nextStart = monthPositions[i + 1]?.weekIdx ?? grid.length;
-                const span = nextStart - m.weekIdx;
+            {/* 19px = weekday label column (12px) + mr-1 (4px) + gap (3px) */}
+            <div className="ml-[19px] flex">
+              {monthPositions.map((m) => {
+                // Spread the 12 labels evenly across the grid, like the github svg
+                const monthWidth = (grid.length * HEATMAP_WEEK_WIDTH) / 12;
                 return (
                   <div
                     key={m.label}
-                    className="text-xs text-[var(--color-muted)]"
+                    className="text-center text-xs text-[var(--color-muted)]"
                     style={{
-                      width: `${span * 14}px`,
-                      minWidth: `${span * 14}px`,
+                      width: `${monthWidth}px`,
+                      minWidth: `${monthWidth}px`,
                     }}
                   >
                     {locale === 'zh'
@@ -578,8 +581,13 @@ export const ContributionHeatmap = memo(function ContributionHeatmap({
                   </div>
                 ))}
               </div>
-              {grid.map((week) => (
+              {grid.map((week, weekIdx) => (
                 <div key={week[0].date} className="flex flex-col gap-[3px]">
+                  {/* The first week may start mid-week; pad so days land on their weekday row */}
+                  {weekIdx === 0 &&
+                    Array.from({ length: 7 - week.length }, (_, i) => (
+                      <div key={`pad-${i}`} className="h-3 w-3 shrink-0" />
+                    ))}
                   {week.map((day) => {
                     const bgColor =
                       day.distance === 0
