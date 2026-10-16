@@ -13,14 +13,18 @@ import uuid
 from urllib.parse import unquote, urlparse
 
 import requests
-from config import FIT_FOLDER
+from config import FIT_FOLDER, JSON_FILE, SQL_FILE
+
+from utils import make_activities_file
 
 SIGNIN_URL = "https://www.onelap.cn/api/login"
 BASE_APP_URL = "https://u.onelap.cn"
 RECORD_PAGE_URL = f"{BASE_APP_URL}/recordPage"
 LIST_URL = f"{BASE_APP_URL}/api/otm/ride_record/list"
 DETAIL_URL = f"{BASE_APP_URL}/api/otm/ride_record/analysis/{{record_id}}"
-FIT_DOWNLOAD_URL = f"{BASE_APP_URL}/api/otm/ride_record/analysis/fit_content/{{fit_key}}"
+FIT_DOWNLOAD_URL = (
+    f"{BASE_APP_URL}/api/otm/ride_record/analysis/fit_content/{{fit_key}}"
+)
 SIGN_KEY = "fe9f8382418fcdeb136461cac6acae7b"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
 
@@ -67,7 +71,9 @@ def process_fit(file_content, fix_gcj02=True):
         for ts, lat, lng in timeline:
             if ts >= when:
                 return lat, lng
-        return timeline[0][1], timeline[0][2]
+        # lap starting past the last recorded point: the nearest position we
+        # know is the last one (not the first, which is the other end of the ride)
+        return timeline[-1][1], timeline[-1][2]
 
     def position_at_or_before(when):
         result = (None, None)
@@ -102,8 +108,8 @@ def process_fit(file_content, fix_gcj02=True):
                 and getattr(msg, "start_position_lat", None) is None
             ):
                 open_fields(msg)
-                msg.start_position_lat, msg.start_position_long = (
-                    position_at_or_after(msg.start_time)
+                msg.start_position_lat, msg.start_position_long = position_at_or_after(
+                    msg.start_time
                 )
                 # fit_tool returns timestamps as unix milliseconds
                 end_ts = msg.start_time + (msg.total_elapsed_time or 0) * 1000
@@ -185,7 +191,7 @@ def process_fit(file_content, fix_gcj02=True):
 
 
 class Onelap:
-    def __init__(self, account, password, fix_gcj02=False):
+    def __init__(self, account, password, fix_gcj02=True):
         self.account = account
         self.password = password
         self.fix_gcj02 = fix_gcj02
@@ -267,7 +273,7 @@ class Onelap:
 
         data = body.get("data") or {}
         if not isinstance(data, dict):
-            raise RuntimeError(f"unexpected list response: {body}")
+            raise TypeError(f"unexpected list response: {body}")
         return data
 
     def get_activities(self):
@@ -278,9 +284,9 @@ class Onelap:
         pagination = data.get("pagination") or {}
         total = data.get("total") or pagination.get("total") or 0
         if total > len(activities):
-            activities = self.post_list({"page": 1, "limit": total}).get(
-                "list"
-            ) or activities
+            activities = (
+                self.post_list({"page": 1, "limit": total}).get("list") or activities
+            )
 
         if not activities:
             raise RuntimeError("no data returned.")
@@ -347,6 +353,22 @@ class Onelap:
             fit_url = self.find_fit_url(detail)
         return record_id, fit_url
 
+    @staticmethod
+    def fit_file_name(fit_url, record_id):
+        """Local name for a fitUrl, always ending in .fit.
+
+        fitUrl comes back either as a bare path (geo/2026.../x.fit) or as a
+        full URL, and the extension varies (some accounts get .st). Take the
+        path basename - dropping any query string - and make sure it ends in
+        .fit, otherwise track_loader ignores the download.
+        """
+        name = os.path.basename(unquote(urlparse(fit_url).path))
+        if not name:
+            name = record_id or "onelap"
+        if not name.endswith(".fit"):
+            name += ".fit"
+        return name
+
     def download_onelap_data(self):
         activities = self.get_activities()
         os.makedirs(FIT_FOLDER, exist_ok=True)
@@ -357,7 +379,7 @@ class Onelap:
                 print(f"skip {record_id or activity}: no fit file")
                 continue
 
-            file_name = os.path.basename(unquote(fit_url)) or f"{record_id}.fit"
+            file_name = self.fit_file_name(fit_url, record_id)
             file_path = os.path.join(FIT_FOLDER, file_name)
             if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
                 print(f"already exists {file_name}")
@@ -376,6 +398,8 @@ class Onelap:
                     break
             else:
                 print(f"Failed to download {file_name}")
+
+        make_activities_file(SQL_FILE, FIT_FOLDER, JSON_FILE, "fit")
 
 
 if __name__ == "__main__":
