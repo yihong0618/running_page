@@ -12,8 +12,11 @@ import { useLocale } from '@/hooks/useLocale';
 import {
   formatClock,
   formatPaceSeconds,
+  formatPaceZoneRange,
   loadSplits,
   loadSplitsIndex,
+  paceZonesFromChart,
+  thresholdPaceFromVo2max,
   type RunChart,
   type RunSplits,
   type SplitRow,
@@ -115,6 +118,21 @@ function hrZoneIndex(
 }
 
 /** stride (m) from pace (s/km) and cadence (spm). */
+function seriesMax(series?: (number | null)[]): number | null {
+  const vals = (series ?? []).filter((v): v is number => has(v));
+  return vals.length ? Math.max(...vals) : null;
+}
+
+/** Prefer the chart series max when summary cadence_max is a sensor spike. */
+function cadenceChipMax(summaryMax: N, series?: (number | null)[]): N {
+  const vals = (series ?? []).filter((v): v is number => has(v));
+  const seriesMax = vals.length ? Math.max(...vals) : null;
+  if (has(summaryMax) && has(seriesMax) && summaryMax > seriesMax * 1.15) {
+    return Math.round(seriesMax);
+  }
+  return summaryMax;
+}
+
 function strideFrom(pace: N, cad: N): number | null {
   if (!has(pace) || !has(cad) || pace <= 0 || cad <= 0) return null;
   return 60000 / (pace * cad);
@@ -193,6 +211,7 @@ function MetricCell({
 
 function MetricGrid({ data, tr }: { data: RunSplits; tr: Tr }) {
   const s = data.summary;
+  const altPeak = seriesMax(data.chart?.alt);
   const cells: {
     key: string;
     label: string;
@@ -228,7 +247,18 @@ function MetricGrid({ data, tr }: { data: RunSplits; tr: Tr }) {
       label: tr('累计爬升', 'Ascent'),
       value: fmt(s.elev_gain),
       unit: 'm',
-      show: has(s.elev_gain),
+      sub:
+        [
+          has(s.elev_loss)
+            ? `${tr('下降', 'Descent')} ${fmt(s.elev_loss)} m`
+            : null,
+          has(altPeak)
+            ? `${tr('最高海拔', 'Max elev.')} ${fmt(altPeak)} m`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(' · ') || undefined,
+      show: has(s.elev_gain) || has(s.elev_loss),
     },
     {
       key: 'te',
@@ -273,6 +303,17 @@ function MetricGrid({ data, tr }: { data: RunSplits; tr: Tr }) {
       label: tr('训练负荷', 'Training load'),
       value: fmt(s.training_load),
       show: has(s.training_load),
+    },
+    {
+      key: 'temp',
+      label: tr('气温', 'Air temp'),
+      value: fmt(s.temperature),
+      unit: '°C',
+      sub:
+        has(s.temperature_min) || has(s.temperature_max)
+          ? `${fmt(s.temperature_min)}–${fmt(s.temperature_max)}`
+          : undefined,
+      show: s.temperature_source === 'weather' && has(s.temperature),
     },
   ];
   const shown = cells.filter((c) => c.show);
@@ -344,6 +385,21 @@ function TeScale({
 }
 
 // ---------------------------------------------------------------- zones
+/** HR/power: higher number = higher zone. */
+function formatZoneRange(
+  unit: string,
+  lo: number | null | undefined,
+  hi: number | null | undefined,
+  i: number
+): string {
+  if (i === 0) return has(hi) ? `< ${Math.round(hi)}` : '';
+  if (!has(lo)) return '';
+  if (has(hi) && hi < 4000) {
+    return `${Math.round(Number(lo) + (unit === 'bpm' ? 1 : 0))}–${Math.round(hi)}`;
+  }
+  return `≥ ${Math.round(lo)}`;
+}
+
 function ZoneTable({
   title,
   zone,
@@ -370,15 +426,9 @@ function ZoneTable({
       const lo = i === 0 ? null : hb[i - 1];
       const hi = hb[i];
       const range =
-        i === 0
-          ? has(hi)
-            ? `< ${Math.round(hi)}`
-            : ''
-          : has(lo)
-            ? has(hi) && hi < 4000
-              ? `${Math.round(Number(lo) + (unit === 'bpm' ? 1 : 0))}–${Math.round(hi)}`
-              : `≥ ${Math.round(lo)}`
-            : '';
+        unit === '/km'
+          ? formatPaceZoneRange(lo, hi, i)
+          : formatZoneRange(unit, lo, hi, i);
       const name = labels?.[i] ?? (i === 0 ? '<Z1' : `Z${i}`);
       return {
         i,
@@ -418,19 +468,28 @@ function ZoneTable({
           <p className="text-[10px] text-[var(--color-muted)]">
             FTP {zone.ftp} W
           </p>
+        ) : has(zone.threshold_pace) ? (
+          <p className="text-[10px] text-[var(--color-muted)]">
+            LTP {formatPaceSeconds(zone.threshold_pace)}
+          </p>
         ) : null}
       </div>
       <div className="space-y-2">
         {rows.map((r) => (
           <div
             key={r.i}
-            className="grid grid-cols-[4.5rem_1fr_auto] items-center gap-2 text-[11px]"
+            className={`grid items-center gap-2 text-[11px] ${
+              unit === '/km'
+                ? 'grid-cols-[7.25rem_1fr_auto]'
+                : 'grid-cols-[4.5rem_1fr_auto]'
+            }`}
           >
             <div className="min-w-0">
               <p className="font-medium text-[var(--color-text)]">{r.name}</p>
               {r.range ? (
                 <p className="truncate text-[10px] text-[var(--color-muted)]">
-                  {r.range} {unit}
+                  {r.range}
+                  {unit === '/km' ? '' : ` ${unit}`}
                 </p>
               ) : null}
             </div>
@@ -456,31 +515,10 @@ function ZoneTable({
   );
 }
 
-/** Derive simple pace-zone distribution from chart when FIT has no pace zones. */
-function paceZonesFromChart(
-  pace: (number | null)[] | undefined
-): ZoneInfo | null {
-  if (!pace) return null;
-  const bounds = [300, 360, 420, 480, 540];
-  const secs = [0, 0, 0, 0, 0, 0];
-  for (const p of pace) {
-    if (!has(p)) continue;
-    let z = bounds.length;
-    for (let i = 0; i < bounds.length; i++) {
-      if (p < bounds[i]) {
-        z = i;
-        break;
-      }
-    }
-    secs[z] += 1;
-  }
-  const total = secs.reduce((a, b) => a + b, 0);
-  if (total < 10) return null;
-  return {
-    seconds: secs,
-    high_boundary: [...bounds, null],
-    calc_type: 'derived_from_chart',
-  };
+function paceZoneLabels(zone: ZoneInfo): string[] | undefined {
+  const n = zone.seconds.length;
+  if (n <= 5) return zone.seconds.map((_, i) => `Z${i + 1}`);
+  return undefined;
 }
 
 // ---------------------------------------------------------------- trend chart (佳速度-style cards)
@@ -496,8 +534,10 @@ interface TrendDef {
   format: (v: number) => string;
   avg?: N;
   max?: N;
+  extra?: N;
   avgLabel?: string;
   maxLabel?: string;
+  extraLabel?: string;
   series: (number | null)[];
 }
 
@@ -638,7 +678,12 @@ function MetricCard({
   }
 
   const hv = hover != null ? ys[hover] : null;
-  const avgY = has(avgVal) ? geom.py(avgVal) : null;
+  // Gain/loss chips on the climb card are not altitude samples; skip a
+  // guide line that would sit off the waveform domain.
+  const avgY =
+    has(avgVal) && avgVal >= geom.lo && avgVal <= geom.hi
+      ? geom.py(avgVal)
+      : null;
 
   return (
     <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-3 shadow-[var(--shadow-card)]">
@@ -664,6 +709,14 @@ function MetricCard({
                 {def.format(def.max)}
                 <span className="ml-1 text-[10px]">
                   {def.unit} · {def.maxLabel ?? 'Max'}
+                </span>
+              </p>
+            ) : null}
+            {has(def.extra) ? (
+              <p className="metric text-[13px] text-[var(--color-muted)]">
+                {def.format(def.extra)}
+                <span className="ml-1 text-[10px]">
+                  {def.unit} · {def.extraLabel ?? ''}
                 </span>
               </p>
             ) : null}
@@ -841,15 +894,17 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
     },
     {
       key: 'alt',
-      title: tr('海拔', 'Elevation'),
+      title: tr('爬升', 'Ascent'),
       unit: 'm',
       color: '#22c55e',
       kind: 'area',
       format: (v) => v.toFixed(0),
       avg: s.elev_gain,
       max: s.elev_loss,
+      extra: seriesMax(chart.alt),
       avgLabel: tr('爬升', 'Gain'),
       maxLabel: tr('下降', 'Loss'),
+      extraLabel: tr('最高海拔', 'Max elev.'),
       series: chart.alt ?? [],
     },
     {
@@ -873,7 +928,7 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
       kind: 'scatter',
       format: (v) => v.toFixed(0),
       avg: s.cadence_avg,
-      max: s.cadence_max,
+      max: cadenceChipMax(s.cadence_max, chart.cad),
       avgLabel: tr('平均', 'Avg'),
       maxLabel: tr('最大', 'Max'),
       series: chart.cad ?? [],
@@ -922,20 +977,11 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
       avgLabel: tr('平均', 'Avg'),
       series: chart.gct ?? [],
     },
-    {
-      key: 'temp',
-      title: tr('温度', 'Temperature'),
-      unit: '°C',
-      color: '#64748b',
-      kind: 'area',
-      format: (v) => v.toFixed(0),
-      avg: s.temperature,
-      avgLabel: tr('平均', 'Avg'),
-      series: chart.temp ?? [],
-    },
   ];
   const shown = defs.filter((d) => d.series.some((v) => has(v)));
-  const derivedPaceZones = paceZonesFromChart(chart.pace);
+  const paceZones =
+    data.zones?.pace ??
+    paceZonesFromChart(chart.pace, chart.t, thresholdPaceFromVo2max(s.vo2max));
 
   return (
     <div className="space-y-3">
@@ -977,13 +1023,14 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
             d.kind === 'hr-area' ? data.zones?.hr?.high_boundary : null
           }
           footer={
-            d.key === 'pace' && derivedPaceZones ? (
+            d.key === 'pace' && paceZones ? (
               <ZoneTable
                 title={tr('配速区间', 'Pace zones')}
-                zone={derivedPaceZones}
+                zone={paceZones}
                 colors={ZONE_COLORS}
                 unit="/km"
                 tr={tr}
+                labels={paceZoneLabels(paceZones)}
               />
             ) : d.key === 'hr' && data.zones?.hr ? (
               <ZoneTable

@@ -18,6 +18,9 @@ Usage:
     python run_page/gen_splits.py --fit-only         # FIT only
     python run_page/gen_splits.py --fit-dir DIR ...  # other folders
     python run_page/gen_splits.py --force            # rebuild everything
+
+After changing extraction, rebuild with ``--force`` (CI uses ``--fit-only``).
+Do not commit private FIT files or ``public/splits/``.
 """
 
 from __future__ import annotations
@@ -34,6 +37,13 @@ SCHEMA_VERSION = 1
 MAX_CHART_POINTS = 200
 MIN_CHART_STEP_M = 50.0
 ELEV_HYSTERESIS_M = 1.0
+# Isolated running-cadence spikes (watch glitches) sit well above this.
+CADENCE_SPIKE_SPM = 220
+# Garmin/Firstbeat-style pace-zone high bounds as a fraction of threshold
+# pace (s/km). Slower than 1.29×LTP is Z1; faster than 0.99×LTP is Z5.
+PACE_ZONE_LTP_FACTORS = (1.29, 1.14, 1.06, 0.99)
+# Fallback bins (s/km) when no LTP / VO2max: Z1 slower than 9:00, then 8/7/6.
+PACE_ZONE_FIXED_BOUNDS = (540.0, 480.0, 420.0, 360.0)
 
 # Sports whose FIT cadence is reported per leg (steps/min = value * 2).
 STEP_SPORTS = {"running", "walking", "hiking", "training", "generic"}
@@ -102,7 +112,11 @@ def _cadence(base: Any, frac: Any, per_leg: bool) -> float | None:
         return None
     f = _num(frac) or 0.0
     c = b + f
-    return c * 2 if per_leg else c
+    c = c * 2 if per_leg else c
+    # Running cadence is steps/min; 247-style single-sample spikes are not gait.
+    if per_leg and c > CADENCE_SPIKE_SPM:
+        return None
+    return c
 
 
 def _positive(value: Any) -> float | None:
@@ -127,6 +141,198 @@ def _vo2max_from_garmin_140(msgs: dict) -> float | None:
             if 20 <= v <= 95:
                 return v
     return None
+
+
+def _iter_dev_fields(msg: dict):
+    """Yield (name, value) from FIT developer fields if the decoder attached any."""
+    for key in ("developer_fields", "developerFields"):
+        dev = msg.get(key)
+        if isinstance(dev, dict):
+            for name, value in dev.items():
+                if isinstance(name, str):
+                    yield name, value
+        elif isinstance(dev, list):
+            for item in dev:
+                if not isinstance(item, dict):
+                    continue
+                name = item.get("name") or item.get("field_name")
+                if isinstance(name, str):
+                    yield name, item.get("value")
+
+
+def _weather(msgs: dict) -> dict | None:
+    """Outdoor/ambient weather from FIT, not the wrist-sensor record temperature.
+
+    Garmin Connect's summary weather is usually a cloud lookup and is *not*
+    written into a typical Forerunner activity FIT. When the file does carry
+    ``weather_conditions`` (or an ambient developer field), use that.
+    """
+    best = None
+    for m in msgs.get("weather_conditions_mesgs") or []:
+        t = _num(m.get("temperature"))
+        if t is None:
+            continue
+        report = m.get("weather_report")
+        current = report in ("current", 0, "0")
+        item = {
+            "temperature": t,
+            "temperature_min": _num(m.get("low_temperature")),
+            "temperature_max": _num(m.get("high_temperature")),
+        }
+        if current:
+            return item
+        if best is None:
+            best = item
+    if best:
+        return best
+    for session in msgs.get("session_mesgs") or []:
+        for name, value in _iter_dev_fields(session):
+            key = name.lower().replace(" ", "_")
+            if key in (
+                "ambient_temperature",
+                "weather_temperature",
+                "air_temperature",
+                "outdoor_temperature",
+            ):
+                t = _num(value)
+                if t is not None:
+                    return {
+                        "temperature": t,
+                        "temperature_min": None,
+                        "temperature_max": None,
+                    }
+    return None
+
+
+def _speed_to_pace_bound(speed: Any) -> float | None:
+    v = _num(speed)
+    if v is None or v <= 0:
+        return None
+    return _r(1000.0 / v, 0)
+
+
+def _pace_bounds_from_speed_list(bounds: Any) -> list | None:
+    if not isinstance(bounds, list) or not bounds:
+        return None
+    out = [_speed_to_pace_bound(x) for x in bounds]
+    return out if any(x is not None for x in out) else None
+
+
+def _pace_bounds_from_speed_zone_mesgs(msgs: dict) -> list | None:
+    zones = msgs.get("speed_zone_mesgs") or []
+    if not zones:
+        return None
+
+    def _idx(m: dict) -> float:
+        i = m.get("message_index")
+        if isinstance(i, dict):
+            i = i.get("value")
+        return _num(i) or 0.0
+
+    out = [_speed_to_pace_bound(m.get("high_value")) for m in sorted(zones, key=_idx)]
+    return out if any(x is not None for x in out) else None
+
+
+def _threshold_pace_from_vo2max(vo2: float | None) -> float | None:
+    """Lactate-threshold pace (s/km) from VO2max via ACSM cost + ~88% vVO2max."""
+    v = _num(vo2)
+    if v is None or v < 20 or v > 95:
+        return None
+    v_m_min = (v - 3.5) / 0.2
+    if v_m_min <= 0:
+        return None
+    v_ltp = (v_m_min / 60.0) * 0.88
+    if v_ltp <= 0:
+        return None
+    return 1000.0 / v_ltp
+
+
+def _pace_zone_index(pace: float, bounds: list[float]) -> int:
+    for i, b in enumerate(bounds):
+        if pace > b:
+            return i
+    return len(bounds)
+
+
+def _pace_zones_from_time_list(seconds: Any, speed_or_pace_bounds: Any) -> dict | None:
+    if not isinstance(seconds, list) or not any(_num(x) for x in seconds):
+        return None
+    bounds = _pace_bounds_from_speed_list(speed_or_pace_bounds)
+    # Already-converted pace bounds (s/km) are typically 150–900; raw m/s are ~1–8.
+    if bounds is None and isinstance(speed_or_pace_bounds, list):
+        paced = [_num(x) for x in speed_or_pace_bounds]
+        if any(v is not None and v > 20 for v in paced):
+            bounds = [_r(v, 0) if v is not None else None for v in paced]
+    return {
+        "seconds": [_r(_num(x) or 0, 0) for x in seconds],
+        "high_boundary": bounds,
+        "calc_type": "speed_zone",
+    }
+
+
+def _pace_zones_from_records(
+    recs: list[dict],
+    threshold_pace: float | None,
+    bounds: list[float] | None = None,
+    calc_type: str = "percent_threshold_pace_estimated",
+) -> dict | None:
+    """Time-in-pace-zone from record timers. Faster pace → higher zone (Garmin)."""
+    if bounds:
+        use = [float(b) for b in bounds if b is not None]
+        if len(use) < 2:
+            use = []
+    else:
+        use = []
+    ltp = _num(threshold_pace)
+    if not use:
+        if ltp and ltp > 0:
+            use = [ltp * f for f in PACE_ZONE_LTP_FACTORS]
+        else:
+            use = list(PACE_ZONE_FIXED_BOUNDS)
+            calc_type = "fixed_pace_estimated"
+            ltp = None
+    secs = [0.0] * (len(use) + 1)
+    for a, b in zip(recs, recs[1:]):
+        speed = a.get("speed")
+        if not speed:
+            continue
+        dt = b["t"] - a["t"]
+        if dt <= 0 or dt > 30:
+            continue
+        secs[_pace_zone_index(1000.0 / speed, use)] += dt
+    if not any(secs):
+        return None
+    return {
+        "seconds": [round(s) for s in secs],
+        "high_boundary": [_r(b, 0) for b in use] + [None],
+        "calc_type": calc_type,
+        "threshold_pace": _r(ltp, 1) if ltp else None,
+    }
+
+
+def _pref_elev(
+    session: dict, laps: list[dict], recs: list[dict]
+) -> tuple[float | None, float | None]:
+    """Prefer device session/lap ascent over re-integrating noisy altitude."""
+    gain = _num(session.get("total_ascent"))
+    loss = _num(session.get("total_descent"))
+    if gain is None and laps:
+        vals = [_num(lap.get("total_ascent")) for lap in laps]
+        if any(v is not None for v in vals):
+            gain = sum(v or 0.0 for v in vals)
+    if loss is None and laps:
+        vals = [_num(lap.get("total_descent")) for lap in laps]
+        if any(v is not None for v in vals):
+            loss = sum(v or 0.0 for v in vals)
+    if recs and (gain is None or loss is None):
+        rec_gain, rec_loss = _elev_gain_loss(
+            [r["alt"] for r in recs if r.get("alt") is not None]
+        )
+        if gain is None:
+            gain = rec_gain
+        if loss is None:
+            loss = rec_loss
+    return gain, loss
 
 
 # --------------------------------------------------------------------------
@@ -429,7 +635,25 @@ def _zones(msgs: dict) -> dict:
                 ),
                 "ftp": _num(z.get("functional_threshold_power")),
             }
+        pace = _pace_zones_from_time_list(
+            z.get("time_in_speed_zone"), z.get("speed_zone_high_boundary")
+        )
+        if pace:
+            out["pace"] = pace
         break
+    if "pace" not in out:
+        for session in msgs.get("session_mesgs") or []:
+            pace = _pace_zones_from_time_list(
+                session.get("time_in_speed_zone"),
+                session.get("speed_zone_high_boundary"),
+            )
+            if pace:
+                if not pace.get("high_boundary"):
+                    pace["high_boundary"] = _pace_bounds_from_speed_zone_mesgs(msgs)
+                out["pace"] = pace
+                break
+    if "pace" in out and not out["pace"].get("high_boundary"):
+        out["pace"]["high_boundary"] = _pace_bounds_from_speed_zone_mesgs(msgs)
     return out
 
 
@@ -469,6 +693,11 @@ def _summary(session: dict, recs: list[dict], per_leg: bool, msgs: dict) -> dict
     for k, v in rec_agg.items():
         if lap_like.get(k) is None and v is not None:
             lap_like[k] = v
+    gain, loss = _pref_elev(session, msgs.get("lap_mesgs") or [], recs)
+    if gain is not None:
+        lap_like["elev_gain"] = _r(gain, 1)
+    if loss is not None:
+        lap_like["elev_loss"] = _r(loss, 1)
     max_speed = _speed(session, "max_speed")
     lap_like.update(
         {
@@ -492,6 +721,22 @@ def _summary(session: dict, recs: list[dict], per_leg: bool, msgs: dict) -> dict
             "feel": _r(_num(session.get("workout_feel")), 0),
         }
     )
+    weather = _weather(msgs)
+    if weather:
+        lap_like["temperature"] = _r(weather["temperature"], 0)
+        if weather.get("temperature_min") is not None:
+            lap_like["temperature_min"] = _r(weather["temperature_min"], 0)
+        if weather.get("temperature_max") is not None:
+            lap_like["temperature_max"] = _r(weather["temperature_max"], 0)
+        lap_like["temperature_source"] = "weather"
+    elif (
+        lap_like.get("temperature") is not None
+        or lap_like.get("temperature_min") is not None
+        or lap_like.get("temperature_max") is not None
+    ):
+        lap_like["temperature_source"] = "device"
+    else:
+        lap_like["temperature_source"] = None
     return lap_like
 
 
@@ -516,6 +761,24 @@ def analyze_messages(msgs: dict) -> dict | None:
         z = _hr_zones_from_records(recs, summary.get("hr_max"))
         if z:
             zones["hr"] = z
+    if "pace" not in zones:
+        native_bounds = _pace_bounds_from_speed_zone_mesgs(msgs)
+        z = _pace_zones_from_records(
+            recs,
+            _threshold_pace_from_vo2max(summary.get("vo2max")),
+            bounds=(
+                [float(b) for b in native_bounds if b is not None]
+                if native_bounds
+                else None
+            ),
+            calc_type=(
+                "speed_zone_derived"
+                if native_bounds
+                else "percent_threshold_pace_estimated"
+            ),
+        )
+        if z:
+            zones["pace"] = z
     laps = [
         _lap_entry(lap, i + 1, per_leg)
         for i, lap in enumerate(msgs.get("lap_mesgs", []) or [])
@@ -526,6 +789,11 @@ def analyze_messages(msgs: dict) -> dict | None:
         prod = f.get("garmin_product") or f.get("product_name")
         if isinstance(prod, str):
             device = prod
+    chart = build_chart(recs)
+    # Wrist-sensor temperature is not outdoor air. Never publish it as a
+    # temperature series; the UI only shows a temp section for FIT weather.
+    if chart:
+        chart.pop("temp", None)
     return {
         "version": SCHEMA_VERSION,
         "run_id": int((start + FIT_EPOCH_S) * 1000),
@@ -536,7 +804,7 @@ def analyze_messages(msgs: dict) -> dict | None:
         "zones": zones or None,
         "splits": build_km_splits(recs),
         "laps": laps,
-        "chart": build_chart(recs),
+        "chart": chart,
     }
 
 
@@ -806,6 +1074,7 @@ _EMPTY_SUMMARY_EXTRA = (
     "feel",
     "calories",
     "normalized_power",
+    "temperature_source",
 )
 
 
@@ -822,6 +1091,12 @@ def analyze_track(
     summary["elapsed_time"] = _r(elapsed, 1)
     summary["moving_time"] = _r(recs[-1]["t"], 1)
     z = _hr_zones_from_records(recs, summary.get("hr_max"))
+    pz = _pace_zones_from_records(recs, None)
+    zones = {}
+    if z:
+        zones["hr"] = z
+    if pz:
+        zones["pace"] = pz
     return {
         "version": SCHEMA_VERSION,
         "run_id": int(round(start_ts * 1000)),
@@ -830,7 +1105,7 @@ def analyze_track(
         "device": None,
         "source": source,
         "summary": summary,
-        "zones": {"hr": z} if z else None,
+        "zones": zones or None,
         "splits": build_km_splits(recs),
         "laps": [],
         "chart": build_chart(recs),

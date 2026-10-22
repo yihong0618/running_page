@@ -1,5 +1,6 @@
 """Synthetic checks for run_page/gen_splits.py (no FIT file needed)."""
 
+import json
 import os
 import re
 import sys
@@ -9,7 +10,12 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "run_page"))
 from gen_splits import (  # noqa: E402
     FIT_EPOCH_S,
     MAX_CHART_POINTS,
+    PACE_ZONE_LTP_FACTORS,
     _hr_zones_from_records,
+    _pace_zones_from_records,
+    _pref_elev,
+    _threshold_pace_from_vo2max,
+    _weather,
     _zones,
     analyze_messages,
     build_chart,
@@ -174,6 +180,8 @@ def test_zones_from_time_in_zone():
                 "time_in_power_zone": [5, 6, 7],
                 "power_zone_high_boundary": [200, 300, 400],
                 "functional_threshold_power": 320,
+                "time_in_speed_zone": [100, 200, 300, 50, 20],
+                "speed_zone_high_boundary": [2.0, 2.5, 3.0, 3.5],
             },
         ]
     }
@@ -184,6 +192,11 @@ def test_zones_from_time_in_zone():
     assert z["hr"]["threshold_hr"] == 175
     assert z["power"]["seconds"] == [5, 6, 7]
     assert z["power"]["ftp"] == 320
+    assert z["pace"]["seconds"] == [100, 200, 300, 50, 20]
+    assert z["pace"]["calc_type"] == "speed_zone"
+    # 2.0 m/s -> 500 s/km; 3.5 m/s -> ~286 s/km
+    assert z["pace"]["high_boundary"][0] == 500
+    assert z["pace"]["high_boundary"][-1] == 286
     assert _zones({}) == {}
 
 
@@ -228,6 +241,190 @@ def test_summary_running_dynamics():
     assert s["anaerobic_te"] == 1.2
     assert s["steps"] == 1800  # strides per leg * 2
     assert s["cadence_avg"] == 171
+
+
+def test_session_ascent_preferred_over_record_integration():
+    m = _messages()
+    from_records = analyze_messages(m)["summary"]["elev_gain"]
+    m["session_mesgs"][0]["total_ascent"] = 12
+    m["session_mesgs"][0]["total_descent"] = 9
+    s = analyze_messages(m)["summary"]
+    assert s["elev_gain"] == 12
+    assert s["elev_loss"] == 9
+    # Records climb ~25 m over 2.5 km; session totals must win.
+    assert from_records != 12 and from_records > 12
+
+
+def test_lap_ascent_sum_when_session_missing():
+    gain, loss = _pref_elev(
+        {},
+        [
+            {"total_ascent": 10, "total_descent": 14},
+            {"total_ascent": 3, "total_descent": 24},
+            {"total_ascent": 19, "total_descent": 27},
+        ],
+        [],
+    )
+    assert gain == 32
+    assert loss == 65
+
+
+def test_pace_zones_use_timer_deltas_not_sample_counts():
+    # 100 s easy (6:40/km = 2.5 m/s) then 50 s faster (4:10/km = 4 m/s),
+    # sampled every 2 s so a point-count would under-report by 2x.
+    recs = []
+    t = 0
+    for speed, n in ((2.5, 50), (4.0, 25)):
+        for _ in range(n):
+            recs.append(_rec(t, t * speed, speed=speed))
+            t += 2
+    recs.append(_rec(t, t * 4.0, speed=4.0))
+    z = _pace_zones_from_records(recs, 400.0)  # LTP 6:40/km
+    assert z["calc_type"] == "percent_threshold_pace_estimated"
+    assert z["threshold_pace"] == 400
+    # Z1: > 1.29*400=516; Z4 around 0.99*400=396; 400 s/km is Z4/Z5 edge.
+    # 2.5 m/s = 400 s/km; 4.0 m/s = 250 s/km (Z5).
+    assert sum(z["seconds"]) == 150
+    assert z["seconds"][-1] == 50  # fast block
+    assert z["seconds"][-2] == 100  # threshold-ish easy block
+    # Must not look like "75 samples".
+    assert sum(z["seconds"]) != 75
+
+
+def test_pace_zones_from_session_time_in_speed_zone():
+    m = _messages()
+    m["session_mesgs"][0]["time_in_speed_zone"] = [10, 20, 30, 40, 50]
+    m["session_mesgs"][0]["speed_zone_high_boundary"] = [2.0, 2.5, 3.0, 3.5]
+    z = analyze_messages(m)["zones"]["pace"]
+    assert z["seconds"] == [10, 20, 30, 40, 50]
+    assert z["calc_type"] == "speed_zone"
+
+
+def _pace_fmt(sec: float) -> str:
+    s = round(sec)
+    return f"{s // 60}'{s % 60:02d}\""
+
+
+def _chart_pace_zones(pace, t, vo2):
+    """Mirrors src/core/splits.ts paceZonesFromChart (time-weighted)."""
+    ltp = _threshold_pace_from_vo2max(vo2)
+    bounds = [ltp * f for f in PACE_ZONE_LTP_FACTORS]
+    secs = [0.0] * (len(bounds) + 1)
+    for i, p in enumerate(pace):
+        if p is None or p <= 0:
+            continue
+        dt = t[i + 1] - t[i] if i + 1 < len(t) else (t[i] - t[i - 1] if i else 0)
+        if dt <= 0 or dt > 120:
+            continue
+        z = len(bounds)
+        for b_i, b in enumerate(bounds):
+            if p > b:
+                z = b_i
+                break
+        secs[z] += dt
+    return [round(s) for s in secs], bounds, ltp
+
+
+def test_published_run_pace_zones_sum_to_timer_not_point_count():
+    """Production popup (2026-10-22 5.0 km / 34:11) counted 101 chart points
+    as 1:41 (0:02+0:25+0:48+0:07+0:08+0:11). After the fix, zone times must
+    sum to moving/timer duration (~34 min).
+    """
+    path = os.path.join(
+        os.path.dirname(__file__),
+        "tests",
+        "fixtures",
+        "run_1792623245000_chart.json",
+    )
+    with open(path, encoding="utf-8") as f:
+        chart = json.load(f)
+    pace, t = chart["pace"], chart["t"]
+    assert len(pace) == 101 and len(t) == 101
+
+    # Legacy bug: one "second" per point, inverted 5:00/6:00/... bins.
+    old_bounds = [300, 360, 420, 480, 540]
+    old = [0] * 6
+    for p in pace:
+        z = 5
+        for i, b in enumerate(old_bounds):
+            if p < b:
+                z = i
+                break
+        old[z] += 1
+    assert old == [2, 25, 48, 7, 8, 11]
+    assert sum(old) == 101  # 1:41, not 34:11
+
+    secs, bounds, ltp = _chart_pace_zones(pace, t, chart["vo2max"])
+    total = sum(secs)
+    # Acceptance: ~timer duration, not the 101-point count.
+    assert abs(total - chart["time"]) <= 2
+    assert 34 * 60 - 5 <= total <= 34 * 60 + 20
+    assert total != 101
+    # Bounds are s/km that format as pace strings, not raw 300/360 labels.
+    labels = [f"{_pace_fmt(b)} /km" for b in bounds]
+    assert all("'" in x and "/km" in x for x in labels)
+    # Must not look like the live-site raw bounds (`300 /km`, `300–360 /km`).
+    assert not any(re.search(r"(^|[^\d'])300", x) for x in labels)
+    assert ltp is not None and 4 * 60 < ltp < 5 * 60  # ~4'34"
+
+
+def test_pace_bound_strings_look_like_garmin():
+    assert _pace_fmt(300) == "5'00\""
+    assert _pace_fmt(360) == "6'00\""
+    assert f"{_pace_fmt(300)}–{_pace_fmt(360)} /km" == "5'00\"–6'00\" /km"
+
+
+def test_weather_temp_not_watch_sensor():
+    m = _messages()
+    for r in m["record_mesgs"]:
+        r["temperature"] = 24
+    m["session_mesgs"][0]["avg_temperature"] = 24
+    m["session_mesgs"][0]["min_temperature"] = 20
+    m["session_mesgs"][0]["max_temperature"] = 26
+    m["weather_conditions_mesgs"] = [
+        {
+            "weather_report": "current",
+            "temperature": 10,
+            "low_temperature": 9,
+            "high_temperature": 11,
+        }
+    ]
+    out = analyze_messages(m)
+    s = out["summary"]
+    assert s["temperature"] == 10
+    assert s["temperature_min"] == 9
+    assert s["temperature_max"] == 11
+    assert s["temperature_source"] == "weather"
+    assert "temp" not in (out["chart"] or {})
+    assert _weather(m)["temperature"] == 10
+
+
+def test_device_temp_omitted_from_chart_when_no_weather():
+    m = _messages()
+    for r in m["record_mesgs"]:
+        r["temperature"] = 22
+    m["session_mesgs"][0]["avg_temperature"] = 22
+    out = analyze_messages(m)
+    assert out["summary"]["temperature_source"] == "device"
+    # Watch sensor must not become a temperature chart (hide, do not relabel).
+    assert "temp" not in (out["chart"] or {})
+
+
+def test_running_cadence_spike_filtered_from_max():
+    m = _messages()
+    m["record_mesgs"][10]["cadence"] = 130  # would be 261 spm if doubled
+    m["record_mesgs"][10]["fractional_cadence"] = 0.5
+    m["session_mesgs"][0]["max_running_cadence"] = 130
+    out = analyze_messages(m)
+    assert out["summary"]["cadence_max"] <= 220
+    assert max(v for v in out["chart"]["cad"] if v is not None) <= 220
+
+
+def test_threshold_pace_from_vo2max_sane():
+    # VO2max 53 → LTP around 4:30–4:40/km, not 6:50 and not 3:00.
+    p = _threshold_pace_from_vo2max(53.2)
+    assert p is not None
+    assert 250 < p < 300
 
 
 def test_cycling_cadence_not_doubled():
@@ -347,7 +544,7 @@ def test_gpx_without_hr_has_no_zones():
     pts, sport = parse_gpx(_gpx(hr=False))
     data = analyze_track(pts, sport, "gpx")
     assert data["summary"]["hr_avg"] is None
-    assert data["zones"] is None
+    assert not data["zones"] or "hr" not in data["zones"]
     assert "hr" not in data["chart"]
 
 
