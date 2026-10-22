@@ -109,6 +109,7 @@ jobs:
             Workouts
             run_page/data.db
             src/static/activities.json
+            public/splits
             imported.json
           key: ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-${{ github.run_id }}
           restore-keys: |
@@ -241,6 +242,15 @@ jobs:
         if: env.RUN_TYPE == 'db_updater'
         run: |
           python run_page/db_updater.py
+
+      - name: Generate per-km splits and running dynamics
+        # Additive and best-effort: reads FIT_OUT (full metrics) plus TCX_OUT /
+        # GPX_OUT (e.g. Keep: pace/HR/elevation only); FIT wins for the same run;
+        # writes aggregated JSON to public/splits (no GPS, no raw series).
+        if: env.RUN_TYPE != 'pass'
+        continue-on-error: true
+        run: |
+          python run_page/gen_splits.py --fit-only
 
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'

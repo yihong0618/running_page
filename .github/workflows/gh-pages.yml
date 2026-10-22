@@ -65,6 +65,7 @@ jobs:
             Workouts
             run_page/data.db
             src/static/activities.json
+            public/splits
             imported.json
           key: ${{ inputs.data_cache_prefix }}-${{ github.sha }}-${{ github.run_id }}
           restore-keys: |

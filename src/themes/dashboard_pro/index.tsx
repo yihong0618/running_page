@@ -50,6 +50,11 @@ const RouteMap = lazy(loadRouteMap);
 const TracksPage = lazy(loadTracksPage);
 const SummaryPage = lazy(loadSummaryPage);
 const ChinaMap = lazy(loadChinaMap);
+const RunAnalysisLauncher = lazy(() =>
+  import('./components/RunAnalysis').then((m) => ({
+    default: m.RunAnalysisLauncher,
+  }))
+);
 
 // Prefetch secondary pages so navigating home → summary/tracks does not flash Suspense.
 void loadSummaryPage();
@@ -269,7 +274,16 @@ function DashboardProContent({
   );
 
   return (
-    <main className="mx-auto max-w-[1400px] px-4 py-6 md:px-6">
+    <main
+      className="mx-auto max-w-[1400px] px-4 py-6 md:px-6"
+      // Reserve room for the floating run-analysis button so it never covers
+      // the last row of content or map controls.
+      style={
+        selectedActivity
+          ? { paddingBottom: 'calc(4.5rem + env(safe-area-inset-bottom, 0px))' }
+          : undefined
+      }
+    >
       {/*
         Mobile order: Profile → Stats → sticky RouteMap → Calendar → ActivityLog
         → ChinaMap → Yearly Distance → Heatmap (bottom).
@@ -382,6 +396,9 @@ function DashboardProContent({
           </div>
         )}
       </div>
+      <Suspense fallback={null}>
+        <RunAnalysisLauncher activity={selectedActivity} />
+      </Suspense>
     </main>
   );
 }

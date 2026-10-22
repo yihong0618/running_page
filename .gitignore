@@ -26,3 +26,15 @@ route.png
 route.svg
 
 .env
+
+# per-activity splits generated locally / in Actions cache
+public/splits/
+
+# raw activity files stay out of git (data lives in Actions cache)
+FIT_OUT/*
+!FIT_OUT/.gitkeep
+GPX_OUT/*
+!GPX_OUT/.gitkeep
+TCX_OUT/*
+!TCX_OUT/.gitkeep
+
