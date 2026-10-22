@@ -22,7 +22,6 @@ from tcxreader.tcxreader import TCXReader
 from .exceptions import TrackLoadError
 from .utils import get_normalized_sport_type, parse_datetime_to_local
 
-
 IGNORE_BEFORE_SAVING = os.getenv(
     "IGNORE_BEFORE_SAVING",
     False,  # noqa: PLW1508
