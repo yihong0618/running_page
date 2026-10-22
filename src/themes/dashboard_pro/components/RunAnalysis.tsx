@@ -3,6 +3,7 @@ import {
   use,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type PointerEvent,
   type ReactNode,
@@ -50,6 +51,8 @@ const C = {
 
 const TE_GRADIENT =
   'linear-gradient(90deg,#3b82f6 0%,#22c55e 35%,#eab308 65%,#f97316 100%)';
+
+const SHEET_MS = 200;
 
 const CHART_W = 720;
 const CHART_H = 112;
@@ -1270,6 +1273,98 @@ function AnalysisBody({ data }: { data: RunSplits }) {
   );
 }
 
+function CloseButton({
+  onClose,
+  label,
+}: {
+  onClose: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClose}
+      aria-label={label}
+      className="cursor-pointer text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)]"
+    >
+      <svg
+        className="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+  );
+}
+
+function Pulse({ className }: { className: string }) {
+  return (
+    <div
+      className={`animate-pulse rounded bg-[var(--color-sunken)] ${className}`}
+    />
+  );
+}
+
+function AnalysisSkeleton({
+  className,
+  onClose,
+}: {
+  className?: string;
+  onClose?: () => void;
+}) {
+  const tr = useTr();
+  return (
+    <div className={`card p-4 ${className ?? ''}`}>
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <div className="min-w-0 space-y-2">
+          <Pulse className="h-4 w-24" />
+          <Pulse className="h-3 w-36" />
+        </div>
+        {onClose ? (
+          <CloseButton onClose={onClose} label={tr('关闭', 'Close')} />
+        ) : null}
+      </div>
+      <div className="grid grid-cols-3 gap-3 border-b border-[var(--color-border)] pb-3">
+        <div className="space-y-2">
+          <Pulse className="h-3 w-10" />
+          <Pulse className="h-6 w-16" />
+        </div>
+        <div className="space-y-2">
+          <Pulse className="h-3 w-10" />
+          <Pulse className="h-6 w-14" />
+        </div>
+        <div className="space-y-2">
+          <Pulse className="h-3 w-14" />
+          <Pulse className="h-6 w-16" />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-x-4">
+        {Array.from({ length: 6 }, (_, i) => (
+          <div
+            key={i}
+            className="space-y-2 border-b border-[var(--color-border)]/70 py-2.5 pr-3"
+          >
+            <Pulse className="h-3 w-14" />
+            <Pulse className="h-5 w-20" />
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 space-y-3">
+        <Pulse className="h-3 w-16" />
+        <Pulse className="h-2 w-full rounded-full" />
+        <Pulse className="h-2 w-full rounded-full" />
+      </div>
+    </div>
+  );
+}
+
 function Header({
   data,
   onClose,
@@ -1298,26 +1393,7 @@ function Header({
         </p>
       </div>
       {onClose ? (
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={tr('关闭', 'Close')}
-          className="cursor-pointer text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)]"
-        >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+        <CloseButton onClose={onClose} label={tr('关闭', 'Close')} />
       ) : null}
     </div>
   );
@@ -1354,7 +1430,9 @@ export function RunAnalysis({
 }) {
   const promise = loadSplits(activity.run_id);
   return (
-    <Suspense fallback={null}>
+    <Suspense
+      fallback={<AnalysisSkeleton className={className} onClose={onClose} />}
+    >
       <Loaded
         key={activity.run_id}
         promise={promise}
@@ -1409,35 +1487,69 @@ function Sheet({
   activity: Activity;
   onClose: () => void;
 }) {
+  const [phase, setPhase] = useState<'enter' | 'open' | 'leave'>('enter');
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') setPhase('leave');
     };
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', onKey);
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        setPhase((p) => (p === 'enter' ? 'open' : p));
+      });
+    });
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener('keydown', onKey);
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
     };
-  }, [onClose]);
+  }, []);
+
+  useEffect(() => {
+    if (phase !== 'leave') return;
+    const t = window.setTimeout(() => onCloseRef.current(), SHEET_MS);
+    return () => window.clearTimeout(t);
+  }, [phase]);
+
+  const visible = phase === 'open';
+  const requestClose = () => setPhase('leave');
+
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40 backdrop-blur-[2px] md:items-center md:p-6"
-      onClick={onClose}
+      className={`fixed inset-0 z-[60] flex items-end justify-center bg-black/40 backdrop-blur-[2px] transition-opacity ease-out md:items-center md:p-6 ${
+        visible ? 'opacity-100' : 'opacity-0'
+      }`}
+      style={{ transitionDuration: `${SHEET_MS}ms` }}
+      onClick={requestClose}
       role="presentation"
     >
       <div
         role="dialog"
         aria-modal="true"
-        className="max-h-[90vh] w-full overflow-y-auto overscroll-contain rounded-t-2xl md:max-w-2xl md:rounded-2xl"
+        className={`grid max-h-[90vh] w-full origin-bottom overflow-hidden rounded-t-2xl bg-[var(--color-card)] transition-[opacity,transform] ease-out md:max-w-2xl md:origin-center md:rounded-2xl ${
+          visible
+            ? 'translate-y-0 scale-100 opacity-100'
+            : 'translate-y-6 scale-[0.98] opacity-0 md:translate-y-2'
+        }`}
+        style={{ transitionDuration: `${SHEET_MS}ms` }}
         onClick={(e) => e.stopPropagation()}
       >
-        <RunAnalysis
-          activity={activity}
-          onClose={onClose}
-          className="[--card-radius:0] md:[--card-radius:var(--radius-2xl)]"
-        />
+        <div className="min-h-0 overflow-y-auto overscroll-contain">
+          <RunAnalysis
+            activity={activity}
+            onClose={requestClose}
+            className="[--card-radius:0]"
+          />
+        </div>
       </div>
     </div>
   );
