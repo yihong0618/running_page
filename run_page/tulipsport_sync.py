@@ -2,15 +2,15 @@
 import argparse
 import json
 import os
-from collections import namedtuple
 from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 from xml.etree import ElementTree
 
+from activity_models import ActivityRecord, RunMap, StartPoint
 import gpxpy
 import polyline
 import requests
-from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
+from config import GPX_FOLDER, JSON_FILE, SQL_FILE
 from generator import Generator
 
 from utils import adjust_time_to_utc
@@ -83,7 +83,7 @@ def get_activity_detail(session, headers, activity_id):
         return r.json()
 
 
-def merge_summary_and_detail_to_nametuple(summary, detail):
+def merge_summary_and_detail_to_activity(summary, detail):
     id = int(summary["id"])
     name = summary["name"]
     type = summary["type"]
@@ -95,7 +95,7 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
     # end_date_local = datetime.strftime(summary["end_date_local"], "%Y-%m-%d %H:%M:%S")
     average_heartrate = int(detail["avg_hr"])
     elevation_gain = None
-    map = run_map("")
+    map = RunMap("")
     start_latlng = None
     distance = summary["distance"]
     moving_time = summary["moving_time"]
@@ -109,37 +109,34 @@ def merge_summary_and_detail_to_nametuple(summary, detail):
     point_list_length = len(point_list)
     if point_list_length and summary["outdoor"]:
         first_point = point_list[0]
-        start_latlng = start_point(float(first_point[0]), float(first_point[1]))
+        start_latlng = StartPoint(float(first_point[0]), float(first_point[1]))
         if point_list_length > 1:
             last_point = point_list[-1]
             elapsed_time = datetime.fromisoformat(
                 last_point[6]
             ) - datetime.fromisoformat(first_point[6])
             latlng_list = [[float(point[0]), float(point[1])] for point in point_list]
-            map = run_map(polyline.encode(latlng_list))
+            map = RunMap(polyline.encode(latlng_list))
 
             altitude_list = [point[2] for point in detail["map_data_list"]]
             elevation_gain = compute_elevation_gain(altitude_list)
 
-    activity_db_instance = {
-        "id": id,
-        "name": name,
-        "type": type,
-        "start_date": start_date,
-        "start_date_local": start_date_local,
-        "average_heartrate": average_heartrate,
-        "map": map,
-        "start_latlng": start_latlng,
-        "distance": distance,
-        "moving_time": moving_time,
-        "elapsed_time": elapsed_time,
-        "average_speed": average_speed,
-        "elevation_gain": elevation_gain,
-        "location_country": location_country,
-        "subtype": "Run",
-    }
-    return namedtuple("activity_db_instance", activity_db_instance.keys())(
-        *activity_db_instance.values()
+    return ActivityRecord(
+        id=id,
+        name=name,
+        type=type,
+        start_date=start_date,
+        start_date_local=start_date_local,
+        average_heartrate=average_heartrate,
+        map=map,
+        start_latlng=start_latlng,
+        distance=distance,
+        moving_time=moving_time,
+        elapsed_time=elapsed_time,
+        average_speed=average_speed,
+        elevation_gain=elevation_gain,
+        location_country=location_country,
+        subtype="Run",
     )
 
 
@@ -187,7 +184,7 @@ def get_new_activities(token, old_tracks_ids, with_gpx=False):
         print(f"parsing activity id {activity_id}")
         try:
             activity_detail = get_activity_detail(s, headers, activity_id)
-            track = merge_summary_and_detail_to_nametuple(
+            track = merge_summary_and_detail_to_activity(
                 activity_summary, activity_detail
             )
             tracks.append(track)

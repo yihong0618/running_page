@@ -9,12 +9,12 @@ import sys
 import time
 import warnings
 import xml.etree.ElementTree as ET
-from collections import namedtuple
 from datetime import UTC, datetime, timedelta
 from hashlib import md5
 from urllib.parse import quote
 from xml.dom import minidom
 
+from activity_models import ActivityRecord, RunMap, StartPoint
 import gpxpy
 import numpy as np
 import polyline
@@ -25,8 +25,6 @@ from config import (
     JSON_FILE,
     SQL_FILE,
     TCX_FOLDER,
-    run_map,
-    start_point,
 )
 from generator import Generator
 
@@ -190,9 +188,7 @@ class Joyrun:
         self.session.headers.update({"ypcookie": loginCookie})
         self.session.cookies.clear()
         self.session.cookies.set("ypcookie", quote(loginCookie).lower())
-        self.session.headers.update(
-            self.device_info_headers
-        )  # 更新设备信息中的 uid 字段
+        self.session.headers.update(self.device_info_headers)  # 更新设备信息中的 uid 字段
 
     def login_by_phone(self):
         params = {
@@ -539,7 +535,7 @@ class Joyrun:
         data = r.json()
         return data
 
-    def parse_raw_data_to_nametuple(
+    def parse_raw_data_to_activity(
         self, run_data, old_gpx_ids, with_gpx=False, with_tcx=False
     ):
         run_data = run_data["runrecord"]
@@ -584,7 +580,7 @@ class Joyrun:
                 heart_rate = None
 
         polyline_str = polyline.encode(run_points_data) if run_points_data else ""
-        start_latlng = start_point(*run_points_data[0]) if run_points_data else None
+        start_latlng = StartPoint(*run_points_data[0]) if run_points_data else None
         start_date = datetime.fromtimestamp(start_time, tz=UTC)
         start_date_local = adjust_time(start_date, BASE_TIMEZONE)
         end = datetime.fromtimestamp(end_time, tz=UTC)
@@ -594,32 +590,29 @@ class Joyrun:
         # joyrun location is kind of fucking strange, you can comments this two lines to make a better location
         if run_data["city"] or run_data["province"]:
             location_country = str(run_data["city"]) + ":" + str(run_data["province"])
-        d = {
-            "id": int(joyrun_id),
-            "name": "run from joyrun",
+        return ActivityRecord(
+            id=int(joyrun_id),
+            name="run from joyrun",
             # future to support others workout now only for run
-            "type": "Run",
-            "subtype": "Run",
-            "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
-            "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
-            "start_date_local": datetime.strftime(
-                start_date_local, "%Y-%m-%d %H:%M:%S"
-            ),
-            "end_local": datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
-            "length": run_data["meter"],
-            "average_heartrate": heart_rate,
-            "map": run_map(polyline_str),
-            "start_latlng": start_latlng,
-            "distance": run_data["meter"],
-            "moving_time": timedelta(seconds=run_data["second"]),
-            "elapsed_time": timedelta(
+            type="Run",
+            subtype="Run",
+            start_date=datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+            end=datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
+            start_date_local=datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
+            end_local=datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
+            length=run_data["meter"],
+            average_heartrate=heart_rate,
+            map=RunMap(polyline_str),
+            start_latlng=start_latlng,
+            distance=run_data["meter"],
+            moving_time=timedelta(seconds=run_data["second"]),
+            elapsed_time=timedelta(
                 seconds=int(run_data["endtime"] - run_data["starttime"])
             ),
-            "average_speed": run_data["meter"] / run_data["second"],
-            "elevation_gain": elevation_gain,
-            "location_country": location_country,
-        }
-        return namedtuple("x", d.keys())(*d.values())
+            average_speed=run_data["meter"] / run_data["second"],
+            elevation_gain=elevation_gain,
+            location_country=location_country,
+        )
 
     def get_all_joyrun_tracks(
         self, old_tracks_ids, with_gpx=False, with_tcx=False, threshold=10
@@ -652,7 +645,7 @@ class Joyrun:
             if not is_duplicate:
                 seen_runs[start_time] = {"run_data": run_data, "distance": distance}
         for run in seen_runs.values():
-            track = self.parse_raw_data_to_nametuple(
+            track = self.parse_raw_data_to_activity(
                 run["run_data"], old_gpx_ids, with_gpx, with_tcx
             )
             tracks.append(track)

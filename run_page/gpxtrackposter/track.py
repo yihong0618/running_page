@@ -7,8 +7,8 @@
 
 import datetime
 import os
-from collections import namedtuple
 
+from activity_models import ActivityRecord, RunMap, StartPoint
 import gpxpy as mod_gpxpy
 import lxml
 import polyline
@@ -22,8 +22,6 @@ from tcxreader.tcxreader import TCXReader
 from .exceptions import TrackLoadError
 from .utils import get_normalized_sport_type, parse_datetime_to_local
 
-start_point = namedtuple("start_point", "lat lon")
-run_map = namedtuple("polyline", "summary_polyline")
 
 IGNORE_BEFORE_SAVING = os.getenv(
     "IGNORE_BEFORE_SAVING",
@@ -54,7 +52,7 @@ class Track:
         self.elevation_gain = None
         self.moving_dict = {}
         self.run_id = 0
-        self.start_latlng = []
+        self.start_latlng = None
         self.type = "Run"
         self.subtype = None  # for fit file
         self.device = ""
@@ -192,7 +190,7 @@ class Track:
             )
             # get start point
             try:
-                self.start_latlng = start_point(*polyline_container[0])
+                self.start_latlng = StartPoint(*polyline_container[0])
             except Exception as e:  # noqa: BLE001
                 print(f"Error getting start point: {e}")
             self.polyline_str = polyline.encode(polyline_container)
@@ -287,7 +285,7 @@ class Track:
                 self.polyline_container = polyline_container
         # get start point
         try:
-            self.start_latlng = start_point(*polyline_container[0])
+            self.start_latlng = StartPoint(*polyline_container[0])
         except Exception as e:  # noqa: BLE001
             print(f"Error getting start point: {e}")
         self.start_time_local, self.end_time_local = parse_datetime_to_local(
@@ -408,7 +406,7 @@ class Track:
             self.start_time_local, self.end_time_local = parse_datetime_to_local(
                 self.start_time, self.end_time, self.polyline_container[0]
             )
-            self.start_latlng = start_point(*self.polyline_container[0])
+            self.start_latlng = StartPoint(*self.polyline_container[0])
             self.polylines.append(_polylines)
             self.polyline_str = polyline.encode(self.polyline_container)
         else:
@@ -464,24 +462,22 @@ class Track:
             ),
         }
 
-    def to_namedtuple(self, run_from="gpx"):
-        d = {
-            "id": self.run_id,
-            "name": (self.track_name if self.track_name else ""),  # maybe change later
-            "type": self.type,
-            "subtype": (self.subtype if self.subtype else ""),
-            "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
-            "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
-            "start_date_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
-            "end_local": self.end_time_local.strftime("%Y-%m-%d %H:%M:%S"),
-            "length": self.length,
-            "average_heartrate": (
+    def to_activity(self, run_from="gpx"):
+        return ActivityRecord(
+            id=self.run_id,
+            name=(self.track_name if self.track_name else ""),  # maybe change later
+            type=self.type,
+            subtype=(self.subtype if self.subtype else ""),
+            start_date=self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
+            end=self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
+            start_date_local=self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),
+            end_local=self.end_time_local.strftime("%Y-%m-%d %H:%M:%S"),
+            length=self.length,
+            average_heartrate=(
                 int(self.average_heartrate) if self.average_heartrate else None
             ),
-            "elevation_gain": (int(self.elevation_gain) if self.elevation_gain else 0),
-            "map": run_map(self.polyline_str),
-            "start_latlng": self.start_latlng,
-        }
-        d.update(self.moving_dict)
-        # return a nametuple that can use . to get attr
-        return namedtuple("x", d.keys())(*d.values())
+            elevation_gain=(int(self.elevation_gain) if self.elevation_gain else 0),
+            map=RunMap(self.polyline_str),
+            start_latlng=self.start_latlng,
+            **self.moving_dict,
+        )

@@ -1,5 +1,4 @@
 import os
-from collections import namedtuple
 
 # getting content root directory
 current = os.path.dirname(os.path.realpath(__file__))
@@ -23,6 +22,3 @@ SYNCED_FILE = os.path.join(parent, "imported.json")
 
 BASE_TIMEZONE = "Asia/Shanghai"
 UTC_TIMEZONE = "UTC"
-
-start_point = namedtuple("start_point", "lat lon")
-run_map = namedtuple("polyline", "summary_polyline")

@@ -4,10 +4,10 @@ import json
 import os
 import time
 import xml.etree.ElementTree as ET
-from collections import namedtuple
 from datetime import UTC, datetime, timedelta
 from xml.dom import minidom
 
+from activity_models import ActivityRecord, RunMap, StartPoint
 import gpxpy
 import polyline
 import requests
@@ -17,8 +17,6 @@ from config import (
     SQL_FILE,
     TCX_FOLDER,
     UTC_TIMEZONE,
-    run_map,
-    start_point,
 )
 from generator import Generator
 from tzlocal import get_localzone
@@ -171,7 +169,7 @@ def get_single_run_data(session, headers, start, end):
         return r.json()
 
 
-def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
+def parse_raw_data_to_activity(sport_data, with_gpx, with_tcx):
     sport_data = sport_data["body"][0]
     m = hashlib.md5()
     m.update(str.encode(str(sport_data)))
@@ -214,7 +212,7 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
         (item["latitude"], item["longitude"]) for item in other_data["gpsPoint"]
     ]
     polyline_str = polyline.encode(gps_data) if gps_data else ""
-    start_latlng = start_point(*gps_data[0]) if gps_data else None
+    start_latlng = StartPoint(*gps_data[0]) if gps_data else None
     start_date = datetime.fromtimestamp(start_time / 1000, tz=UTC)
     start_date_local = adjust_time(start_date, str(get_localzone()))
     end = datetime.fromtimestamp(sport_data["endTime"] / 1000, tz=UTC)
@@ -223,35 +221,34 @@ def parse_raw_data_to_name_tuple(sport_data, with_gpx, with_tcx):
     if not other_data["totalTime"]:
         print(f"ID {oppo_id} has no total time just ignore please check")
         return
-    d = {
-        "id": int(oppo_id),
-        "name": "activity from oppo",
+    return ActivityRecord(
+        id=int(oppo_id),
+        name="activity from oppo",
         # future to support others workout now only for run
-        "type": map_oppo_fit_type_to_strava_activity_type(sport_data["sportMode"]),
-        "subtype": (
+        type=map_oppo_fit_type_to_strava_activity_type(sport_data["sportMode"]),
+        subtype=(
             "indoor"
             if sport_data["sportMode"] in AVAILABLE_INDOOR_SPORT_MODE
             else map_oppo_fit_type_to_strava_activity_type(sport_data["sportMode"])
         ),
-        "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
-        "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
-        "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
-        "end_local": datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
-        "length": other_data["totalDistance"],
-        "average_heartrate": int(avg_heart_rate) if avg_heart_rate else None,
-        "map": run_map(polyline_str),
-        "start_latlng": start_latlng,
-        "distance": other_data["totalDistance"],
-        "moving_time": timedelta(seconds=other_data["totalTime"]),
-        "elapsed_time": timedelta(
+        start_date=datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+        end=datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
+        start_date_local=datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
+        end_local=datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
+        length=other_data["totalDistance"],
+        average_heartrate=int(avg_heart_rate) if avg_heart_rate else None,
+        map=RunMap(polyline_str),
+        start_latlng=start_latlng,
+        distance=other_data["totalDistance"],
+        moving_time=timedelta(seconds=other_data["totalTime"]),
+        elapsed_time=timedelta(
             seconds=int((sport_data["endTime"] - sport_data["startTime"]) / 1000)
         ),
-        "average_speed": other_data["totalDistance"] / other_data["totalTime"] * 1000,
-        "elevation_gain": elevation_gain,
-        "location_country": location_country,
-        "source": sport_data["deviceName"],
-    }
-    return namedtuple("x", d.keys())(*d.values())
+        average_speed=other_data["totalDistance"] / other_data["totalTime"] * 1000,
+        elevation_gain=elevation_gain,
+        location_country=location_country,
+        source=sport_data["deviceName"],
+    )
 
 
 def get_all_oppo_tracks(
@@ -286,7 +283,7 @@ def get_all_oppo_tracks(
         print(f"parsing oppo id {start!s}-{end!s}")
         try:
             run_data = get_single_run_data(s, headers, start, end)
-            track = parse_raw_data_to_name_tuple(
+            track = parse_raw_data_to_activity(
                 run_data, with_download_gpx, with_download_tcx
             )
             tracks.append(track)

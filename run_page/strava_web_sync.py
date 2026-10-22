@@ -23,9 +23,10 @@ import sys
 import time
 import uuid
 
+from activity_models import RunMap, StartPoint
 import pytz
 import requests
-from config import BASE_TIMEZONE, JSON_FILE, SQL_FILE, run_map, start_point
+from config import BASE_TIMEZONE, JSON_FILE, SQL_FILE
 from generator.db import init_db, update_or_create_activity
 from stravaweblib import WebClient
 
@@ -121,10 +122,10 @@ class WebActivity:
             latlng = streams.get("latlng")
             if latlng:
                 self.summary_polyline = _polyline_encode(latlng)
-                self.start_latlng = start_point(latlng[0][0], latlng[0][1])
+                self.start_latlng = StartPoint(latlng[0][0], latlng[0][1])
 
         # map attribute used by update_or_create_activity
-        self.map = run_map(self.summary_polyline)
+        self.map = RunMap(self.summary_polyline)
 
 
 def _fmt_local_date(ts):

@@ -5,10 +5,10 @@ import os
 import time
 import xml.etree.ElementTree as ET
 import zlib
-from collections import namedtuple
 from datetime import UTC, datetime, timedelta
 from xml.dom import minidom
 
+from activity_models import ActivityRecord, RunMap, StartPoint
 import eviltransform
 import gpxpy
 import polyline
@@ -18,8 +18,6 @@ from config import (
     JSON_FILE,
     SQL_FILE,
     TCX_FOLDER,
-    run_map,
-    start_point,
 )
 from Crypto.Cipher import AES
 from generator import Generator
@@ -112,7 +110,7 @@ def decode_runmap_data(text, is_geo=False):
     return run_points_data
 
 
-def parse_raw_data_to_nametuple(
+def parse_raw_data_to_activity(
     run_data, old_gpx_ids, old_tcx_ids, with_gpx=False, with_tcx=False
 ):
     run_data = run_data["data"]
@@ -177,7 +175,7 @@ def parse_raw_data_to_nametuple(
     else:
         print(f"ID {keep_id} no gps data")
     polyline_str = polyline.encode(run_points_data) if run_points_data else ""
-    start_latlng = start_point(*run_points_data[0]) if run_points_data else None
+    start_latlng = StartPoint(*run_points_data[0]) if run_points_data else None
     start_date = datetime.fromtimestamp(start_time // 1000, tz=UTC)
     tz_name = run_data.get("timezone", "")
     start_date_local = adjust_time(start_date, tz_name)
@@ -186,30 +184,29 @@ def parse_raw_data_to_nametuple(
     if not run_data["duration"]:
         print(f"ID {keep_id} has no total time just ignore please check")
         return
-    d = {
-        "id": int(keep_id),
-        "name": f"{KEEP2STRAVA[run_data['dataType']]} from keep",
+    return ActivityRecord(
+        id=int(keep_id),
+        name=f"{KEEP2STRAVA[run_data['dataType']]} from keep",
         # future to support others workout now only for run
-        "type": f"{KEEP2STRAVA[(run_data['dataType'])]}",
-        "subtype": f"{KEEP2STRAVA[(run_data['dataType'])]}",
-        "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
-        "end": datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
-        "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
-        "end_local": datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
-        "length": run_data["distance"],
-        "average_heartrate": int(avg_heart_rate) if avg_heart_rate else None,
-        "map": run_map(polyline_str),
-        "start_latlng": start_latlng,
-        "distance": run_data["distance"],
-        "moving_time": timedelta(seconds=run_data["duration"]),
-        "elapsed_time": timedelta(
+        type=f"{KEEP2STRAVA[(run_data['dataType'])]}",
+        subtype=f"{KEEP2STRAVA[(run_data['dataType'])]}",
+        start_date=datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+        end=datetime.strftime(end, "%Y-%m-%d %H:%M:%S"),
+        start_date_local=datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
+        end_local=datetime.strftime(end_local, "%Y-%m-%d %H:%M:%S"),
+        length=run_data["distance"],
+        average_heartrate=int(avg_heart_rate) if avg_heart_rate else None,
+        map=RunMap(polyline_str),
+        start_latlng=start_latlng,
+        distance=run_data["distance"],
+        moving_time=timedelta(seconds=run_data["duration"]),
+        elapsed_time=timedelta(
             seconds=int((run_data["endTime"] - run_data["startTime"]) // 1000)
         ),
-        "average_speed": run_data["distance"] / run_data["duration"],
-        "elevation_gain": elevation_gain,
-        "location_country": str(run_data.get("region", "")),
-    }
-    return namedtuple("x", d.keys())(*d.values())
+        average_speed=run_data["distance"] / run_data["duration"],
+        elevation_gain=elevation_gain,
+        location_country=str(run_data.get("region", "")),
+    )
 
 
 def get_all_keep_tracks(
@@ -247,7 +244,7 @@ def get_all_keep_tracks(
             print(f"parsing keep id {run}")
             try:
                 run_data = get_single_run_data(s, headers, run, api)
-                track = parse_raw_data_to_nametuple(
+                track = parse_raw_data_to_activity(
                     run_data, old_gpx_ids, old_tcx_ids, with_gpx, with_tcx
                 )
                 tracks.append(track)

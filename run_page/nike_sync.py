@@ -3,10 +3,10 @@ import json
 import logging
 import os.path
 import time
-from collections import namedtuple
 from datetime import UTC, datetime, timedelta
 from xml.etree import ElementTree
 
+from activity_models import ActivityRecord, RunMap
 import gpxpy.gpx
 import httpx
 from config import (
@@ -15,7 +15,6 @@ from config import (
     JSON_FILE,
     OUTPUT_DIR,
     SQL_FILE,
-    run_map,
 )
 from generator import Generator
 
@@ -327,27 +326,26 @@ def parse_no_gpx_data(activity):
     start_date_local = adjust_time(start_date, BASE_TIMEZONE)
     end_date = datetime.fromtimestamp(activity["end_epoch_ms"] / 1000, tz=UTC)
     end_date_local = adjust_time(end_date, BASE_TIMEZONE)
-    d = {
-        "id": int(nike_id),
-        "name": "run from nike",
-        "type": "Run",
-        "subtype": "Run",
-        "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
-        "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
-        "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
-        "end_local": datetime.strftime(end_date_local, "%Y-%m-%d %H:%M:%S"),
-        "length": distance,
-        "average_heartrate": average_heartrate,
-        "map": run_map(""),
-        "start_latlng": None,
-        "distance": distance,
-        "moving_time": moving_time,
-        "elapsed_time": elapsed_time,
-        "average_speed": distance / int(activity["active_duration_ms"] / 1000),
-        "elevation_gain": 0,
-        "location_country": "",
-    }
-    return namedtuple("x", d.keys())(*d.values())
+    return ActivityRecord(
+        id=int(nike_id),
+        name="run from nike",
+        type="Run",
+        subtype="Run",
+        start_date=datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+        end=datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
+        start_date_local=datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
+        end_local=datetime.strftime(end_date_local, "%Y-%m-%d %H:%M:%S"),
+        length=distance,
+        average_heartrate=average_heartrate,
+        map=RunMap(""),
+        start_latlng=None,
+        distance=distance,
+        moving_time=moving_time,
+        elapsed_time=elapsed_time,
+        average_speed=distance / int(activity["active_duration_ms"] / 1000),
+        elevation_gain=0,
+        location_country="",
+    )
 
 
 def make_new_gpxs(files):

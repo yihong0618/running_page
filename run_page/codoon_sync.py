@@ -7,10 +7,10 @@ import os
 import time
 import urllib.parse
 import xml.etree.ElementTree as ET
-from collections import namedtuple
 from datetime import UTC, datetime, timedelta
 from xml.dom import minidom
 
+from activity_models import ActivityRecord, RunMap, StartPoint
 import eviltransform
 import gpxpy
 import numpy as np
@@ -22,8 +22,6 @@ from config import (
     JSON_FILE,
     SQL_FILE,
     TCX_FOLDER,
-    run_map,
-    start_point,
 )
 from generator import Generator
 from tzlocal import get_localzone
@@ -414,9 +412,9 @@ class CodoonAuth:
             r.headers["timestamp"] = timestamp
             if "refresh_token" in params:
                 r.headers["authorization"] = "Basic " + basic_auth
-                r.headers["content-type"] = (
-                    "application/x-www-form-urlencode; charset=utf-8"
-                )
+                r.headers[
+                    "content-type"
+                ] = "application/x-www-form-urlencode; charset=utf-8"
             else:
                 r.headers["authorization"] = "Bearer " + self.token
                 r.headers["content-type"] = "application/json; charset=utf-8"
@@ -550,7 +548,7 @@ class Codoon:
         dt, _, _ = dt_str.partition(".")
         return datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S")  # noqa: DTZ007
 
-    def parse_raw_data_to_namedtuple(
+    def parse_raw_data_to_activity(
         self, run_data, old_gpx_ids, old_tcx_ids=None, with_gpx=False, with_tcx=False
     ):
         run_data = run_data["data"]
@@ -594,7 +592,7 @@ class Codoon:
             heart_rate = sum(heart_rate_dict.values()) / len(heart_rate_dict)
 
         polyline_str = polyline.encode(latlng_data) if latlng_data else ""
-        start_latlng = start_point(*latlng_data[0]) if latlng_data else None
+        start_latlng = StartPoint(*latlng_data[0]) if latlng_data else None
         start_date = self._gt(start_time)
         end_date = self._gt(end_time)
         location_country = None
@@ -606,30 +604,29 @@ class Codoon:
         if not run_data["total_time"]:
             print(f"ID {log_id} has no total time just ignore please check")
             return
-        d = {
-            "id": log_id,
-            "name": str(cast_type) + " from codoon",
-            "type": cast_type,
-            "subtype": cast_type,
-            "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
-            "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
-            "start_date_local": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
-            "end_local": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
-            "length": run_data["total_length"],
-            "average_heartrate": heart_rate,
-            "map": run_map(polyline_str),
-            "start_latlng": start_latlng,
-            "distance": run_data["total_length"],
-            "moving_time": timedelta(seconds=run_data["total_time"]),
-            "elapsed_time": timedelta(
+        return ActivityRecord(
+            id=log_id,
+            name=str(cast_type) + " from codoon",
+            type=cast_type,
+            subtype=cast_type,
+            start_date=datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+            end=datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
+            start_date_local=datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+            end_local=datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
+            length=run_data["total_length"],
+            average_heartrate=heart_rate,
+            map=RunMap(polyline_str),
+            start_latlng=start_latlng,
+            distance=run_data["total_length"],
+            moving_time=timedelta(seconds=run_data["total_time"]),
+            elapsed_time=timedelta(
                 seconds=int(end_date.timestamp() - start_date.timestamp())
             ),
-            "average_speed": run_data["total_length"] / run_data["total_time"],
-            "elevation_gain": elevation_gain,
-            "location_country": location_country,
-            "source": "Codoon",
-        }
-        return namedtuple("x", d.keys())(*d.values())
+            average_speed=run_data["total_length"] / run_data["total_time"],
+            elevation_gain=elevation_gain,
+            location_country=location_country,
+            source="Codoon",
+        )
 
     def get_old_tracks(self, old_ids, with_gpx=False, with_tcx=False):
         run_records = self.get_runs_records()
@@ -647,7 +644,7 @@ class Codoon:
         for i in new_run_routes:
             run_data = self.get_single_run_record(i["route_id"])
             run_data["data"]["id"] = i["log_id"]
-            track = self.parse_raw_data_to_namedtuple(
+            track = self.parse_raw_data_to_activity(
                 run_data, old_gpx_ids, old_tcx_ids, with_gpx, with_tcx
             )
             if track:

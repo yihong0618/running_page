@@ -96,7 +96,7 @@ class Generator:
 
         for t in tracks:
             created = update_or_create_activity(
-                self.session, t.to_namedtuple(run_from=file_suffix)
+                self.session, t.to_activity(run_from=file_suffix)
             )
             if created:
                 sys.stdout.write("+")
@@ -121,7 +121,7 @@ class Generator:
                 sys.stdout.write("+")
             else:
                 sys.stdout.write(".")
-            if "file_names" in t:
+            if hasattr(t, "file_names"):
                 synced_files.extend(t.file_names)
             sys.stdout.flush()
 

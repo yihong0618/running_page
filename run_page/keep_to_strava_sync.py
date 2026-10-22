@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 import time
-from collections import namedtuple
+from dataclasses import replace
 
 from config import GPX_FOLDER, OUTPUT_DIR
 from keep_sync import KEEP_SPORT_TYPES, get_all_keep_tracks
@@ -42,13 +42,12 @@ def run_keep_sync(email, password, keep_sports_data_api, with_download_gpx=False
     new_tracks = []
     for track in _new_tracks:
         # By default only outdoor sports have latlng as well as GPX.
-        if track.start_latlng is not None:
-            file_path = namedtuple("x", "gpx_file_path")(
-                os.path.join(GPX_FOLDER, str(track.id) + ".gpx")
-            )
-        else:
-            file_path = namedtuple("x", "gpx_file_path")(None)
-        track = namedtuple("y", track._fields + file_path._fields)(*(track + file_path))
+        gpx_file_path = (
+            os.path.join(GPX_FOLDER, str(track.id) + ".gpx")
+            if track.start_latlng is not None
+            else None
+        )
+        track = replace(track, gpx_file_path=gpx_file_path)
         new_tracks.append(track)
 
     return new_tracks

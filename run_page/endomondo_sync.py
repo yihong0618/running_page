@@ -5,18 +5,14 @@ and store it in Workouts dir in running_page
 
 import json
 import os
-from collections import namedtuple
 from datetime import datetime, timedelta
 
+from activity_models import ActivityRecord, RunMap, StartPoint
 import polyline
 from config import BASE_TIMEZONE, ENDOMONDO_FILE_DIR, JSON_FILE, SQL_FILE
 from generator import Generator
 
 from utils import adjust_time
-
-# TODO Same as keep_sync maybe refactor
-start_point = namedtuple("start_point", "lat lon")
-run_map = namedtuple("polyline", "summary_polyline")
 
 
 def _make_heart_rate(en_dict):
@@ -32,7 +28,7 @@ def _make_endomondo_id(file_name):
     return endomondo_id
 
 
-def parse_run_endomondo_to_nametuple(en_dict):
+def parse_run_endomondo_to_activity(en_dict):
     points = en_dict.get("points", [])
     location_points = []
     for p in points:
@@ -42,7 +38,7 @@ def parse_run_endomondo_to_nametuple(en_dict):
                 lat, lon = attr.get("location")[0]
                 location_points.append([lat.get("latitude"), lon.get("longitude")])
     polyline_str = polyline.encode(location_points) if location_points else ""
-    start_latlng = start_point(*location_points[0]) if location_points else None
+    start_latlng = StartPoint(*location_points[0]) if location_points else None
     start_date = en_dict.get("start_time")
     start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S.%f")  # noqa: DTZ007
     end_date = en_dict.get("end_time")
@@ -50,29 +46,28 @@ def parse_run_endomondo_to_nametuple(en_dict):
     start_date_local = adjust_time(start_date, BASE_TIMEZONE)
     end_date_local = adjust_time(end_date, BASE_TIMEZONE)
     heart_rate = _make_heart_rate(en_dict)
-    d = {
-        "id": en_dict.get("id"),
-        "name": "run from endomondo",
-        "type": "Run",  # TODO others
-        "subtype": "Run",  # TODO others
-        "start_date": datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
-        "end": datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
-        "start_date_local": datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
-        "end_local": datetime.strftime(end_date_local, "%Y-%m-%d %H:%M:%S"),
-        "length": en_dict.get("distance_km", 0) * 1000,
-        "average_heartrate": int(heart_rate) if heart_rate else None,
-        "map": run_map(polyline_str),
-        "start_latlng": start_latlng,
-        "distance": en_dict.get("distance_km", 0) * 1000,
-        "moving_time": timedelta(seconds=en_dict.get("duration_s", 0)),
-        "elapsed_time": timedelta(seconds=en_dict.get("duration_s", 0)),
-        "average_speed": en_dict.get("distance_km", 0)
+    return ActivityRecord(
+        id=en_dict.get("id"),
+        name="run from endomondo",
+        type="Run",  # TODO others
+        subtype="Run",  # TODO others
+        start_date=datetime.strftime(start_date, "%Y-%m-%d %H:%M:%S"),
+        end=datetime.strftime(end_date, "%Y-%m-%d %H:%M:%S"),
+        start_date_local=datetime.strftime(start_date_local, "%Y-%m-%d %H:%M:%S"),
+        end_local=datetime.strftime(end_date_local, "%Y-%m-%d %H:%M:%S"),
+        length=en_dict.get("distance_km", 0) * 1000,
+        average_heartrate=int(heart_rate) if heart_rate else None,
+        map=RunMap(polyline_str),
+        start_latlng=start_latlng,
+        distance=en_dict.get("distance_km", 0) * 1000,
+        moving_time=timedelta(seconds=en_dict.get("duration_s", 0)),
+        elapsed_time=timedelta(seconds=en_dict.get("duration_s", 0)),
+        average_speed=en_dict.get("distance_km", 0)
         / en_dict.get("duration_s", 1)
         * 1000,
-        "elevation_gain": None,
-        "location_country": "",
-    }
-    return namedtuple("x", d.keys())(*d.values())
+        elevation_gain=None,
+        location_country="",
+    )
 
 
 def parse_one_endomondo_json(json_file_name):
@@ -110,7 +105,7 @@ def run_enomondo_sync():
         if _make_endomondo_id(i) in old_tracks_ids:
             continue
         en_dict = parse_one_endomondo_json(i)
-        track = parse_run_endomondo_to_nametuple(en_dict)
+        track = parse_run_endomondo_to_activity(en_dict)
         tracks.append(track)
     generator.sync_from_app(tracks)
     activities_list = generator.load()
