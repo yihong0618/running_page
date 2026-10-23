@@ -1535,7 +1535,7 @@ function Sheet({
       <div
         role="dialog"
         aria-modal="true"
-        className={`grid max-h-[90vh] w-full origin-bottom overflow-hidden rounded-t-2xl bg-[var(--color-card)] transition-[opacity,transform] ease-out md:max-w-2xl md:origin-center md:rounded-2xl ${
+        className={`flex max-h-[90vh] w-full origin-bottom flex-col overflow-hidden rounded-t-2xl bg-[var(--color-card)] transition-[opacity,transform] ease-out md:max-w-2xl md:origin-center md:rounded-2xl ${
           visible
             ? 'translate-y-0 scale-100 opacity-100'
             : 'translate-y-6 scale-[0.98] opacity-0 md:translate-y-2'
@@ -1543,7 +1543,7 @@ function Sheet({
         style={{ transitionDuration: `${SHEET_MS}ms` }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="min-h-0 overflow-y-auto overscroll-contain">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           <RunAnalysis
             activity={activity}
             onClose={requestClose}
