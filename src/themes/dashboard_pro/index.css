@@ -116,6 +116,18 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* Hide scrollbar while keeping overflow scroll (wheel / touch / trackpad). */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
 /* Small caps-style section labels. `uppercase` is a no-op on Chinese but the
    wide tracking is not, so drop both when the document is in Chinese. */
 @utility eyebrow {

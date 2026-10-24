@@ -1,6 +1,7 @@
 import {
   Suspense,
   use,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -64,6 +65,24 @@ const fmt = (v: N, d = 0) => (has(v) ? v.toFixed(d) : '--');
 function useTr(): Tr {
   const { locale } = useLocale();
   return (zh, en) => (locale === 'zh' ? zh : en);
+}
+
+function useCoarsePointer(): boolean {
+  const [coarse, setCoarse] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(pointer: coarse)').matches
+  );
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(pointer: coarse)');
+    const update = () => setCoarse(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return coarse;
 }
 
 function smooth(values: (number | null)[], window = 5): (number | null)[] {
@@ -550,17 +569,32 @@ function MetricCard({
   mode,
   hover,
   onHover,
+  onPin,
+  coarse,
   zoneBounds,
   footer,
 }: {
   def: TrendDef;
   xs: number[];
   mode: 'distance' | 'time';
+  /** Display index: live scrub while pointer is over a chart, else pinned. */
   hover: number | null;
+  /** Live scrub index (null = not actively scrubbing / left chart). */
   onHover: (i: number | null) => void;
+  /** Fine pointer: pin this index so leave restores it. */
+  onPin: (i: number) => void;
+  /** Shared coarse-pointer flag from ChartStack (one matchMedia). */
+  coarse: boolean;
   zoneBounds?: (number | null)[] | null;
   footer?: ReactNode;
 }) {
+  const tapRef = useRef<{
+    x: number;
+    y: number;
+    scrubbing: boolean;
+    pointerId: number;
+  } | null>(null);
+
   const ys = useMemo(() => {
     if (def.kind === 'scatter') return def.series;
     if (def.kind === 'hr-area') return def.series;
@@ -599,15 +633,94 @@ function MetricCard({
 
   if (!geom) return null;
 
-  const handleMove = (e: PointerEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const frac = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  const indexAtClientX = (clientX: number, el: HTMLElement) => {
+    const rect = el.getBoundingClientRect();
+    const frac = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     const target = geom.x0 + frac * (geom.x1 - geom.x0);
     let best = 0;
     for (let i = 1; i < xs.length; i++) {
       if (Math.abs(xs[i] - target) < Math.abs(xs[best] - target)) best = i;
     }
-    onHover(best);
+    return best;
+  };
+  const hoverAtClientX = (clientX: number, el: HTMLElement) => {
+    onHover(indexAtClientX(clientX, el));
+  };
+
+  // Desktop (fine): hover/move scrubs live; click pins a separate index.
+  // Leave restores the pinned readout (does not clear). Outside click clears.
+  // Mobile (coarse): tap shows, horizontal scrub, vertical pan-y for the
+  // sheet; outside tap clears. Unchanged pin/leave semantics for coarse.
+  const TAP_PX = 12;
+  const SCRUB_PX = 12;
+
+  const onFinePointerMove = (e: PointerEvent<HTMLDivElement>) => {
+    hoverAtClientX(e.clientX, e.currentTarget);
+  };
+  const onFinePointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    const i = indexAtClientX(e.clientX, e.currentTarget);
+    onHover(i);
+    onPin(i);
+  };
+  const onFinePointerLeave = () => {
+    // Drop live scrub so display falls back to pinned (if any).
+    onHover(null);
+  };
+
+  const onCoarsePointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    tapRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      scrubbing: false,
+      pointerId: e.pointerId,
+    };
+  };
+  const onCoarsePointerMove = (e: PointerEvent<HTMLDivElement>) => {
+    const start = tapRef.current;
+    if (!start || e.pointerId !== start.pointerId) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    const adx = Math.abs(dx);
+    const ady = Math.abs(dy);
+    if (start.scrubbing) {
+      hoverAtClientX(e.clientX, e.currentTarget);
+      return;
+    }
+    // Horizontal-dominant past threshold → scrub; vertical stays for sheet scroll.
+    if (adx > SCRUB_PX && adx > ady) {
+      start.scrubbing = true;
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      hoverAtClientX(e.clientX, e.currentTarget);
+    }
+  };
+  const onCoarsePointerUp = (e: PointerEvent<HTMLDivElement>) => {
+    const start = tapRef.current;
+    tapRef.current = null;
+    if (!start || e.pointerId !== start.pointerId) return;
+    if (start.scrubbing) {
+      hoverAtClientX(e.clientX, e.currentTarget);
+      try {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    const dx = Math.abs(e.clientX - start.x);
+    const dy = Math.abs(e.clientY - start.y);
+    // Small movement = tap → show point readout.
+    if (dx <= TAP_PX && dy <= TAP_PX) {
+      hoverAtClientX(e.clientX, e.currentTarget);
+    }
+  };
+  const onCoarsePointerCancel = () => {
+    tapRef.current = null;
   };
 
   let linePath = '';
@@ -689,7 +802,10 @@ function MetricCard({
       : null;
 
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-3 shadow-[var(--shadow-card)]">
+    <div
+      data-run-metric-card=""
+      className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-3 shadow-[var(--shadow-card)]"
+    >
       <div className="mb-1 flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[13px] font-semibold" style={{ color: def.color }}>
@@ -739,10 +855,13 @@ function MetricCard({
         ) : null}
       </div>
       <div
-        className="relative touch-none select-none"
-        onPointerMove={handleMove}
-        onPointerDown={handleMove}
-        onPointerLeave={() => onHover(null)}
+        className="relative select-none"
+        style={coarse ? { touchAction: 'pan-y' } : undefined}
+        onPointerDown={coarse ? onCoarsePointerDown : onFinePointerDown}
+        onPointerMove={coarse ? onCoarsePointerMove : onFinePointerMove}
+        onPointerUp={coarse ? onCoarsePointerUp : undefined}
+        onPointerCancel={coarse ? onCoarsePointerCancel : undefined}
+        onPointerLeave={coarse ? undefined : onFinePointerLeave}
       >
         <svg
           viewBox={`0 0 ${CHART_W} ${CHART_H}`}
@@ -861,7 +980,31 @@ function MetricCard({
 
 function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
   const base = data.chart;
-  const [hover, setHover] = useState<number | null>(null);
+  // liveHover: while pointer is over a chart (fine scrub / coarse tap).
+  // pinned: fine click; leave restores this, outside click clears.
+  const [liveHover, setLiveHover] = useState<number | null>(null);
+  const [pinned, setPinned] = useState<number | null>(null);
+  const hover = liveHover ?? pinned;
+  const clearPin = useCallback(() => {
+    setPinned(null);
+    setLiveHover(null);
+  }, []);
+  const coarse = useCoarsePointer();
+  // One document listener for the stack: whole MetricCard (title / chips /
+  // readout / zone footer) counts as inside; clear only outside every card.
+  useEffect(() => {
+    if (hover == null) return;
+    const onDocPointerDown = (e: globalThis.PointerEvent) => {
+      const t = e.target;
+      if (t instanceof Element && t.closest('[data-run-metric-card]')) {
+        return;
+      }
+      clearPin();
+    };
+    document.addEventListener('pointerdown', onDocPointerDown, true);
+    return () =>
+      document.removeEventListener('pointerdown', onDocPointerDown, true);
+  }, [hover, clearPin]);
   const [axis, setAxis] = useState<'distance' | 'time'>('distance');
   const chart = useMemo(() => (base ? enrichChart(base) : null), [base]);
   if (!chart || chart.d.length < 2) return null;
@@ -1021,7 +1164,9 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
           xs={xs}
           mode={axis}
           hover={hover}
-          onHover={setHover}
+          onHover={setLiveHover}
+          onPin={setPinned}
+          coarse={coarse}
           zoneBounds={
             d.kind === 'hr-area' ? data.zones?.hr?.high_boundary : null
           }
@@ -1535,7 +1680,7 @@ function Sheet({
       <div
         role="dialog"
         aria-modal="true"
-        className={`flex max-h-[90vh] w-full origin-bottom flex-col overflow-hidden rounded-t-2xl bg-[var(--color-card)] transition-[opacity,transform] ease-out md:max-w-2xl md:origin-center md:rounded-2xl ${
+        className={`flex max-h-[90vh] w-full origin-bottom flex-col overflow-hidden rounded-t-[0.4rem] bg-[var(--color-card)] transition-[opacity,transform] ease-out md:max-w-2xl md:origin-center md:rounded-[0.4rem] ${
           visible
             ? 'translate-y-0 scale-100 opacity-100'
             : 'translate-y-6 scale-[0.98] opacity-0 md:translate-y-2'
