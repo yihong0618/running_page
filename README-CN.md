@@ -86,7 +86,7 @@ R.I.P. 希望大家都能健康顺利的跑过终点，逝者安息。
 | [hanpei](https://running.nexts.top)               | <https://running.nexts.top>                    | Garmin-cn   |
 | [liugezhou](https://github.com/liugezhou)         | <https://run.liugezhou.online>                 | Strava      |
 | [zhubao315](https://github.com/zhubao315)         | <https://zhubao315.github.io/running>          | Strava      |
-| [Jason Tan](https://github.com/Jason-cqtan)       | <https://jason-cqtan.github.io/running_page>   | Nike        |
+| [Jason Tan](https://github.com/Jason-cqtan)       | <https://jason-cqtan.github.io/lifelog/>       | Garmin-cn   |
 | [Conge](https://github.com/conge)                 | <https://conge.github.io/running_page>         | Strava      |
 | [cvvz](https://github.com/cvvz)                   | <https://cvvz.github.io/running>               | Strava      |
 | [zHElEARN](https://github.com/zHElEARN)           | <https://workouts.zhelearn.com>                | Strava      |
