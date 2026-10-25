@@ -15,6 +15,8 @@ import { useLocale } from '@/hooks/useLocale';
 import type { Locale } from '@/core/i18n';
 import { resolveActivityTitle } from '@/core/privacyTitles';
 import {
+  cadenceZoneLabels,
+  cadenceZonesFromChart,
   formatClock,
   formatPaceSeconds,
   formatPaceZoneRange,
@@ -38,6 +40,15 @@ const ZONE_COLORS = [
   '#f4c430',
   '#f59e0b',
   '#ef4444',
+];
+
+/** Cadence bands low→high (mobile ref colours, flipped to match ZoneTable order). */
+const CADENCE_ZONE_COLORS = [
+  '#ef4444',
+  '#f59e0b',
+  '#7cb342',
+  '#5b9bd5',
+  '#a855f7',
 ];
 
 /** Garmin-ish metric colors */
@@ -557,15 +568,26 @@ function ZoneTable({
             className={`grid items-center gap-2 text-[11px] ${
               unit === '/km'
                 ? 'grid-cols-[7.25rem_1fr_auto]'
-                : 'grid-cols-[4.5rem_1fr_auto]'
+                : unit === 'spm'
+                  ? 'grid-cols-[5.5rem_1fr_auto]'
+                  : 'grid-cols-[4.5rem_1fr_auto]'
             }`}
           >
             <div className="min-w-0">
-              <p className="font-medium text-[var(--color-text)]">{r.name}</p>
+              <p className="flex items-center gap-1.5 font-medium text-[var(--color-text)]">
+                {unit === 'spm' ? (
+                  <span
+                    className="inline-block size-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: r.color }}
+                    aria-hidden
+                  />
+                ) : null}
+                {r.name}
+              </p>
               {r.range ? (
                 <p className="truncate text-[10px] text-[var(--color-muted)]">
                   {r.range}
-                  {unit === '/km' ? '' : ` ${unit}`}
+                  {unit === '/km' || unit === 'spm' ? '' : ` ${unit}`}
                 </p>
               ) : null}
             </div>
@@ -1201,21 +1223,6 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
       series: chart.hr ?? [],
     },
     {
-      key: 'alt',
-      title: tr('爬升', 'Ascent'),
-      unit: 'm',
-      color: '#22c55e',
-      kind: 'area',
-      format: (v) => v.toFixed(0),
-      avg: s.elev_gain,
-      max: s.elev_loss,
-      extra: seriesMax(chart.alt),
-      avgLabel: tr('爬升', 'Gain'),
-      maxLabel: tr('下降', 'Loss'),
-      extraLabel: tr('最高海拔', 'Max elev.'),
-      series: chart.alt ?? [],
-    },
-    {
       key: 'power',
       title: tr('功率', 'Power'),
       unit: 'W',
@@ -1251,6 +1258,21 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
       avg: s.stride_length,
       avgLabel: tr('平均', 'Avg'),
       series: chart.stride ?? [],
+    },
+    {
+      key: 'alt',
+      title: tr('爬升', 'Ascent'),
+      unit: 'm',
+      color: '#22c55e',
+      kind: 'area',
+      format: (v) => v.toFixed(0),
+      avg: s.elev_gain,
+      max: s.elev_loss,
+      extra: seriesMax(chart.alt),
+      avgLabel: tr('爬升', 'Gain'),
+      maxLabel: tr('下降', 'Loss'),
+      extraLabel: tr('最高海拔', 'Max elev.'),
+      series: chart.alt ?? [],
     },
     {
       key: 'vo',
@@ -1290,6 +1312,7 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
   const paceZones =
     data.zones?.pace ??
     paceZonesFromChart(chart.pace, chart.t, thresholdPaceFromVo2max(s.vo2max));
+  const cadZones = cadenceZonesFromChart(chart.cad, chart.t);
 
   return (
     <div className="space-y-3">
@@ -1358,6 +1381,15 @@ function ChartStack({ data, tr }: { data: RunSplits; tr: Tr }) {
                     colors={ZONE_COLORS}
                     unit="bpm"
                     tr={tr}
+                  />
+                ) : d.key === 'cad' && cadZones ? (
+                  <ZoneTable
+                    title={tr('步频区间', 'Cadence zones')}
+                    zone={cadZones}
+                    colors={CADENCE_ZONE_COLORS}
+                    unit="spm"
+                    tr={tr}
+                    labels={cadenceZoneLabels()}
                   />
                 ) : d.key === 'power' && data.zones?.power ? (
                   <ZoneTable

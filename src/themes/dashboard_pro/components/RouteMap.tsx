@@ -995,7 +995,11 @@ export function RouteMap({
           {canOffer3d ? (
             <button
               type="button"
-              className={`route-map-toolbar-3d${view3d ? 'is-active' : ''}`}
+              className={
+                view3d
+                  ? 'route-map-toolbar-3d is-active'
+                  : 'route-map-toolbar-3d'
+              }
               aria-pressed={view3d}
               aria-label={view3d ? t('disable3d') : t('enable3d')}
               title={view3d ? t('disable3d') : t('enable3d')}

@@ -207,6 +207,47 @@ export function paceZonesFromChart(
 }
 
 /** Pace bounds are s/km; show `5'00"–6'00" /km`, never raw `300 /km`. */
+
+/** Joyrun-style fixed cadence bands (steps/min). Higher cadence → higher zone. */
+const CADENCE_BOUNDS = [153, 164, 174, 184] as const;
+
+export function cadenceZoneLabels(): string[] {
+  return ['<153', '153–163', '164–173', '174–183', '>183'];
+}
+
+/**
+ * Time-weighted cadence zones from the downsampled chart (same dt rules as pace).
+ */
+export function cadenceZonesFromChart(
+  cad: (number | null)[] | undefined,
+  t?: number[]
+): ZoneInfo | null {
+  if (!cad || !t || t.length !== cad.length || cad.length < 2) return null;
+  const secs = Array.from({ length: CADENCE_BOUNDS.length + 1 }, () => 0);
+  for (let i = 0; i < cad.length; i++) {
+    const c = cad[i];
+    if (c == null || !Number.isFinite(c) || c <= 0 || c > 220) continue;
+    const dt = i + 1 < t.length ? t[i + 1] - t[i] : i > 0 ? t[i] - t[i - 1] : 0;
+    if (dt <= 0 || dt > 120) continue;
+    let z: number = CADENCE_BOUNDS.length;
+    for (let b = 0; b < CADENCE_BOUNDS.length; b++) {
+      if (c < CADENCE_BOUNDS[b]) {
+        z = b;
+        break;
+      }
+    }
+    secs[z] += dt;
+  }
+  const total = secs.reduce((a, b) => a + b, 0);
+  if (total < 30) return null;
+  return {
+    seconds: secs.map((s) => Math.round(s)),
+    // Labels are provided by the UI; bounds only drive binning above.
+    high_boundary: null,
+    calc_type: 'fixed_cadence_estimated',
+  };
+}
+
 export function formatPaceZoneRange(
   lo: number | null | undefined,
   hi: number | null | undefined,
