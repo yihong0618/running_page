@@ -84,6 +84,10 @@ export interface RunSplits {
   sport: string;
   sub_sport: string | null;
   device: string | null;
+  /** FIT file_id.manufacturer (e.g. garmin) — hardware brand, not sync source. */
+  manufacturer?: string | null;
+  /** File kind for GPX/TCX imports; FIT analyzer may omit. */
+  source?: string | null;
   summary: RunSummary;
   zones: { hr?: ZoneInfo; power?: ZoneInfo; pace?: ZoneInfo } | null;
   splits: SplitRow[];

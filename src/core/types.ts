@@ -12,7 +12,8 @@ export interface Activity {
   average_heartrate: number | null;
   average_speed: number; // m/s
   elevation_gain: number | null;
-  source: string;
+  /** Present when sync scripts emit it; often omitted in activities.json. */
+  source?: string;
   streak: number;
 }
 

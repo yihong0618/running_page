@@ -785,10 +785,15 @@ def analyze_messages(msgs: dict) -> dict | None:
         if (_num(lap.get("total_timer_time")) or 0) > 0
     ]
     device = None
+    manufacturer = None
     for f in msgs.get("file_id_mesgs", []) or []:
         prod = f.get("garmin_product") or f.get("product_name")
         if isinstance(prod, str):
             device = prod
+        # Hardware brand from FIT file_id — not the sync/import pipeline.
+        mfr = f.get("manufacturer")
+        if manufacturer is None and isinstance(mfr, str) and mfr.strip():
+            manufacturer = mfr.strip()
     chart = build_chart(recs)
     # Wrist-sensor temperature is not outdoor air. Never publish it as a
     # temperature series; the UI only shows a temp section for FIT weather.
@@ -800,6 +805,7 @@ def analyze_messages(msgs: dict) -> dict | None:
         "sport": sport,
         "sub_sport": sub_sport,
         "device": device,
+        "manufacturer": manufacturer,
         "summary": summary,
         "zones": zones or None,
         "splits": build_km_splits(recs),

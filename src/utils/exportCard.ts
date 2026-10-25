@@ -1,5 +1,5 @@
-/** Capture the full card, and restore live layout even if rendering fails. */
-export async function exportCard(element: HTMLElement, filename: string) {
+/** Capture an element to PNG data URL (html-to-image). */
+export async function captureCard(element: HTMLElement): Promise<string> {
   const { toPng } = await import('html-to-image');
   const previous = {
     overflow: element.style.overflow,
@@ -22,21 +22,21 @@ export async function exportCard(element: HTMLElement, filename: string) {
     await document.fonts.ready;
     await new Promise(requestAnimationFrame);
     const bounds = element.getBoundingClientRect();
-    const dataUrl = await toPng(element, {
+    // Prefer scroll size so tall share posters are not clipped.
+    const exportW = Math.ceil(
+      Math.max(bounds.width, element.scrollWidth, width)
+    );
+    const exportH = Math.ceil(Math.max(bounds.height, element.scrollHeight));
+    return await toPng(element, {
       backgroundColor: computed.backgroundColor,
-      width: Math.ceil(bounds.width),
-      height: Math.ceil(bounds.height),
+      width: exportW,
+      height: exportH,
       pixelRatio: 2,
       filter: (node) =>
         !(
           node instanceof HTMLElement && node.hasAttribute('data-export-hidden')
         ),
     });
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    link.click();
-    return dataUrl;
   } finally {
     element.classList.remove('exporting');
     element.style.overflow = previous.overflow;
@@ -44,4 +44,14 @@ export async function exportCard(element: HTMLElement, filename: string) {
     element.style.maxWidth = previous.maxWidth;
     element.scrollLeft = previous.scrollLeft;
   }
+}
+
+/** Capture the full card, and restore live layout even if rendering fails. */
+export async function exportCard(element: HTMLElement, filename: string) {
+  const dataUrl = await captureCard(element);
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = dataUrl;
+  link.click();
+  return dataUrl;
 }
