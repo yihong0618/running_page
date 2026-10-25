@@ -489,7 +489,7 @@ export function ActivityLog({
           onClick={() => setPage((p) => Math.max(0, p - 1))}
           disabled={safePage === 0}
           aria-label={t('prevPage')}
-          className={`text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)] disabled:opacity-30 ${FOCUS_RING}`}
+          className={`cursor-pointer text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-30 ${FOCUS_RING}`}
         >
           ←
         </button>
@@ -501,7 +501,7 @@ export function ActivityLog({
           onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
           disabled={safePage >= totalPages - 1}
           aria-label={t('nextPage')}
-          className={`text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)] disabled:opacity-30 ${FOCUS_RING}`}
+          className={`cursor-pointer text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-30 ${FOCUS_RING}`}
         >
           →
         </button>

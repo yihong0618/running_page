@@ -1,52 +1,169 @@
-/* Mapbox zoom / compass / fullscreen: hidden until pointer is over the map.
-   Fullscreen puts the map in a top layer, so parent :hover stops working —
-   always show controls while any descendant is :fullscreen. */
-@media (hover: hover) and (pointer: fine) {
-  .route-map-hover-ctrls .mapboxgl-ctrl-top-right,
-  .route-map-hover-ctrls .route-map-3d-ctrl {
-    opacity: 0;
-    transition: opacity 0.15s ease;
-  }
-
-  .route-map-hover-ctrls:hover .mapboxgl-ctrl-top-right,
-  .route-map-hover-ctrls:hover .route-map-3d-ctrl,
-  .route-map-hover-ctrls:has(:fullscreen) .mapboxgl-ctrl-top-right,
-  .route-map-hover-ctrls:has(:fullscreen) .route-map-3d-ctrl {
-    opacity: 1;
-  }
+/*
+ * Map chrome idle hide (zoom·play·fullscreen / top-left toolbar only).
+ * Never hide Mapbox logo or AttributionControl — Mapbox ToS requires them
+ * to stay readable. Class toggled by useMapChromeIdle on `.route-map-fs-root`.
+ * Playback HUD is intentionally excluded.
+ */
+.route-map-fs-root .mapboxgl-ctrl-top-right,
+.route-map-fs-root .route-map-top-left,
+.route-map-fs-root .route-map-recenter {
+  transition:
+    opacity 0.28s ease,
+    visibility 0.28s ease;
 }
 
-/* 3D chase toggle — match native Mapbox control sizing and center the SVG icon */
-.route-map-3d-ctrl button.route-map-3d-btn {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
+.route-map-fs-root.is-chrome-idle .mapboxgl-ctrl-top-right,
+.route-map-fs-root.is-chrome-idle .route-map-top-left,
+.route-map-fs-root.is-chrome-idle .route-map-recenter {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Match Mapbox zoom/compass cell (32×32) so hover fill covers the whole button. */
+.mapboxgl-ctrl-group.route-map-mode-ctrl .route-map-play-btn,
+.mapboxgl-ctrl-group.route-map-mode-ctrl .route-map-fullscreen-btn {
+  display: block;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
   padding: 0;
-  /* Match native Mapbox controls: dark icon on white button background */
-  color: #333;
 }
 
-.route-map-3d-ctrl button.route-map-3d-btn.is-hidden {
-  display: none !important;
-}
-
-.route-map-3d-ctrl button.route-map-3d-btn .mapboxgl-ctrl-icon {
+.mapboxgl-ctrl-group.route-map-mode-ctrl
+  .route-map-play-btn
+  .mapboxgl-ctrl-icon,
+.mapboxgl-ctrl-group.route-map-mode-ctrl
+  .route-map-fullscreen-btn
+  .mapboxgl-ctrl-icon {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
-  background: none;
+  margin: 0;
+  background-image: none;
+  background-size: auto;
 }
 
-.route-map-3d-ctrl button.route-map-3d-btn.is-chasing {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
-  color: #ffffff;
+/* Hide the whole solo group when its button is gated off (no empty pill). */
+.mapboxgl-ctrl-group.route-map-mode-ctrl:has(
+    .route-map-play-btn.is-hidden,
+    .route-map-fullscreen-btn.is-hidden
+  ) {
+  display: none !important;
 }
 
-/* Icon-only recenter — sits beside Overview after user pans/zooms */
-.route-map-recenter {
+.mapboxgl-ctrl-group.route-map-mode-ctrl
+  .route-map-fullscreen-btn:focus-visible,
+.mapboxgl-ctrl-group.route-map-mode-ctrl .route-map-play-btn:focus-visible {
+  outline: 2px solid var(--color-accent, #e8663d);
+  outline-offset: -2px;
+}
+
+/* Separate mode groups sit under zoom with Mapbox's default ctrl gap. */
+
+/* Playback: lift the whole top-right stack above the HUD.
+   Needs enough map height (see TracksPage / RouteMap mobile sizes) —
+   margin alone cannot invent space in a short card. */
+.route-map-fs-root.is-playing .mapboxgl-ctrl-top-right {
+  margin-bottom: calc(var(--playback-hud-height, 0px) + 12px);
+}
+
+/* Grow the map card while chasing so HUD + controls + logo coexist. */
+@media (max-width: 767px) {
+  .card.route-map--playing {
+    height: min(70vh, 520px) !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .card.route-map--playing {
+    height: min(65vh, 560px) !important;
+  }
+}
+
+/* Narrow: compact Mapbox wordmark to icon-only; ⓘ stays bottom-right like desktop. */
+@media (max-width: 640px) {
+  .route-map-fs-root a.mapboxgl-ctrl-logo {
+    width: 23px;
+  }
+
+  /* Keep logo / ⓘ above the HUD while playing. */
+  .route-map-fs-root.is-playing .mapboxgl-ctrl-bottom-left,
+  .route-map-fs-root.is-playing .mapboxgl-ctrl-bottom-right {
+    padding-bottom: calc(var(--playback-hud-height, 0px) + 8px);
+  }
+}
+
+/* Dark theme: Mapbox ctrl stack + custom mode buttons. */
+:is(.dark, [data-theme='dark']) .mapboxgl-ctrl-group {
+  background: #2a2c31;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+
+:is(.dark, [data-theme='dark']) .mapboxgl-ctrl-group button {
+  background-color: #2a2c31;
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+:is(.dark, [data-theme='dark']) .mapboxgl-ctrl-group button + button {
+  border-top-color: rgb(255 255 255 / 0.1);
+}
+
+:is(.dark, [data-theme='dark'])
+  .mapboxgl-ctrl-group
+  button:not(:disabled):hover {
+  background-color: #3a3d44;
+}
+
+/* Zoom / compass / fullscreen sprites → light (play uses currentColor SVG). */
+:is(.dark, [data-theme='dark'])
+  .mapboxgl-ctrl-group
+  button:not(.route-map-play-btn):not(.route-map-fullscreen-btn)
+  .mapboxgl-ctrl-icon {
+  filter: invert(1) brightness(1.15);
+}
+
+:is(.dark, [data-theme='dark'])
+  .mapboxgl-ctrl-group.route-map-mode-ctrl
+  .route-map-play-btn,
+:is(.dark, [data-theme='dark'])
+  .mapboxgl-ctrl-group.route-map-mode-ctrl
+  .route-map-fullscreen-btn {
+  color: #f0f0f2;
+}
+
+/* Start / end pins — play / stop icons (no text). Stay after playback. */
+.route-endpoint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  line-height: 0;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.45);
+  user-select: none;
+}
+
+.route-endpoint svg {
+  display: block;
+}
+
+.route-endpoint--start {
+  background: #16a34a;
+}
+
+.route-endpoint--end {
+  background: #e8663d;
+}
+
+/* Top-left toolbar: Overview / 3D / locate */
+.route-map-recenter,
+.route-map-toolbar-3d {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -59,14 +176,534 @@
   color: var(--color-text);
   box-shadow: 0 2px 8px rgb(0 0 0 / 0.08);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
-.route-map-recenter:hover {
+.route-map-toolbar-3d {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.route-map-recenter:hover,
+.route-map-toolbar-3d:hover {
   background: var(--color-bg);
 }
 
-.route-map-recenter:focus-visible {
+.route-map-toolbar-3d.is-active {
+  background: var(--color-accent, #e8663d);
+  border-color: var(--color-accent, #e8663d);
+  color: #fff;
+}
+
+.route-map-toolbar-3d.is-active:hover {
+  background: var(--color-accent, #e8663d);
+  filter: brightness(1.06);
+}
+
+.route-map-recenter:focus-visible,
+.route-map-toolbar-3d:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+/* —— Playback HUD (bottom of map container) —— */
+.route-playback-hud {
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 5;
+  padding: 0 10px 8px;
+  background: linear-gradient(
+    to top,
+    rgb(0 0 0 / 0.72) 0%,
+    rgb(0 0 0 / 0.42) 58%,
+    rgb(0 0 0 / 0) 100%
+  );
+  transition:
+    background 0.28s ease,
+    opacity 0.28s ease;
+}
+
+.route-playback-hud.is-light {
+  background: linear-gradient(
+    to top,
+    rgb(15 18 24 / 0.55) 0%,
+    rgb(15 18 24 / 0.28) 55%,
+    rgb(15 18 24 / 0) 100%
+  );
+}
+
+/* Idle: fade chrome away; keep a bottom hotzone to re-show on hover/touch. */
+.route-playback-hud.is-idle {
+  background: transparent;
+}
+
+.route-playback-hud__hotzone {
+  pointer-events: auto;
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 48px;
+  z-index: 0;
+}
+
+.route-playback-hud__panel {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  padding: 10px 2px 2px;
+  color: #f5f5f7;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+
+.route-playback-hud.is-idle .route-playback-hud__panel {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+/* Compact: distance left, HR spark right. Expanded: extras between. */
+.route-playback-hud__metrics {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.route-playback-hud__distance {
+  display: flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  gap: 4px;
+  line-height: 1;
+}
+
+.route-playback-hud__value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.route-playback-hud.is-compact .route-playback-hud__value {
+  font-size: 1.4rem;
+}
+
+.route-playback-hud__extras {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 18px;
+  min-width: 0;
+}
+
+.route-playback-hud__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.route-playback-hud__label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+}
+
+.route-playback-hud__stat-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.route-playback-hud__unit {
+  margin-left: 2px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  opacity: 0.72;
+  text-transform: lowercase;
+}
+
+.route-playback-hud__spark {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: #ff8a65;
+  opacity: 0.95;
+  line-height: 0;
+}
+
+.route-playback-hud__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.route-playback-hud__btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.14);
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.route-playback-hud__btn:hover {
+  background: rgb(255 255 255 / 0.24);
+}
+
+.route-playback-hud__btn:focus-visible {
+  outline: 2px solid #e8663d;
+  outline-offset: 1px;
+}
+
+.route-playback-hud__speed {
+  min-width: 40px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.route-playback-hud__export-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.route-playback-hud__export.is-recording,
+.route-playback-hud__export.is-open,
+.route-playback-hud__settings.is-open {
+  background: rgb(232 102 61 / 0.85);
+  color: #fff;
+}
+
+.route-playback-hud__export-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 188px;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgb(20 22 28 / 0.94);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+  color: #f5f5f7;
+}
+
+.route-playback-hud__export-size {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 0 4px;
+}
+
+.route-playback-hud__export-size-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.route-playback-hud__export-size-btn {
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  background-color: rgb(255 255 255 / 0.08);
+  color: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.route-playback-hud.is-light .route-playback-hud__export-size-btn {
+  background-color: rgb(0 0 0 / 0.05);
+}
+
+.route-playback-hud__export-size-btn:hover:not(.is-active) {
+  background-color: rgb(255 255 255 / 0.16);
+}
+
+.route-playback-hud.is-light
+  .route-playback-hud__export-size-btn:hover:not(.is-active) {
+  background-color: rgb(0 0 0 / 0.1);
+}
+
+/* Selected = full accent fill (not bold-only). Keep weight stable. */
+.route-playback-hud__export-size-btn.is-active,
+.route-playback-hud.is-light .route-playback-hud__export-size-btn.is-active,
+.route-playback-hud__export-size-btn.is-active:hover,
+.route-playback-hud.is-light
+  .route-playback-hud__export-size-btn.is-active:hover {
+  background-color: var(--color-accent, #e8663d);
+  color: #fff;
+  font-weight: 600;
+}
+
+.route-playback-hud.is-light .route-playback-hud__export-menu {
+  background: rgb(255 255 255 / 0.96);
+  color: #1a1a1a;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.14);
+}
+
+.route-playback-hud__export-menu-title {
+  margin: 0 2px 2px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+}
+
+.route-playback-hud__export-menu-btn {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.1);
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.route-playback-hud.is-light .route-playback-hud__export-menu-btn {
+  background: rgb(0 0 0 / 0.06);
+}
+
+/* Soft lift — avoid full accent flash / white-on-gray from specificity bugs. */
+.route-playback-hud__export-menu-btn:hover {
+  background: rgb(255 255 255 / 0.18);
+  color: inherit;
+}
+
+.route-playback-hud.is-light .route-playback-hud__export-menu-btn:hover {
+  background: rgb(0 0 0 / 0.1);
+  color: inherit;
+}
+
+.route-playback-hud__export-menu-btn.is-muted {
+  font-weight: 500;
+  opacity: 0.72;
+}
+
+.route-playback-hud__export-menu-btn.is-muted:hover {
+  opacity: 1;
+}
+
+.route-playback-hud__setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.route-playback-hud__setting:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.route-playback-hud.is-light .route-playback-hud__setting:hover {
+  background: rgb(0 0 0 / 0.06);
+}
+
+.route-playback-hud__setting:focus-visible {
+  outline: 2px solid #e8663d;
+  outline-offset: 1px;
+}
+
+.route-playback-hud__switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 28px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.22);
+}
+
+.route-playback-hud.is-light .route-playback-hud__switch {
+  background: rgb(0 0 0 / 0.16);
+}
+
+.route-playback-hud__switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.route-playback-hud__setting[aria-pressed='true'] .route-playback-hud__switch {
+  background: var(--color-accent, #e8663d);
+}
+
+.route-playback-hud__setting[aria-pressed='true']
+  .route-playback-hud__switch::after {
+  transform: translateX(12px);
+}
+
+.route-playback-hud__extras--compact {
+  flex: 0 0 auto;
+}
+
+.route-playback-hud__status {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  opacity: 0.78;
+  line-height: 1.3;
+}
+
+.route-playback-hud__scrub {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.2);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.route-playback-hud__scrub:focus-visible {
+  outline: 2px solid #e8663d;
+  outline-offset: 2px;
+}
+
+.route-playback-hud__scrub-fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  border-radius: inherit;
+  background: #e8663d;
+  pointer-events: none;
+}
+
+/* Phone / narrow map card: keep distance + spark readable, leave room for gestures */
+@media (max-width: 640px) {
+  .route-playback-hud {
+    padding: 0 8px max(6px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .route-playback-hud__panel {
+    gap: 6px;
+    padding-top: 8px;
+  }
+
+  .route-playback-hud.is-compact .route-playback-hud__value {
+    font-size: 1.25rem;
+  }
+
+  .route-playback-hud.is-expanded .route-playback-hud__value {
+    font-size: 1.35rem;
+  }
+
+  .route-playback-hud__metrics {
+    gap: 8px;
+  }
+
+  .route-playback-hud__extras {
+    gap: 6px 12px;
+  }
+
+  .route-playback-hud__stat-value {
+    font-size: 0.85rem;
+  }
+
+  .route-playback-hud__scrub {
+    height: 12px;
+  }
+}
+
+/* Fullscreen: full-bleed scrub; extras stay secondary to distance */
+.route-map-fs-root:fullscreen .route-playback-hud,
+.route-map-fs-root:-webkit-full-screen .route-playback-hud {
+  padding: 0 16px max(16px, env(safe-area-inset-bottom, 0px));
+}
+
+.route-map-fs-root:fullscreen .route-playback-hud__panel,
+.route-map-fs-root:-webkit-full-screen .route-playback-hud__panel {
+  gap: 10px;
+  width: 100%;
+  max-width: none;
+}
+
+.route-map-fs-root:fullscreen .route-playback-hud__value,
+.route-map-fs-root:-webkit-full-screen .route-playback-hud__value {
+  font-size: 2rem;
+}
+
+.route-map-fs-root:fullscreen .route-playback-hud__hotzone,
+.route-map-fs-root:-webkit-full-screen .route-playback-hud__hotzone {
+  height: 72px;
+}
+
+.route-map-fs-root:fullscreen,
+.route-map-fs-root:-webkit-full-screen {
+  background: #0b0d10;
+}
+
+/* Portrait fullscreen phone: stack extras under distance so spark isn't crushed */
+@media (max-width: 640px) {
+  .route-map-fs-root:fullscreen .route-playback-hud__metrics,
+  .route-map-fs-root:-webkit-full-screen .route-playback-hud__metrics {
+    flex-wrap: wrap;
+  }
+
+  .route-map-fs-root:fullscreen .route-playback-hud__extras,
+  .route-map-fs-root:-webkit-full-screen .route-playback-hud__extras {
+    flex: 1 1 100%;
+    order: 3;
+  }
+
+  .route-map-fs-root:fullscreen .route-playback-hud__spark,
+  .route-map-fs-root:-webkit-full-screen .route-playback-hud__spark {
+    order: 2;
+  }
 }

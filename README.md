@@ -37,6 +37,7 @@
 ### 3. 其他
 
 - Garmin 中国区同步：导入 FIT 中的 GPS，修正开始时间解析等
+- 隐私模式：关灯地图 + 匿名活动标题，可在 `config.yml` 开关；详见下方「隐私」
 
 ## 生成分段数据
 
@@ -54,9 +55,19 @@ python run_page/gen_splits.py --file path/to/activity.fit  # 单个文件输出�
 
 ## 隐私
 
+### 隐私模式
+
+公开站默认开启（`config.yml` 里 `privacy_mode: true`），避免把真实路线位置和活动名暴露给访客：
+
+- **关灯地图**：关闭底图瓦片，只保留轨迹线（隐私开启时也不提供 3D）
+- **匿名标题**（`privacy_anonymous_titles: true`）：活动名换成时段标题，如「清晨跑步」「傍晚跑步」「夜间跑步」；半马 / 全马、骑行等按距离与类型显示
+
+永久关闭：`privacy_mode: false`（始终显示真实底图与原活动名）。只关灯、保留原标题可设 `privacy_anonymous_titles: false`。
+
+### 分段数据
+
 - 分段文件只含聚合后的统计和降采样曲线，**不含 GPS 坐标**，也没有逐秒原始数据
 - 在本地或自己的 Actions 中生成，不上传到任何第三方
-- `public/splits/` 已加入 `.gitignore`，不会提交到仓库
 
 ## License
 

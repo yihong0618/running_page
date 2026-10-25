@@ -237,7 +237,7 @@ function DashboardProContent({
             className={
               pinRouteMap
                 ? 'h-full shadow-lg [--card-shadow:var(--shadow-card-hover)]'
-                : 'h-[220px] [--card-shadow:var(--shadow-card-hover)] md:h-[260px] lg:[--card-shadow:var(--shadow-card)]'
+                : 'h-[280px] [--card-shadow:var(--shadow-card-hover)] md:h-[300px] lg:[--card-shadow:var(--shadow-card)]'
             }
           />
         </Suspense>
