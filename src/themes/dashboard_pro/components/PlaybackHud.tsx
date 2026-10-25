@@ -623,9 +623,11 @@ export function PlaybackHudView({
                     <div className="route-playback-hud__export-size-toggle">
                       <button
                         type="button"
-                        className={`route-playback-hud__export-size-btn${
-                          exportSizeMode === 'native' ? ' is-active' : ''
-                        }`}
+                        className={
+                          exportSizeMode === 'native'
+                            ? 'route-playback-hud__export-size-btn is-active'
+                            : 'route-playback-hud__export-size-btn'
+                        }
                         aria-pressed={exportSizeMode === 'native'}
                         onClick={() => setExportSizeMode('native')}
                       >
@@ -633,9 +635,11 @@ export function PlaybackHudView({
                       </button>
                       <button
                         type="button"
-                        className={`route-playback-hud__export-size-btn${
-                          exportSizeMode === 'phone' ? ' is-active' : ''
-                        }`}
+                        className={
+                          exportSizeMode === 'phone'
+                            ? 'route-playback-hud__export-size-btn is-active'
+                            : 'route-playback-hud__export-size-btn'
+                        }
                         aria-pressed={exportSizeMode === 'phone'}
                         onClick={() => setExportSizeMode('phone')}
                       >
