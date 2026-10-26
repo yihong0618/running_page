@@ -3,6 +3,8 @@ import { useSyncExternalStore } from 'react';
 export type PlaybackPrefs = {
   showEndpoints: boolean;
   showStats: boolean;
+  /** Freeze chase camera bearing (no route-follow yaw). */
+  lockOrientation: boolean;
 };
 
 const STORAGE_KEY = 'playback-prefs';
@@ -10,6 +12,7 @@ const STORAGE_KEY = 'playback-prefs';
 const DEFAULTS: PlaybackPrefs = {
   showEndpoints: true,
   showStats: true,
+  lockOrientation: false,
 };
 
 let current: PlaybackPrefs | null = null;
@@ -23,6 +26,7 @@ function read(): PlaybackPrefs {
     return {
       showEndpoints: parsed.showEndpoints !== false,
       showStats: parsed.showStats !== false,
+      lockOrientation: parsed.lockOrientation === true,
     };
   } catch {
     return { ...DEFAULTS };

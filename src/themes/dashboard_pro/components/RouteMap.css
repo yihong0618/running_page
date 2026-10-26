@@ -707,3 +707,7 @@
     order: 2;
   }
 }
+/* Chase: compass lock = freeze bearing (no route-follow yaw) */
+.mapboxgl-ctrl-group button.mapboxgl-ctrl-compass.is-bearing-locked {
+  box-shadow: inset 0 0 0 2px var(--color-accent, #f97316);
+}

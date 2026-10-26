@@ -60,7 +60,7 @@ import {
   usePlaybackSeries,
 } from './PlaybackHud';
 import { loadSplits } from '@/core/splits';
-import { getPlaybackPrefs } from '@/utils/playbackPrefs';
+import { getPlaybackPrefs, setPlaybackPrefs } from '@/utils/playbackPrefs';
 import {
   defaultMapVideoFilename,
   downloadBlob,
@@ -560,6 +560,7 @@ function TrackMap({
         isDark: dark !== false,
         cameraMode: can3d && view3dRef.current ? '3d' : '2d',
         showEndpoints: getPlaybackPrefs().showEndpoints,
+        lockOrientation: getPlaybackPrefs().lockOrientation,
         endpointTitles:
           locale === 'en'
             ? { start: 'Start', end: 'Finish' }
@@ -585,6 +586,9 @@ function TrackMap({
           restoreSelectedHighlight(m);
           if (!view3dRef.current) clearMapTerrain(m);
           // Orbit / fitBounds wait until card height + resize settle (chasing effect).
+        },
+        onBearingLockChange: (locked) => {
+          setPlaybackPrefs({ lockOrientation: locked });
         },
       }
     );
@@ -1062,6 +1066,9 @@ function TrackMap({
           onSeek={(p) => chaseRef.current.seek(p)}
           onShowEndpointsChange={(show) =>
             chaseRef.current.setShowEndpoints(show)
+          }
+          onLockOrientationChange={(locked) =>
+            chaseRef.current.setBearingLocked(locked)
           }
           onExport={(opts) => {
             void handleExportVideo(opts);

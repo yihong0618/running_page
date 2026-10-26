@@ -493,6 +493,8 @@ type ChaseCallbacks = {
   onStart?: () => void;
   onEnd?: () => void;
   onProgress?: (p: PlaybackProgress) => void;
+  /** Fired when compass lock toggles during playback. */
+  onBearingLockChange?: (locked: boolean) => void;
 };
 
 type ChaseStartArgs = {
@@ -517,6 +519,8 @@ type ChaseStartArgs = {
   showEndpoints?: boolean;
   /** Compass button copy while playback is running. */
   compassTitles?: { lock: string; follow: string };
+  /** Start with bearing frozen (from playback prefs). Default false. */
+  lockOrientation?: boolean;
 };
 
 type PlaybackSession = {
@@ -569,7 +573,7 @@ export function createMapChaseController() {
   let progress = 0;
   let cameraMode: PlaybackCameraMode = '3d';
   let currentBearing = 0;
-  /** Compass click during playback: hold north instead of following the route. */
+  /** Compass click during playback: freeze current bearing (no route-follow yaw). */
   let bearingLocked = false;
   let compassBtn: HTMLButtonElement | null = null;
   /** Mapbox puts the tooltip on the icon span (`title`), label on the button. */
@@ -746,9 +750,17 @@ export function createMapChaseController() {
     onCompassClick = (event) => {
       if (!running) return;
       event.preventDefault();
-      event.stopPropagation();
+      event.stopImmediatePropagation();
       bearingLocked = !bearingLocked;
+      if (bearingLocked) {
+        // Freeze whatever bearing the chase currently has — do not snap to north.
+        // Do not disable map dragRotate: idle Ctrl/right-drag orbit must keep working
+        // after playback ends, and jumpTo already holds bearing while chase runs.
+        map.stop();
+        if (session) applyFrame(session, progress, { instant: true });
+      }
       syncCompassLock(titles);
+      callbacks.onBearingLockChange?.(bearingLocked);
     };
     btn.addEventListener('click', onCompassClick, true);
     syncCompassLock(titles);
@@ -757,7 +769,7 @@ export function createMapChaseController() {
   /**
    * 2D and 3D share one bearing. Center stays on the runner — offsetting the
    * camera along a noisy heading is what made the line appear to shake.
-   * Compass click locks bearing to north.
+   * Compass click freezes the current bearing (no route-follow yaw).
    */
   const applyFrame = (
     s: PlaybackSession,
@@ -780,17 +792,13 @@ export function createMapChaseController() {
     const heading = stableHeading(
       { sample: (meters) => pointAtDistance(s, meters) },
       along,
-      bearingLocked ? 0 : currentBearing
+      currentBearing
     );
-    if (bearingLocked) {
-      currentBearing += shortestAngleDelta(currentBearing, 0) * 0.12;
-      if (Math.abs(shortestAngleDelta(currentBearing, 0)) < 0.4) {
-        currentBearing = 0;
-      }
-    } else {
+    if (!bearingLocked) {
       const delta = shortestAngleDelta(currentBearing, heading);
       if (Math.abs(delta) > 4) currentBearing += delta * 0.07;
     }
+    // When locked, currentBearing stays frozen at the value from lock time.
 
     if (cameraMode === '3d') {
       const far = stableHeading(
@@ -845,6 +853,8 @@ export function createMapChaseController() {
       if (endView === 'flat') {
         s.map.easeTo({ pitch: 0, bearing: 0, duration: 700 });
       }
+      // Unbind before clearing session so compass lock UI does not stick around.
+      unbindCompass();
       running = false;
       session = null;
       finishing = false;
@@ -998,6 +1008,17 @@ export function createMapChaseController() {
     }
   };
 
+  const setBearingLocked = (locked: boolean) => {
+    if (!running || bearingLocked === locked) return;
+    bearingLocked = locked;
+    if (bearingLocked && session) {
+      session.map.stop();
+      applyFrame(session, progress, { instant: true });
+    }
+    syncCompassLock();
+    callbacks.onBearingLockChange?.(bearingLocked);
+  };
+
   const seek = (p: number) => {
     if (!session || !running) return;
     progress = Math.min(Math.max(p, 0), 1);
@@ -1057,7 +1078,11 @@ export function createMapChaseController() {
       getEndView,
       endpointTitles = { start: '起点', end: '终点' },
       showEndpoints = true,
-      compassTitles = { lock: '正北已锁定', follow: '跟随路线' },
+      lockOrientation = false,
+      compassTitles = {
+        lock: '朝向已锁定（点击跟随路线）',
+        follow: '锁定朝向',
+      },
     } = args;
 
     if (coords.length < 2) return;
@@ -1122,6 +1147,10 @@ export function createMapChaseController() {
       showStartEndpoint(m, coords, endpointTitles);
     }
     bindCompass(m, compassTitles);
+    if (lockOrientation) {
+      bearingLocked = true;
+      syncCompassLock(compassTitles);
+    }
     callbacks.onProgress?.({
       progress: 0,
       distanceKm: 0,
@@ -1174,6 +1203,7 @@ export function createMapChaseController() {
     setZoomOutExtra,
     setStrokeScale,
     setShowEndpoints,
+    setBearingLocked,
   };
 }
 

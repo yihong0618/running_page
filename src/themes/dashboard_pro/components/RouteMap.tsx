@@ -56,7 +56,7 @@ import {
 } from './PlaybackHud';
 import { parseMovingTime } from '@/hooks/useActivities';
 import { loadSplits } from '@/core/splits';
-import { getPlaybackPrefs } from '@/utils/playbackPrefs';
+import { getPlaybackPrefs, setPlaybackPrefs } from '@/utils/playbackPrefs';
 import {
   defaultMapVideoFilename,
   downloadBlob,
@@ -498,6 +498,7 @@ export function RouteMap({
         isDark: dark !== false,
         cameraMode: can3d && view3dRef.current ? '3d' : '2d',
         showEndpoints: getPlaybackPrefs().showEndpoints,
+        lockOrientation: getPlaybackPrefs().lockOrientation,
         endpointTitles:
           locale === 'en'
             ? { start: 'Start', end: 'Finish' }
@@ -522,6 +523,9 @@ export function RouteMap({
           restoreSelectedLine(map);
           if (!view3dRef.current) clearMapTerrain(map);
           // Orbit / fitBounds wait until card height + resize settle (chasing effect).
+        },
+        onBearingLockChange: (locked) => {
+          setPlaybackPrefs({ lockOrientation: locked });
         },
       }
     );
@@ -1062,6 +1066,9 @@ export function RouteMap({
             onSeek={(p) => chaseRef.current.seek(p)}
             onShowEndpointsChange={(show) =>
               chaseRef.current.setShowEndpoints(show)
+            }
+            onLockOrientationChange={(locked) =>
+              chaseRef.current.setBearingLocked(locked)
             }
             onExport={(opts) => {
               void handleExportVideo(opts);

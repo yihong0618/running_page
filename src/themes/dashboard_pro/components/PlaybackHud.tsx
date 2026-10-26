@@ -221,6 +221,7 @@ export function PlaybackHudView({
   onSeek,
   onExport,
   onShowEndpointsChange,
+  onLockOrientationChange,
   onHeightChange,
 }: {
   snap: PlaybackProgress;
@@ -247,6 +248,7 @@ export function PlaybackHudView({
   }) => void;
   /** Live start/finish pins. Persisted preference is applied by the caller. */
   onShowEndpointsChange?: (show: boolean) => void;
+  onLockOrientationChange?: (locked: boolean) => void;
   onHeightChange?: (heightPx: number) => void;
 }) {
   const { t } = useLocale();
@@ -537,6 +539,22 @@ export function PlaybackHudView({
                   }
                 >
                   <span>{t('playbackShowStats')}</span>
+                  <span
+                    className="route-playback-hud__switch"
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  type="button"
+                  className="route-playback-hud__setting"
+                  aria-pressed={prefs.lockOrientation}
+                  onClick={() => {
+                    const next = !prefs.lockOrientation;
+                    setPlaybackPrefs({ lockOrientation: next });
+                    onLockOrientationChange?.(next);
+                  }}
+                >
+                  <span>{t('playbackLockOrientation')}</span>
                   <span
                     className="route-playback-hud__switch"
                     aria-hidden="true"
