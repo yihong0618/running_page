@@ -1931,7 +1931,7 @@ function Sheet({
 
   return (
     <div
-      className={`fixed inset-0 z-[60] flex items-end justify-center bg-black/40 backdrop-blur-[2px] transition-opacity ease-out md:items-center md:p-6 ${
+      className={`fixed inset-0 z-[60] flex h-[100dvh] max-h-[100dvh] items-end justify-center bg-black/40 backdrop-blur-[2px] transition-opacity ease-out md:items-center md:p-6 ${
         visible ? 'opacity-100' : 'opacity-0'
       }`}
       style={{ transitionDuration: `${SHEET_MS}ms` }}
@@ -1941,7 +1941,7 @@ function Sheet({
       <div
         role="dialog"
         aria-modal="true"
-        className={`flex max-h-[92vh] w-full origin-bottom flex-col overflow-hidden rounded-t-[0.4rem] bg-[var(--color-card)] transition-[opacity,transform] ease-out md:max-h-[90vh] md:w-[min(1080px,calc(100vw-3rem))] md:origin-center md:rounded-[0.4rem] ${
+        className={`flex max-h-[92svh] w-full origin-bottom flex-col overflow-hidden rounded-t-[0.4rem] bg-[var(--color-card)] transition-[opacity,transform] ease-out md:max-h-[90svh] md:w-[min(1080px,calc(100vw-3rem))] md:origin-center md:rounded-[0.4rem] ${
           visible
             ? 'translate-y-0 scale-100 opacity-100'
             : 'translate-y-6 scale-[0.98] opacity-0 md:translate-y-2'
