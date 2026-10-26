@@ -71,6 +71,8 @@ import {
   type MapVideoCapture,
 } from '@/utils/exportMapVideo';
 import './RouteMap.css';
+import { MapDockFab } from './MapDockFab';
+import { useMobileMapDock } from '../hooks/useMobileMapDock';
 
 type SportType = 'Run';
 
@@ -1106,6 +1108,8 @@ export function TracksPage({
     null
   );
   const [mapPlaying, setMapPlaying] = useState(false);
+  const mapSlotRef = useRef<HTMLDivElement>(null);
+  const mapDock = useMobileMapDock(true, mapSlotRef);
   const [sortBy, setSortBy] = useState<'date' | 'distance'>('date');
 
   // Export
@@ -1257,8 +1261,7 @@ export function TracksPage({
       </div>
 
       <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[340px_1fr]">
-        {/* Mobile: contents so map can sticky while track wall scrolls.
-            Desktop: stacked left column. */}
+        {/* Mobile: contents for reorder; map uses dock FAB when scrolled away. Desktop: stacked left column. */}
         <div className="contents lg:flex lg:flex-col lg:gap-4">
           {/* Stats card */}
           <div className="card order-1 p-4 lg:order-none">
@@ -1417,23 +1420,46 @@ export function TracksPage({
             </div>
           )}
 
-          {/* Map — sticky on mobile while browsing the track wall.
-              Idle stays compact; playback grows so HUD + ctrl stack + logo fit. */}
-          <div className="sticky top-16 z-40 order-2 -my-2 py-2 lg:static lg:z-auto lg:order-none lg:my-0 lg:py-0">
+          {/* Map — mobile dock FAB when scrolled away; playback still grows height. */}
+          <div
+            ref={mapSlotRef}
+            className={
+              mapDock.collapsed
+                ? 'order-2 h-px min-h-0 overflow-hidden lg:order-none'
+                : 'order-2 -my-2 py-2 lg:order-none lg:my-0 lg:py-0'
+            }
+          >
             <div
-              className={`card overflow-hidden transition-[height] duration-300 ease-out [--card-shadow:var(--shadow-card-hover)] lg:[--card-shadow:var(--shadow-card)] ${
-                mapPlaying
-                  ? 'h-[min(70vh,520px)] md:h-[min(65vh,560px)]'
-                  : 'h-[280px] md:h-[360px]'
-              }`}
+              className={mapDock.pinned ? 'fixed top-20 z-40' : undefined}
+              style={
+                mapDock.pinned && mapDock.frame
+                  ? {
+                      left: mapDock.frame.left,
+                      width: mapDock.frame.width,
+                      height: mapPlaying
+                        ? 'min(70vh, 520px)'
+                        : mapDock.frame.height,
+                    }
+                  : undefined
+              }
             >
-              <TrackMap
-                activity={selectedActivity}
-                activities={withPolyline}
-                dark={dark}
-                lightsOff={lightsOff}
-                onPlaybackChange={setMapPlaying}
-              />
+              <div
+                className={`card overflow-hidden transition-[height] duration-300 ease-out [--card-shadow:var(--shadow-card-hover)] lg:[--card-shadow:var(--shadow-card)] ${
+                  mapDock.pinned
+                    ? 'h-full'
+                    : mapPlaying
+                      ? 'h-[min(70vh,520px)] md:h-[min(65vh,560px)]'
+                      : 'h-[280px] md:h-[360px]'
+                }`}
+              >
+                <TrackMap
+                  activity={selectedActivity}
+                  activities={withPolyline}
+                  dark={dark}
+                  lightsOff={lightsOff}
+                  onPlaybackChange={setMapPlaying}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1668,6 +1694,14 @@ export function TracksPage({
           {/* end track grid card */}
         </div>
         {/* end right column */}
+        {mapDock.showFab ? (
+          <MapDockFab
+            expanded={mapDock.expanded}
+            labelShow={locale === 'zh' ? '显示轨迹' : 'Show map'}
+            labelHide={locale === 'zh' ? '收起轨迹' : 'Hide map'}
+            onToggle={mapDock.toggle}
+          />
+        ) : null}
       </div>
     </div>
   );

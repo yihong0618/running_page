@@ -36,6 +36,8 @@ import {
 import { CAN_PRIVACY_UNLOCK } from '@/core/privacyUnlock';
 import { DashboardContentSkeleton } from '@/components/PageSkeleton';
 import { TrendChart } from './components/TrendChart';
+import { MapDockFab } from './components/MapDockFab';
+import { useMobileMapDock } from './hooks/useMobileMapDock';
 
 const loadRouteMap = () =>
   import('./components/RouteMap').then((m) => ({ default: m.RouteMap }));
@@ -120,51 +122,7 @@ function DashboardProContent({
 
   const allYears = year == null;
   const mapSlotRef = useRef<HTMLDivElement>(null);
-  const [mapOutOfView, setMapOutOfView] = useState(false);
-  const [mapFrame, setMapFrame] = useState<{
-    left: number;
-    width: number;
-    height: number;
-  } | null>(null);
-  const pinRouteMap =
-    page === 'home' && allYears && mapOutOfView && mapFrame != null;
-  if ((page !== 'home' || !allYears) && mapOutOfView) setMapOutOfView(false);
-
-  useEffect(() => {
-    if (page !== 'home' || !allYears) return;
-    const slot = mapSlotRef.current;
-    if (!slot) return;
-    const readFrame = () => {
-      const rect = slot.getBoundingClientRect();
-      setMapFrame({ left: rect.left, width: rect.width, height: rect.height });
-    };
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) readFrame();
-        setMapOutOfView(!entry.isIntersecting);
-      },
-      { rootMargin: '-64px 0px 0px 0px', threshold: 0 }
-    );
-    observer.observe(slot);
-    return () => observer.disconnect();
-  }, [page, allYears]);
-
-  useEffect(() => {
-    if (!pinRouteMap) return;
-    const slot = mapSlotRef.current;
-    if (!slot) return;
-    const readFrame = () => {
-      const rect = slot.getBoundingClientRect();
-      setMapFrame({ left: rect.left, width: rect.width, height: rect.height });
-    };
-    const resizeObserver = new ResizeObserver(readFrame);
-    resizeObserver.observe(slot);
-    window.addEventListener('resize', readFrame);
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', readFrame);
-    };
-  }, [pinRouteMap]);
+  const mapDock = useMobileMapDock(page === 'home', mapSlotRef);
 
   if (page === 'tracks') {
     return (
@@ -209,19 +167,21 @@ function DashboardProContent({
     <div
       ref={mapSlotRef}
       className={
-        allYears
-          ? 'order-3 min-h-[220px] md:min-h-[260px] lg:order-none'
-          : 'sticky top-16 z-40 order-3 -my-2 py-2 lg:static lg:z-auto lg:order-none lg:my-0 lg:shrink-0 lg:py-0'
+        mapDock.collapsed
+          ? 'order-3 h-px min-h-0 overflow-hidden lg:order-none'
+          : allYears
+            ? 'order-3 min-h-[220px] md:min-h-[260px] lg:order-none'
+            : 'order-3 -my-2 py-2 lg:order-none lg:my-0 lg:shrink-0 lg:py-0'
       }
     >
       <div
-        className={pinRouteMap ? 'fixed top-20 z-40' : undefined}
+        className={mapDock.pinned ? 'fixed top-20 z-40' : undefined}
         style={
-          pinRouteMap && mapFrame
+          mapDock.pinned && mapDock.frame
             ? {
-                left: mapFrame.left,
-                width: mapFrame.width,
-                height: mapFrame.height,
+                left: mapDock.frame.left,
+                width: mapDock.frame.width,
+                height: mapDock.frame.height,
               }
             : undefined
         }
@@ -235,7 +195,7 @@ function DashboardProContent({
             lightsOff={privacyActive}
             onClearSelection={() => setSelectedActivity(null)}
             className={
-              pinRouteMap
+              mapDock.pinned
                 ? 'h-full shadow-lg [--card-shadow:var(--shadow-card-hover)]'
                 : 'h-[280px] [--card-shadow:var(--shadow-card-hover)] md:h-[300px] lg:[--card-shadow:var(--shadow-card)]'
             }
@@ -285,7 +245,7 @@ function DashboardProContent({
       }
     >
       {/*
-        Mobile order: Profile → Stats → sticky RouteMap → Calendar → ActivityLog
+        Mobile order: Profile · Stats · RouteMap (dock FAB when scrolled away) · Calendar · ActivityLog
         → ChinaMap → Yearly Distance → Heatmap (bottom).
         Desktop, one year (2×2, each row stretches):
           [Stats+Heatmap] [Profile + Map]
@@ -396,6 +356,14 @@ function DashboardProContent({
           </div>
         )}
       </div>
+      {mapDock.showFab ? (
+        <MapDockFab
+          expanded={mapDock.expanded}
+          labelShow={locale === 'zh' ? '显示轨迹' : 'Show map'}
+          labelHide={locale === 'zh' ? '收起轨迹' : 'Hide map'}
+          onToggle={mapDock.toggle}
+        />
+      ) : null}
       <Suspense fallback={null}>
         <RunAnalysisLauncher activity={selectedActivity} />
       </Suspense>
