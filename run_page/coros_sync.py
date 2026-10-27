@@ -30,6 +30,7 @@ class Coros:
     def __init__(self, account, password, is_only_running=False):
         self.account = account
         self.password = password
+        self.is_only_running = is_only_running
         self.headers = None
         self.req = None
 
@@ -64,7 +65,6 @@ class Coros:
                 "accesstoken": access_token,
                 "cookie": f"CPL-coros-region=2; CPL-coros-token={access_token}",
             }
-            self.is_only_running = is_only_running
             self.req = httpx.AsyncClient(timeout=TIME_OUT, headers=self.headers)
         await client.aclose()
 
