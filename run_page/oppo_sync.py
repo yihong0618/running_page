@@ -120,8 +120,8 @@ def get_access_token(session, client_id, client_secret, refresh_token):
 
 def get_to_download_runs_ranges(session, sync_months, headers, start_timestamp):
     result = []
-    current_time = datetime.now()  # noqa: DTZ005
-    start_datatime = datetime.fromtimestamp(start_timestamp / 1000)  # noqa: DTZ006
+    current_time = datetime.now()
+    start_datatime = datetime.fromtimestamp(start_timestamp / 1000)
 
     if start_datatime < current_time + timedelta(days=-30 * sync_months):
         """retrieve the data of last 6 months."""
@@ -272,9 +272,7 @@ def get_all_oppo_tracks(
         0
         if (last_track_date == 0)
         else int(
-            datetime.timestamp(
-                datetime.strptime(last_track_date, "%Y-%m-%d %H:%M:%S")  # noqa: DTZ007
-            )
+            datetime.timestamp(datetime.strptime(last_track_date, "%Y-%m-%d %H:%M:%S"))
             * 1000
         )
     )

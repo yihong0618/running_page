@@ -37,7 +37,7 @@ jobs:
 
       - name: Lint with Ruff
         run: |
-          pip install ruff
+          pip install ruff==0.17.2
           ruff check .
 
   node_lint_and_test:
