@@ -43,7 +43,7 @@ def to_date(ts):
         ts_fmts = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f"]
         for ts_fmt in ts_fmts:
             try:
-                return datetime.strptime(ts, ts_fmt)  # noqa: DTZ007
+                return datetime.strptime(ts, ts_fmt)
             except ValueError:
                 pass
         raise ValueError(f"cannot parse timestamp {ts} into date")

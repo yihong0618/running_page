@@ -173,7 +173,7 @@ def run():
     )
     options = parser.parse_args()
 
-    today = datetime.now().strftime("%Y-%m-%d")  # noqa: DTZ005
+    today = datetime.now().strftime("%Y-%m-%d")
     client = IntervalsICU(options.athlete_id, options.api_key)
     activities = client.get_activities(oldest=options.start_date, newest=today)
 
