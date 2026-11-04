@@ -7,6 +7,7 @@
 
 import locale
 import math
+import os
 from datetime import datetime
 
 import colour
@@ -118,9 +119,29 @@ def format_float(f):
     return locale.format_string("%.1f", f)
 
 
+def default_timezone() -> str:
+    """Timezone used when a track has no GPS point to look one up from.
+
+    Configure with RUNNING_PAGE_TIMEZONE (e.g. "America/Los_Angeles"), falling
+    back to TZ and finally to Asia/Shanghai for backwards compatibility.
+    """
+    for name in (os.getenv("RUNNING_PAGE_TIMEZONE"), os.getenv("TZ")):
+        if not name:
+            continue
+        try:
+            pytz.timezone(name)
+        except pytz.UnknownTimeZoneError:
+            print(f"unknown timezone: {name}, ignoring")
+            continue
+        return name
+    return "Asia/Shanghai"
+
+
 def parse_datetime_to_local(start_time, end_time, point):
     if not point:
-        timezone = "Asia/Shanghai"
+        # No GPS point (e.g. treadmill run): use the configured default zone
+        # instead of assuming Asia/Shanghai.
+        timezone = default_timezone()
     else:
         # just parse the start time, because start/end maybe different
         offset = start_time.utcoffset()
@@ -133,7 +154,7 @@ def parse_datetime_to_local(start_time, end_time, point):
             # just a little trick when tzfpy support windows will delete this
             print(f"tzfpy error: {e} fallback to timezonefinder")
             lat, lng = point
-            timezone = tf.timezone_at(lng=lng, lat=lat)
+            timezone = tf.timezone_at(lng=lng, lat=lat) or default_timezone()
     tc_offset = datetime.now(pytz.timezone(timezone)).utcoffset()
     return start_time + tc_offset, end_time + tc_offset
 
