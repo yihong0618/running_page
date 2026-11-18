@@ -30,12 +30,12 @@ on:
       - requirements.txt
 
 concurrency:
-  group: run-data-sync-${{ github.ref }}
+  group: run-data-sync-${{ github.ref }}-${{ inputs.hae_drive_preview && 'preview' || 'sync' }}
   cancel-in-progress: false
 
 env:
   # please change to your own config.
-  RUN_TYPE: ${{ inputs.hae_drive_preview && 'health_auto_export' || vars.RUN_TYPE || 'pass' }} # support health_auto_export/ strava_web/strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/intervals_icu/db_updater, Please change the 'pass' it to your own
+  RUN_TYPE: ${{ vars.RUN_TYPE || 'pass' }} # support health_auto_export/ strava_web/strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/intervals_icu/db_updater, Please change the 'pass' it to your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   MIN_GRID_DISTANCE: 10 # change min distance here
@@ -64,11 +64,15 @@ jobs:
       BUILD_GH_PAGES: ${{ steps.set_output.outputs.BUILD_GH_PAGES }}
 
     steps:
+      - name: Select Drive importer for preview
+        if: inputs.hae_drive_preview
+        run: echo "RUN_TYPE=health_auto_export" >> "$GITHUB_ENV"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: ${{ !inputs.hae_drive_preview }}
 
       - name: Set up Python
         id: setup_python
@@ -166,6 +170,10 @@ jobs:
         run: |
           python run_page/strava_web_sync.py "${{ secrets.STRAVA_JWT }}" --days "${{ vars.STRAVA_WEB_DAYS || '7' }}"
 
+      - name: Install Google Drive dependency
+        if: env.RUN_TYPE == 'health_auto_export'
+        run: python -m pip install 'google-auth[requests]>=2,<3'
+
       - name: Import Health Auto Export from Google Drive
         if: env.RUN_TYPE == 'health_auto_export'
         env:
@@ -176,11 +184,13 @@ jobs:
           work_dir="$(mktemp -d "$RUNNER_TEMP/hae-drive.XXXXXXXX")"
           trap 'rm -rf -- "$work_dir"' EXIT
           mkdir "$work_dir/exports"
-          python -m pip install 'google-auth[requests]>=2,<3'
           python run_page/health_auto_export_drive.py "$work_dir/exports"
+          unset HAE_DRIVE_SERVICE_ACCOUNT_JSON HAE_DRIVE_FOLDER_ID
           args=()
           if [ "$HAE_DRIVE_PREVIEW" = true ]; then
-            cp run_page/data.db "$work_dir/data.db"
+            if [ -f run_page/data.db ]; then
+              cp run_page/data.db "$work_dir/data.db"
+            fi
             args=(--db "$work_dir/data.db" --output "$work_dir/activities.json")
           fi
           if compgen -G "$work_dir/exports/*.json" > /dev/null; then
@@ -277,7 +287,7 @@ jobs:
           python run_page/db_updater.py
 
       - name: Make svg GitHub profile
-        if: env.RUN_TYPE != 'pass'
+        if: env.RUN_TYPE != 'pass' && !inputs.hae_drive_preview
         env:
           TITLE: ${{ env.TITLE }}
           TITLE_GRID: ${{ env.TITLE_GRID }}
@@ -293,7 +303,7 @@ jobs:
         # python run_page/gen_svg.py --from-db --title "${{ env.TITLE }}" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github.svg --use-localtime --min-distance 0.5
         # python run_page/gen_svg.py --from-db --year $(date +"%Y")  --language zh_CN --title "$(date +"%Y") Running" --type github --github-style "align-monday" --athlete "${{ env.ATHLETE }}" --special-distance 10 --special-distance2 20 --special-color yellow --special-color2 red --output assets/github_$(date +"%Y").svg --use-localtime --min-distance 0.5
       - name: Make month of life
-        if: env.GENERATE_MONTH_OF_LIFE == 'true'
+        if: env.GENERATE_MONTH_OF_LIFE == 'true' && !inputs.hae_drive_preview
         env:
           BIRTHDAY_MONTH: ${{ env.BIRTHDAY_MONTH }}
         run: |
@@ -306,12 +316,12 @@ jobs:
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367"  --special-color2 "#f0a1a8" --output assets/mol_skiing.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Skier Month of Life" --sport-type skiing
 
       - name: Make year summary
-        if: env.GENERATE_MONTH_OF_LIFE == 'true'
+        if: env.GENERATE_MONTH_OF_LIFE == 'true' && !inputs.hae_drive_preview
         run: |
           python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary.svg --athlete "${{ env.ATHLETE }}"
 
       - name: Save data to parqent
-        if: env.SAVE_TO_PARQENT == 'true'
+        if: env.SAVE_TO_PARQENT == 'true' && !inputs.hae_drive_preview
         run: |
           pip install duckdb==1.1.0
           python run_page/save_to_parqent.py

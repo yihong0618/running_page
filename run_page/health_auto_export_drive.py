@@ -29,7 +29,9 @@ def download_exports(client, folder_id, destination):
         raise ValueError("HAE_DRIVE_FOLDER_ID must identify a folder")
 
     params = {
-        "q": f"'{folder_id}' in parents and trashed = false",
+        "q": f"'{folder_id}' in parents and trashed = false "
+        "and mimeType != 'application/vnd.google-apps.folder' "
+        "and mimeType != 'application/vnd.google-apps.shortcut'",
         "fields": "nextPageToken,incompleteSearch,files(id,name,modifiedTime)",
         "pageSize": 1000,
         "supportsAllDrives": "true",
