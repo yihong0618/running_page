@@ -99,3 +99,105 @@ def test_collision_does_not_replace_existing_activity(importer, tmp_path):
     with pytest.raises(ValueError, match="Activity ID collision"):
         importer.import_workouts(source, database, output)
     assert output.read_bytes() == previous
+
+
+@pytest.mark.parametrize("incomplete", [None, [], [{"latitude": 40, "longitude": 100}]])
+def test_incomplete_route_preserves_saved_route(importer, tmp_path, incomplete):
+    source, db, output = (tmp_path / name for name in ("in.json", "db", "out.json"))
+    route = [{"latitude": 40, "longitude": lon} for lon in range(100, 106)]
+    write_export(source, workout("outdoor", route=route))
+    importer.import_workouts(source, db, output)
+    first = json.loads(output.read_text())[0]["summary_polyline"]
+    assert first
+    write_export(source, workout("outdoor", route=incomplete))
+    importer.import_workouts(source, db, output)
+    assert json.loads(output.read_text())[0]["summary_polyline"] == first
+
+
+def test_legacy_privacy_migration_without_original_export(
+    importer, tmp_path, monkeypatch
+):
+    import sqlite3
+
+    monkeypatch.setattr("polyline_processor.IGNORE_START_END_RANGE", 0.01)
+    source, db, output = (tmp_path / name for name in ("in.json", "db", "out.json"))
+    raw_id = "original-private-workout-identifier"
+    points = [(40, lon) for lon in range(100, 106)]
+    route = [{"latitude": lat, "longitude": lon} for lat, lon in points]
+    raw = polyline.encode(points)
+    safe = polyline.encode(points[1:-1])
+    write_export(source, workout(raw_id, route=route))
+    importer.import_workouts(source, db, output)
+    first = json.loads(output.read_text())[0]
+    assert first["summary_polyline"] == safe
+    with sqlite3.connect(db) as conn:
+        conn.execute("DROP TABLE health_auto_export_workouts")
+        conn.execute(
+            "CREATE TABLE health_auto_export_workout_ids (external_id TEXT PRIMARY KEY,run_id INTEGER UNIQUE)"
+        )
+        conn.execute(
+            "INSERT INTO health_auto_export_workout_ids VALUES (?,?)",
+            (raw_id, first["run_id"]),
+        )
+        conn.execute("UPDATE activities SET summary_polyline=?", (raw,))
+    write_export(source)
+    for _ in range(2):
+        importer.import_workouts(source, db, output)
+        assert json.loads(output.read_text()) == [first]
+        with sqlite3.connect(db) as conn:
+            assert conn.execute(
+                "SELECT summary_polyline FROM activities"
+            ).fetchone() == (safe,)
+            assert conn.execute(
+                "SELECT id_digest FROM health_auto_export_workouts"
+            ).fetchone() == (importer.workout_digest(raw_id).hex(),)
+        assert raw_id.encode() not in db.read_bytes()
+        assert raw.encode() not in db.read_bytes()
+    write_export(source, workout(raw_id, route=route))
+    importer.import_workouts(source, db, output)
+    assert json.loads(output.read_text()) == [first]
+
+
+def test_entire_route_within_privacy_radius_clears_map(importer, tmp_path, monkeypatch):
+    monkeypatch.setattr("polyline_processor.IGNORE_START_END_RANGE", 1)
+    source, db, output = (tmp_path / name for name in ("in.json", "db", "out.json"))
+    for spacing in (0.1, 0.0001):
+        points = [{"latitude": 40, "longitude": 100 + i * spacing} for i in range(6)]
+        write_export(source, workout("outdoor", route=points))
+        importer.import_workouts(source, db, output)
+        assert bool(json.loads(output.read_text())[0]["summary_polyline"]) == (
+            spacing == 0.1
+        )
+
+
+@pytest.mark.parametrize("filter_before_saving", [False, True])
+def test_shared_export_respects_source_and_changed_privacy(
+    importer, tmp_path, monkeypatch, filter_before_saving
+):
+    from datetime import timedelta
+
+    monkeypatch.setattr("generator.IGNORE_BEFORE_SAVING", filter_before_saving)
+    monkeypatch.setattr("polyline_processor.IGNORE_START_END_RANGE", 0.01)
+    source, db, output = (tmp_path / name for name in ("in.json", "db", "out.json"))
+    points = [(40, 100 + i) for i in range(6)]
+    raw = polyline.encode(points)
+    safe = polyline.encode(points[1:-1])
+    route = [{"latitude": lat, "longitude": lon} for lat, lon in points]
+    write_export(source, workout("outdoor", route=route))
+    importer.import_workouts(source, db, output)
+    generator = importer.Generator(db)
+    with generator.session as session:
+        session.add(
+            importer.Activity(
+                run_id=1,
+                name="Other source",
+                type="Run",
+                distance=100,
+                moving_time=timedelta(seconds=30),
+                start_date_local="2025-01-02 07:00:00",
+                summary_polyline=safe if filter_before_saving else raw,
+            )
+        )
+        assert [row["summary_polyline"] for row in generator.load()] == [safe, safe]
+        monkeypatch.setattr("polyline_processor.IGNORE_START_END_RANGE", 10000)
+        assert not generator.load()[0]["summary_polyline"]

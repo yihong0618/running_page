@@ -10,19 +10,11 @@ from tempfile import NamedTemporaryFile
 
 import polyline
 from config import JSON_FILE, SQL_FILE
-from generator import IGNORE_BEFORE_SAVING, Generator
+from generator import Generator
 from generator.db import Activity
-from polyline_processor import filter_out
-from sqlalchemy import Column, Integer, MetaData, String, Table, insert, select
+from generator.hae import filter_route, route_policy, workout_ids
+from sqlalchemy import insert, inspect, select, update
 
-# Store ownership separately so existing Activity rows and public JSON need no
-# schema changes. An occupied ID without matching ownership is a collision.
-workout_ids = Table(
-    "health_auto_export_workout_ids",
-    MetaData(),
-    Column("external_id", String, primary_key=True),
-    Column("run_id", Integer, nullable=False, unique=True),
-)
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 RUN_TYPES = {"Running", "Outdoor Run", "Indoor Run", "跑步", "户外 跑步", "室内 跑步"}
 INDOOR_TYPES = {"Indoor Run", "室内 跑步"}
@@ -59,9 +51,11 @@ def parse_workout(workout, since):
     ]
     if any(not (-90 <= lat <= 90 and -180 <= lon <= 180) for lat, lon in points):
         raise ValueError("Invalid route coordinate")
-    encoded = polyline.encode(points) if len(points) >= 2 else ""
-    if encoded and IGNORE_BEFORE_SAVING:
-        encoded = filter_out(encoded) or ""
+    # Incomplete exports carry no route update. A valid route entirely hidden
+    # by privacy settings explicitly clears a previously visible route.
+    encoded = None
+    if len(points) >= 2:
+        encoded = filter_route(polyline.encode(points)) or ""
 
     indoor = (
         workout.get("isIndoor") is True
@@ -88,7 +82,7 @@ def parse_workout(workout, since):
         "elevation_gain": (
             quantity(elevation, {"m": 1, "ft": 0.3048}) if elevation else None
         ),
-        "summary_polyline": encoded if "route" in workout else None,
+        "summary_polyline": encoded,
     }
 
 
@@ -137,22 +131,53 @@ def merge_fields(existing, fields):
             existing[key] = value
 
 
-def save_workout(session, external_id, fields):
-    run_id = session.scalar(
-        select(workout_ids.c.run_id).where(workout_ids.c.external_id == external_id)
-    )
-    if run_id is None:
-        digest = hashlib.sha256(f"health_auto_export:{external_id}".encode()).digest()
-        # Negative IDs disjoint from ordinary positive activity IDs. Keep them
-        # exactly representable as numbers in the frontend.
-        run_id = -(int.from_bytes(digest[:8], "big") % (2**53 - 1) + 1)
-        owner = session.scalar(
-            select(workout_ids.c.external_id).where(workout_ids.c.run_id == run_id)
+def workout_digest(external_id):
+    return hashlib.sha256(f"health_auto_export:{external_id}".encode()).digest()
+
+
+def prepare_ownership(session, policy):
+    connection = session.connection()
+    workout_ids.create(connection, checkfirst=True)
+    legacy_table = "health_auto_export_workout_ids"
+    if inspect(connection).has_table(legacy_table):
+        for external_id, run_id in connection.exec_driver_sql(
+            "SELECT external_id, run_id FROM health_auto_export_workout_ids"
+        ):
+            session.execute(
+                insert(workout_ids).values(
+                    id_digest=workout_digest(external_id).hex(),
+                    run_id=run_id,
+                    route_policy="",
+                )
+            )
+        connection.exec_driver_sql("DROP TABLE health_auto_export_workout_ids")
+
+    # A legacy database may contain unmasked routes, including workouts no
+    # longer present in the source. Reconcile these before exporting the DB.
+    stale = workout_ids.c.route_policy != policy
+    for activity in session.scalars(
+        select(Activity).where(
+            Activity.run_id.in_(select(workout_ids.c.run_id).where(stale))
         )
+    ):
+        activity.summary_polyline = filter_route(activity.summary_polyline)
+    session.execute(update(workout_ids).where(stale).values(route_policy=policy))
+
+
+def save_workout(session, external_id, fields, policy):
+    digest = workout_digest(external_id)
+    # Keep the legacy run ID stable and exactly representable by JavaScript.
+    run_id = -(int.from_bytes(digest[:8], "big") % (2**53 - 1) + 1)
+    owner = session.scalar(
+        select(workout_ids.c.id_digest).where(workout_ids.c.run_id == run_id)
+    )
+    if owner != digest.hex():
         if owner is not None or session.get(Activity, run_id) is not None:
             raise ValueError(f"Activity ID collision at {run_id}")
         session.execute(
-            insert(workout_ids).values(external_id=external_id, run_id=run_id)
+            insert(workout_ids).values(
+                id_digest=digest.hex(), run_id=run_id, route_policy=policy
+            )
         )
 
     activity = session.get(Activity, run_id)
@@ -178,10 +203,12 @@ def import_workouts(source, db_path, output, since=None):
     generator = Generator(db_path)
     with generator.session as session:
         connection = session.connection()
+        connection.exec_driver_sql("PRAGMA secure_delete=ON")
         connection.exec_driver_sql("BEGIN IMMEDIATE")
-        workout_ids.create(connection, checkfirst=True)
+        policy = route_policy()
+        prepare_ownership(session, policy)
         for external_id, fields in workouts.items():
-            save_workout(session, external_id, fields)
+            save_workout(session, external_id, fields, policy)
         # Generator.load flushes the rows and commits after serialization.
         activities = generator.load()
 

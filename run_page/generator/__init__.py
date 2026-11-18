@@ -10,6 +10,7 @@ from sqlalchemy import func
 from synced_data_file_logger import save_synced_data_file_list
 
 from .db import Activity, init_db, update_or_create_activity
+from .hae import filter_route, route_policy, saved_route_policies
 
 IGNORE_BEFORE_SAVING = os.getenv(
     "IGNORE_BEFORE_SAVING",
@@ -136,6 +137,8 @@ class Generator:
         activities = query.order_by(Activity.start_date_local)
         activity_list = []
 
+        hae_policies = saved_route_policies(self.session)
+        current_policy = route_policy()
         streak = 0
         last_date = None
         for activity in activities:
@@ -155,7 +158,12 @@ class Generator:
             activity.streak = streak  # type: ignore
             last_date = date
             exported_activity = activity.to_dict()
-            if not IGNORE_BEFORE_SAVING:
+            if activity.run_id in hae_policies:
+                if hae_policies[activity.run_id] != current_policy:
+                    exported_activity["summary_polyline"] = filter_route(
+                        exported_activity["summary_polyline"]
+                    )
+            elif not IGNORE_BEFORE_SAVING:
                 exported_activity["summary_polyline"] = filter_out(
                     exported_activity["summary_polyline"]
                 )
