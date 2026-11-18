@@ -274,9 +274,7 @@ class GpxCompiler:
                 if augment_timestamp:
                     point.time = start_date + timedelta(seconds=coord.time / 1000)
                 else:
-                    point.time = datetime.fromtimestamp(  # noqa: DTZ006
-                        coord.time / 1000
-                    )
+                    point.time = datetime.fromtimestamp(coord.time / 1000)
             segment.points.append(point)
 
         if not self.no_poi:
@@ -285,9 +283,7 @@ class GpxCompiler:
                 if poi.point.alt != poi.point.CONST_UNDEFINED:
                     wp.elevation = poi.point.alt
                 if poi.point.time != poi.point.CONST_UNDEFINED:
-                    wp.time = datetime.fromtimestamp(  # noqa: DTZ006
-                        poi.point.time / 1000
-                    )
+                    wp.time = datetime.fromtimestamp(poi.point.time / 1000)
 
                 wp.name = poi.name
                 wp.description = poi.description
@@ -356,7 +352,7 @@ def is_tour_in_date_range(tour, start_date, end_date):
         return True  # If tour has no date info, include it
 
     tour_date_str = tour["date"][:10]  # Extract YYYY-MM-DD
-    tour_date = datetime.strptime(tour_date_str, "%Y-%m-%d").date()  # noqa: DTZ007
+    tour_date = datetime.strptime(tour_date_str, "%Y-%m-%d").date()
 
     # If only start_date is provided, include all tours on or after start_date
     if start_date and not end_date and tour_date < start_date:
@@ -448,18 +444,14 @@ def main(args):
     end_date = None
     if args.start_date:
         try:
-            start_date = datetime.strptime(  # noqa: DTZ007
-                args.start_date, "%Y-%m-%d"
-            ).date()
+            start_date = datetime.strptime(args.start_date, "%Y-%m-%d").date()
         except ValueError:
             print(f"Invalid start date format: {args.start_date}. Use YYYY-MM-DD")
             sys.exit(2)
 
     if args.end_date:
         try:
-            end_date = datetime.strptime(  # noqa: DTZ007
-                args.end_date, "%Y-%m-%d"
-            ).date()
+            end_date = datetime.strptime(args.end_date, "%Y-%m-%d").date()
         except ValueError:
             print(f"Invalid end date format: {args.end_date}. Use YYYY-MM-DD")
             sys.exit(2)

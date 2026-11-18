@@ -28,7 +28,7 @@ class YearSummaryDrawer(TracksDrawer):
 
     def fetch_args(self, args):
         if args.type == "year_summary":
-            now_year = datetime.datetime.now().year  # noqa: DTZ005
+            now_year = datetime.datetime.now().year
             self.year = args.summary_year or now_year
 
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
@@ -55,7 +55,7 @@ class YearSummaryDrawer(TracksDrawer):
         # Draw "Running for X Days" header - align with top of dots (offset.y + 8)
         first_run_date = self._get_first_run_date()
         if first_run_date:
-            days_ago = (datetime.datetime.now() - first_run_date).days  # noqa: DTZ005
+            days_ago = (datetime.datetime.now() - first_run_date).days
             header_text = f"Running for {days_ago} Days"
         else:
             header_text = f"Year {self.year}"

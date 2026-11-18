@@ -134,22 +134,25 @@ def process_fit(file_content, fix_gcj02=True):
                 msg.definition_message = None
                 changed = True
             lap_index += 1
-        elif isinstance(msg, SessionMessage):
-            if timeline and getattr(msg, "start_position_lat", None) is None:
-                open_fields(msg)
-                msg.start_position_lat, msg.start_position_long = (
-                    timeline[0][1],
-                    timeline[0][2],
-                )
-                if getattr(msg, "event", None) is None:
-                    msg.event = 8  # session
-                if getattr(msg, "event_type", None) is None:
-                    msg.event_type = 1  # stop
-                if getattr(msg, "message_index", None) is None:
-                    msg.message_index = 0
-                # fit_tool's session profile has no end_position fields
-                msg.definition_message = None
-                changed = True
+        elif (
+            isinstance(msg, SessionMessage)
+            and timeline
+            and getattr(msg, "start_position_lat", None) is None
+        ):
+            open_fields(msg)
+            msg.start_position_lat, msg.start_position_long = (
+                timeline[0][1],
+                timeline[0][2],
+            )
+            if getattr(msg, "event", None) is None:
+                msg.event = 8  # session
+            if getattr(msg, "event_type", None) is None:
+                msg.event_type = 1  # stop
+            if getattr(msg, "message_index", None) is None:
+                msg.message_index = 0
+            # fit_tool's session profile has no end_position fields
+            msg.definition_message = None
+            changed = True
 
     if fix_gcj02 and timeline:
         for record in fit.records:
