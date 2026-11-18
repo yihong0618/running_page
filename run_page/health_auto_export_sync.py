@@ -13,7 +13,7 @@ from config import JSON_FILE, SQL_FILE
 from generator import Generator
 from generator.db import Activity
 from generator.hae import filter_route, route_policy, workout_ids
-from sqlalchemy import insert, inspect, select, update
+from sqlalchemy import func, insert, inspect, select, update
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 RUN_TYPES = {"Running", "Outdoor Run", "Indoor Run", "跑步", "户外 跑步", "室内 跑步"}
@@ -164,6 +164,40 @@ def prepare_ownership(session, policy):
     session.execute(update(workout_ids).where(stale).values(route_policy=policy))
 
 
+def matches_existing_run(session, fields):
+    # Compare the UTC start_date column. SQLite also normalizes ISO offsets.
+    start = datetime.fromisoformat(fields["start_date"])
+    window = timedelta(seconds=90)
+    candidates = session.scalars(
+        select(Activity).where(
+            Activity.type.in_(("Run", "VirtualRun", "TrailRun")),
+            func.datetime(Activity.start_date).between(
+                (start - window).strftime(DATE_FORMAT),
+                (start + window).strftime(DATE_FORMAT),
+            ),
+            ~Activity.run_id.in_(select(workout_ids.c.run_id)),
+        )
+    )
+    distance = fields["distance"]
+    distance_tolerance = max(100, distance * 0.05)
+    for activity in candidates:
+        if (
+            activity.distance is None
+            or abs(activity.distance - distance) > distance_tolerance
+        ):
+            continue
+        for value, key in (
+            (activity.moving_time, "moving_time"),
+            (activity.elapsed_time, "elapsed_time"),
+        ):
+            duration = fields[key].total_seconds()
+            if value and abs(value.total_seconds() - duration) <= max(
+                60, duration * 0.10
+            ):
+                return True
+    return False
+
+
 def save_workout(session, external_id, fields, policy):
     digest = workout_digest(external_id)
     # Keep the legacy run ID stable and exactly representable by JavaScript.
@@ -171,9 +205,19 @@ def save_workout(session, external_id, fields, policy):
     owner = session.scalar(
         select(workout_ids.c.id_digest).where(workout_ids.c.run_id == run_id)
     )
-    if owner != digest.hex():
-        if owner is not None or session.get(Activity, run_id) is not None:
-            raise ValueError(f"Activity ID collision at {run_id}")
+    owns_activity = owner == digest.hex()
+    if not owns_activity and (
+        owner is not None or session.get(Activity, run_id) is not None
+    ):
+        raise ValueError(f"Activity ID collision at {run_id}")
+    if matches_existing_run(session, fields):
+        if owns_activity:
+            activity = session.get(Activity, run_id)
+            if activity is not None:
+                session.delete(activity)
+            session.execute(workout_ids.delete().where(workout_ids.c.run_id == run_id))
+        return False
+    if not owns_activity:
         session.execute(
             insert(workout_ids).values(
                 id_digest=digest.hex(), run_id=run_id, route_policy=policy
@@ -188,6 +232,7 @@ def save_workout(session, external_id, fields, policy):
         merge_fields(merged, fields)
         for key, value in merged.items():
             setattr(activity, key, value)
+    return True
 
 
 def import_workouts(source, db_path, output, since=None):
@@ -207,8 +252,10 @@ def import_workouts(source, db_path, output, since=None):
         connection.exec_driver_sql("BEGIN IMMEDIATE")
         policy = route_policy()
         prepare_ownership(session, policy)
-        for external_id, fields in workouts.items():
+        imported = sum(
             save_workout(session, external_id, fields, policy)
+            for external_id, fields in workouts.items()
+        )
         # Generator.load flushes the rows and commits after serialization.
         activities = generator.load()
 
@@ -223,7 +270,7 @@ def import_workouts(source, db_path, output, since=None):
         finally:
             temporary_path.unlink(missing_ok=True)
 
-    return len(workouts), skipped
+    return imported, skipped + len(workouts) - imported
 
 
 def main():

@@ -2,6 +2,11 @@ name: Run Data Sync
 
 on:
   workflow_dispatch:
+    inputs:
+      hae_drive_preview:
+        description: Verify Google Drive import without publishing
+        type: boolean
+        default: false
   schedule:
     - cron: '0 0 * * *'
   push:
@@ -24,9 +29,13 @@ on:
       - run_page/intervals_icu_sync.py
       - requirements.txt
 
+concurrency:
+  group: run-data-sync-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   # please change to your own config.
-  RUN_TYPE: pass # support strava_web/strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/intervals_icu/db_updater, Please change the 'pass' it to your own
+  RUN_TYPE: ${{ inputs.hae_drive_preview && 'health_auto_export' || vars.RUN_TYPE || 'pass' }} # support health_auto_export/ strava_web/strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/intervals_icu/db_updater, Please change the 'pass' it to your own
   ATHLETE: yihong0618
   TITLE: Yihong0618 Running
   MIN_GRID_DISTANCE: 10 # change min distance here
@@ -93,9 +102,9 @@ jobs:
           curl -s https://cloudflare.com/cdn-cgi/trace | grep -E "ip|warp"
 
       - name: Cache Data Files
-        if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
+        if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true' && !inputs.hae_drive_preview
         uses: actions/cache@v4
-        with:
+        with: &sync-data-cache
           path: |
             activities
             assets
@@ -110,6 +119,11 @@ jobs:
           restore-keys: |
             ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-
             ${{ env.DATA_CACHE_PREFIX }}-
+
+      - name: Restore data for Drive preview
+        if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true' && inputs.hae_drive_preview
+        uses: actions/cache/restore@v4
+        with: *sync-data-cache
 
       - name: Run sync Nike script
         if: env.RUN_TYPE == 'nike'
@@ -151,6 +165,32 @@ jobs:
         if: env.RUN_TYPE == 'strava_web'
         run: |
           python run_page/strava_web_sync.py "${{ secrets.STRAVA_JWT }}" --days "${{ vars.STRAVA_WEB_DAYS || '7' }}"
+
+      - name: Import Health Auto Export from Google Drive
+        if: env.RUN_TYPE == 'health_auto_export'
+        env:
+          HAE_DRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.HAE_DRIVE_SERVICE_ACCOUNT_JSON }}
+          HAE_DRIVE_FOLDER_ID: ${{ secrets.HAE_DRIVE_FOLDER_ID || vars.HAE_DRIVE_FOLDER_ID }}
+          HAE_DRIVE_PREVIEW: ${{ inputs.hae_drive_preview }}
+        run: |
+          work_dir="$(mktemp -d "$RUNNER_TEMP/hae-drive.XXXXXXXX")"
+          trap 'rm -rf -- "$work_dir"' EXIT
+          mkdir "$work_dir/exports"
+          python -m pip install 'google-auth[requests]>=2,<3'
+          python run_page/health_auto_export_drive.py "$work_dir/exports"
+          args=()
+          if [ "$HAE_DRIVE_PREVIEW" = true ]; then
+            cp run_page/data.db "$work_dir/data.db"
+            args=(--db "$work_dir/data.db" --output "$work_dir/activities.json")
+          fi
+          if compgen -G "$work_dir/exports/*.json" > /dev/null; then
+            python run_page/health_auto_export_sync.py "$work_dir/exports" "${args[@]}"
+          elif [ "$HAE_DRIVE_PREVIEW" = true ]; then
+            echo "::error::No JSON exports in the configured Drive folder."
+            exit 1
+          else
+            echo "No JSON exports in the configured Drive folder."
+          fi
 
       # for garmin if you want generate 'tcx' you can add --tcx command in the args.
       - name: Run sync Garmin script
@@ -282,7 +322,7 @@ jobs:
           warp-cli --accept-tos disconnect
 
       - name: Push new runs
-        if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
+        if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true' && !inputs.hae_drive_preview
         run: |
           git config --local user.email 'action@github.com'
           git config --local user.name 'GitHub Action'
@@ -302,7 +342,7 @@ jobs:
           echo "BUILD_GH_PAGES=$BUILD_GH_PAGES" >> "$GITHUB_OUTPUT"
 
   publish_github_pages:
-    if: needs.sync.result == 'success' && needs.sync.outputs.BUILD_GH_PAGES == 'true'
+    if: needs.sync.result == 'success' && needs.sync.outputs.BUILD_GH_PAGES == 'true' && !inputs.hae_drive_preview
     name: Build and publish Github Pages
     uses: ./.github/workflows/gh-pages.yml
     with:
