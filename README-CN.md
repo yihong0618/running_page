@@ -231,6 +231,23 @@ python run_page/strava_web_sync.py <JWT> --days 7 --only-run
 
 > ⚠️ JWT 约 30 天过期，过期后需重新从浏览器复制更新 `STRAVA_JWT`。
 
+## Health Auto Export
+
+通过 [Health Auto Export Workouts JSON v2](https://help.healthyapps.dev/en/health-auto-export/export-format/workouts/) 导入 Apple Health 中的跑步记录。可以传入一个 JSON 文件，也可以传入存放导出文件的目录。
+
+1. 在 Health Auto Export 里选择 **锻炼（Workouts）**、**JSON** 和 **Version 2**。保留距离字段，关闭单位本地化。想在地图上显示户外路线时，打开路线数据导出。跑步机记录可以不带 GPS。
+2. 安装 Python 依赖后，在仓库根目录运行。
+
+   ```bash
+   python run_page/health_auto_export_sync.py /path/to/workouts.json
+   ```
+
+导入会更新活动数据库并重新生成 `src/static/activities.json`。运动时长取导出的 workout duration，总用时取开始到结束的时间差。同一条记录重复导入会更新原记录。从其他来源切换时，可以用 `--since 2026-01-01T00:00:00+08:00` 指定包含边界的起始时间，避免重复累计。先试跑可以用 `--db` 和 `--output` 指向临时文件。
+
+导入前先配置轨迹隐私范围。导入器会先裁剪 GPS 轨迹，再写入 SQLite，并保存运动 ID 的哈希值。缩小隐私范围后，可重新导入原始文件以恢复此前裁掉的轨迹点。
+
+原始导出放在仓库外。发布前检查生成的 JSON 和地图，尤其是轨迹起终点。自动化时，可以等导出文件同步到本地目录，再用同一条命令导入。
+
 ## TUI（终端界面）
 
 你可以在终端中使用内置的 Textual TUI 浏览运动数据。

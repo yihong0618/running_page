@@ -221,6 +221,23 @@ python run_page/strava_web_sync.py <JWT> --days 7 --only-run
 
 > ⚠️ The JWT expires in ~30 days. Refresh `STRAVA_JWT` by re-copying it from the browser when it does.
 
+## Health Auto Export
+
+Import running workouts from Apple Health using a [Health Auto Export Workouts JSON v2](https://help.healthyapps.dev/en/health-auto-export/export-format/workouts/) file or a directory of exports.
+
+1. In Health Auto Export, select **Workouts**, **JSON**, and **Version 2**. Include distance and enable **Include Route Data** for outdoor maps. Disable localized units. Treadmill runs can be imported without GPS.
+2. After installing the Python dependencies, run the importer from the repository root.
+
+   ```bash
+   python run_page/health_auto_export_sync.py /path/to/workouts.json
+   ```
+
+The importer updates the activity database and regenerates `src/static/activities.json`. It uses the export's workout duration for moving time and the difference between the start and end timestamps for elapsed time. Repeated exports of the same workout update its existing record. When switching from another source, use `--since 2026-01-01T00:00:00+08:00` with your own inclusive cutover timestamp to avoid duplicate activities. Use `--db` and `--output` to try the import without touching existing data.
+
+Set the route privacy ranges before importing. The importer applies them before storing GPS routes in SQLite and saves a digest of each workout ID. Reimport the original export to restore points after reducing a privacy range.
+
+Keep raw exports outside the repository. Check the generated JSON and map before publishing, especially where routes start or end. For automation, run the same command against a local directory after your export files have arrived.
+
 ## TUI (Terminal UI)
 
 You can browse your activities in the terminal using the built-in Textual TUI.
