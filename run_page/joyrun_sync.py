@@ -634,9 +634,7 @@ class Joyrun:
         seen_runs = {}  # Dictionary to keep track of unique runs with start time as key
         for i in new_run_ids:
             run_data = self.get_single_run_record(i)
-            start_time = datetime.fromtimestamp(  # noqa: DTZ006
-                run_data["runrecord"]["starttime"]
-            )
+            start_time = datetime.fromtimestamp(run_data["runrecord"]["starttime"])
             distance = run_data["runrecord"]["meter"]
 
             is_duplicate = False
