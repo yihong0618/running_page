@@ -1,3 +1,5 @@
 -r requirements.txt
 # Ci
 black
+pytest
+google-auth[requests]>=2,<3

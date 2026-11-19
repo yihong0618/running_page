@@ -231,6 +231,32 @@ python run_page/strava_web_sync.py <JWT> --days 7 --only-run
 
 > ⚠️ JWT 约 30 天过期，过期后需重新从浏览器复制更新 `STRAVA_JWT`。
 
+## Health Auto Export
+
+通过 [Health Auto Export Workouts JSON v2](https://help.healthyapps.dev/en/health-auto-export/export-format/workouts/) 导入 Apple Health 中的跑步记录。可以传入一个 JSON 文件，也可以传入存放导出文件的目录。
+
+1. 在 Health Auto Export 里选择 **锻炼（Workouts）**、**JSON** 和 **Version 2**。保留距离字段，关闭单位本地化。想在地图上显示户外路线时，打开路线数据导出。跑步机记录可以不带 GPS。
+2. 安装 Python 依赖后，在仓库根目录运行。
+
+   ```bash
+   python run_page/health_auto_export_sync.py /path/to/workouts.json
+   ```
+
+导入会更新活动数据库并重新生成 `src/static/activities.json`。运动时长取导出的 workout duration，总用时取开始到结束的时间差。同一条记录重复导入会更新原记录。导入会对比存量跑步的开始时间、距离和时长。匹配到已有活动时保留原记录。需要限制回溯范围时，可以用 `--since 2026-01-01T00:00:00+08:00`。先试跑可以用 `--db` 和 `--output` 指向临时文件。
+
+导入前先配置轨迹隐私范围。导入器会先裁剪 GPS 轨迹，再写入 SQLite，并保存运动 ID 的哈希值。缩小隐私范围后，可重新导入原始文件以恢复此前裁掉的轨迹点。
+
+原始导出放在仓库外。发布前检查生成的 JSON 和地图，尤其是轨迹起终点。自动化时，可以等导出文件同步到本地目录，再用同一条命令导入。
+
+### 用 GitHub Actions 每天从 Google Drive 拉取
+
+1. 在 HAE 添加 [Google Drive 自动化](https://help.healthyapps.dev/en/health-auto-export/automations/google-drive/)，设置为 Workouts、JSON、Version 2。指定专用目录，手动上传一份样本。
+2. 在 Google Cloud 启用 Drive API，创建专用服务账号和 JSON 密钥。在 Drive 里把导出目录以查看者权限共享给服务账号。
+3. 在仓库的 Settings → Secrets and variables → Actions 中，把密钥 JSON 存为 Secret `HAE_DRIVE_SERVICE_ACCOUNT_JSON`。把导出目录 URL 里 `/folders/` 后的 ID 存为 `HAE_DRIVE_FOLDER_ID`，Secret 或 Variable 均可。
+4. 手动运行 Run Data Sync，勾选 **Verify Google Drive import without publishing**。预览通过后，把仓库变量 `RUN_TYPE` 设为 `health_auto_export`，使用现有的每日调度。
+
+Workflow 从专用目录读取 JSON 文件，并在退出时清理原始下载。预览使用临时数据库，跳过数据推送和站点发布。
+
 ## TUI（终端界面）
 
 你可以在终端中使用内置的 Textual TUI 浏览运动数据。

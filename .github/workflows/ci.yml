@@ -32,6 +32,9 @@ jobs:
           # make sure the gpx_sync.py script is executable
           python run_page/gpx_sync.py
 
+      - name: Test Health Auto Export and Drive sync
+        run: python -m pytest -q test_health_auto_export.py test_health_auto_export_drive.py
+
       - name: Check formatting (black)
         run: black . --diff --color && black . --check
 

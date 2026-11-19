@@ -221,6 +221,32 @@ python run_page/strava_web_sync.py <JWT> --days 7 --only-run
 
 > ⚠️ The JWT expires in ~30 days. Refresh `STRAVA_JWT` by re-copying it from the browser when it does.
 
+## Health Auto Export
+
+Import running workouts from Apple Health using a [Health Auto Export Workouts JSON v2](https://help.healthyapps.dev/en/health-auto-export/export-format/workouts/) file or a directory of exports.
+
+1. In Health Auto Export, select **Workouts**, **JSON**, and **Version 2**. Include distance and enable **Include Route Data** for outdoor maps. Disable localized units. Treadmill runs can be imported without GPS.
+2. After installing the Python dependencies, run the importer from the repository root.
+
+   ```bash
+   python run_page/health_auto_export_sync.py /path/to/workouts.json
+   ```
+
+The importer updates the activity database and regenerates `src/static/activities.json`. It uses the export's workout duration for moving time and the difference between the start and end timestamps for elapsed time. Repeated exports of the same workout update its existing record. The importer checks existing runs by start time, distance, and duration and keeps the existing record when it finds a match. Use the optional `--since 2026-01-01T00:00:00+08:00` to limit the import window. Use `--db` and `--output` to try the import without touching existing data.
+
+Set the route privacy ranges before importing. The importer applies them before storing GPS routes in SQLite and saves a digest of each workout ID. Reimport the original export to restore points after reducing a privacy range.
+
+Keep raw exports outside the repository. Check the generated JSON and map before publishing, especially where routes start or end. For automation, run the same command against a local directory after your export files have arrived.
+
+### Daily Google Drive sync with GitHub Actions
+
+1. In Health Auto Export, create a [Google Drive automation](https://help.healthyapps.dev/en/health-auto-export/automations/google-drive/) for Workouts in JSON Version 2. Choose a dedicated folder and manually upload a sample.
+2. Enable the Drive API in Google Cloud, create a dedicated service account and JSON key, and share the export folder with that account as Viewer.
+3. In your repository's Settings → Secrets and variables → Actions, store the key JSON as the secret `HAE_DRIVE_SERVICE_ACCOUNT_JSON`. Store the export folder ID (after `/folders/` in its URL) as `HAE_DRIVE_FOLDER_ID`, either as a secret or a variable.
+4. Manually run Run Data Sync with **Verify Google Drive import without publishing** enabled. Once it passes, set the repository variable `RUN_TYPE` to `health_auto_export` to use the existing daily schedule.
+
+The workflow reads JSON files from the dedicated folder and cleans up the downloaded exports on exit. Preview mode uses a temporary database and skips pushing data and publishing the site.
+
 ## TUI (Terminal UI)
 
 You can browse your activities in the terminal using the built-in Textual TUI.
