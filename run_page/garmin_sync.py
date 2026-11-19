@@ -9,16 +9,15 @@ import asyncio
 import datetime as dt
 import logging
 import os
-
-os.environ["GARTH_TELEMETRY_ENABLED"] = "false"
 import sys
 import time
 import traceback
 import zipfile
 from io import BytesIO
+from urllib.parse import parse_qsl, urlsplit
 
 import aiofiles
-import garth
+import garminconnect
 import httpx
 from config import FOLDER_DICT, JSON_FILE, SQL_FILE
 from garmin_device_adaptor import process_garmin_data
@@ -60,29 +59,43 @@ class Garmin:
             if auth_domain and str(auth_domain).upper() == "CN"
             else GARMIN_COM_URL_DICT
         )
-        if auth_domain and str(auth_domain).upper() == "CN":
-            garth.configure(domain="garmin.cn", ssl_verify=False)
         self.modern_url = self.URL_DICT.get("MODERN_URL")
-        garth.client.loads(secret_string)
-        if garth.client.oauth2_token.expired:
-            garth.client.refresh_oauth2()
+        is_cn = bool(auth_domain and str(auth_domain).upper() == "CN")
+        # garminconnect handles Garmin's current login (incl. MFA), token refresh
+        # and the TLS fingerprint connectapi expects; garth is deprecated.
+        self.gc = garminconnect.Garmin(is_cn=is_cn)
+        try:
+            self.gc.client.loads(secret_string)
+        except garminconnect.GarminConnectConnectionError as err:
+            raise GarminConnectAuthenticationError(
+                "Garmin secret string is invalid or from the old garth format; "
+                "re-run run_page/get_garmin_secret.py to create a new one"
+            ) from err
+        # One cheap call refreshes an expired token and proves the login works.
+        self.gc.client.connectapi("userprofile-service/socialProfile")
 
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
             "origin": self.URL_DICT.get("SSO_URL_ORIGIN"),
             "nk": "NT",
-            "Authorization": str(garth.client.oauth2_token),
+            "Authorization": self.gc.client.get_api_headers()["Authorization"],
         }
         self.is_only_running = is_only_running
         self.upload_url = self.URL_DICT.get("UPLOAD_URL")
         self.activity_url = self.URL_DICT.get("ACTIVITY_URL")
+
+    def _api_get(self, url):
+        parts = urlsplit(url)
+        return self.gc.client.request(
+            "GET", "connectapi", parts.path, params=dict(parse_qsl(parts.query))
+        )
 
     async def fetch_data(self, url, retrying=False):
         """
         Fetch and return data
         """
         try:
-            response = await self.req.get(url, headers=self.headers)
+            response = await asyncio.to_thread(self._api_get, url)
             if response.status_code == 429:
                 raise GarminConnectTooManyRequestsError("Too many requests")
             logger.debug(f"fetch_data got response code {response.status_code}")
@@ -124,9 +137,8 @@ class Garmin:
         if file_type == "fit":
             url = f"{self.modern_url}/download-service/files/activity/{activity_id}"
         logger.info(f"Download activity from {url}")
-        response = await self.req.get(url, headers=self.headers)
-        response.raise_for_status()
-        return response.read()
+        # download() sends Accept: */*; the JSON Accept of API calls gets a 406 here
+        return await asyncio.to_thread(self.gc.client.download, urlsplit(url).path)
 
     async def upload_activities_original_from_strava(
         self, datas, use_fake_garmin_device=False

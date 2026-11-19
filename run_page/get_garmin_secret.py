@@ -1,6 +1,7 @@
 import argparse
+import getpass
 
-import garth
+import garminconnect
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -13,8 +14,14 @@ if __name__ == "__main__":
         help="if garmin account is cn",
     )
     options = parser.parse_args()
-    if options.is_cn:
-        garth.configure(domain="garmin.cn", ssl_verify=False)
-    garth.login(options.email, options.password)
-    secret_string = garth.client.dumps()
+    email = options.email or input("Garmin email: ")
+    password = options.password or getpass.getpass("Garmin password: ")
+    garmin = garminconnect.Garmin(
+        email,
+        password,
+        is_cn=options.is_cn,
+        prompt_mfa=lambda: input("MFA code: ").strip(),
+    )
+    garmin.login()
+    secret_string = garmin.client.dumps()
     print(secret_string)
