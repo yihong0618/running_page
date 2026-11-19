@@ -340,24 +340,24 @@ class Track:
             else float(gpx_extensions.get("average_hr"))
         )
         self.moving_dict["average_speed"] = (
-            self.moving_dict["average_speed"]
+            self.moving_dict.get("average_speed", 0)
             if gpx_extensions.get("average_speed") is None
             else float(gpx_extensions.get("average_speed"))
         )
         self.moving_dict["distance"] = (
-            self.moving_dict["distance"]
+            self.moving_dict.get("distance", 0)
             if gpx_extensions.get("distance") is None
             else float(gpx_extensions.get("distance"))
         )
 
         self.moving_dict["moving_time"] = (
-            self.moving_dict["moving_time"]
+            self.moving_dict.get("moving_time", datetime.timedelta(0))
             if gpx_extensions.get("moving_time") is None
             else datetime.timedelta(seconds=float(gpx_extensions.get("moving_time")))
         )
 
         self.moving_dict["elapsed_time"] = (
-            self.moving_dict["elapsed_time"]
+            self.moving_dict.get("elapsed_time", datetime.timedelta(0))
             if gpx_extensions.get("elapsed_time") is None
             else datetime.timedelta(seconds=float(gpx_extensions.get("elapsed_time")))
         )
